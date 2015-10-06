@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
+{
+	internal static class Structures
+	{
+		/// <summary>
+		/// Contains message information from a thread's message queue.
+		/// </summary>
+		public struct MSG
+		{
+			/// <summary>
+			/// A handle to the window whose window procedure receives the message. This member is NULL when the message is a
+			/// thread message.
+			/// </summary>
+			public IntPtr hwnd;
+			/// <summary>
+			/// The message identifier. Applications can only use the low word; the high word is reserved by the system.
+			/// </summary>
+			public uint message;
+			/// <summary>
+			/// Additional information about the message. The exact meaning depends on the value of the message member.
+			/// </summary>
+			public IntPtr wParam;
+			/// <summary>
+			/// Additional information about the message. The exact meaning depends on the value of the message member.
+			/// </summary>
+			public IntPtr lParam;
+			/// <summary>
+			/// The time at which the message was posted.
+			/// </summary>
+			public uint time;
+			/// <summary>
+			/// The cursor position, in screen coordinates, when the message was posted.
+			/// </summary>
+			public POINT pt;
+		}
+
+		public struct POINT
+		{
+
+		}
+
+		public struct WNDCLASSEX
+		{
+			public uint cbSize;
+			public uint style;
+			public Delegates.WindowProc lpfnWndProc;
+			public int cbClsExtra;
+			public int cbWndExtra;
+			public IntPtr hInstance;
+			public IntPtr hIcon;
+			public IntPtr hCursor;
+			public IntPtr hbrBackground;
+			public string lpszMenuName;
+			public string lpszClassName;
+			public IntPtr hIconSm;
+		};
+
+	}
+}

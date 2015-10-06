@@ -40,15 +40,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="CommonDialog.cs" />
     <Compile Include="Common\Reflection.cs" />
+    <Compile Include="Container.cs" />
     <Compile Include="Control.cs" />
+    <Compile Include="Controls\Button.cs" />
+    <Compile Include="Dialogs\MessageDialog.cs" />
+    <Compile Include="Drawing\Brush.cs" />
+    <Compile Include="Drawing\Color.cs" />
+    <Compile Include="Drawing\Colors.cs" />
+    <Compile Include="Drawing\Font.cs" />
+    <Compile Include="Drawing\FontWeights.cs" />
+    <Compile Include="Drawing\Graphics.cs" />
+    <Compile Include="Drawing\Pen.cs" />
+    <Compile Include="Drawing\Rectangle.cs" />
     <Compile Include="Engine.cs" />
+    <Compile Include="Layout.cs" />
+    <Compile Include="Layouts\AbsoluteLayout.cs" />
+    <Compile Include="Monitor.cs" />
+    <Compile Include="PaintEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

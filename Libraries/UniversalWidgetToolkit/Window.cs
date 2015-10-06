@@ -1,13 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit
 {
-	public class Window : Control
+	public class Window : Container
 	{
-		private string mvarTitle = String.Empty;
-		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
+		private Rectangle mvarBounds = Rectangle.Empty;
+		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }
+
+		public event CancelEventHandler Closing;
+		public void OnClosing(CancelEventArgs e)
+		{
+			if (Closing != null) Closing(this, e);
+		}
+
+		public event EventHandler Closed;
+		public void OnClosed(EventArgs e)
+		{
+			if (Closed != null) Closed(this, e);
+		}
 	}
 }

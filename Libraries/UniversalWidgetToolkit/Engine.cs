@@ -18,22 +18,41 @@ namespace UniversalWidgetToolkit
 			return list.ToArray();
 		}
 
-		protected abstract int StartInternal();
-		protected abstract void StopInternal();
+		protected abstract int StartInternal(Window waitForClose = null);
+		protected abstract void StopInternal(int exitCode);
 
-		public int Start()
+		public int Start(Window waitForClose = null)
 		{
-			return StartInternal();
+			return StartInternal(waitForClose);
 		}
-		public void Stop()
+		public void Stop(int exitCode = 0)
 		{
-			StopInternal();
+			StopInternal(exitCode);
 		}
 
 		protected abstract void CreateControlInternal(Control control);
-		public void CreateControl(Control control)
+		protected internal void CreateControl(Control control)
 		{
 			CreateControlInternal(control);
+			control.OnCreated(EventArgs.Empty);
+		}
+
+		protected abstract void SetControlVisibilityInternal(Control control, bool visible);
+		internal void SetControlVisibility(Control control, bool visible)
+		{
+			SetControlVisibilityInternal(control, visible);
+		}
+
+		protected abstract CommonDialogResult ShowDialogInternal(CommonDialog dialog);
+		public CommonDialogResult ShowDialog(CommonDialog dialog)
+		{
+			return ShowDialogInternal(dialog);
+		}
+
+		protected abstract Monitor[] GetMonitorsInternal();
+		public Monitor[] GetMonitors()
+		{
+			return GetMonitorsInternal();
 		}
 	}
 }

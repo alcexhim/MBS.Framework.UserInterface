@@ -33,10 +33,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants.cs" />
+    <Compile Include="Engines\Win32Windowed\Drawing\Win32WindowedGraphics.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants\User32.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants\GDI.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Delegates.cs" />
-    <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods.cs" />
-    <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods\GDI.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods\User32.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures\GDI.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures\User32.cs" />
+    <Compile Include="Engines\Win32Windowed\Win32MessageDialog.cs" />
     <Compile Include="Engines\Win32Windowed\Win32WindowedEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -46,6 +51,7 @@
       <Name>UniversalWidgetToolkit</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

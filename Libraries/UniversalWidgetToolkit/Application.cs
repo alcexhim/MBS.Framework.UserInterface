@@ -28,24 +28,34 @@ namespace UniversalWidgetToolkit
 		}
 
 		// [DebuggerNonUserCode()]
-		public static void Start()
+		public static int Start(Window waitForClose = null)
 		{
-			if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
+			if (mvarEngine == null)
+			{
+				Engine[] engines = Engine.Get();
+				if (engines.Length > 0) mvarEngine = engines[0];
 
-			int exitCode = mvarEngine.Start();
+				if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
+			}
+
+			int exitCode = mvarEngine.Start(waitForClose);
 			
 			mvarExitCode = exitCode;
 			OnApplicationExited(EventArgs.Empty);
+
+			return exitCode;
 		}
 
-		public static void Stop()
+		public static void Stop(int exitCode)
 		{
-			Engine[] engines = Engine.Get();
-			if (engines.Length > 0) mvarEngine = engines[0];
+			if (mvarEngine == null)
+			{
+				Engine[] engines = Engine.Get();
+				if (engines.Length > 0) mvarEngine = engines[0];
 
-			if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
-
-			mvarEngine.Stop();
+				if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
+			}
+			mvarEngine.Stop(exitCode);
 		}
     }
 }

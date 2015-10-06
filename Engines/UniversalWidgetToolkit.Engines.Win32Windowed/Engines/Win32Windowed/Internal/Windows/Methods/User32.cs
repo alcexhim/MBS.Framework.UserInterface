@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
+namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows.Methods
 {
-	internal static class Methods
+	internal static class User32
 	{
 		/// <summary>
 		/// The CreateWindowEx function creates an overlapped, pop-up, or child window with an extended window style; otherwise, this function is identical to the CreateWindow function.
@@ -37,10 +37,10 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr CreateWindowEx
 		(
-			Constants.WindowStylesEx dwExStyle,
+			Constants.User32.WindowStylesEx dwExStyle,
 			string lpClassName,
 			string lpWindowName,
-			Constants.WindowStyles dwStyle,
+			Constants.User32.WindowStyles dwStyle,
 			int x,
 			int y,
 			int nWidth,
@@ -92,7 +92,7 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
 		[DllImport("user32.dll")]
 		public static extern int GetMessage
 		(
-			[Out()] out Structures.MSG lpMsg,
+			[Out()] out Structures.User32.MSG lpMsg,
 			[In()] [Optional()] IntPtr hWnd,
 			[In()] uint wMsgFilterMin,
 			[In()] uint wMsgFilterMax
@@ -101,7 +101,7 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
 		[DllImport("user32.dll")]
 		public static extern IntPtr RegisterClassEx
 		(
-			[In()] Structures.WNDCLASSEX lpwcx
+			ref Structures.User32.WNDCLASSEX lpwcx
 		);
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
 		[DllImport("user32.dll")]
 		public static extern bool DispatchMessage
 		(
-			[In()] Structures.MSG lpMsg
+			ref Structures.User32.MSG lpMsg
 		);
 		/// <summary>
 		/// Translates virtual-key messages into character messages. The character messages are posted to the calling thread's
@@ -165,10 +165,130 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows
 		[DllImport("user32.dll")]
 		public static extern bool TranslateMessage
 		(
-			[In()] Structures.MSG lpMsg
+			ref Structures.User32.MSG lpMsg
 		);
 
 		[DllImport("user32.dll")]
-		public static extern int DefWindowProc(IntPtr hwnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+		public static extern int DefWindowProc(IntPtr hwnd, Constants.User32.WindowMessages uMsg, IntPtr wParam, IntPtr lParam);
+
+		/// <summary>
+		/// The GetDC function retrieves a handle to a device context (DC) for the client area of a specified window or for the entire screen. You can use the returned handle in
+		/// subsequent GDI functions to draw in the DC. The device context is an opaque data structure, whose values are used internally by GDI.
+		/// 
+		/// The GetDCEx function is an extension to GetDC, which gives an application more control over how and whether clipping occurs in the client area.
+		/// </summary>
+		/// <param name="hWnd">A handle to the window whose DC is to be retrieved. If this value is NULL, GetDC retrieves the DC for the entire screen.</param>
+		/// <returns>
+		/// If the function succeeds, the return value is a handle to the DC for the specified window's client area.
+		/// 
+		/// If the function fails, the return value is NULL.
+		/// </returns>
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetDC(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetSysColorBrush(Constants.User32.SystemColors nIndex);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="hInstance">A handle to an instance of the module whose executable file contains the cursor to be loaded.</param>
+		/// <param name="lpCursorName">
+		/// The name of the cursor resource to be loaded. Alternatively, this parameter can consist of the resource identifier in the low-order word and zero in the high-order
+		/// word. The MAKEINTRESOURCE macro can also be used to create this value. To use one of the predefined cursors, the application must set the <see cref="hInstance"/>
+		/// parameter to NULL and the lpCursorName parameter to one the following values.</param>
+		/// <returns></returns>
+		[DllImport("user32.dll")]
+		public static extern IntPtr LoadCursor([In(), Optional()] IntPtr hInstance, [In()] string lpCursorName);
+		[DllImport("user32.dll")]
+		public static extern IntPtr LoadCursor([In(), Optional()] IntPtr hInstance, [In()] Internal.Windows.Constants.User32.Cursors lpCursorName);
+
+		/// <summary>
+		/// Displays a modal dialog box that contains a system icon, a set of buttons, and a brief application-specific message, such as status or error information. The message
+		/// box returns an integer value that indicates which button the user clicked.
+		/// </summary>
+		/// <param name="hWnd">A handle to the owner window of the message box to be created. If this parameter is NULL, the message box has no owner window.</param>
+		/// <param name="lpText">
+		/// The message to be displayed. If the string consists of more than one line, you can separate the lines using a carriage return and/or linefeed character between each
+		/// line.
+		/// </param>
+		/// <param name="lpCaption">The dialog box title. If this parameter is NULL, the default title is Error.</param>
+		/// <param name="uType">The contents and behavior of the dialog box. This parameter can be a combination of flags from the <see cref="Internal.Windows.Constants.User32.MessageDialogStyles"/> groups of flags.</param>
+		/// <returns></returns>
+		[DllImport("user32.dll")]
+		public static extern Constants.User32.MessageDialogResponses MessageBox([In(), Optional()] IntPtr hWnd, [In(), Optional()] string lpText, [In(), Optional()] string lpCaption, [In()] Internal.Windows.Constants.User32.MessageDialogStyles uType);
+
+		/// <summary>
+		/// Sends the specified message to a window or windows. The SendMessage function calls the window procedure for the specified window and does not return until the window
+		/// procedure has processed the message.
+		/// 
+		/// To send a message and return immediately, use the SendMessageCallback or SendNotifyMessage function. To post a message to a thread's message queue and return
+		/// immediately, use the PostMessage or PostThreadMessage function.
+		/// </summary>
+		/// <param name="hWnd">
+		/// A handle to the window whose window procedure will receive the message. If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
+		/// windows in the system, including disabled or invisible unowned windows, overlapped windows, and pop-up windows; but the message is not sent to child windows.
+		/// 
+		/// Message sending is subject to UIPI. The thread of a process can send messages only to message queues of threads in processes of lesser or equal integrity level.
+		/// </param>
+		/// <param name="Msg">The message to be sent.</param>
+		/// <param name="wParam">Additional message-specific information.</param>
+		/// <param name="lParam">Additional message-specific information.</param>
+		/// <returns></returns>
+		[DllImport("user32.dll")]
+		public static extern int SendMessage([In()] IntPtr hWnd, [In()] Constants.User32.WindowMessages Msg, [In()] IntPtr wParam, [In()] IntPtr lParam);
+
+		/// <summary>
+		/// The EnumDisplayMonitors function enumerates display monitors (including invisible pseudo-monitors associated with the mirroring drivers) that intersect a region
+		/// formed by the intersection of a specified clipping rectangle and the visible region of a device context. EnumDisplayMonitors calls an application-defined
+		/// MonitorEnumProc callback function once for each monitor that is enumerated. Note that GetSystemMetrics (SM_CMONITORS) counts only the display monitors.
+		/// </summary>
+		/// <param name="hdc">
+		/// A handle to a display device context that defines the visible region of interest.
+		/// 
+		/// If this parameter is NULL, the hdcMonitor parameter passed to the callback function will be NULL, and the visible region of interest is the virtual screen that
+		/// encompasses all the displays on the desktop.
+		/// </param>
+		/// <param name="lprcClip">
+		/// A pointer to a RECT structure that specifies a clipping rectangle. The region of interest is the intersection of the clipping rectangle with the visible region
+		/// specified by hdc.
+		/// 
+		/// If hdc is non-NULL, the coordinates of the clipping rectangle are relative to the origin of the hdc. If hdc is NULL, the coordinates are virtual-screen coordinates.
+		/// 
+		/// This parameter can be NULL if you don't want to clip the region specified by hdc.
+		/// </param>
+		/// <param name="lpfnEnum">A pointer to a MonitorEnumProc application-defined callback function.</param>
+		/// <param name="dwData">Application-defined data that EnumDisplayMonitors passes directly to the MonitorEnumProc function.</param>
+		/// <returns></returns>
+		[DllImport("user32.dll")]
+		public static extern bool EnumDisplayMonitors([In()] IntPtr hdc, ref Structures.User32.RECT lprcClip, [In()] Delegates.MonitorEnumProc lpfnEnum, [In()] IntPtr dwData);
+
+		/// <summary>
+		/// The GetMonitorInfo function retrieves information about a display monitor.
+		/// </summary>
+		/// <param name="hMonitor">A handle to the display monitor of interest.</param>
+		/// <param name="lpmi">
+		/// A pointer to a MONITORINFO or MONITORINFOEX structure that receives information about the specified display monitor.
+		/// 
+		/// You must set the cbSize member of the structure to sizeof(MONITORINFO) or sizeof(MONITORINFOEX) before calling the GetMonitorInfo function. Doing so lets the function
+		/// determine the type of structure you are passing to it.
+		/// 
+		/// The MONITORINFOEX structure is a superset of the MONITORINFO structure. It has one additional member: a string that contains a name for the display monitor. Most
+		/// applications have no use for a display monitor name, and so can save some bytes by using a MONITORINFO structure.
+		/// </param>
+		/// <returns>
+		/// If the function succeeds, the return value is nonzero.
+		/// c
+		/// If the function fails, the return value is zero.
+		/// </returns>
+		[DllImport("user32.dll")]
+		public static extern bool GetMonitorInfo([In()] IntPtr hMonitor, ref Structures.User32.MONITORINFOEX lpmi);
+
+		/// <summary>
+		/// Indicates to the system that a thread has made a request to terminate (quit). It is typically used in response to a WM_DESTROY message.
+		/// </summary>
+		/// <param name="exitCode">The application exit code. This value is used as the wParam parameter of the WM_QUIT message.</param>
+		[DllImport("user32.dll")]
+		public static extern void PostQuitMessage(int exitCode);
 	}
 }

@@ -197,5 +197,52 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows.Constant
 			/// </summary>
 			COLORMGMTCAPS
 		}
+
+		public enum LogFontQuality : byte
+		{
+			Default = 0,
+			Draft = 1,
+			Proof = 2,
+			NonAntiAliased = 3,
+			AntiAliased = 4,
+			ClearType = 5,
+			ClearTypeNatural = 6
+		}
+		[Flags()]
+		public enum LogFontPitchAndFamily : byte
+		{
+			PitchDefault = 0,
+			PitchFixed = 1,
+			PitchVariable = 2,
+
+			FamilyDontCare = (0 << 4),
+			FamilyRoman = (1 << 4),
+			FamilySwiss = (2 << 4),
+			FamilyModern = (3 << 4),
+			FamilyScript = (4 << 4),
+			FamilyDecorative = (5 << 4)
+		}
+		public enum LogFontCharSet : byte
+		{
+			Ansi = 0,
+			Default = 1,
+			Symbol = 2,
+			ShiftJIS = 128,
+			Hangul = 129,
+			GB2312 = 134,
+			ChineseBIG5 = 136,
+			Oem = 255,
+			Johab = 130,
+			Hebrew = 177,
+			Arabic = 178,
+			Greek = 161,
+			Turkish = 162,
+			Vietnamese = 163,
+			Thai = 222,
+			EastEurope = 238,
+			Russian = 204,
+			Mac = 77,
+			Baltic = 186,
+		}
 	}
 }

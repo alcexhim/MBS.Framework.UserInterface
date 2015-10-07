@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Output\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,11 +34,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engines\Win32Windowed\Drawing\Win32WindowedGraphics.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants\Comctl32.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants\User32.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Constants\GDI.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Delegates.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods\Comctl32.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods\GDI.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Methods\User32.cs" />
+    <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures\Comctl32.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures\GDI.cs" />
     <Compile Include="Engines\Win32Windowed\Internal\Windows\Structures\User32.cs" />
     <Compile Include="Engines\Win32Windowed\Win32MessageDialog.cs" />

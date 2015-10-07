@@ -19,6 +19,11 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 		{
 			mvarMainWindow = waitForClose;
 
+			Internal.Windows.Structures.Comctl32.INITCOMMONCONTROLSEX lpInitCtrls = new Internal.Windows.Structures.Comctl32.INITCOMMONCONTROLSEX();
+			lpInitCtrls.dwSize = Marshal.SizeOf(lpInitCtrls);
+			lpInitCtrls.dwICC = Internal.Windows.Constants.Comctl32.InitCommonControlsFlags.All;
+			Internal.Windows.Methods.Comctl32.InitCommonControlsEx(ref lpInitCtrls);
+
 			Internal.Windows.Structures.User32.MSG msg;
 			int ret = 0;
 
@@ -58,6 +63,11 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 
 				Internal.Windows.Methods.User32.TranslateMessage(ref msg);
 				Internal.Windows.Methods.User32.DispatchMessage(ref msg);
+
+				for (int i = 0; i< windowProcs.Count;i++)
+				{
+					GC.KeepAlive(windowProcs[i]);
+				}
 			}
 
 			return msg.wParam.ToInt32();
@@ -86,16 +96,22 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 		private Dictionary<Type, string> ControlClassNames = new Dictionary<Type, string>();
 		public Win32WindowedEngine()
 		{
-			ControlClassNames.Add(typeof(Window), "Window");
+			ControlClassNames.Add(typeof(Window), "#32770");
 			ControlClassNames.Add(typeof(Button), "Button");
 		}
+
+		private List<Internal.Windows.Delegates.WindowProc> windowProcs = new List<Internal.Windows.Delegates.WindowProc>();
 
 		private void EnsureWindowClassRegistered(string className)
 		{
 			Internal.Windows.Structures.User32.WNDCLASSEX lpwcx = new Internal.Windows.Structures.User32.WNDCLASSEX();
 			lpwcx.cbSize = (uint)Marshal.SizeOf(lpwcx);
 			lpwcx.lpszClassName = className;
-			lpwcx.lpfnWndProc = new Internal.Windows.Delegates.WindowProc(_WindowProc);
+
+			Internal.Windows.Delegates.WindowProc windowProc = new Internal.Windows.Delegates.WindowProc(_WindowProc);
+			lpwcx.lpfnWndProc = windowProc;
+			windowProcs.Add(windowProc);
+
 			lpwcx.hCursor = Internal.Windows.Methods.User32.LoadCursor(IntPtr.Zero, Internal.Windows.Constants.User32.Cursors.Arrow);
 			lpwcx.hbrBackground = Internal.Windows.Methods.User32.GetSysColorBrush(Internal.Windows.Constants.User32.SystemColors.ThreeDFace);
 			IntPtr atom = Internal.Windows.Methods.User32.RegisterClassEx(ref lpwcx);
@@ -260,8 +276,9 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 		{
 			Internal.Windows.Structures.GDI.LOGFONT lplf = new Internal.Windows.Structures.GDI.LOGFONT();
 			lplf.lfFaceName = font.FamilyName;
+			lplf.lfCharSet = Internal.Windows.Constants.GDI.LogFontCharSet.Default;
 			lplf.lfItalic = (byte)(font.Italic ? 1 : 0);
-			
+			lplf.lfQuality = Internal.Windows.Constants.GDI.LogFontQuality.ClearType;
 			int lpy = Internal.Windows.Methods.GDI.GetDeviceCaps(hdc, Internal.Windows.Constants.GDI.DeviceCapsIndex.LogPixelsY);
 
 			// 72 points/inch, lpy pixels/inch

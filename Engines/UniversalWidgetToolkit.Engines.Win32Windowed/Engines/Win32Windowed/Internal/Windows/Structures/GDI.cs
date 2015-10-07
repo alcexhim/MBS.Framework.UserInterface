@@ -18,11 +18,11 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows.Structur
 			public byte lfItalic;
 			public byte lfUnderline;
 			public byte lfStrikeOut;
-			public byte lfCharSet;
+			public Constants.GDI.LogFontCharSet lfCharSet;
 			public byte lfOutPrecision;
 			public byte lfClipPrecision;
-			public byte lfQuality;
-			public byte lfPitchAndFamily;
+			public Constants.GDI.LogFontQuality lfQuality;
+			public Constants.GDI.LogFontPitchAndFamily lfPitchAndFamily;
 			public string lfFaceName /* [LF_FACESIZE] */;
 		}
 	}

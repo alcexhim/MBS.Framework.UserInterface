@@ -35,7 +35,7 @@ namespace UniversalWidgetToolkit
 				Engine[] engines = Engine.Get();
 				if (engines.Length > 0) mvarEngine = engines[0];
 
-				if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
+				if (mvarEngine == null) throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
 			}
 
 			if (waitForClose != null)

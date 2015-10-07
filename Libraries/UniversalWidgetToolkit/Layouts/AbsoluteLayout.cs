@@ -11,6 +11,10 @@ namespace UniversalWidgetToolkit.Layouts
 	{
 		private Dictionary<Control, Rectangle> mvarControlBounds = new Dictionary<Control, Rectangle>();
 
+		protected override void ResetControlBoundsInternal(Control ctl = null)
+		{
+		}
+
 		public void SetControlBounds(Control ctl, Rectangle bounds)
 		{
 			mvarControlBounds[ctl] = bounds;

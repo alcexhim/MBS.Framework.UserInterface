@@ -47,6 +47,12 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		private Padding mvarMargin = new Padding();
+		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; } }
+
+		private Padding mvarPadding = new Padding();
+		public Padding Padding { get { return mvarPadding; } set { mvarPadding = value; } }
+
 		private Brush mvarBackgroundBrush = new SolidBrush(Colors.White);
 		public Brush BackgroundBrush { get; set; }
 
@@ -111,6 +117,26 @@ namespace UniversalWidgetToolkit
 		public virtual void OnClick(EventArgs e)
 		{
 			if (Click != null) Click(this, e);
+		}
+
+		public event EventHandler Resizing;
+		public virtual void OnResizing(EventArgs e)
+		{
+			if (Resizing != null) Resizing(this, e);
+		}
+
+		public Window ParentWindow
+		{
+			get
+			{
+				Control ctl = mvarParent;
+				while (ctl.Parent != null)
+				{
+					ctl = ctl.Parent;
+				}
+				if (ctl is Window) return (ctl as Window);
+				return null;
+			}
 		}
 	}
 }

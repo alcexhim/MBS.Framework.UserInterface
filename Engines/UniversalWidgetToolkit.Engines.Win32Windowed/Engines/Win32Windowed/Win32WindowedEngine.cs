@@ -44,6 +44,15 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 							mvarPressedControl = null;
 							break;
 						}
+						case Internal.Windows.Constants.User32.WindowMessages.SIZING:
+						{
+							ctl.OnResizing(EventArgs.Empty);
+							break;
+						}
+						case Internal.Windows.Constants.User32.WindowMessages.SIZE:
+						{
+							break;
+						}
 					}
 				}
 
@@ -145,6 +154,15 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 						}
 						break;
 					}
+					case Internal.Windows.Constants.User32.WindowMessages.SIZING:
+					{
+						if (ctl is Window)
+						{
+							RecalculateControlBounds(ctl as Window);
+						}
+						ctl.OnResizing(EventArgs.Empty);
+						break;
+					}
 					case Internal.Windows.Constants.User32.WindowMessages.Paint:
 					{
 						Graphics graphics = CreateGraphics(ctl);
@@ -155,6 +173,22 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 				}
 			}
 			return Internal.Windows.Methods.User32.DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+
+		private void RecalculateControlBounds(Window window)
+		{
+			Internal.Windows.Structures.User32.RECT rect1 = new Internal.Windows.Structures.User32.RECT();
+			Internal.Windows.Methods.User32.GetWindowRect(handlesByControl[window], ref rect1);
+
+			window.Bounds = RECTToRectangle(rect1);
+			window.Layout.ResetControlBounds();
+
+			foreach (Control ctl in window.Controls)
+			{
+				IntPtr hWnd = handlesByControl[ctl];
+				Rectangle rect = window.Layout.GetControlBounds(ctl);
+				Internal.Windows.Methods.User32.SetWindowPos(hWnd, IntPtr.Zero, (int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height, 0);
+			}
 		}
 
 		private Graphics CreateGraphics(Control ctl)
@@ -208,7 +242,13 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 
 			if (handle != IntPtr.Zero)
 			{
-				IntPtr hFont = GetHandleByFont(Font.FromFamily("Tahoma", 8.24));
+				Font font = control.Font;
+				if (font == null) font = SystemFonts.MenuFont;
+				{
+					font = Font.FromFamily("Tahoma", 10);
+				}
+
+				IntPtr hFont = GetHandleByFont(Internal.Windows.Methods.User32.GetDC(handle), font);
 				Internal.Windows.Methods.User32.SendMessage(handle, Internal.Windows.Constants.User32.WindowMessages.SetFont, hFont, new IntPtr(1));
 
 				controlsByHandle[handle] = control;
@@ -216,13 +256,19 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed
 			}
 		}
 
-		private IntPtr GetHandleByFont(Font font)
+		private IntPtr GetHandleByFont(IntPtr hdc, Font font)
 		{
 			Internal.Windows.Structures.GDI.LOGFONT lplf = new Internal.Windows.Structures.GDI.LOGFONT();
 			lplf.lfFaceName = font.FamilyName;
 			lplf.lfItalic = (byte)(font.Italic ? 1 : 0);
-			lplf.lfHeight = (byte)(font.Size * 72);
-			lplf.lfWeight = (byte)font.Weight;
+			
+			int lpy = Internal.Windows.Methods.GDI.GetDeviceCaps(hdc, Internal.Windows.Constants.GDI.DeviceCapsIndex.LogPixelsY);
+
+			// 72 points/inch, lpy pixels/inch
+
+			// thanks https://support.microsoft.com/en-us/kb/74299
+			lplf.lfHeight = (int)(Math.Round(-(font.Size * lpy) / (double)72));
+			lplf.lfWeight = (int)font.Weight;
 			
 			IntPtr retval = Internal.Windows.Methods.GDI.CreateFontIndirect(ref lplf);
 			return retval;

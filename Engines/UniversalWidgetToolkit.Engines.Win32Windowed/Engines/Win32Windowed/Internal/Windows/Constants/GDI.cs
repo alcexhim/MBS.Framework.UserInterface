@@ -133,8 +133,8 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows.Constant
 			/// Value that indicates the shading and blending capabilities of the device.
 			/// </summary>
 			ShadeBlendCaps = 45,
-			LOGPIXELSX     = 88 ,   // Logical pixels/inch in X
-			LOGPIXELSY     = 90 ,   // Logical pixels/inch in Y
+			LogPixelsX = 88 ,   // Logical pixels/inch in X
+			LogPixelsY = 90 ,   // Logical pixels/inch in Y
 			/// <summary>
 			/// Number of entries in the system palette. This index is valid only if the device driver sets the RC_PALETTE bit in the RASTERCAPS index and is available only if the
 			/// driver is compatible with 16-bit Windows.

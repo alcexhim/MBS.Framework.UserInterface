@@ -290,5 +290,17 @@ namespace UniversalWidgetToolkit.Engines.Win32Windowed.Internal.Windows.Methods
 		/// <param name="exitCode">The application exit code. This value is used as the wParam parameter of the WM_QUIT message.</param>
 		[DllImport("user32.dll")]
 		public static extern void PostQuitMessage(int exitCode);
+
+		[DllImport("user32.dll")]
+		public static extern void SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int uFlags);
+
+		/// <summary>
+		/// Retrieves the dimensions of the bounding rectangle of the specified window. The dimensions are given in screen
+		/// coordinates that are relative to the upper-left corner of the screen.
+		/// </summary>
+		/// <param name="hWnd"></param>
+		/// <param name="rect"></param>
+		[DllImport("user32.dll")]
+		public static extern void GetWindowRect(IntPtr hWnd, ref Structures.User32.RECT rect);
 	}
 }

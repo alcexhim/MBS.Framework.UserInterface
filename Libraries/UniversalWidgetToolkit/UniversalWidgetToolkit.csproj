@@ -49,17 +49,22 @@
     <Compile Include="Drawing\Brush.cs" />
     <Compile Include="Drawing\Color.cs" />
     <Compile Include="Drawing\Colors.cs" />
+    <Compile Include="Drawing\Dimension.cs" />
     <Compile Include="Drawing\Font.cs" />
     <Compile Include="Drawing\FontWeights.cs" />
     <Compile Include="Drawing\Graphics.cs" />
     <Compile Include="Drawing\Pen.cs" />
     <Compile Include="Drawing\Rectangle.cs" />
+    <Compile Include="Drawing\Vector.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Layouts\AbsoluteLayout.cs" />
+    <Compile Include="Layouts\FlowLayout.cs" />
     <Compile Include="Monitor.cs" />
+    <Compile Include="Padding.cs" />
     <Compile Include="PaintEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemFonts.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup />

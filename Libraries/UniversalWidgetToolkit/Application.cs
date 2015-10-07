@@ -38,6 +38,11 @@ namespace UniversalWidgetToolkit
 				if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
 			}
 
+			if (waitForClose != null)
+			{
+				waitForClose.Show();
+			}
+
 			int exitCode = mvarEngine.Start(waitForClose);
 			
 			mvarExitCode = exitCode;

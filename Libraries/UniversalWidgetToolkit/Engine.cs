@@ -54,5 +54,32 @@ namespace UniversalWidgetToolkit
 		{
 			return GetMonitorsInternal();
 		}
+
+		private Dictionary<string, object> mvarProperties = new Dictionary<string, object>();
+		public object GetProperty(string propertyName, object defaultValue = null)
+		{
+			if (mvarProperties.ContainsKey(propertyName)) return mvarProperties[propertyName];
+			return defaultValue;
+		}
+		public T GetProperty<T>(string propertyName, T defaultValue = default(T))
+		{
+			object value = GetProperty(propertyName, (object)defaultValue);
+			if (value.GetType() == typeof(T)) return (T)value;
+			return defaultValue;
+		}
+		public bool SetProperty(string propertyName, object value)
+		{
+			bool retval = true;
+			if (mvarProperties.ContainsKey(propertyName))
+			{
+				retval = false;
+			}
+			mvarProperties[propertyName] = value;
+			return retval;
+		}
+		public bool SetProperty<T>(string propertyName, T value)
+		{
+			return SetProperty(propertyName, (object)value);
+		}
 	}
 }

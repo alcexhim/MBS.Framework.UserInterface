@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UniversalWidgetToolkit.Theming;
 
 namespace UniversalWidgetToolkit.Drawing
 {
@@ -39,6 +40,15 @@ namespace UniversalWidgetToolkit.Drawing
 			color.B = ((double)b / 255);
 			color.A = ((double)a / 255);
 			return color;
+		}
+
+		public static Color FromString(string value)
+		{
+			if (value.StartsWith("@"))
+			{
+				if (ThemeManager.CurrentTheme != null) return ThemeManager.CurrentTheme.GetColorFromString(value);
+			}
+			return Color.Empty;
 		}
 	}
 }

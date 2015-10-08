@@ -16,7 +16,7 @@ namespace UniversalWidgetToolkit.Common
 				List<Assembly> list = new List<Assembly>();
 				
 				string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-				string[] fileNames = System.IO.Directory.GetFiles(basePath, "*.dll");
+				string[] fileNames = System.IO.Directory.GetFiles(basePath, "*.dll", System.IO.SearchOption.AllDirectories);
 				foreach (string fileName in fileNames)
 				{
 					Assembly asm = null;

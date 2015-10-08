@@ -5,6 +5,10 @@ using System.Text;
 
 namespace UniversalWidgetToolkit.Drawing
 {
+	public class LinearGradientBrush : Brush
+	{
+		public LinearGradientBrush(Rectangle bounds, )
+	}
 	public class SolidBrush : Brush
 	{
 		private Color mvarColor = Color.Empty;

@@ -49,5 +49,15 @@ namespace UniversalWidgetToolkit.Drawing
 
 		public double Right { get { return mvarX + mvarWidth; } set { mvarWidth = value - mvarX; } }
 		public double Bottom { get { return mvarY + mvarHeight; } set { mvarHeight = value - mvarY; } }
+
+		public Rectangle Deflate(Padding padding)
+		{
+			Rectangle rect = this;
+			rect.X += padding.Left;
+			rect.Y += padding.Top;
+			rect.Width -= padding.Right;
+			rect.Height -= padding.Bottom;
+			return rect;
+		}
 	}
 }

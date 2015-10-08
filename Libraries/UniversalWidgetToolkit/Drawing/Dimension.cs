@@ -23,5 +23,14 @@ namespace UniversalWidgetToolkit.Drawing
 			mvarWidth = width;
 			mvarHeight = height;
 		}
+
+		public Dimension2D Rotate()
+		{
+			Dimension2D size = this;
+			double width = size.Width;
+			size.Width = size.Height;
+			size.Height = width;
+			return size;
+		}
 	}
 }

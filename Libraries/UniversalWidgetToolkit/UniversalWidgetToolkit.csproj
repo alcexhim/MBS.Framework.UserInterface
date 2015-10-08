@@ -49,7 +49,9 @@
     <Compile Include="Drawing\Font.cs" />
     <Compile Include="Drawing\FontWeights.cs" />
     <Compile Include="Drawing\Graphics.cs" />
+    <Compile Include="Drawing\Measurement.cs" />
     <Compile Include="Drawing\Pen.cs" />
+    <Compile Include="Drawing\Pens.cs" />
     <Compile Include="Drawing\Rectangle.cs" />
     <Compile Include="Drawing\Vector.cs" />
     <Compile Include="Engine.cs" />

@@ -31,9 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engines\Win32\Drawing\Win32WindowedGraphics.cs" />
+    <Compile Include="Engines\Win32\Drawing\Win32Graphics.cs" />
     <Compile Include="Engines\Win32\Internal\Windows\Constants\Comctl32.cs" />
     <Compile Include="Engines\Win32\Internal\Windows\Constants\GDI.cs" />
     <Compile Include="Engines\Win32\Internal\Windows\Constants\User32.cs" />

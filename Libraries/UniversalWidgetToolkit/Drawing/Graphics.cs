@@ -10,22 +10,32 @@ namespace UniversalWidgetToolkit.Drawing
 {
 	public abstract class Graphics
 	{
-		protected abstract void DrawLineInternal(double x1, double y1, double x2, double y2);
-		public void DrawLine(double x1, double y1, double x2, double y2)
+		protected abstract void DrawLineInternal(Pen pen, double x1, double y1, double x2, double y2);
+		public void DrawLine(Pen pen, double x1, double y1, double x2, double y2)
 		{
-			DrawLineInternal(x1, y1, x2, y2);
+			DrawLineInternal(pen, x1, y1, x2, y2);
 		}
 
-		public void DrawRectangle(double x, double y, double width, double height)
+		public void DrawRectangle(Pen pen, double x, double y, double width, double height)
 		{
-			DrawLine(x, y, x + width, y);
-			DrawLine(x, y, x, y + height);
-			DrawLine(x, y + height, x + width, y + height);
-			DrawLine(x + width, y, x + width, y + height);
+			DrawLine(pen, x, y, x + width, y);
+			DrawLine(pen, x, y, x, y + height);
+			DrawLine(pen, x, y + height, x + width, y + height);
+			DrawLine(pen, x + width, y, x + width, y + height);
 		}
-		public void DrawRectangle(Rectangle rect)
+		public void DrawRectangle(Pen pen, Rectangle rect)
 		{
-			DrawRectangle(rect.X, rect.Y, rect.Width, rect.Height);
+			DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
+		}
+
+		protected abstract void FillRectangleInternal(Brush brush, double x, double y, double width, double height);
+		public void FillRectangle(Brush brush, double x, double y, double width, double height)
+		{
+			FillRectangleInternal(brush, x, y, width, height);
+		}
+		public void FillRectangle(Brush brush, Rectangle rect)
+		{
+			FillRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
 		public void Clear(Color color)
@@ -81,7 +91,7 @@ namespace UniversalWidgetToolkit.Drawing
 			}
 
 			Rectangle bounds = component.Parent.Layout.GetControlBounds(component);
-			bounds = new Rectangle(0, 0, bounds.Width, bounds.Height);
+			// bounds = new Rectangle(0, 0, bounds.Width, bounds.Height);
 
 			dict.Add("Component.Width", bounds.Width);
 			dict.Add("Component.Height", bounds.Height);
@@ -114,7 +124,7 @@ namespace UniversalWidgetToolkit.Drawing
 
 				if (act.Fill != null)
 				{
-					FillRectangle(BrushFromFill(act.Fill, new System.Drawing.RectangleF(x, y, w, h)), x, y, w, h);
+					FillRectangle(BrushFromFill(act.Fill, new Rectangle(x, y, w, h)), x, y, w, h);
 				}
 				if (act.Outline != null)
 				{
@@ -145,8 +155,8 @@ namespace UniversalWidgetToolkit.Drawing
 							}
 						}
 
-						System.Drawing.Pen lightPen = new System.Drawing.Pen(lightColor, act.Outline.Width);
-						System.Drawing.Pen darkPen = new System.Drawing.Pen(darkColor, act.Outline.Width);
+						Pen lightPen = new Pen(lightColor, new Measurement(act.Outline.Width, MeasurementUnit.Pixel));
+						Pen darkPen = new Pen(darkColor, new Measurement(act.Outline.Width, MeasurementUnit.Pixel));
 
 						DrawLine(lightPen, x, y, x + w, y);
 						DrawLine(lightPen, x, y, x, y + h);
@@ -194,6 +204,32 @@ namespace UniversalWidgetToolkit.Drawing
 			}
 		}
 
+		private Pen PenFromOutline(Outline outline)
+		{
+			if (outline is SolidOutline)
+			{
+				Pen pen = new Pen(Color.FromString((outline as SolidOutline).Color), new Measurement(outline.Width, MeasurementUnit.Pixel));
+				return pen;
+			}
+			else
+			{
+				Console.WriteLine("uwt-theme: PenFromOutline: outline used to create pen must be SolidOutline");
+				return Pens.Black;
+			}
+		}
+
+		private LinearGradientBrushOrientation LinearGradientFillOrientationToLinearGradientBrushOrientation(LinearGradientFillOrientation orientation)
+		{
+			switch (orientation)
+			{
+				case LinearGradientFillOrientation.BackwardDiagonal: return LinearGradientBrushOrientation.BackwardDiagonal;
+				case LinearGradientFillOrientation.ForwardDiagonal: return LinearGradientBrushOrientation.ForwardDiagonal;
+				case LinearGradientFillOrientation.Horizontal: return LinearGradientBrushOrientation.Horizontal;
+				case LinearGradientFillOrientation.Vertical: return LinearGradientBrushOrientation.Vertical;
+			}
+			return LinearGradientBrushOrientation.Horizontal;
+		}
+
 		private Brush BrushFromFill(Fill fill, Rectangle bounds)
 		{
 			if (fill is SolidFill)
@@ -205,22 +241,15 @@ namespace UniversalWidgetToolkit.Drawing
 			{
 				LinearGradientFill fil = (fill as LinearGradientFill);
 
-				LinearGradientBrush brush = new LinearGradientBrush(rect, LinearGradientFillOrientationToLinearGradientMode(fil.Orientation));
+				LinearGradientBrush brush = new LinearGradientBrush(bounds, LinearGradientFillOrientationToLinearGradientBrushOrientation(fil.Orientation));
 				if (fil.ColorStops.Count > 0)
 				{
-					List<System.Drawing.Color> colorList = new List<System.Drawing.Color>();
-					List<float> positionList = new List<float>();
-
 					for (int i = 0; i < fil.ColorStops.Count; i++)
 					{
-						colorList.Add(ColorFromString(fil.ColorStops[i].Color));
-						positionList.Add(FloatFromString(fil.ColorStops[i].Position));
+						Color color = Color.FromString(fil.ColorStops[i].Color);
+						Measurement measurement = Measurement.FromString(fil.ColorStops[i].Position);
+						brush.ColorStops.Add(color, measurement);
 					}
-
-					System.Drawing.Drawing2D.ColorBlend blend = new System.Drawing.Drawing2D.ColorBlend(fil.ColorStops.Count);
-					blend.Colors = colorList.ToArray();
-					blend.Positions = positionList.ToArray();
-					brush.InterpolationColors = blend;
 				}
 				return brush;
 			}

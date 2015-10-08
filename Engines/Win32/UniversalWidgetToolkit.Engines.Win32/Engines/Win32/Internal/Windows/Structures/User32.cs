@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Structures
@@ -61,12 +62,13 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Structures
 			public IntPtr hIconSm;
 		};
 
+		[StructLayout(LayoutKind.Sequential)]
 		public struct COLORREF
 		{
-			public byte r;
-			public byte g;
-			public byte b;
 			public byte a;
+			public byte b;
+			public byte g;
+			public byte r;
 		}
 
 		/// <summary>

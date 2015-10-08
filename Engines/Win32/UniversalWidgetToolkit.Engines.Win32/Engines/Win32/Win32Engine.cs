@@ -195,8 +195,6 @@ namespace UniversalWidgetToolkit.Engines.Win32
 								foreach (Control ctl1 in (ctl as Container).Controls)
 								{
 									Guid id = ThemeComponentGuid.FromControlType(ctl1.GetType());
-
-									Rectangle bounds = (ctl as Container).Layout.GetControlBounds(ctl1);
 									e.Graphics.DrawThemeComponent(new ThemeComponentReference(id, ThemeComponentStateGuids.Normal), ctl1);
 								}
 							}
@@ -223,15 +221,21 @@ namespace UniversalWidgetToolkit.Engines.Win32
 
 			foreach (Control ctl in window.Controls)
 			{
-				IntPtr hWnd = handlesByControl[ctl];
-				Rectangle rect = window.Layout.GetControlBounds(ctl);
-				Internal.Windows.Methods.User32.SetWindowPos(hWnd, IntPtr.Zero, (int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height, 0);
+				if (GetProperty<bool>("Windowless"))
+				{
+				}
+				else
+				{
+					IntPtr hWnd = handlesByControl[ctl];
+					Rectangle rect = window.Layout.GetControlBounds(ctl);
+					Internal.Windows.Methods.User32.SetWindowPos(hWnd, IntPtr.Zero, (int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height, 0);
+				}
 			}
 		}
 
 		private Graphics CreateGraphics(Control ctl)
 		{
-			Graphics graphics = new Win32WindowedGraphics(GetHandleByControl(ctl));
+			Graphics graphics = new Win32Graphics(GetHandleByControl(ctl));
 			return graphics;
 		}
 

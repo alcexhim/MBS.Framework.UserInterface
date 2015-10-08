@@ -302,5 +302,29 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Methods
 		/// <param name="rect"></param>
 		[DllImport("user32.dll")]
 		public static extern void GetWindowRect(IntPtr hWnd, ref Structures.User32.RECT rect);
+
+
+		/// <summary>
+		/// Fills a rectangle by using the specified brush. This function includes the left and top borders, but excludes the right and bottom borders of the rectangle.
+		/// </summary>
+		/// <param name="hdc">A handle to the device context.</param>
+		/// <param name="rect">A pointer to a <see cref="Structures.User32.RECT" /> structure that contains the logical coordinates of the rectangle to be filled.</param>
+		/// <param name="hbr">A handle to the brush used to fill the rectangle.</param>
+		/// <returns>
+		/// If the function succeeds, the return value is nonzero.
+		/// 
+		/// If the function fails, the return value is zero.
+		/// </returns>
+		/// <remarks>
+		/// The brush identified by the hbr parameter may be either a handle to a logical brush or a color value. If specifying a handle to a logical brush, call one of the
+		/// following functions to obtain the handle: CreateHatchBrush, CreatePatternBrush, or CreateSolidBrush. Additionally, you may retrieve a handle to one of the stock
+		/// brushes by using the GetStockObject function. If specifying a color value for the hbr parameter, it must be one of the standard system colors (the value 1 must be
+		/// added to the chosen color). For example: (COLOR_WINDOW + 1)
+		/// 
+		/// When filling the specified rectangle, FillRect does not include the rectangle's right and bottom sides. GDI fills a rectangle up to, but not including, the right
+		/// column and bottom row, regardless of the current mapping mode.
+		/// </remarks>
+		[DllImport("user32.dll")]
+		public static extern int FillRect(IntPtr hdc, ref Structures.User32.RECT rect, ref IntPtr hbr);
 	}
 }

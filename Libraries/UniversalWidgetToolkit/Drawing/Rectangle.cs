@@ -59,5 +59,29 @@ namespace UniversalWidgetToolkit.Drawing
 			rect.Height -= padding.Bottom;
 			return rect;
 		}
+
+		public bool Contains(Vector2D point)
+		{
+			return (point.X >= mvarX && point.Y >= mvarY && point.X <= Right && point.Y <= Bottom);
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append("(");
+			sb.Append(mvarX.ToString());
+			sb.Append(", ");
+			sb.Append(mvarY.ToString());
+			sb.Append(")-(");
+			sb.Append(Right.ToString());
+			sb.Append(", ");
+			sb.Append(Bottom.ToString());
+			sb.Append(")");
+			sb.Append(", ");
+			sb.Append(mvarWidth.ToString());
+			sb.Append("x");
+			sb.Append(mvarHeight.ToString());
+			return sb.ToString();
+		}
 	}
 }

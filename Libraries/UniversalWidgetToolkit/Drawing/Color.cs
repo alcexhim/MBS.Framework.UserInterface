@@ -48,7 +48,67 @@ namespace UniversalWidgetToolkit.Drawing
 			{
 				if (ThemeManager.CurrentTheme != null) return ThemeManager.CurrentTheme.GetColorFromString(value);
 			}
+			else if (value.StartsWith("#") && value.Length == 7)
+			{
+				string RRGGBB = value.Substring(1);
+				byte RR = Byte.Parse(RRGGBB.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+				byte GG = Byte.Parse(RRGGBB.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+				byte BB = Byte.Parse(RRGGBB.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+				return Color.FromRGBAByte(RR, GG, BB);
+			}
+			else if (value.StartsWith("rgb(") && value.EndsWith(")"))
+			{
+				string r_g_b = value.Substring(3, value.Length - 4);
+				string[] rgb = r_g_b.Split(new char[] { ',' });
+				if (rgb.Length == 3)
+				{
+					byte r = Byte.Parse(rgb[0].Trim());
+					byte g = Byte.Parse(rgb[1].Trim());
+					byte b = Byte.Parse(rgb[2].Trim());
+					return Color.FromRGBAByte(r, g, b);
+				}
+			}
+			else if (value.StartsWith("rgba(") && value.EndsWith(")"))
+			{
+
+			}
+			else
+			{
+				/*
+				try
+				{
+					System.Drawing.Color color = System.Drawing.Color.FromName(value);
+					return color;
+				}
+				catch
+				{
+
+				}
+				*/
+			}
 			return Color.Empty;
+		}
+
+		public byte GetRedByte()
+		{
+			return (byte)(mvarR * 255);
+		}
+		public byte GetGreenByte()
+		{
+			return (byte)(mvarG * 255);
+		}
+		public byte GetBlueByte()
+		{
+			return (byte)(mvarB * 255);
+		}
+		public byte GetAlphaByte()
+		{
+			return (byte)(mvarA * 255);
+		}
+
+		public int ToInt32()
+		{
+			return BitConverter.ToInt32(new byte[] { (byte)mvarA, (byte)mvarB, (byte)mvarG, (byte)mvarR }, 0);
 		}
 	}
 }

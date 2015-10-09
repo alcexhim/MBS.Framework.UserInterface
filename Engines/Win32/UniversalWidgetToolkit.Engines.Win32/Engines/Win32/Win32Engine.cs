@@ -37,7 +37,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 					{
 						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
 						{
-							mvarPressedControl = ctl;
+							SetPressedControl(ctl);
 							break;
 						}
 						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
@@ -46,7 +46,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 							{
 								ctl.OnClick(EventArgs.Empty);
 							}
-							mvarPressedControl = null;
+							SetPressedControl(null);
 							break;
 						}
 						case Internal.Windows.Constants.User32.WindowMessages.SizeChanging:
@@ -135,6 +135,44 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			if (handlesByControl.ContainsKey(ctl)) return handlesByControl[ctl];
 			return IntPtr.Zero;
 		}
+
+		protected override void InvalidateControlInternal(Control control)
+		{
+			if (!GetProperty<bool>("Windowless") || control is Window)
+			{
+				IntPtr handle = handlesByControl[control];
+
+				Container container = control.Parent;
+				Rectangle rect;
+				if (container == null && control is Window)
+				{
+					container = (control as Window);
+					rect = (control as Window).Bounds;
+				}
+				else
+				{
+					rect = container.Layout.GetControlBounds(control);
+				}
+				Internal.Windows.Structures.User32.RECT rct = RectangleToRECT(rect);
+
+				Internal.Windows.Methods.User32.InvalidateRect(handle, ref rct, false);
+				Internal.Windows.Methods.User32.UpdateWindow(handle);
+			}
+			else
+			{
+				IntPtr handle = GetHandleByControl(control.ParentWindow);
+				Rectangle rect = control.Parent.Layout.GetControlBounds(control);
+				
+				Internal.Windows.Structures.User32.RECT rct = RectangleToRECT(rect);
+
+				Internal.Windows.Methods.User32.InvalidateRect(handle, ref rct, false);
+				Internal.Windows.Methods.User32.UpdateWindow(handle);
+			}
+		}
+
+		private Control mvarFocusedControl = null;
+		private Control mvarHoverControl = null;
+
 		private int _WindowProc(IntPtr hwnd, Internal.Windows.Constants.User32.WindowMessages uMsg, IntPtr wParam, IntPtr lParam)
 		{
 			Control ctl = GetControlByHandle(hwnd);
@@ -144,10 +182,51 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				{
 					case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
 					{
+						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+						int x = BitConverter.ToInt16(xy, 0);
+						int y = BitConverter.ToInt16(xy, 2);
+
+						if (GetProperty<bool>("Windowless"))
+						{
+							if (ctl is Container)
+							{
+								Container cnt = (ctl as Container);
+								Control ctl1 = cnt.HitTest(x, y);
+								if (ctl1 != null)
+								{
+									SetPressedControl(ctl1);
+									SetFocusedControl(ctl1);
+								}
+								else
+								{
+									SetFocusedControl(null);
+								}
+							}
+						}
+						break;
+					}
+					case Internal.Windows.Constants.User32.WindowMessages.MouseMove:
+					{
+						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+						int x = BitConverter.ToInt16(xy, 0);
+						int y = BitConverter.ToInt16(xy, 2);
+
+						if (GetProperty<bool>("Windowless"))
+						{
+							if (ctl is Container)
+							{
+								Container cnt = (ctl as Container);
+								Control ctl1 = cnt.HitTest(x, y);
+								SetHoverControl(ctl1);
+							}
+						}
 						break;
 					}
 					case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
 					{
+						SetPressedControl(null);
 						ctl.OnClick(EventArgs.Empty);
 						break;
 					}
@@ -195,7 +274,33 @@ namespace UniversalWidgetToolkit.Engines.Win32
 								foreach (Control ctl1 in (ctl as Container).Controls)
 								{
 									Guid id = ThemeComponentGuid.FromControlType(ctl1.GetType());
-									e.Graphics.DrawThemeComponent(new ThemeComponentReference(id, ThemeComponentStateGuids.Normal), ctl1);
+									Guid stateId = ThemeComponentStateGuids.Normal;
+
+									if (ctl1 == mvarFocusedControl)
+									{
+										if (ctl1 == mvarPressedControl)
+										{
+											stateId = ThemeComponentStateGuids.PressedFocused;
+										}
+										else if (ctl1 == mvarHoverControl)
+										{
+											stateId = ThemeComponentStateGuids.HoverFocused;
+										}
+										else
+										{
+											stateId = ThemeComponentStateGuids.NormalFocused;
+										}
+									}
+									else if (ctl1 == mvarPressedControl)
+									{
+										stateId = ThemeComponentStateGuids.Pressed;
+									}
+									else if (ctl1 == mvarHoverControl)
+									{
+										stateId = ThemeComponentStateGuids.Hover;
+									}
+
+									e.Graphics.DrawThemeComponent(new ThemeComponentReference(id, stateId), ctl1);
 								}
 							}
 						}
@@ -209,6 +314,53 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				}
 			}
 			return Internal.Windows.Methods.User32.DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+
+		private void SetFocusedControl(Control ctl)
+		{
+			if (ctl == null)
+			{
+				Control prevFocusedCtrl = mvarFocusedControl;
+				mvarFocusedControl = null;
+				if (prevFocusedCtrl != null) prevFocusedCtrl.Invalidate();
+			}
+			else
+			{
+				bool changed = (mvarFocusedControl != ctl);
+				mvarFocusedControl = ctl;
+				if (changed) mvarFocusedControl.Invalidate();
+			}
+		}
+		private void SetHoverControl(Control ctl)
+		{
+			if (ctl == null)
+			{
+				Control prevCtrl = mvarHoverControl;
+				mvarHoverControl = null;
+				if (prevCtrl != null) prevCtrl.Invalidate();
+			}
+			else
+			{
+				bool changed = (mvarHoverControl != ctl);
+				mvarHoverControl = ctl;
+				if (changed) mvarHoverControl.Invalidate();
+			}
+		}
+
+		private void SetPressedControl(Control ctl)
+		{
+			if (ctl == null)
+			{
+				Control prevCtrl = mvarPressedControl;
+				mvarPressedControl = null;
+				if (prevCtrl != null) prevCtrl.Invalidate();
+			}
+			else
+			{
+				bool changed = (mvarPressedControl != ctl);
+				mvarPressedControl = ctl;
+				if (changed) mvarPressedControl.Invalidate();
+			}
 		}
 
 		private void RecalculateControlBounds(Window window)
@@ -394,6 +546,10 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			return monitor;
 		}
 
+		private Internal.Windows.Structures.User32.RECT RectangleToRECT(Rectangle rect)
+		{
+			return new Internal.Windows.Structures.User32.RECT((int)rect.X, (int)rect.Y, (int)rect.Right, (int)rect.Bottom);
+		}
 		private Rectangle RECTToRectangle(Internal.Windows.Structures.User32.RECT rect)
 		{
 			return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);

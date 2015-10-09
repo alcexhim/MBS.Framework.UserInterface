@@ -81,5 +81,11 @@ namespace UniversalWidgetToolkit
 		{
 			return SetProperty(propertyName, (object)value);
 		}
+
+		protected abstract void InvalidateControlInternal(Control control);
+		public void InvalidateControl(Control control)
+		{
+			InvalidateControlInternal(control);
+		}
 	}
 }

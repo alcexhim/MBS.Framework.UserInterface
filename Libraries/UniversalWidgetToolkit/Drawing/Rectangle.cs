@@ -60,9 +60,14 @@ namespace UniversalWidgetToolkit.Drawing
 			return rect;
 		}
 
+
+		public bool Contains(double x, double y)
+		{
+			return (x >= mvarX && y >= mvarY && x <= Right && y <= Bottom);
+		}
 		public bool Contains(Vector2D point)
 		{
-			return (point.X >= mvarX && point.Y >= mvarY && point.X <= Right && point.Y <= Bottom);
+			return Contains(point.X, point.Y);
 		}
 
 		public override string ToString()

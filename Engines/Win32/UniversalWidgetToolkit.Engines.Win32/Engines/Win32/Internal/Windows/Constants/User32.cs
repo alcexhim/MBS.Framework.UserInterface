@@ -655,7 +655,7 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// <summary>
 			/// The WM_MOUSEMOVE message is posted to a window when the cursor moves. If the mouse is not captured, the message is posted to the window that contains the cursor. Otherwise, the message is posted to the window that has captured the mouse.
 			/// </summary>
-			MOUSEMOVE = 0x0200,
+			MouseMove = 0x0200,
 			/// <summary>
 			/// The WM_LBUTTONDOWN message is posted when the user presses the left mouse button while the cursor is in the client area of a window. If the mouse is not captured, the message is posted to the window beneath the cursor. Otherwise, the message is posted to the window that has captured the mouse.
 			/// </summary>

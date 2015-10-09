@@ -326,5 +326,55 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Methods
 		/// </remarks>
 		[DllImport("user32.dll")]
 		public static extern int FillRect(IntPtr hdc, ref Structures.User32.RECT rect, ref IntPtr hbr);
+
+		/// <summary>
+		/// Updates the client area of the specified window by sending a WM_PAINT message to the window if the window's update
+		/// region is not empty. The function sends a WM_PAINT message directly to the window procedure of the specified
+		/// window, bypassing the application queue. If the update region is empty, no message is sent.
+		/// </summary>
+		/// <param name="handle">Handle to the window to be updated.</param>
+		/// <returns>
+		/// If the function succeeds, the return value is nonzero.
+		/// 
+		/// If the function fails, the return value is zero.
+		/// </returns>
+		[DllImport("user32.dll")]
+		public static extern bool UpdateWindow([In()] IntPtr handle);
+
+		/// <summary>
+		/// Adds a rectangle to the specified window's update region. The update region represents the portion of the window's
+		/// client area that must be redrawn.
+		/// </summary>
+		/// <param name="hWnd">
+		/// A handle to the window whose update region has changed. If this parameter is NULL, the system invalidates and
+		/// redraws all windows, not just the windows for this application, and sends the WM_ERASEBKGND and WM_NCPAINT
+		/// messages before the function returns. Setting this parameter to NULL is not recommended.
+		/// </param>
+		/// <param name="lpRect">
+		/// A pointer to a RECT structure that contains the client coordinates of the rectangle to be added to the update
+		/// region. If this parameter is NULL, the entire client area is added to the update region.
+		/// </param>
+		/// <param name="bErase">
+		/// Specifies whether the background within the update region is to be erased when the update region is processed. If
+		/// this parameter is TRUE, the background is erased when the BeginPaint function is called. If this parameter is
+		/// FALSE, the background remains unchanged.
+		/// </param>
+		/// <returns>
+		/// If the function succeeds, the return value is nonzero.
+		/// 
+		/// If the function fails, the return value is zero.
+		/// </returns>
+		/// <remarks>
+		/// The invalidated areas accumulate in the update region until the region is processed when the next WM_PAINT message
+		/// occurs or until the region is validated by using the ValidateRect or ValidateRgn function.
+		/// 
+		/// The system sends a WM_PAINT message to a window whenever its update region is not empty and there are no other
+		/// messages in the application queue for that window.
+		/// 
+		/// If the bErase parameter is TRUE for any part of the update region, the background is erased in the entire region,
+		/// not just in the specified part.
+		/// </remarks>
+		[DllImport("user32.dll")]
+		public static extern bool InvalidateRect([In()] IntPtr hWnd, ref Structures.User32.RECT lpRect, [In()] bool bErase);
 	}
 }

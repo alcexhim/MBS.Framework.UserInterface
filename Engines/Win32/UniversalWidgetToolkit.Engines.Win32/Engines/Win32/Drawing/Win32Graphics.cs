@@ -25,6 +25,11 @@ namespace UniversalWidgetToolkit.Engines.Win32.Drawing
 			mvarGraphics.DrawLine(PenToNativePen(pen), (float)x1, (float)y1, (float)x2, (float)y2);
 		}
 
+		protected override void DrawRectangleInternal(Pen pen, double x, double y, double width, double height)
+		{
+			mvarGraphics.DrawRectangle(PenToNativePen(pen), (float)x, (float)y, (float)width, (float)height);
+		}
+
 		private System.Drawing.Pen PenToNativePen(Pen pen)
 		{
 			System.Drawing.Pen retval = new System.Drawing.Pen(ColorToNativeColor(pen.Color), (float)(pen.Width.ConvertTo(MeasurementUnit.Pixel).Value));

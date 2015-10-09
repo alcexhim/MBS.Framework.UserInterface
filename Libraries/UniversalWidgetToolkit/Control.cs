@@ -138,5 +138,10 @@ namespace UniversalWidgetToolkit
 				return null;
 			}
 		}
+
+		public void Invalidate()
+		{
+			Application.Engine.InvalidateControl(this);
+		}
 	}
 }

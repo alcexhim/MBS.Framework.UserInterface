@@ -22,14 +22,18 @@ namespace UniversalWidgetToolkit
 		/// </summary>
 		public Layout Layout { get { return mvarLayout; } set { mvarLayout = value; } }
 
-		public Control HitTest(Vector2D point)
+		public Control HitTest(double x, double y)
 		{
 			foreach (Control ctl in mvarControls)
 			{
 				Rectangle rect = mvarLayout.GetControlBounds(ctl);
-				if (rect.Contains(point)) return ctl;
+				if (rect.Contains(x, y)) return ctl;
 			}
 			return null;
+		}
+		public Control HitTest(Vector2D point)
+		{
+			return HitTest(point.X, point.Y);
 		}
 
 		public override void OnCreated(EventArgs e)

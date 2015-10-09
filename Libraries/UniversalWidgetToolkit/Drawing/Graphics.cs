@@ -16,12 +16,10 @@ namespace UniversalWidgetToolkit.Drawing
 			DrawLineInternal(pen, x1, y1, x2, y2);
 		}
 
+		protected abstract void DrawRectangleInternal(Pen pen, double x, double y, double width, double height);
 		public void DrawRectangle(Pen pen, double x, double y, double width, double height)
 		{
-			DrawLine(pen, x, y, x + width, y);
-			DrawLine(pen, x, y, x, y + height);
-			DrawLine(pen, x, y + height, x + width, y + height);
-			DrawLine(pen, x + width, y, x + width, y + height);
+			DrawRectangleInternal(pen, x, y, width, height);
 		}
 		public void DrawRectangle(Pen pen, Rectangle rect)
 		{
@@ -91,7 +89,6 @@ namespace UniversalWidgetToolkit.Drawing
 			}
 
 			Rectangle bounds = component.Parent.Layout.GetControlBounds(component);
-			// bounds = new Rectangle(0, 0, bounds.Width, bounds.Height);
 
 			dict.Add("Component.Width", bounds.Width);
 			dict.Add("Component.Height", bounds.Height);

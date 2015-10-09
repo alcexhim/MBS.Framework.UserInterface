@@ -37,7 +37,15 @@ namespace UniversalWidgetToolkit.ObjectModels.Theming.RenderingActions
 			clone.Height = (mvarHeight.Clone() as RenderingExpression);
 			clone.Color = (mvarColor.Clone() as string);
 			clone.Value = (mvarValue.Clone() as string);
+			clone.HorizontalAlignment = mvarHorizontalAlignment;
+			clone.VerticalAlignment = mvarVerticalAlignment;
 			return clone;
 		}
+
+		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Left;
+		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
+
+		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Top;
+		public VerticalAlignment VerticalAlignment { get { return mvarVerticalAlignment; } set { mvarVerticalAlignment = value; } }
 	}
 }

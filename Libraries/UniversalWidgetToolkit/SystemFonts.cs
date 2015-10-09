@@ -8,7 +8,7 @@ namespace UniversalWidgetToolkit
 {
 	public static class SystemFonts
 	{
-		private static Font mvarMenuFont = null;
+		private static Font mvarMenuFont = new Font();
 		public static Font MenuFont { get { return mvarMenuFont; } }
 
 	}

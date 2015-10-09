@@ -226,8 +226,25 @@ namespace UniversalWidgetToolkit.Engines.Win32
 					}
 					case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
 					{
+						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+						int x = BitConverter.ToInt16(xy, 0);
+						int y = BitConverter.ToInt16(xy, 2);
+
 						SetPressedControl(null);
-						ctl.OnClick(EventArgs.Empty);
+						if (GetProperty<bool>("Windowless"))
+						{
+							if (ctl is Container)
+							{
+								Container cnt = (ctl as Container);
+								Control ctl1 = cnt.HitTest(x, y);
+								if (ctl1 != null) ctl1.OnClick(EventArgs.Empty);
+							}
+						}
+						else
+						{
+							ctl.OnClick(EventArgs.Empty);
+						}
 						break;
 					}
 					case Internal.Windows.Constants.User32.WindowMessages.Close:
@@ -259,6 +276,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 							RecalculateControlBounds(ctl as Window);
 						}
 						ctl.OnResizing(EventArgs.Empty);
+						ctl.Invalidate();
 						break;
 					}
 					case Internal.Windows.Constants.User32.WindowMessages.Paint:
@@ -268,41 +286,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 
 						if (GetProperty<bool>("Windowless"))
 						{
-							// draw the control and any child controls
-							if (ctl is Container)
-							{
-								foreach (Control ctl1 in (ctl as Container).Controls)
-								{
-									Guid id = ThemeComponentGuid.FromControlType(ctl1.GetType());
-									Guid stateId = ThemeComponentStateGuids.Normal;
-
-									if (ctl1 == mvarFocusedControl)
-									{
-										if (ctl1 == mvarPressedControl)
-										{
-											stateId = ThemeComponentStateGuids.PressedFocused;
-										}
-										else if (ctl1 == mvarHoverControl)
-										{
-											stateId = ThemeComponentStateGuids.HoverFocused;
-										}
-										else
-										{
-											stateId = ThemeComponentStateGuids.NormalFocused;
-										}
-									}
-									else if (ctl1 == mvarPressedControl)
-									{
-										stateId = ThemeComponentStateGuids.Pressed;
-									}
-									else if (ctl1 == mvarHoverControl)
-									{
-										stateId = ThemeComponentStateGuids.Hover;
-									}
-
-									e.Graphics.DrawThemeComponent(new ThemeComponentReference(id, stateId), ctl1);
-								}
-							}
+							WLPaintControl(ctl, e.Graphics);
 						}
 						else
 						{
@@ -314,6 +298,53 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				}
 			}
 			return Internal.Windows.Methods.User32.DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+
+		private void WLPaintControl(Control ctl, Graphics graphics)
+		{
+			// draw the control and any child controls
+			if (ctl is Container)
+			{
+				foreach (Control ctl1 in (ctl as Container).Controls)
+				{
+					WLPaintControl(ctl1, graphics);
+				}
+			}
+			else
+			{
+				Guid id = ThemeComponentGuid.FromControlType(ctl.GetType());
+				Guid stateId = ThemeComponentStateGuids.Normal;
+
+				if (ctl == mvarFocusedControl)
+				{
+					if (ctl == mvarPressedControl)
+					{
+						stateId = ThemeComponentStateGuids.PressedFocused;
+					}
+					else if (ctl == mvarHoverControl)
+					{
+						stateId = ThemeComponentStateGuids.HoverFocused;
+					}
+					else
+					{
+						stateId = ThemeComponentStateGuids.NormalFocused;
+					}
+				}
+				else if (ctl == mvarPressedControl)
+				{
+					stateId = ThemeComponentStateGuids.Pressed;
+				}
+				else if (ctl == mvarHoverControl)
+				{
+					stateId = ThemeComponentStateGuids.Hover;
+				}
+
+				Dictionary<string, object> dict = new Dictionary<string, object>();
+				dict.Add("Component.Text", ctl.Text);
+				graphics.DrawThemeComponent(new ThemeComponentReference(id, stateId), ctl, dict);
+
+				ctl.OnPaint(new PaintEventArgs(graphics));
+			}
 		}
 
 		private void SetFocusedControl(Control ctl)
@@ -368,7 +399,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			Internal.Windows.Structures.User32.RECT rect1 = new Internal.Windows.Structures.User32.RECT();
 			Internal.Windows.Methods.User32.GetWindowRect(handlesByControl[window], ref rect1);
 
-			window.Bounds = RECTToRectangle(rect1);
+			window.Bounds = PhysicalBoundsToClientBounds(RECTToRectangle(rect1));
 			window.Layout.ResetControlBounds();
 
 			foreach (Control ctl in window.Controls)
@@ -426,14 +457,14 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			Rectangle bounds = new Rectangle();
 			if (control is Window)
 			{
-				bounds = (control as Window).Bounds;
+				bounds = ClientBoundsToPhysicalBounds((control as Window).Bounds);
 			}
 			else
 			{
 				bounds = control.Parent.Layout.GetControlBounds(control);
 			}
 
-			IntPtr handle = Internal.Windows.Methods.User32.CreateWindowEx(GetWindowStylesExForControl(control), className, control.Title, GetWindowStylesForControl(control), (int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height, hWndParent, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+			IntPtr handle = Internal.Windows.Methods.User32.CreateWindowEx(GetWindowStylesExForControl(control), className, control.Text, GetWindowStylesForControl(control), (int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height, hWndParent, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
 			if (handle != IntPtr.Zero)
 			{
@@ -449,6 +480,25 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				controlsByHandle[handle] = control;
 				handlesByControl[control] = handle;
 			}
+		}
+
+		private Rectangle ClientBoundsToPhysicalBounds(Rectangle rectangle)
+		{
+			double x = rectangle.X - (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double y = rectangle.Y - (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double w = rectangle.Width + (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double h = rectangle.Height + (double)((System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2) + System.Windows.Forms.SystemInformation.CaptionHeight);
+
+			return new Rectangle(x, y, w, h);
+		}
+		private Rectangle PhysicalBoundsToClientBounds(Rectangle rectangle)
+		{
+			double x = rectangle.X + (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double y = rectangle.Y + (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double w = rectangle.Width - (double)(System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2);
+			double h = rectangle.Height - (double)((System.Windows.Forms.SystemInformation.HorizontalResizeBorderThickness * 2) + System.Windows.Forms.SystemInformation.CaptionHeight);
+
+			return new Rectangle(x, y, w, h);
 		}
 
 		private IntPtr GetHandleByFont(IntPtr hdc, Font font)
@@ -509,8 +559,11 @@ namespace UniversalWidgetToolkit.Engines.Win32
 		{
 			Internal.Windows.Constants.User32.MessageDialogStyles styles = Win32MessageDialog.GetMessageDialogStyles(dialog);
 
+			string title = dialog.Title;
+			if (String.IsNullOrEmpty(dialog.Title)) title = " ";
+
 			IntPtr hWnd = GetHandleByControl(dialog.Parent);
-			Internal.Windows.Constants.User32.MessageDialogResponses retval = Internal.Windows.Methods.User32.MessageBox(hWnd, dialog.Content, dialog.Title, styles);
+			Internal.Windows.Constants.User32.MessageDialogResponses retval = Internal.Windows.Methods.User32.MessageBox(hWnd, dialog.Content, title, styles);
 			return CommonDialogResultFromWin32(retval);
 		}
 

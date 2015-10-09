@@ -51,7 +51,7 @@ namespace UniversalWidgetToolkit
 			return exitCode;
 		}
 
-		public static void Stop(int exitCode)
+		public static void Stop(int exitCode = 0)
 		{
 			if (mvarEngine == null)
 			{

@@ -25,19 +25,25 @@ namespace UniversalWidgetToolkit
 		protected abstract Rectangle GetControlBoundsInternal(Control ctl);
 		public Rectangle GetControlBounds(Control ctl)
 		{
-			Rectangle rect = GetControlBoundsInternal(ctl);
-			if (rect.Width < mvarMinimumSizes[ctl].Width) rect.Width = mvarMinimumSizes[ctl].Width;
-			if (rect.Height < mvarMinimumSizes[ctl].Height) rect.Height = mvarMinimumSizes[ctl].Height;
+			if (ctl is Window) return (ctl as Window).Bounds;
 
+			Rectangle rect = GetControlBoundsInternal(ctl);
 			if (ctl.Parent != null)
 			{
 				rect.X += ctl.Parent.Padding.Left;
 				rect.Y += ctl.Parent.Padding.Top;
 			}
+
 			if (!mvarIgnoreControlPadding)
 			{
-				rect.Width += ctl.Padding.Left + ctl.Padding.Right;
-				rect.Height += ctl.Padding.Top + ctl.Padding.Bottom;
+				rect.Width += (ctl.Padding.Left + ctl.Padding.Right);
+				rect.Height += (ctl.Padding.Top + ctl.Padding.Bottom);
+			}
+
+			if (mvarMinimumSizes.ContainsKey(ctl))
+			{
+				if (rect.Width < mvarMinimumSizes[ctl].Width) rect.Width = mvarMinimumSizes[ctl].Width;
+				if (rect.Height < mvarMinimumSizes[ctl].Height) rect.Height = mvarMinimumSizes[ctl].Height;
 			}
 			return rect;
 		}

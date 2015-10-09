@@ -61,6 +61,60 @@ namespace UniversalWidgetToolkit.Engines.Win32.Drawing
 			mvarGraphics.FillRectangle(BrushToNativeBrush(brush), (float)x, (float)y, (float)width, (float)height);
 		}
 
+		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Color color, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		{
+			System.Windows.Forms.TextFormatFlags flags = System.Windows.Forms.TextFormatFlags.Left;
+			switch (horizontalAlignment)
+			{
+				case HorizontalAlignment.Center:
+				{
+					flags |= System.Windows.Forms.TextFormatFlags.HorizontalCenter;
+					break;
+				}
+				case HorizontalAlignment.Right:
+				{
+					flags |= System.Windows.Forms.TextFormatFlags.Right;
+					break;
+				}
+			}
+			switch (verticalAlignment)
+			{
+				case VerticalAlignment.Bottom:
+				{
+					flags |= System.Windows.Forms.TextFormatFlags.Bottom;
+					break;
+				}
+				case VerticalAlignment.Middle:
+				{
+					flags |= System.Windows.Forms.TextFormatFlags.VerticalCenter;
+					break;
+				}
+			}
+			System.Windows.Forms.TextRenderer.DrawText(mvarGraphics, value, FontToNativeFont(font), RectangleToNativeRectangle(rectangle), ColorToNativeColor(color), flags);
+		}
+
+		private System.Drawing.Font FontToNativeFont(Font font)
+		{
+			// TODO: get rid of this hardcoding and actually create real Font objects from system fonts
+			if (font == SystemFonts.MenuFont)
+			{
+				return System.Drawing.SystemFonts.MenuFont;
+			}
+			else if (font == null)
+			{
+				return System.Drawing.SystemFonts.DefaultFont;
+			}
+			return new System.Drawing.Font(font.FamilyName, (float)font.Size, GetNativeFontStyle(font));
+		}
+
+		private System.Drawing.FontStyle GetNativeFontStyle(Font font)
+		{
+			System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular;
+			if (font.Italic) style |= System.Drawing.FontStyle.Italic;
+			if (font.Weight >= FontWeights.Bold) style |= System.Drawing.FontStyle.Bold;
+			return style;
+		}
+
 		private System.Drawing.Brush BrushToNativeBrush(Brush brush)
 		{
 			if (brush is SolidBrush)
@@ -104,6 +158,10 @@ namespace UniversalWidgetToolkit.Engines.Win32.Drawing
 			return System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
 		}
 
+		private System.Drawing.Rectangle RectangleToNativeRectangle(Rectangle rectangle)
+		{
+			return new System.Drawing.Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
+		}
 		private System.Drawing.RectangleF RectangleToNativeRectangleF(Rectangle rectangle)
 		{
 			return new System.Drawing.RectangleF((float)rectangle.X, (float)rectangle.Y, (float)rectangle.Width, (float)rectangle.Height);

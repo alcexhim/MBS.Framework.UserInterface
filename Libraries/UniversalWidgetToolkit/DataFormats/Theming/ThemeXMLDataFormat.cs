@@ -309,11 +309,66 @@ namespace UniversalWidgetToolkit.DataFormats.Theming
 												MarkupAttribute attWidth = tagRenderingAction.Attributes["Width"];
 												MarkupAttribute attHeight = tagRenderingAction.Attributes["Height"];
 
+												if (attX == null || attY == null) continue;
+
+												MarkupAttribute attHorizontalAlignment = tagRenderingAction.Attributes["HorizontalAlignment"];
+												MarkupAttribute attVerticalAlignment = tagRenderingAction.Attributes["VerticalAlignment"];
+
 												TextRenderingAction item = new TextRenderingAction();
 												item.X = RenderingExpression.Parse(attX.Value);
 												item.Y = RenderingExpression.Parse(attY.Value);
-												item.Width = RenderingExpression.Parse(attWidth.Value);
-												item.Height = RenderingExpression.Parse(attHeight.Value);
+												
+												if (attWidth != null) item.Width = RenderingExpression.Parse(attWidth.Value);
+												if (attWidth != null) item.Height = RenderingExpression.Parse(attHeight.Value);
+
+												if (attHorizontalAlignment != null)
+												{
+													switch (attHorizontalAlignment.Value.ToLower())
+													{
+														case "center":
+														{
+															item.HorizontalAlignment = HorizontalAlignment.Center;
+															break;
+														}
+														case "justify":
+														{
+															item.HorizontalAlignment = HorizontalAlignment.Justify;
+															break;
+														}
+														case "left":
+														{
+															item.HorizontalAlignment = HorizontalAlignment.Left;
+															break;
+														}
+														case "right":
+														{
+															item.HorizontalAlignment = HorizontalAlignment.Right;
+															break;
+														}
+													}
+												}
+
+												if (attVerticalAlignment != null)
+												{
+													switch (attVerticalAlignment.Value.ToLower())
+													{
+														case "bottom":
+														{
+															item.VerticalAlignment = VerticalAlignment.Bottom;
+															break;
+														}
+														case "middle":
+														{
+															item.VerticalAlignment = VerticalAlignment.Middle;
+															break;
+														}
+														case "top":
+														{
+															item.VerticalAlignment = VerticalAlignment.Top;
+															break;
+														}
+													}
+												}
 
 												MarkupAttribute attColor = tagRenderingAction.Attributes["Color"];
 												if (attColor != null) item.Color = attColor.Value;

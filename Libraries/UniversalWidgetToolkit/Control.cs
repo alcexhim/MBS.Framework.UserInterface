@@ -47,6 +47,22 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		public Rectangle ClientRectangle
+		{
+			get
+			{
+				if (this is Window)
+				{
+					return (this as Window).Bounds;
+				}
+				else if (mvarParent == null)
+				{
+					return Rectangle.Empty;
+				}
+				return mvarParent.Layout.GetControlBounds(this);
+			}
+		}
+
 		private Padding mvarMargin = new Padding();
 		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; } }
 
@@ -65,8 +81,8 @@ namespace UniversalWidgetToolkit
 		private Container mvarParent = null;
 		public Container Parent { get { return mvarParent; } }
 
-		private string mvarTitle = String.Empty;
-		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
+		private string mvarText = String.Empty;
+		public string Text { get { return mvarText; } set { mvarText = value; } }
 
 		private bool mvarVisible = true;
 		public bool Visible

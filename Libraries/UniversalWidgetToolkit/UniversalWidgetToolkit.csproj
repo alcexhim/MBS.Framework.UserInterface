@@ -34,12 +34,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alignment.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="CommonDialog.cs" />
     <Compile Include="Common\Reflection.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="Controls\Button.cs" />
+    <Compile Include="Controls\Label.cs" />
     <Compile Include="DataFormats\Theming\ThemeXMLDataFormat.cs" />
     <Compile Include="Dialogs\MessageDialog.cs" />
     <Compile Include="Drawing\Brush.cs" />
@@ -55,9 +57,11 @@
     <Compile Include="Drawing\Rectangle.cs" />
     <Compile Include="Drawing\Vector.cs" />
     <Compile Include="Engine.cs" />
+    <Compile Include="HorizontalAlignment.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Layouts\AbsoluteLayout.cs" />
     <Compile Include="Layouts\FlowLayout.cs" />
+    <Compile Include="Layouts\BoxLayout.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="ObjectModels\Theming\Fill.cs" />
     <Compile Include="ObjectModels\Theming\Metrics\PaddingMetric.cs" />
@@ -85,12 +89,14 @@
     <Compile Include="ObjectModels\Theming\ThemeObjectModel.cs" />
     <Compile Include="ObjectModels\Theming\ThemeProperty.cs" />
     <Compile Include="ObjectModels\Theming\ThemeStockImage.cs" />
+    <Compile Include="Orientation.cs" />
     <Compile Include="Padding.cs" />
     <Compile Include="PaintEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="SystemFonts.cs" />
     <Compile Include="Theming\ThemeManager.cs" />
+    <Compile Include="VerticalAlignment.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>

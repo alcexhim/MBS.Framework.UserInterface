@@ -55,6 +55,7 @@ namespace UniversalWidgetToolkit.Drawing
 		}
 		public void DrawThemeComponent(ThemeComponent tc, Control component, Guid stateID, Dictionary<string, object> variables = null)
 		{
+			if (tc == null) return;
 			if (tc.InheritsComponent != null)
 			{
 				DrawThemeComponent(tc.InheritsComponent, component, stateID, variables);
@@ -189,16 +190,21 @@ namespace UniversalWidgetToolkit.Drawing
 
 				// graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
+				Font font = SystemFonts.MenuFont;
 				/*
-				Font font = SystemFonts.DefaultFont;
 				if (act.Font != null)
 				{
-					font = Font.FromString(act.Font);
+					font = Font.FromFamily(act.Font, 8);
 				}
-
-				System.Windows.Forms.TextRenderer.DrawText(graphics, value, font, new System.Drawing.Rectangle(x, y, width, height), color, System.Windows.Forms.TextFormatFlags.Left);
 				*/
+				DrawText(value, font, new Rectangle(x, y, width, height), color, act.HorizontalAlignment, act.VerticalAlignment);
 			}
+		}
+
+		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Color color, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
+		public void DrawText(string value, Font font, Rectangle rectangle, Color color, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
+		{
+			DrawTextInternal(value, font, rectangle, color, horizontalAlignment, verticalAlignment);
 		}
 
 		private Pen PenFromOutline(Outline outline)

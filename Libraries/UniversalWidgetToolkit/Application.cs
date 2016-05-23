@@ -21,6 +21,12 @@ namespace UniversalWidgetToolkit
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
+		public static void Initialize()
+		{
+			if (mvarEngine != null)
+				mvarEngine.Initialize ();
+		}
+
 		static Application()
 		{
 			Engine[] engines = Engine.Get();
@@ -40,6 +46,7 @@ namespace UniversalWidgetToolkit
 
 			if (waitForClose != null)
 			{
+				mvarEngine.CreateControl (waitForClose);
 				waitForClose.Show();
 			}
 

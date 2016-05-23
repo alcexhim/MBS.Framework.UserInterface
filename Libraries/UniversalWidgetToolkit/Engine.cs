@@ -18,6 +18,12 @@ namespace UniversalWidgetToolkit
 			return list.ToArray();
 		}
 
+		public void Initialize()
+		{
+			InitializeInternal ();
+		}
+		protected abstract bool InitializeInternal();
+
 		protected abstract int StartInternal(Window waitForClose = null);
 		protected abstract void StopInternal(int exitCode);
 
@@ -30,11 +36,15 @@ namespace UniversalWidgetToolkit
 			StopInternal(exitCode);
 		}
 
-		protected abstract void CreateControlInternal(Control control);
-		protected internal void CreateControl(Control control)
+		protected abstract bool CreateControlInternal(Control control);
+		protected internal bool CreateControl(Control control)
 		{
-			CreateControlInternal(control);
+			bool result = CreateControlInternal(control);
+			if (!result)
+				return false;
+
 			control.OnCreated(EventArgs.Empty);
+			return true;
 		}
 
 		protected abstract void SetControlVisibilityInternal(Control control, bool visible);

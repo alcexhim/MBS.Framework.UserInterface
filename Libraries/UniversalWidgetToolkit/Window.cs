@@ -13,13 +13,13 @@ namespace UniversalWidgetToolkit
 		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }
 
 		public event CancelEventHandler Closing;
-		public void OnClosing(CancelEventArgs e)
+		public virtual void OnClosing(CancelEventArgs e)
 		{
 			if (Closing != null) Closing(this, e);
 		}
 
 		public event EventHandler Closed;
-		public void OnClosed(EventArgs e)
+		public virtual void OnClosed(EventArgs e)
 		{
 			if (Closed != null) Closed(this, e);
 		}

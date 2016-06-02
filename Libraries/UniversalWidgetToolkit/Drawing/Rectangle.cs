@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniversalWidgetToolkit.Drawing
 {
-	public struct Rectangle
+	public struct Rectangle : IComparable<Rectangle>, IEquatable<Rectangle>
 	{
 		public static readonly Rectangle Empty = new Rectangle();
 		
@@ -70,6 +70,23 @@ namespace UniversalWidgetToolkit.Drawing
 			return Contains(point.X, point.Y);
 		}
 
+		public int CompareTo(Rectangle other)
+		{
+			double thisArea = this.Width * this.Height;
+			double otherArea = other.Width * other.Height;
+
+			return (int)(thisArea - otherArea);
+		}
+
+		#region IEquatable implementation
+
+		public bool Equals (Rectangle other)
+		{
+			return (this.Width == other.Width && this.Height == other.Height);
+		}
+
+		#endregion
+
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -87,6 +104,15 @@ namespace UniversalWidgetToolkit.Drawing
 			sb.Append("x");
 			sb.Append(mvarHeight.ToString());
 			return sb.ToString();
+		}
+
+		public static bool operator==(Rectangle left, Rectangle right)
+		{
+			return left.Equals(right);
+		}
+		public static bool operator!=(Rectangle left, Rectangle right)
+		{
+			return !left.Equals(right);
 		}
 	}
 }

@@ -92,6 +92,12 @@ namespace UniversalWidgetToolkit
 			return SetProperty(propertyName, (object)value);
 		}
 
+		protected abstract bool IsControlCreatedInternal(Control control);
+		public bool IsControlCreated(Control control)
+		{
+			return IsControlCreatedInternal(control);
+		}
+
 		protected abstract void InvalidateControlInternal(Control control);
 		public void InvalidateControl(Control control)
 		{

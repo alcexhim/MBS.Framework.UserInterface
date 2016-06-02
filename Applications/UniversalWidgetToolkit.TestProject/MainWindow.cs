@@ -47,7 +47,7 @@ namespace UniversalWidgetToolkit.TestProject
 			button3.Text = "&Apply";
 			button3.Margin = new Padding(8);
 			
-			this.Bounds = new Drawing.Rectangle(320, 240, 400, 300);
+			this.Bounds = new Drawing.Rectangle(320, 240, 600, 400);
 			containerButtons.Controls.Add(button);
 			containerButtons.Controls.Add(button2);
 			containerButtons.Controls.Add(button3);
@@ -62,6 +62,13 @@ namespace UniversalWidgetToolkit.TestProject
 			this.ClassName = "FuckingAwesomeFormClass";
 			this.Layout = layout;
 			this.Text = "Test Application";
+		}
+
+		public override void OnClosed (EventArgs e)
+		{
+			base.OnClosed (e);
+
+			Application.Stop ();
 		}
 
 		void button_Click(object sender, EventArgs e)

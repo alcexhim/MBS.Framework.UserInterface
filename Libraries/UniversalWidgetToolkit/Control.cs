@@ -81,8 +81,11 @@ namespace UniversalWidgetToolkit
 		private Container mvarParent = null;
 		public Container Parent { get { return mvarParent; } }
 
-		private string mvarText = String.Empty;
-		public string Text { get { return mvarText; } set { mvarText = value; } }
+		public string Text
+		{
+			get { return Application.Engine.GetControlText (this); }
+			set { Application.Engine.SetControlText (this, value); }
+		}
 
 		private bool mvarVisible = true;
 		public bool Visible

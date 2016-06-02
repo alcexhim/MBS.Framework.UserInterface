@@ -97,5 +97,16 @@ namespace UniversalWidgetToolkit
 		{
 			InvalidateControlInternal(control);
 		}
+
+		protected abstract string GetControlTextInternal(Control control);
+		public string GetControlText(Control control)
+		{
+			return GetControlTextInternal(control);
+		}
+		protected abstract void SetControlTextInternal(Control control, string text);
+		public void SetControlText(Control control, string text)
+		{
+			SetControlTextInternal (control, text);
+		}
 	}
 }

@@ -63,6 +63,8 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		public bool IsCreated { get { return Application.Engine.IsControlCreated(this); } }
+
 		private Padding mvarMargin = new Padding();
 		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; } }
 
@@ -81,10 +83,23 @@ namespace UniversalWidgetToolkit
 		private Container mvarParent = null;
 		public Container Parent { get { return mvarParent; } }
 
+		private string mvarText = null;
 		public string Text
 		{
-			get { return Application.Engine.GetControlText (this); }
-			set { Application.Engine.SetControlText (this, value); }
+			get
+			{
+				if (IsCreated) {
+					return Application.Engine.GetControlText (this);
+				}
+				return mvarText;
+			}
+			set
+			{
+				mvarText = value;
+				if (IsCreated) {
+					Application.Engine.SetControlText (this, value);
+				}
+			}
 		}
 
 		private bool mvarVisible = true;

@@ -87,9 +87,6 @@ namespace UniversalWidgetToolkit.Dialogs
 	}
 	public class MessageDialog : CommonDialog
 	{
-		private Control mvarParent = null;
-		public Control Parent { get { return mvarParent; } set { mvarParent = value; } }
-
 		private string mvarContent = String.Empty;
 		public string Content { get { return mvarContent; } set { mvarContent = value; } }
 
@@ -120,6 +117,7 @@ namespace UniversalWidgetToolkit.Dialogs
 			dialog.Parent = parent;
 			return dialog.ShowDialog();
 		}
+
 		public static MessageDialog Create(string prompt, string title = null, MessageDialogButtons buttons = MessageDialogButtons.OK, MessageDialogIcon icon = MessageDialogIcon.None, MessageDialogModality modality = MessageDialogModality.ApplicationModal, bool showHelp = false, Control parent = null)
 		{
 			MessageDialog dialog = new MessageDialog();

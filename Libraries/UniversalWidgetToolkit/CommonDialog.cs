@@ -21,6 +21,9 @@ namespace UniversalWidgetToolkit
 	}
 	public class CommonDialog
 	{
+		private Control mvarParent = null;
+		public Control Parent { get { return mvarParent; } set { mvarParent = value; } }
+
 		public CommonDialogResult ShowDialog()
 		{
 			return Application.Engine.ShowDialog(this);

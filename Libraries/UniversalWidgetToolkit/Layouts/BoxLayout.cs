@@ -19,6 +19,13 @@ namespace UniversalWidgetToolkit.Layouts
 		/// </summary>
 		public int Spacing { get { return mvarSpacing; } set { mvarSpacing = value; } }
 
+		private bool mvarHomogeneous = false;
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="UniversalWidgetToolkit.Layouts.BoxLayout"/> is homogeneous.
+		/// </summary>
+		/// <value><c>true</c> if homogeneous; otherwise, <c>false</c>.</value>
+		public bool Homogeneous { get { return mvarHomogeneous; } set { mvarHomogeneous = value; } }
+
 		protected override Rectangle GetControlBoundsInternal(Control ctl)
 		{
 			if (!bounds.ContainsKey(ctl))

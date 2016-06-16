@@ -100,6 +100,7 @@
     <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="VerticalAlignment.cs" />
     <Compile Include="Window.cs" />
+    <Compile Include="StockButtonType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

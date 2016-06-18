@@ -88,17 +88,12 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				if (IsCreated) {
-					return Application.Engine.GetControlText (this);
-				}
 				return mvarText;
 			}
 			set
 			{
 				mvarText = value;
-				if (IsCreated) {
-					Application.Engine.SetControlText (this, value);
-				}
+				Application.Engine.UpdateControlProperties (this);
 			}
 		}
 

@@ -5,17 +5,26 @@ using System.Text;
 
 namespace UniversalWidgetToolkit.Controls
 {
+	public enum ButtonBorderStyle
+	{
+		None,
+		Half,
+		Normal
+	}
 	public class Button : Control
 	{
 		public Button()
 		{
 		}
-		public Button(StockButtonType type)
+		public Button(StockType type)
 		{
 			mvarStockType = type;
 		}
 
-		private StockButtonType mvarStockType = StockButtonType.None;
-		public StockButtonType StockType { get { return mvarStockType; } set { mvarStockType = value; } }
+		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
+		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }
+
+		private StockType mvarStockType = StockType.None;
+		public StockType StockType { get { return mvarStockType; } set { mvarStockType = value; } }
 	}
 }

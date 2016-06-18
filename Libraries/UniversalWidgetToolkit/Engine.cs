@@ -114,5 +114,11 @@ namespace UniversalWidgetToolkit
 		{
 			SetControlTextInternal (control, text);
 		}
+
+		protected abstract void UpdateControlPropertiesInternal(Control control);
+		public void UpdateControlProperties(Control control)
+		{
+			UpdateControlPropertiesInternal (control);
+		}
 	}
 }

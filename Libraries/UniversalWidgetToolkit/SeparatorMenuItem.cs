@@ -2,11 +2,8 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public enum StockButtonType
+	public class SeparatorMenuItem : MenuItem
 	{
-		None,
-		OK,
-		Cancel
 	}
 }
 

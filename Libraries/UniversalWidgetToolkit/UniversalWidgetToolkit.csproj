@@ -100,7 +100,13 @@
     <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="VerticalAlignment.cs" />
     <Compile Include="Window.cs" />
-    <Compile Include="StockButtonType.cs" />
+    <Compile Include="MenuItem.cs" />
+    <Compile Include="MenuBar.cs" />
+    <Compile Include="CommandMenuItem.cs" />
+    <Compile Include="SeparatorMenuItem.cs" />
+    <Compile Include="StockType.cs" />
+    <Compile Include="ButtonStockType.cs" />
+    <Compile Include="Dialogs\FileDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

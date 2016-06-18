@@ -21,6 +21,9 @@ namespace UniversalWidgetToolkit
 	}
 	public class CommonDialog
 	{
+		private string mvarTitle = String.Empty;
+		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
+
 		private Control mvarParent = null;
 		public Control Parent { get { return mvarParent; } set { mvarParent = value; } }
 

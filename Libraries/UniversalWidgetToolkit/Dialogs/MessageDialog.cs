@@ -90,9 +90,6 @@ namespace UniversalWidgetToolkit.Dialogs
 		private string mvarContent = String.Empty;
 		public string Content { get { return mvarContent; } set { mvarContent = value; } }
 
-		private string mvarTitle = String.Empty;
-		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
-
 		private MessageDialogButtons mvarButtons = MessageDialogButtons.OK;
 		public MessageDialogButtons Buttons { get { return mvarButtons; } set { mvarButtons = value; } }
 

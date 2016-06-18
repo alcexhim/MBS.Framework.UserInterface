@@ -107,6 +107,7 @@
     <Compile Include="StockType.cs" />
     <Compile Include="ButtonStockType.cs" />
     <Compile Include="Dialogs\FileDialog.cs" />
+    <Compile Include="Dialogs\ColorDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

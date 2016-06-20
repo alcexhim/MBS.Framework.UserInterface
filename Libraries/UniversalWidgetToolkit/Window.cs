@@ -15,6 +15,18 @@ namespace UniversalWidgetToolkit
 		private Rectangle mvarBounds = Rectangle.Empty;
 		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }
 
+		public event EventHandler Activate;
+		public virtual void OnActivate(EventArgs e)
+		{
+			if (Activate != null) Activate (this, e);
+		}
+
+		public event EventHandler Deactivate;
+		public virtual void OnDeactivate(EventArgs e)
+		{
+			if (Deactivate != null) Deactivate (this, e);
+		}
+
 		public event CancelEventHandler Closing;
 		public virtual void OnClosing(CancelEventArgs e)
 		{

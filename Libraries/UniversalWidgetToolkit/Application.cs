@@ -23,6 +23,14 @@ namespace UniversalWidgetToolkit
 
 		public static void Initialize()
 		{
+			if (mvarEngine == null)
+			{
+				Engine[] engines = Engine.Get();
+				if (engines.Length > 0) mvarEngine = engines[0];
+
+				if (mvarEngine == null) throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
+			}
+
 			if (mvarEngine != null)
 				mvarEngine.Initialize ();
 		}
@@ -36,14 +44,6 @@ namespace UniversalWidgetToolkit
 		// [DebuggerNonUserCode()]
 		public static int Start(Window waitForClose = null)
 		{
-			if (mvarEngine == null)
-			{
-				Engine[] engines = Engine.Get();
-				if (engines.Length > 0) mvarEngine = engines[0];
-
-				if (mvarEngine == null) throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
-			}
-
 			if (waitForClose != null)
 			{
 				mvarEngine.CreateControl (waitForClose);

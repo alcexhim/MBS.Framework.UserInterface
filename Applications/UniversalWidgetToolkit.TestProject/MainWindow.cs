@@ -25,8 +25,6 @@ namespace UniversalWidgetToolkit.TestProject
 			layout.Orientation = Orientation.Vertical;
 			layout.Spacing = 13;
 
-			// this.MenuBar.Items.Add (new MenuItem ("Test"));
-
 			Label label = new Label();
 			label.Padding = new Padding (10);
 			label.HorizontalAlignment = HorizontalAlignment.Left;
@@ -39,22 +37,17 @@ namespace UniversalWidgetToolkit.TestProject
 			(containerButtons.Layout as BoxLayout).Alignment = Alignment.Far;
 			(containerButtons.Layout as BoxLayout).Spacing = 10;
 
-			Button button = new Button(StockButtonType.OK);
+			Button button = new Button(StockType.OK);
 			// button.Margin = new Padding(8);
 			button.Click += button_Click;
 
-			Button button2 = new Button(StockButtonType.Cancel);
+			Button button2 = new Button(StockType.Cancel);
 			button2.Click += button2_Click;
 			button2.Margin = new Padding(8);
 
-			Button button3 = new Button();
-			button3.Text = "&Apply";
-			button3.Margin = new Padding(8);
-			
 			this.Bounds = new Drawing.Rectangle(320, 240, 600, 400);
 			containerButtons.Controls.Add(button);
 			containerButtons.Controls.Add(button2);
-			containerButtons.Controls.Add(button3);
 
 			this.Controls.Add(containerButtons);
 
@@ -66,6 +59,93 @@ namespace UniversalWidgetToolkit.TestProject
 			this.ClassName = "FuckingAwesomeFormClass";
 			this.Layout = layout;
 			this.Text = "Test Application";
+
+			this.MenuBar.Items.AddRange(new MenuItem[]
+			{
+				new CommandMenuItem("_File", new MenuItem[]
+				{
+					new CommandMenuItem("_New", new MenuItem[]
+					{
+						new CommandMenuItem("New _Document"),
+						new CommandMenuItem("New _Project")
+					}),
+					new CommandMenuItem("_Open", new MenuItem[]
+					{
+						new CommandMenuItem("Open _Document", null, delegate(object sender, EventArgs e)
+						{
+							FileDialog dlg = new FileDialog();
+							dlg.Mode = FileDialogMode.Open;
+							dlg.MultiSelect = true;
+							if (dlg.ShowDialog() == CommonDialogResult.OK) {
+							}
+						}),
+						new CommandMenuItem("Open _Project")
+					}),
+					new CommandMenuItem("_Save", new MenuItem[]
+					{
+						new CommandMenuItem("Save _Document"),
+						new CommandMenuItem("Save _Project")
+					}),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("E_xit", null, delegate(object sender, EventArgs e)
+					{
+						Application.Stop ();
+					})
+				}),
+				new CommandMenuItem("_Edit", new MenuItem[]
+				{
+					new CommandMenuItem("_Undo"),
+					new CommandMenuItem("_Redo"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("Cu_t"),
+					new CommandMenuItem("_Copy"),
+					new CommandMenuItem("_Paste"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("_Select All"),
+					new CommandMenuItem("_Invert Selection")
+				}),
+				new CommandMenuItem("_View", new MenuItem[]
+				{
+					new CommandMenuItem("_Toolbars"),
+					new CommandMenuItem("Status _Bar"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("_Refresh")
+				}),
+				new CommandMenuItem("_Tools", new MenuItem[]
+				{
+					new CommandMenuItem("Select _Color", null, delegate (object sender, EventArgs e)
+					{
+						ColorDialog dlg = new ColorDialog();
+						if (dlg.ShowDialog() == CommonDialogResult.OK)
+						{
+							Color color = dlg.SelectedColor;
+						}
+					}),
+					new CommandMenuItem("Select _Font", null, delegate (object sender, EventArgs e)
+					{
+						FontDialog dlg = new FontDialog();
+						// dlg.AutoUpgradeEnabled = false;
+						if (dlg.ShowDialog() == CommonDialogResult.OK)
+						{
+							MessageDialog.ShowDialog(dlg.SelectedFont.ToString());
+						}
+					})
+				}),
+				new CommandMenuItem("_Help", new MenuItem[]
+				{
+					new CommandMenuItem("_About", null, delegate (object sender, EventArgs e)
+					{
+						AboutDialog dlg = new AboutDialog();
+						dlg.ProgramName = "Universal Widget Toolkit test application";
+						dlg.Version = new Version(1, 0);
+						dlg.Copyright = "Copyright (c) 1997-2016 Mike Becker's Software";
+						dlg.Comments = "Provides a way to test various elements of the Universal Widget Toolkit on various operating systems.";
+						dlg.LicenseType = LicenseType.BSD;
+						dlg.Website = "http://www.alce.io/uwt";
+						dlg.ShowDialog();
+					})
+				})
+			});
 		}
 
 		public override void OnClosed (EventArgs e)

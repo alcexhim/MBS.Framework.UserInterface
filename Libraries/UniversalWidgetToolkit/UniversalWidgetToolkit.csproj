@@ -109,6 +109,8 @@
     <Compile Include="Dialogs\FileDialog.cs" />
     <Compile Include="Dialogs\ColorDialog.cs" />
     <Compile Include="Dialogs\FontDialog.cs" />
+    <Compile Include="Dialogs\AboutDialog.cs" />
+    <Compile Include="LicenseType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

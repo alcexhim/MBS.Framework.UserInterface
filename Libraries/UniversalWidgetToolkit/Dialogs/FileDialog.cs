@@ -17,8 +17,8 @@ namespace UniversalWidgetToolkit
 		private bool mvarMultiSelect = false;
 		public bool MultiSelect { get { return mvarMultiSelect; } set { mvarMultiSelect = value; } }
 
-		private System.Collections.Specialized.StringCollection mvarSelectedFileNames = new System.Collections.Specialized.StringCollection ();
-		public System.Collections.Specialized.StringCollection SelectedFileNames { get { return mvarSelectedFileNames; } }
+		private System.Collections.Generic.List<string> mvarSelectedFileNames = new System.Collections.Generic.List<string> ();
+		public System.Collections.Generic.List<string> SelectedFileNames { get { return mvarSelectedFileNames; } }
 
 	}
 }

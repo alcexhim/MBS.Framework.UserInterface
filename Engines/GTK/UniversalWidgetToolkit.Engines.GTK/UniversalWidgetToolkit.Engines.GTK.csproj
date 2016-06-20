@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{62DC7CF9-C608-49E5-8C39-305B2E3E93F6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UniversalWidgetToolkit</RootNamespace>
+    <AssemblyName>UniversalWidgetToolkit.Engines.GTK</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Output\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Output\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Engines\GTK\GTKEngine.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Constants.cs" />
+    <Compile Include="Engines\GTK\Internal\GDK\Methods.cs" />
+    <Compile Include="Engines\GTK\Internal\GObject\Methods.cs" />
+    <Compile Include="Engines\GTK\Internal\GObject\Constants.cs" />
+    <Compile Include="Engines\GTK\Internal\GObject\Delegates.cs" />
+    <Compile Include="Engines\GTK\Internal\GIO\Constants.cs" />
+    <Compile Include="Engines\GTK\Internal\GIO\Methods.cs" />
+    <Compile Include="Engines\GTK\Internal\GIO\Delegates.cs" />
+    <Compile Include="Engines\GTK\Internal\GIO\Structures.cs" />
+    <Compile Include="Engines\GTK\Internal\GLib\Constants.cs" />
+    <Compile Include="Engines\GTK\Internal\GLib\Methods.cs" />
+    <Compile Include="Engines\GTK\Internal\GDK\Structures.cs" />
+    <Compile Include="Engines\GTK\Internal\Pango\Methods.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Engines\" />
+    <Folder Include="Engines\GTK\" />
+    <Folder Include="Engines\GTK\Internal\" />
+    <Folder Include="Engines\GTK\Internal\GTK\" />
+    <Folder Include="Engines\GTK\Internal\GDK\" />
+    <Folder Include="Engines\GTK\Internal\GObject\" />
+    <Folder Include="Engines\GTK\Internal\GIO\" />
+    <Folder Include="Engines\GTK\Internal\GLib\" />
+    <Folder Include="Engines\GTK\Internal\Pango\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">
+      <Project>{29E1C1BB-3EA5-4062-B62F-85EEC703FE07}</Project>
+      <Name>UniversalWidgetToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">
+      <Project>{30467E5C-05BC-4856-AADC-13906EF4CADD}</Project>
+      <Name>UniversalEditor.Essential</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
+      <Project>{2D4737E6-6D95-408A-90DB-8DFF38147E85}</Project>
+      <Name>UniversalEditor.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedFlat" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

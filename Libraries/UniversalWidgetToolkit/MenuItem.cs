@@ -14,6 +14,9 @@ namespace UniversalWidgetToolkit
 				}
 			}
 		}
+
+		private string mvarName = String.Empty;
+		public string Name { get { return mvarName; } set { mvarName = value; } }
 	}
 }
 

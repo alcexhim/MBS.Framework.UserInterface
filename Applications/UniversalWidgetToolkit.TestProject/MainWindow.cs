@@ -20,8 +20,25 @@ namespace UniversalWidgetToolkit.TestProject
 		{
 			this.Padding = new Padding(13);
 
-			// FlowLayout layout = new FlowLayout();
+			TabContainer tbsTabs = new TabContainer ();
+
+			TabPage tabGeneral = new TabPage ();
+			tabGeneral.Text = "General";
+			tbsTabs.TabPages.Add (tabGeneral);
+			
+			TabPage tabAppearance = new TabPage ();
+			tabAppearance.Text = "Appearance";
+			tbsTabs.TabPages.Add (tabAppearance);
+
+			this.Controls.Add (tbsTabs);
+
 			BoxLayout layout = new BoxLayout();
+			layout.Orientation = Orientation.Vertical;
+			layout.SetControlConstraints (tbsTabs, new BoxLayout.Constraints (true, true));
+			this.Layout = layout;
+
+			/*
+			// FlowLayout layout = new FlowLayout();
 			layout.Orientation = Orientation.Vertical;
 			layout.Spacing = 13;
 
@@ -45,19 +62,20 @@ namespace UniversalWidgetToolkit.TestProject
 			button2.Click += button2_Click;
 			button2.Margin = new Padding(8);
 
-			this.Bounds = new Drawing.Rectangle(320, 240, 600, 400);
 			containerButtons.Controls.Add(button);
 			containerButtons.Controls.Add(button2);
 
 			this.Controls.Add(containerButtons);
+			*/
 
 			// layout.SetControlMinimumSize(button, new Dimension2D(75, 23));
 			// layout.SetControlMinimumSize(button2, new Dimension2D(75, 23));
 
 			// layout.SetControlBounds(button, new Rectangle(24, 24, 96, 24));
-
+			
+			this.Bounds = new Drawing.Rectangle(320, 240, 600, 400);
 			this.ClassName = "FuckingAwesomeFormClass";
-			this.Layout = layout;
+			// this.Layout = layout;
 			this.Text = "Test Application";
 
 			this.MenuBar.Items.AddRange(new MenuItem[]
@@ -113,6 +131,23 @@ namespace UniversalWidgetToolkit.TestProject
 				}),
 				new CommandMenuItem("_Tools", new MenuItem[]
 				{
+					new CommandMenuItem("_Ask a Question", null, delegate (object sender, EventArgs e)
+					{
+						CommonDialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
+						switch (result)
+						{
+							case CommonDialogResult.Yes:
+							{
+								MessageDialog.ShowDialog ("Widgitator frobnicated successfully.", "Good News", MessageDialogButtons.OK, MessageDialogIcon.Information, MessageDialogModality.ApplicationModal, false, this);
+								break;
+							}
+							case CommonDialogResult.No:
+							{
+								MessageDialog.ShowDialog ("Widgitator not frobnicated. Try again later.", "As you wish", MessageDialogButtons.OK, MessageDialogIcon.Warning, MessageDialogModality.ApplicationModal, false, this);
+								break;
+							}
+						}
+					}),
 					new CommandMenuItem("Select _Color", null, delegate (object sender, EventArgs e)
 					{
 						ColorDialog dlg = new ColorDialog();
@@ -153,24 +188,6 @@ namespace UniversalWidgetToolkit.TestProject
 			base.OnClosed (e);
 
 			Application.Stop ();
-		}
-
-		void button_Click(object sender, EventArgs e)
-		{
-			CommonDialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
-			switch (result)
-			{
-				case CommonDialogResult.Yes:
-				{
-					MessageDialog.ShowDialog ("Widgitator frobnicated successfully.", "Good News", MessageDialogButtons.OK, MessageDialogIcon.Information, MessageDialogModality.ApplicationModal, false, this);
-					break;
-				}
-				case CommonDialogResult.No:
-				{
-					MessageDialog.ShowDialog ("Widgitator not frobnicated. Try again later.", "As you wish", MessageDialogButtons.OK, MessageDialogIcon.Warning, MessageDialogModality.ApplicationModal, false, this);
-					break;
-				}
-			}
 		}
 
 		private void button2_Click(object sender, EventArgs e)

@@ -2,7 +2,7 @@ using System;
 
 using UniversalWidgetToolkit.Drawing;
 
-namespace UniversalWidgetToolkit
+namespace UniversalWidgetToolkit.Dialogs
 {
 	public class FontDialog : CommonDialog
 	{

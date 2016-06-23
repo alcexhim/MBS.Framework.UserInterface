@@ -1,6 +1,6 @@
 using System;
 
-namespace UniversalWidgetToolkit
+namespace UniversalWidgetToolkit.Dialogs
 {
 	public class AboutDialog : CommonDialog
 	{
@@ -68,7 +68,7 @@ namespace UniversalWidgetToolkit
 			mvarLicenseType = LicenseType.Unknown;
 		}
 
-		private string mvarWebsite = String.Empty;
+		private string mvarWebsite = null;
 		public string Website { get { return mvarWebsite; } set { mvarWebsite = value; } }
 	}
 }

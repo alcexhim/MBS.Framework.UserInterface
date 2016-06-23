@@ -1,6 +1,6 @@
 using System;
 
-namespace UniversalWidgetToolkit
+namespace UniversalWidgetToolkit.Dialogs
 {
 	public enum FileDialogMode
 	{

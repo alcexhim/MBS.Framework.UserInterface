@@ -39,10 +39,6 @@ namespace UniversalWidgetToolkit
 		public override void OnCreated(EventArgs e)
 		{
 			base.OnCreated(e);
-			foreach (Control ctl in mvarControls)
-			{
-				Application.Engine.CreateControl(ctl);
-			}
 		}
 	}
 }

@@ -16,6 +16,19 @@ namespace UniversalWidgetToolkit
 		/// </summary>
 		public bool IgnoreControlPadding { get { return mvarIgnoreControlPadding; } set { mvarIgnoreControlPadding = value; } }
 
+		private Dictionary<Control, Constraints> _controlConstraints = new Dictionary<Control, Constraints>();
+
+		public void SetControlConstraints(Control ctl, Constraints constraints)
+		{
+			_controlConstraints [ctl] = constraints;
+		}
+		public Constraints GetControlConstraints(Control ctl)
+		{
+			if (!_controlConstraints.ContainsKey (ctl))
+				return null;
+			return _controlConstraints [ctl];
+		}
+
 		private Dictionary<Control, Dimension2D> mvarMinimumSizes = new Dictionary<Control, Dimension2D>();
 		public void SetControlMinimumSize(Control ctl, Dimension2D minimumSize)
 		{

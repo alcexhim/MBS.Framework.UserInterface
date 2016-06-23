@@ -8,6 +8,43 @@ namespace UniversalWidgetToolkit.Layouts
 {
 	public class BoxLayout : Layout
 	{
+		public enum PackType
+		{
+			Start,
+			End
+		}
+		
+		public class Constraints : UniversalWidgetToolkit.Constraints
+		{
+			private bool mvarExpand = false;
+			public bool Expand { get { return mvarExpand; } set { mvarExpand = value; } }
+
+			private bool mvarFill = false;
+			public bool Fill { get { return mvarFill; } set { mvarFill = value; } }
+
+			private int mvarPadding = 0;
+			public int Padding { get { return mvarPadding; } set { mvarPadding = value; } }
+
+			private PackType mvarPackType = PackType.Start;
+
+			public PackType PackType { get { return mvarPackType; } set { mvarPackType = value; } }
+
+			public Constraints(bool expand = false, bool fill = false, int padding = 0, PackType packType = PackType.Start)
+			{
+				mvarExpand = expand;
+				mvarFill = fill;
+				mvarPadding = padding;
+				mvarPackType = packType;
+			}
+		}
+
+		public BoxLayout(Orientation orientation, int spacing = 0, bool homogenous = false)
+		{
+			mvarOrientation = orientation;
+			mvarSpacing = spacing;
+			mvarHomogeneous = homogenous;
+		}
+
 		private Dictionary<Control, Rectangle> bounds = new Dictionary<Control, Rectangle>();
 
 		private Orientation mvarOrientation = Orientation.Horizontal;
@@ -102,7 +139,7 @@ namespace UniversalWidgetToolkit.Layouts
 			if (bounds.ContainsKey(ctl)) bounds.Remove(ctl);
 		}
 
-		private Alignment mvarAlignment = Alignment.Near;
+		private Alignment mvarAlignment = Alignment.Center;
 		public Alignment Alignment { get { return mvarAlignment; } set { mvarAlignment = value; } }
 	}
 }

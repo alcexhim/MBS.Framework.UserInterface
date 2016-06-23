@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit
 {
@@ -119,6 +120,30 @@ namespace UniversalWidgetToolkit
 		public void UpdateControlProperties(Control control)
 		{
 			UpdateControlPropertiesInternal (control);
+		}
+		
+		protected abstract void TabContainer_ClearTabPagesInternal (TabContainer parent);
+		internal void TabContainer_ClearTabPages(TabContainer parent) {
+			TabContainer_ClearTabPagesInternal (parent);
+		}
+		protected abstract void TabContainer_InsertTabPageInternal (TabContainer parent, int index, TabPage tabPage);
+		internal void TabContainer_InsertTabPage(TabContainer parent, int index, TabPage tabPage) {
+			TabContainer_InsertTabPageInternal (parent, index, tabPage);
+		}
+		protected abstract void TabContainer_RemoveTabPageInternal (TabContainer parent, TabPage tabPage);
+		internal void TabContainer_RemoveTabPage(TabContainer parent, TabPage tabPage) {
+			TabContainer_RemoveTabPageInternal (parent, tabPage);
+		}
+
+		protected abstract void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu);
+		public void UpdateNotificationIcon(NotificationIcon nid, bool updateContextMenu = false) {
+			UpdateNotificationIconInternal (nid, updateContextMenu);
+		}
+
+		protected abstract bool IsControlDisposedInternal(Control ctl);
+		public bool IsControlDisposed(Control ctl)
+		{
+			return IsControlDisposedInternal(ctl);
 		}
 	}
 }

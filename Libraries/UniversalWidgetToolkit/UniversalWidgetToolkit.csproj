@@ -101,7 +101,6 @@
     <Compile Include="VerticalAlignment.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="MenuItem.cs" />
-    <Compile Include="MenuBar.cs" />
     <Compile Include="CommandMenuItem.cs" />
     <Compile Include="SeparatorMenuItem.cs" />
     <Compile Include="StockType.cs" />
@@ -111,6 +110,17 @@
     <Compile Include="Dialogs\FontDialog.cs" />
     <Compile Include="Dialogs\AboutDialog.cs" />
     <Compile Include="LicenseType.cs" />
+    <Compile Include="Controls\TabContainer.cs" />
+    <Compile Include="Controls\TabPage.cs" />
+    <Compile Include="Constraints.cs" />
+    <Compile Include="Layouts\BoxLayoutConstraints.cs" />
+    <Compile Include="MenuItemHorizontalAlignment.cs" />
+    <Compile Include="Shortcut.cs" />
+    <Compile Include="Input\Keyboard\KeyboardKey.cs" />
+    <Compile Include="Input\Keyboard\KeyboardModifierKey.cs" />
+    <Compile Include="Controls\SplitContainer.cs" />
+    <Compile Include="NotificationIcon.cs" />
+    <Compile Include="Menu.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -130,4 +140,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Input\" />
+    <Folder Include="Input\Keyboard\" />
+  </ItemGroup>
 </Project>

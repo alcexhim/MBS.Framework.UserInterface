@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Dialogs;
+
+using UniversalWidgetToolkit.Input.Keyboard;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -10,6 +13,50 @@ namespace UniversalWidgetToolkit.Engines.GTK
 	{
 		private int _exitCode = 0;
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
+
+		private uint GetAccelKeyForKeyboardKey(KeyboardKey key)
+		{
+			switch (key) {
+				case KeyboardKey.A: return (uint)'A';
+				case KeyboardKey.B: return (uint)'B';
+				case KeyboardKey.C: return (uint)'C';
+				case KeyboardKey.D: return (uint)'D';
+				case KeyboardKey.E: return (uint)'E';
+				case KeyboardKey.F: return (uint)'F';
+				case KeyboardKey.G: return (uint)'G';
+				case KeyboardKey.H: return (uint)'H';
+				case KeyboardKey.I: return (uint)'I';
+				case KeyboardKey.J: return (uint)'J';
+				case KeyboardKey.K: return (uint)'K';
+				case KeyboardKey.L: return (uint)'L';
+				case KeyboardKey.M: return (uint)'M';
+				case KeyboardKey.N: return (uint)'N';
+				case KeyboardKey.O: return (uint)'O';
+				case KeyboardKey.P: return (uint)'P';
+				case KeyboardKey.Q: return (uint)'Q';
+				case KeyboardKey.R: return (uint)'R';
+				case KeyboardKey.S: return (uint)'S';
+				case KeyboardKey.T: return (uint)'T';
+				case KeyboardKey.U: return (uint)'U';
+				case KeyboardKey.V: return (uint)'V';
+				case KeyboardKey.W: return (uint)'W';
+				case KeyboardKey.X: return (uint)'X';
+				case KeyboardKey.Y: return (uint)'Y';
+				case KeyboardKey.Z: return (uint)'Z';
+			}
+			return 0;
+		}
+		private Internal.GDK.Constants.GdkModifierType GetGdkModifierTypeForModifierKey(KeyboardModifierKey key)
+		{
+			Internal.GDK.Constants.GdkModifierType modifierType = Internal.GDK.Constants.GdkModifierType.None;
+			if ((key & KeyboardModifierKey.Alt) == KeyboardModifierKey.Alt) modifierType |= Internal.GDK.Constants.GdkModifierType.Alt;
+			if ((key & KeyboardModifierKey.Meta) == KeyboardModifierKey.Meta) modifierType |= Internal.GDK.Constants.GdkModifierType.Meta;
+			if ((key & KeyboardModifierKey.Control) == KeyboardModifierKey.Control) modifierType |= Internal.GDK.Constants.GdkModifierType.Control;
+			if ((key & KeyboardModifierKey.Hyper) == KeyboardModifierKey.Hyper) modifierType |= Internal.GDK.Constants.GdkModifierType.Hyper;
+			if ((key & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift) modifierType |= Internal.GDK.Constants.GdkModifierType.Shift;
+			if ((key & KeyboardModifierKey.Super) == KeyboardModifierKey.Super) modifierType |= Internal.GDK.Constants.GdkModifierType.Super;
+			return modifierType;
+		}
 
 		protected override bool InitializeInternal ()
 		{
@@ -157,13 +204,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 		}
 
-		private IntPtr CreateContainer(Container window)
+		private IntPtr CreateContainer(Container container)
 		{
 			IntPtr hContainer = IntPtr.Zero;
 
-			if (window.Layout is Layouts.BoxLayout)
+			if (container.Layout is Layouts.BoxLayout)
 			{
-				Layouts.BoxLayout box = (window.Layout as Layouts.BoxLayout);
+				Layouts.BoxLayout box = (container.Layout as Layouts.BoxLayout);
 				Internal.GTK.Constants.GtkOrientation orientation = Internal.GTK.Constants.GtkOrientation.Vertical;
 				switch (box.Orientation) 
 				{
@@ -178,13 +225,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						break;
 					}
 				}
-				hContainer = Internal.GTK.Methods.gtk_box_new (orientation, window.Controls.Count);
-				handlesByLayout [window.Layout] = hContainer;
+				hContainer = Internal.GTK.Methods.gtk_box_new (orientation, container.Controls.Count);
+				handlesByLayout [container.Layout] = hContainer;
 			}
 
 			if (hContainer != IntPtr.Zero)
 			{
-				foreach (Control ctl in window.Controls)
+				foreach (Control ctl in container.Controls)
 				{
 					bool ret = CreateControl (ctl);
 					if (!ret)
@@ -192,9 +239,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 					IntPtr ctlHandle = handlesByControl [ctl];
 					
-					if (window.Layout is Layouts.BoxLayout)
+					if (container.Layout is Layouts.BoxLayout)
 					{
-						Layouts.BoxLayout box = (window.Layout as Layouts.BoxLayout);
+						Layouts.BoxLayout box = (container.Layout as Layouts.BoxLayout);
 						Internal.GTK.Methods.gtk_box_set_spacing (hContainer, box.Spacing);
 						Internal.GTK.Methods.gtk_box_set_homogeneous (hContainer, box.Homogeneous);
 
@@ -337,34 +384,57 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			mvarStockButtonIDs.Add(StockType.ZoomOut, "gtk-zoom-out");
 		}
 
-		private void InitMenuItem(MenuItem menuItem, IntPtr hMenuBar)
+		private IntPtr hDefaultAccelGroup = IntPtr.Zero;
+		private void InitMenuItem(MenuItem menuItem, IntPtr hMenuShell, string accelPath = null)
 		{
 			if (menuItem is CommandMenuItem) {
 				CommandMenuItem cmi = (menuItem as CommandMenuItem);
+				if (accelPath != null) {
+					accelPath += "/" + cmi.Name;
+				}
+
+				if (cmi.Shortcut != null) {
+					Internal.GTK.Methods.gtk_accel_map_add_entry (accelPath, GetAccelKeyForKeyboardKey (cmi.Shortcut.Key), GetGdkModifierTypeForModifierKey (cmi.Shortcut.ModifierKeys));
+				}
 
 				IntPtr hMenuFile = Internal.GTK.Methods.gtk_menu_item_new ();
 				Internal.GTK.Methods.gtk_menu_item_set_label (hMenuFile, cmi.Text);
 				Internal.GTK.Methods.gtk_menu_item_set_use_underline (hMenuFile, true);
 
+				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right) {
+					Internal.GTK.Methods.gtk_menu_item_set_right_justified (hMenuFile, true);
+				}
+
 				if (cmi.Items.Count > 0) {
 					IntPtr hMenuFileMenu = Internal.GTK.Methods.gtk_menu_new ();
 
+					if (accelPath != null) {
+						if (hDefaultAccelGroup == IntPtr.Zero) {
+							hDefaultAccelGroup = Internal.GTK.Methods.gtk_accel_group_new ();
+						}
+						Internal.GTK.Methods.gtk_menu_set_accel_group (hMenuFileMenu, hDefaultAccelGroup);
+					}
+
 					foreach (MenuItem menuItem1 in cmi.Items) {
-						InitMenuItem (menuItem1, hMenuFileMenu);
+						InitMenuItem (menuItem1, hMenuFileMenu, accelPath);
 					}
 
 					Internal.GTK.Methods.gtk_menu_item_set_submenu (hMenuFile, hMenuFileMenu);
 				}
 
-				menuItemsByHandle.Add (hMenuFile, cmi);
+				menuItemsByHandle[hMenuFile] = cmi;
 				Internal.GObject.Methods.g_signal_connect (hMenuFile, "activate", gc_MenuItem_Activated, IntPtr.Zero);
 
-				Internal.GTK.Methods.gtk_menu_shell_append (hMenuBar, hMenuFile);
+				if (accelPath != null) {
+					Internal.GTK.Methods.gtk_menu_item_set_accel_path (hMenuFile, accelPath);
+				}
+
+				Internal.GTK.Methods.gtk_menu_shell_append (hMenuShell, hMenuFile);
 			}
 			else if (menuItem is SeparatorMenuItem) {
 				// IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
 				IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_menu_item_new ();
-				Internal.GTK.Methods.gtk_menu_shell_append (hMenuBar, hMenuFile);
+				Internal.GTK.Methods.gtk_menu_shell_append (hMenuShell, hMenuFile);
 			}
 		}
 
@@ -384,11 +454,16 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				#region Menu Bar
 
+				if (hDefaultAccelGroup == IntPtr.Zero) {
+					hDefaultAccelGroup = Internal.GTK.Methods.gtk_accel_group_new ();
+				}
+				Internal.GTK.Methods.gtk_window_add_accel_group (handle, hDefaultAccelGroup);
+
 				// create the menu bar
 				IntPtr hMenuBar = Internal.GTK.Methods.gtk_menu_bar_new ();
 
 				foreach (MenuItem menuItem in window.MenuBar.Items) {
-					InitMenuItem (menuItem, hMenuBar);
+					InitMenuItem (menuItem, hMenuBar, "<ApplicationFramework>");
 				}
 
 				Internal.GTK.Methods.gtk_box_pack_start (hWindowContainer, hMenuBar, false, true, 0);
@@ -449,14 +524,45 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				Internal.GTK.Methods.gtk_label_set_justify (handle, justify);
 			}
+			else if (control is TabContainer) {
+				handle = Internal.GTK.Methods.gtk_notebook_new ();
+
+				TabContainer ctl = (control as TabContainer);
+
+				foreach (TabPage tabPage in ctl.TabPages) {
+					IntPtr hChild = Internal.GTK.Methods.gtk_label_new ("Test");
+					IntPtr hTabLabel = Internal.GTK.Methods.gtk_label_new (tabPage.Text);
+
+					Internal.GTK.Methods.gtk_notebook_append_page (handle, hChild, hTabLabel);
+				}
+			}
 			else if (control is Container) {
 				handle = CreateContainer (control as Container);
 			}
 
 			if (handle != IntPtr.Zero) {
-				if (control.Parent != null) {
-					if (control.Parent.Layout is Layouts.BoxLayout) {
-						Internal.GTK.Methods.gtk_box_set_child_packing (handlesByLayout [control.Parent.Layout], handle, true, true, 0, Internal.GTK.Constants.GtkPackType.Start);
+				if (control.Parent != null && control.Parent.Layout != null) {
+					Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
+					if (constraints != null) {
+						if (control.Parent.Layout is Layouts.BoxLayout) {
+							Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
+							if (cs != null) {
+								Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
+								switch (cs.PackType) {
+									case Layouts.BoxLayout.PackType.Start:
+								{
+									packType = Internal.GTK.Constants.GtkPackType.Start;
+									break;
+								}
+									case Layouts.BoxLayout.PackType.End:
+								{
+									packType = Internal.GTK.Constants.GtkPackType.End;
+									break;
+								}
+								}
+								Internal.GTK.Methods.gtk_box_set_child_packing (handlesByLayout [control.Parent.Layout], handle, cs.Expand, cs.Fill, cs.Padding, packType);
+							}
+						}
 					}
 				}
 
@@ -476,11 +582,30 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			IntPtr handle = handlesByControl [control];
 
+			bool isgood = Internal.GObject.Methods.g_type_check_instance_is_a (handle, Internal.GTK.Methods.gtk_widget_get_type ());
+			if (!isgood) {
+				throw new ObjectDisposedException (control.GetType ().FullName);
+			}
+
 			if (visible) {
 				Internal.GTK.Methods.gtk_widget_show (handle);
 			} else {
 				Internal.GTK.Methods.gtk_widget_hide (handle);
 			}
+		}
+
+		protected override bool IsControlDisposedInternal (Control control)
+		{
+			if (!handlesByControl.ContainsKey (control))
+				CreateControl (control);
+
+			if (!handlesByControl.ContainsKey (control))
+				throw new NullReferenceException ("Control handle not found");
+
+			IntPtr handle = handlesByControl [control];
+
+			bool isgood = Internal.GObject.Methods.g_type_check_instance_is_a (handle, Internal.GTK.Methods.gtk_widget_get_type ());
+			return !isgood;
 		}
 
 		protected override bool IsControlCreatedInternal (Control control)
@@ -820,8 +945,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Internal.GTK.Methods.gtk_about_dialog_set_license (handle, dlg.LicenseText);
 			}
 
-			Internal.GTK.Methods.gtk_about_dialog_set_website (handle, dlg.Website);
-
+			if (dlg.Website != null) {
+				Internal.GTK.Methods.gtk_about_dialog_set_website (handle, dlg.Website);
+			}
 
 			if (Internal.GTK.Methods.LIBRARY_FILENAME == Internal.GTK.Methods.LIBRARY_FILENAME_V3) {
 				if (dlg.LicenseType != LicenseType.Unknown) {
@@ -920,6 +1046,97 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						break;
 					}
 				}
+			}
+		}
+
+		protected override void TabContainer_ClearTabPagesInternal (TabContainer parent)
+		{
+			if (!handlesByControl.ContainsKey (parent))
+				return;
+
+			IntPtr handle = handlesByControl [parent];
+			int pageCount = Internal.GTK.Methods.gtk_notebook_get_n_pages (handle);
+			for (int i = 0; i < pageCount; i++) {
+				Internal.GTK.Methods.gtk_notebook_remove_page (handle, i);
+			}
+		}
+		protected override void TabContainer_InsertTabPageInternal (TabContainer parent, int index, TabPage tabPage)
+		{
+			if (!handlesByControl.ContainsKey (parent))
+				return;
+
+			IntPtr handle = handlesByControl [parent];
+			IntPtr hTabLabel = Internal.GTK.Methods.gtk_label_new (tabPage.Text);
+			IntPtr hChild = Internal.GTK.Methods.gtk_label_new ("Child control for " + tabPage.Text);
+
+			Internal.GTK.Methods.gtk_notebook_append_page (handle, hChild, hTabLabel);
+		}
+		protected override void TabContainer_RemoveTabPageInternal (TabContainer parent, TabPage tabPage)
+		{
+			throw new NotImplementedException ();
+		}
+
+		private Dictionary<NotificationIcon, IntPtr> handlesByNotificationIcon = new Dictionary<NotificationIcon, IntPtr> ();
+
+		protected override void UpdateNotificationIconInternal (NotificationIcon nid, bool updateContextMenu)
+		{
+			try
+			{
+				IntPtr hIndicator = IntPtr.Zero;
+				if (!handlesByNotificationIcon.ContainsKey(nid)) {
+					hIndicator = Internal.AppIndicator.Methods.app_indicator_new(nid.Name, nid.IconNameDefault, Internal.AppIndicator.Constants.AppIndicatorCategory.ApplicationStatus);
+					handlesByNotificationIcon.Add(nid, hIndicator);
+					
+					// Internal.AppIndicator.Methods.app_indicator_set_label(hIndicator, nid.Text, "I don't know what this is for");
+					// Internal.AppIndicator.Methods.app_indicator_set_title(hIndicator, nid.Text);
+				}
+				else {
+					hIndicator = handlesByNotificationIcon[nid];
+				}
+
+				if (updateContextMenu) {
+					IntPtr hMenu = Internal.GTK.Methods.gtk_menu_new();
+
+					IntPtr hMenuTitle = Internal.GTK.Methods.gtk_menu_item_new();
+					Internal.GTK.Methods.gtk_widget_set_sensitive(hMenuTitle, false);
+					Internal.GTK.Methods.gtk_menu_item_set_label(hMenuTitle, nid.Text);
+					Internal.GTK.Methods.gtk_menu_shell_append(hMenu, hMenuTitle);
+
+					IntPtr hMenuSeparator = Internal.GTK.Methods.gtk_separator_menu_item_new();
+					Internal.GTK.Methods.gtk_menu_shell_append(hMenu, hMenuSeparator);
+
+					if (nid.ContextMenu != null) {
+						foreach (MenuItem mi in nid.ContextMenu.Items)
+						{
+							InitMenuItem(mi, hMenu);
+						}
+					}
+
+					Internal.GTK.Methods.gtk_widget_show_all(hMenu);
+
+					Internal.AppIndicator.Methods.app_indicator_set_menu(hIndicator, hMenu);
+				}
+
+				Internal.AppIndicator.Methods.app_indicator_set_attention_icon(hIndicator, nid.IconNameAttention);
+				switch (nid.Status) {
+					case NotificationIconStatus.Hidden:
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Passive);
+						break;
+					}
+					case NotificationIconStatus.Visible:
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Active);
+						break;
+					}
+					case NotificationIconStatus.Attention:
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Attention);
+						break;
+					}
+				}
+			}
+			catch {
 			}
 		}
 	}

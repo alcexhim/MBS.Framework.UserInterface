@@ -9,8 +9,8 @@ namespace UniversalWidgetToolkit
 {
 	public class Window : Container
 	{
-		private MenuBar mvarMenuBar = new MenuBar();
-		public MenuBar MenuBar { get { return mvarMenuBar; } }
+		private Menu mvarMenuBar = new Menu();
+		public Menu MenuBar { get { return mvarMenuBar; } }
 
 		private Rectangle mvarBounds = Rectangle.Empty;
 		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }

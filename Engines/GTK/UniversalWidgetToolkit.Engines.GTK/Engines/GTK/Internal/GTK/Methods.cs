@@ -48,6 +48,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 		#region Widget
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_widget_get_type ();
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show (IntPtr widget);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show_all (IntPtr widget);
@@ -63,6 +66,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_widget_set_size_request (IntPtr widget, int width, int height);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_get_size_request (IntPtr widget, out int width, out int height);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_get_sensitive(IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_is_sensitive(IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_sensitive(IntPtr widget, bool value);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_destroy (IntPtr widget);
@@ -86,6 +96,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_window_get_hide_titlebar_when_maximized (IntPtr window);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_hide_titlebar_when_maximized (IntPtr window, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_window_add_accel_group (IntPtr window, IntPtr accel_group);
 		#endregion
 
 		#region Box
@@ -158,6 +171,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern string gtk_menu_get_title(IntPtr handle);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_menu_set_title(IntPtr handle, string title);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkAccelGroup*/ gtk_menu_get_accel_group (IntPtr menu);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_menu_set_accel_group (IntPtr menu, IntPtr /*GtkAccelGroup*/ accel_group);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_menu_get_accel_path (IntPtr menu);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_menu_set_accel_path (IntPtr menu, string accel_path);
 		#endregion
 
 		#region Menu Item
@@ -178,6 +199,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern IntPtr gtk_menu_item_get_submenu(IntPtr handle);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_menu_item_set_submenu(IntPtr handle, IntPtr submenu);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_menu_item_get_right_justified (IntPtr menu_item);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_menu_item_set_right_justified (IntPtr menu_item, bool value);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_menu_item_get_accel_path (IntPtr menu_item);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_menu_item_set_accel_path (IntPtr menu_item, string accel_path);
 		#endregion
 
 		#region Separator
@@ -223,6 +254,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_button_set_relief (IntPtr button, Constants.GtkReliefStyle value);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern Constants.GtkReliefStyle gtk_button_get_relief (IntPtr button);
+		#endregion
+
+		#region Notebook
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_notebook_new ();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_notebook_append_page (IntPtr hNotebook, IntPtr hChild, IntPtr hTabLabel);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_notebook_get_n_pages (IntPtr hNotebook);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_notebook_page_num (IntPtr hNotebook, IntPtr hChild);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_remove_page (IntPtr hNotebook, int page_num);
+		#endregion
+
+		#region Accel Map
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_accel_map_add_entry (string accel_path, uint accel_key, Internal.GDK.Constants.GdkModifierType accel_mods);
+		#endregion
+
+		#region Accel Group
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_accel_group_new ();
 		#endregion
 
 		#region File Chooser

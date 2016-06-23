@@ -11,6 +11,9 @@ namespace UniversalWidgetToolkit
 		private string mvarText = String.Empty;
 		public string Text { get { return mvarText; } set { mvarText = value; } }
 
+		private Shortcut mvarShortcut = null;
+		public Shortcut Shortcut { get { return mvarShortcut; } set { mvarShortcut = value; } }
+
 		public event EventHandler Click;
 
 		public void OnClick(EventArgs e) {
@@ -19,7 +22,7 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
-		public CommandMenuItem(string text, MenuItem[] items = null, EventHandler onClick = null)
+		public CommandMenuItem(string text, MenuItem[] items = null, EventHandler onClick = null, Shortcut shortcut = null)
 		{
 			mvarText = text;
 			if (items != null) {
@@ -30,6 +33,7 @@ namespace UniversalWidgetToolkit
 			if (onClick != null) {
 				Click += onClick;
 			}
+			mvarShortcut = shortcut;
 		}
 
 	}

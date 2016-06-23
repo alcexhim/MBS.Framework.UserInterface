@@ -29,6 +29,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_signal_connect_object(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr gobject, Constants.GConnectFlags connect_flags);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool g_type_check_instance_is_a(IntPtr instance, IntPtr instance_type);
+
 	}
 }
 

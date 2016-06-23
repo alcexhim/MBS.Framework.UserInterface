@@ -45,6 +45,14 @@ namespace UniversalWidgetToolkit
 				item.mvarParent = _parent;
 				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
+
+			public void Add(Control item, Constraints constraints)
+			{
+				Add (item);
+				if (constraints != null) {
+					_parent.Layout.SetControlConstraints (item, constraints);
+				}
+			}
 		}
 
 		public Rectangle ClientRectangle
@@ -171,6 +179,12 @@ namespace UniversalWidgetToolkit
 		public void Invalidate()
 		{
 			Application.Engine.InvalidateControl(this);
+		}
+		
+
+		public bool IsDisposed()
+		{
+			return Application.Engine.IsControlDisposed(this);
 		}
 	}
 }

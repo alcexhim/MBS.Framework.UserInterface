@@ -18,6 +18,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GLib
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern string g_slist_nth_data (IntPtr /*GSList*/ list, uint n);
+		
+		/// <summary>
+		/// Save some memory by interning strings to GQuarks
+		/// </summary>
+		/// <param name="value">Value.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string g_intern_string (string value);
+		/// <summary>
+		/// Save some memory by interning strings to GQuarks
+		/// </summary>
+		/// <param name="value">Value.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string g_intern_static_string (string value);
 	}
 }
 

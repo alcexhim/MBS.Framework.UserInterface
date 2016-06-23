@@ -2,7 +2,7 @@ using System;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
 {
-	public class Structures
+	internal static class Structures
 	{
 		public struct GdkRGBA
 		{

@@ -11,7 +11,7 @@ namespace UniversalWidgetToolkit.Controls
 		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Left;
 		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
 
-		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Top;
+		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Baseline;
 		public VerticalAlignment VerticalAlignment { get { return mvarVerticalAlignment; } set { mvarVerticalAlignment = value; } }
 
 		public override void OnPaint(PaintEventArgs e)

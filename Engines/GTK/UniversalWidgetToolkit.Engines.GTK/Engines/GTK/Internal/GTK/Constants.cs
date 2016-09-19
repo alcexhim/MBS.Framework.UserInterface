@@ -224,6 +224,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 			Artistic
 		}
+
+		public enum GtkAlign
+		{
+			Fill,
+			Start,
+			End,
+			Center,
+			Baseline
+		}
 	}
 }
 

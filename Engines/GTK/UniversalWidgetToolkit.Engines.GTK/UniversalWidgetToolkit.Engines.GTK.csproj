@@ -51,6 +51,8 @@
     <Compile Include="Engines\GTK\Internal\GDK\Constants.cs" />
     <Compile Include="Engines\GTK\Internal\AppIndicator\Methods.cs" />
     <Compile Include="Engines\GTK\Internal\AppIndicator\Constants.cs" />
+    <Compile Include="Engines\GTK\Internal\Notify\Methods.cs" />
+    <Compile Include="Engines\GTK\NotificationIconInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,6 +66,7 @@
     <Folder Include="Engines\GTK\Internal\GLib\" />
     <Folder Include="Engines\GTK\Internal\Pango\" />
     <Folder Include="Engines\GTK\Internal\AppIndicator\" />
+    <Folder Include="Engines\GTK\Internal\Notify\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">

@@ -54,8 +54,8 @@ namespace UniversalWidgetToolkit
 			SetControlVisibilityInternal(control, visible);
 		}
 
-		protected abstract CommonDialogResult ShowDialogInternal(CommonDialog dialog);
-		public CommonDialogResult ShowDialog(CommonDialog dialog)
+		protected abstract DialogResult ShowDialogInternal(Dialog dialog);
+		public DialogResult ShowDialog(Dialog dialog)
 		{
 			return ShowDialogInternal(dialog);
 		}
@@ -144,6 +144,12 @@ namespace UniversalWidgetToolkit
 		public bool IsControlDisposed(Control ctl)
 		{
 			return IsControlDisposedInternal(ctl);
+		}
+
+		protected abstract void ShowNotificationPopupInternal(NotificationPopup popup);
+		public void ShowNotificationPopup(NotificationPopup popup)
+		{
+			ShowNotificationPopupInternal (popup);
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace UniversalWidgetToolkit
 	{
 		Top = 1,
 		Middle = 2,
-		Bottom = 3
+		Bottom = 3,
+		Baseline = 4
 	}
 }

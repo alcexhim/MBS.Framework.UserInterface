@@ -31,6 +31,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GLib
 		/// <param name="value">Value.</param>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern string g_intern_static_string (string value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string g_strlcat(System.Text.StringBuilder dest, string src, int dest_size);
 	}
 }
 

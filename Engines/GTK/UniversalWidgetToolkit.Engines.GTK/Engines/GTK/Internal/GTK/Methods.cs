@@ -73,9 +73,77 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_widget_is_sensitive(IntPtr widget);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_sensitive(IntPtr widget, bool value);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_get_can_focus (IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_can_focus (IntPtr widget, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_get_can_default (IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_can_default (IntPtr widget, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_get_receives_default (IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_receives_default (IntPtr widget, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_grab_default (IntPtr widget);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern Constants.GtkAlign gtk_widget_set_halign (IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_halign (IntPtr widget, Constants.GtkAlign value);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern Constants.GtkAlign gtk_widget_set_valign (IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_valign (IntPtr widget, Constants.GtkAlign value);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_destroy (IntPtr widget);
+		#endregion
+
+		#region Editable
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_editable_get_editable (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_editable_set_editable (IntPtr /*GtkEntry*/ entry, bool value);
+		
+		#region Entry
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_entry_new ();
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern ushort gtk_entry_get_text_length (IntPtr /*GtkEntry*/ entry);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_entry_get_text (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_text (IntPtr /*GtkEntry*/ entry, string value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_entry_get_visibility (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_visibility (IntPtr /*GtkEntry*/ entry, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_entry_get_max_length (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_max_length (IntPtr /*GtkEntry*/ entry, int value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_entry_get_width_chars (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_width_chars (IntPtr /*GtkEntry*/ entry, int value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_entry_get_activates_default (IntPtr /*GtkEntry*/ entry);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_activates_default (IntPtr /*GtkEntry*/ entry, bool value);
+		#endregion
 		#endregion
 
 		#region Container
@@ -114,9 +182,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		{
 			return gtk_box_new (orientation, true, spacing);
 		}
-		public static IntPtr gtk_box_new(Constants.GtkOrientation orientation, bool homogenous = true, int spacing = 0, bool useV2BoxCreation = false)
+		public static IntPtr gtk_box_new(Constants.GtkOrientation orientation, bool homogenous = true, int spacing = 0, bool useGtk2API = false)
 		{
-			if (LIBRARY_FILENAME == LIBRARY_FILENAME_V2 || useV2BoxCreation) {
+			if (LIBRARY_FILENAME == LIBRARY_FILENAME_V2 || useGtk2API) {
 				switch (orientation)
 				{
 					case Constants.GtkOrientation.Horizontal:
@@ -150,6 +218,30 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_box_set_child_packing (IntPtr /*GtkBox*/ box, IntPtr /*GtkWidget*/ child, bool expand, bool fill, int padding, Constants.GtkPackType pack_type);
+		#endregion
+
+		#region Fixed
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_fixed_new ();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_fixed_put (IntPtr /*GtkFixed*/ _fixed, IntPtr /*GtkWidget*/ widget, int x, int y);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_fixed_move (IntPtr /*GtkFixed*/ _fixed, IntPtr /*GtkWidget*/ widget, int x, int y);
+		#endregion
+
+		#region Grid
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_grid_new ();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint gtk_grid_get_row_spacing (IntPtr /*GtkGrid*/ grid);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_grid_set_row_spacing (IntPtr /*GtkGrid*/ grid, uint spacing);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint gtk_grid_get_column_spacing (IntPtr /*GtkGrid*/ grid);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_grid_set_column_spacing (IntPtr /*GtkGrid*/ grid, uint spacing);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_grid_attach (IntPtr /*GtkGrid*/ grid, IntPtr /*GtkWidget*/ widget, int left, int top, int width, int height);
 		#endregion
 
 		#region Menu Shell
@@ -224,6 +316,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern IntPtr gtk_label_new(string text);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_label_new_with_mnemonic(string text);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_label_get_text (IntPtr /*GtkLabel*/ label);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_label_set_text (IntPtr /*GtkLabel*/ label, string value);
 		
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_label_set_justify (IntPtr /*GtkLabel*/ label, Constants.GtkJustification jtype);
@@ -269,6 +366,45 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_notebook_remove_page (IntPtr hNotebook, int page_num);
 		#endregion
 
+		#region Paned
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_hpaned_new ();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_vpaned_new ();
+
+		[DllImport(LIBRARY_FILENAME_V3, EntryPoint="gtk_paned_new")]
+		private static extern IntPtr gtk_paned_new_v3 (Constants.GtkOrientation orientation);
+
+		public static IntPtr gtk_paned_new(Constants.GtkOrientation orientation, bool useGtk2API = false)
+		{
+			if (LIBRARY_FILENAME == LIBRARY_FILENAME_V2 || useGtk2API) {
+				switch (orientation)
+				{
+					case Constants.GtkOrientation.Horizontal:
+				{
+					return gtk_hpaned_new ();
+				}
+					case Constants.GtkOrientation.Vertical:
+				{
+					return gtk_vpaned_new ();
+				}
+				}
+			} else if (LIBRARY_FILENAME == LIBRARY_FILENAME_V3) {
+				return gtk_paned_new_v3 (orientation);
+			}
+			return IntPtr.Zero;
+		}
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_paned_add1 (IntPtr hPaned, IntPtr hChild);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_paned_add2 (IntPtr hPaned, IntPtr hChild);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_paned_pack1 (IntPtr hPaned, IntPtr hChild, bool resize, bool shrink);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_paned_pack2 (IntPtr hPaned, IntPtr hChild, bool resize, bool shrink);
+		#endregion
+
 		#region Accel Map
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_accel_map_add_entry (string accel_path, uint accel_key, Internal.GDK.Constants.GdkModifierType accel_mods);
@@ -290,12 +426,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 		#region Dialog
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern int gtk_dialog_run(IntPtr handle);
+		public static extern IntPtr gtk_dialog_new ();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_dialog_run (IntPtr handle);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_dialog_get_content_area (IntPtr /*GtkDialog*/ dialog);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_dialog_add_button (IntPtr /*GtkDialog*/ dialog, string button_text, int response_id);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_dialog_add_button (IntPtr /*GtkDialog*/ dialog, string button_text, Constants.GtkResponseType response_id);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_dialog_add_action_widget (IntPtr /*GtkDialog*/ dialog, IntPtr /*GtkWidget*/ child, int response_id);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_dialog_add_action_widget (IntPtr /*GtkDialog*/ dialog, IntPtr /*GtkWidget*/ child, Constants.GtkResponseType response_id);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gtk_dialog_get_default_response (IntPtr /*GtkDialog*/ dialog);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_dialog_set_default_response (IntPtr /*GtkDialog*/ dialog, int value);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_dialog_set_default_response (IntPtr /*GtkDialog*/ dialog, Constants.GtkResponseType value);
 
 		#region Message Dialog
 		[DllImport(LIBRARY_FILENAME)]

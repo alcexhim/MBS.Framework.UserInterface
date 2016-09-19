@@ -96,7 +96,9 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				return mvarText;
+				string text = Application.Engine.GetControlText (this);
+				if (text == null) return mvarText;
+				return text;
 			}
 			set
 			{

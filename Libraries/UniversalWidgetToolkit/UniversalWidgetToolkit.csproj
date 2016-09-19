@@ -113,7 +113,6 @@
     <Compile Include="Controls\TabContainer.cs" />
     <Compile Include="Controls\TabPage.cs" />
     <Compile Include="Constraints.cs" />
-    <Compile Include="Layouts\BoxLayoutConstraints.cs" />
     <Compile Include="MenuItemHorizontalAlignment.cs" />
     <Compile Include="Shortcut.cs" />
     <Compile Include="Input\Keyboard\KeyboardKey.cs" />
@@ -121,6 +120,13 @@
     <Compile Include="Controls\SplitContainer.cs" />
     <Compile Include="NotificationIcon.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="Controls\TreeView.cs" />
+    <Compile Include="TreeModel.cs" />
+    <Compile Include="NotificationPopup.cs" />
+    <Compile Include="Dialog.cs" />
+    <Compile Include="DialogResult.cs" />
+    <Compile Include="Layouts\GridLayout.cs" />
+    <Compile Include="Controls\TextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

@@ -102,7 +102,7 @@ namespace UniversalWidgetToolkit.Dialogs
 		private bool mvarShowHelp = false;
 		public bool ShowHelp { get { return mvarShowHelp; } set { mvarShowHelp = value; } }
 
-		public static CommonDialogResult ShowDialog(string prompt, string title = null, MessageDialogButtons buttons = MessageDialogButtons.OK, MessageDialogIcon icon = MessageDialogIcon.None, MessageDialogModality modality = MessageDialogModality.ApplicationModal, bool showHelp = false, Control parent = null)
+		public static DialogResult ShowDialog(string prompt, string title = null, MessageDialogButtons buttons = MessageDialogButtons.OK, MessageDialogIcon icon = MessageDialogIcon.None, MessageDialogModality modality = MessageDialogModality.ApplicationModal, bool showHelp = false, Control parent = null)
 		{
 			MessageDialog dialog = new MessageDialog();
 			dialog.Buttons = buttons;
@@ -128,8 +128,8 @@ namespace UniversalWidgetToolkit.Dialogs
 			return dialog;
 		}
 
-		private CommonDialogResult mvarDefaultButton = CommonDialogResult.OK;
-		public CommonDialogResult DefaultButton { get { return mvarDefaultButton; } set { mvarDefaultButton = value; } }
+		private DialogResult mvarDefaultButton = DialogResult.OK;
+		public DialogResult DefaultButton { get { return mvarDefaultButton; } set { mvarDefaultButton = value; } }
 
 		private bool mvarDefaultDesktopOnly = false;
 		public bool DefaultDesktopOnly { get { return mvarDefaultDesktopOnly; } set { mvarDefaultDesktopOnly = value; } }

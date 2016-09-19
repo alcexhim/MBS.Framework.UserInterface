@@ -9,6 +9,29 @@ namespace UniversalWidgetToolkit.Layouts
 {
 	public class AbsoluteLayout : Layout
 	{
+		public class Constraints : UniversalWidgetToolkit.Constraints
+		{
+			private int mvarX = 0;
+			public int X { get { return mvarX; } set { mvarX = value; } }
+
+			private int mvarY = 0;
+			public int Y { get { return mvarY; } set { mvarY = value; } }
+
+			private int mvarWidth = 0;
+			public int Width { get { return mvarWidth; } set { mvarWidth = value; } }
+
+			private int mvarHeight = 0;
+			public int Height { get { return mvarHeight; } set { mvarHeight = value; } }
+
+			public Constraints(int x, int y, int width, int height)
+			{
+				mvarX = x;
+				mvarY = y;
+				mvarWidth = width;
+				mvarHeight = height;
+			}
+		}
+
 		private Dictionary<Control, Rectangle> mvarControlBounds = new Dictionary<Control, Rectangle>();
 
 		protected override void ResetControlBoundsInternal(Control ctl = null)

@@ -5,7 +5,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
 	internal static class Constants
 	{
 		[Flags()]
-		public enum GdkModifierType
+		public enum GdkModifierType : uint
 		{
 			None = 0,
 			Shift    = 1 << 0,
@@ -51,6 +51,88 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
 			/// Combination of GDK_SHIFT_MASK..GDK_BUTTON5_MASK + GDK_SUPER_MASK + GDK_HYPER_MASK + GDK_META_MASK + GDK_RELEASE_MASK
 			/// </summary>
 			GDK_MODIFIER_MASK = 0x5c001fff
+		}
+
+		[Flags()]
+		public enum GdkDragAction
+		{
+			/// <summary>
+			/// Means nothing, and should not be used.
+			/// </summary>
+			Default,
+			/// <summary>
+			/// Copy the data.
+			/// </summary>
+			Copy,
+			/// <summary>
+			/// Move the data, i.e. first copy it, then delete it from the source using the DELETE target of the X selection protocol.
+			/// </summary>
+			Move,
+			/// <summary>
+			/// Add a link to the data. Note that this is only useful if source and destination agree on what it means.
+			/// </summary>
+			Link,
+			/// <summary>
+			/// Special action which tells the source that the destination will do something that the source doesn’t understand.
+			/// </summary>
+			Private,
+			/// <summary>
+			/// Ask the user what to do with the data.
+			/// </summary>
+			Ask
+		}
+
+		public enum GdkEventType
+		{
+			Nothing = -1,
+			Delete = 0,
+			Destroy = 1,
+			Expose = 2,
+			MotionNotify = 3,
+			ButtonPress = 4,
+			DoubleButtonPress = 5,
+			TripleButtonPress = 6,
+			ButtonRelease = 7,
+			KeyPress = 8,
+			KeyRelease = 9,
+			EnterNotify = 10,
+			LeaveNotify = 11,
+			FocusChange = 12,
+			Configure = 13,
+			Map = 14,
+			Unmap = 15,
+			PropertyNotify = 16,
+			SelectionClear = 17,
+			SelectionRequest = 18,
+			SelectionNotify = 19,
+			ProximityIn = 20,
+			ProximityOut = 21,
+			DragEnter = 22,
+			DragLeave = 23,
+			DragMotion = 24,
+			DragStatus = 25,
+			DropStart = 26,
+			DropFinished = 27,
+			ClientEvent = 28,
+			VisibilityNotify = 29,
+			Scroll = 31,
+			WindowState = 32,
+			Setting = 33,
+			OwnerChange = 34,
+			GrabBroken = 35,
+			Damage = 36,
+			TouchBegin = 37,
+			TouchUpdate = 38,
+			TouchEnd = 39,
+			TouchCancel = 40,
+			TouchpadSwipe = 41,
+			TouchpadPinch = 42,
+			PadButtonPress = 43,
+			PadButtonRelease = 44,
+			PadRing = 45,
+			PadStrip = 46,
+			PadGroupMode = 47,
+			Last                /* helper variable for decls */
 		}
 	}
 }

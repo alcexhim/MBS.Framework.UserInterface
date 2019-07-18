@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.ObjectModels.Theming;
 using UniversalWidgetToolkit.ObjectModels.Theming.RenderingActions;
 using UniversalWidgetToolkit.Theming;
@@ -197,14 +198,14 @@ namespace UniversalWidgetToolkit.Drawing
 					font = Font.FromFamily(act.Font, 8);
 				}
 				*/
-				DrawText(value, font, new Rectangle(x, y, width, height), color, act.HorizontalAlignment, act.VerticalAlignment);
+				DrawText(value, font, new Rectangle(x, y, width, height), new SolidBrush(color), act.HorizontalAlignment, act.VerticalAlignment);
 			}
 		}
 
-		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Color color, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
-		public void DrawText(string value, Font font, Rectangle rectangle, Color color, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
+		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
+		public void DrawText(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
-			DrawTextInternal(value, font, rectangle, color, horizontalAlignment, verticalAlignment);
+			DrawTextInternal(value, font, rectangle, brush, horizontalAlignment, verticalAlignment);
 		}
 
 		private Pen PenFromOutline(Outline outline)

@@ -7,14 +7,54 @@ using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit
 {
+	namespace Native
+	{
+		public interface IWindowNativeImplementation
+		{
+			Window[] GetToplevelWindows();
+
+			void SetIconName(string value);
+			string GetIconName();
+		}
+	}
 	public class Window : Container
 	{
 		private Menu mvarMenuBar = new Menu();
 		public Menu MenuBar { get { return mvarMenuBar; } }
 
+		private string mvarIconName = null;
+		public string IconName
+		{
+			get
+			{
+				Native.IWindowNativeImplementation native = (NativeImplementation as Native.IWindowNativeImplementation);
+				if (native != null)
+				{
+					return native.GetIconName();
+				}
+				return mvarIconName;
+			}
+			set
+			{
+				Native.IWindowNativeImplementation native = (NativeImplementation as Native.IWindowNativeImplementation);
+				if (native != null)
+				{
+					native.SetIconName(value);
+				}
+				mvarIconName = value;
+			}
+		}
+		
+		/// <summary>
+		/// Determines if this <see cref="Window" /> should be decorated (i.e., have a title bar and border) by the window manager.
+		/// </summary>
+		/// <value><c>true</c> if decorated; otherwise, <c>false</c>.</value>
+		public bool Decorated { get; set; } = true;
+
 		private Rectangle mvarBounds = Rectangle.Empty;
 		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }
 
+		public bool HasFocus => Application.Engine.WindowHasFocus(this);
 		public event EventHandler Activate;
 		public virtual void OnActivate(EventArgs e)
 		{
@@ -37,6 +77,22 @@ namespace UniversalWidgetToolkit
 		public virtual void OnClosed(EventArgs e)
 		{
 			if (Closed != null) Closed(this, e);
+		}
+
+		public static Window[] GetToplevelWindows()
+		{
+			return Application.Engine.GetToplevelWindows(); 
+		}
+
+		public override string ToString()
+		{
+			return Text;
+		}
+
+		public void Close()
+		{
+			// convenience method
+			this.Destroy();
 		}
 	}
 }

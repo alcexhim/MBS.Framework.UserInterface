@@ -1,5 +1,5 @@
 using System;
-
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit.Dialogs

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit.ObjectModels.Theming
@@ -122,7 +123,7 @@ namespace UniversalWidgetToolkit.ObjectModels.Theming
 			return tc;
 		}
 
-		public UniversalWidgetToolkit.Drawing.Color GetColorFromString(string value, Theme theme = null)
+		public Color GetColorFromString(string value, Theme theme = null)
 		{
 			if (theme == null) theme = this;
 

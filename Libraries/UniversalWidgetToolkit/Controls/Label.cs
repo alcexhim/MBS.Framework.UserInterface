@@ -6,18 +6,27 @@ using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit.Controls
 {
-	public class Label : Control
+	public class Label : SystemControl
 	{
-		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Left;
-		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
 
-		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Baseline;
-		public VerticalAlignment VerticalAlignment { get { return mvarVerticalAlignment; } set { mvarVerticalAlignment = value; } }
+		public Label()
+		{
+		}
+		public Label(string text)
+		{
+			this.Text = text;
+		}
+
+		public bool UseMnemonic { get; set; } = true;
+
+		public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Default;
+		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
+		public WordWrapMode WordWrap { get; set; } = WordWrapMode.Default;
 
 		public override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			e.Graphics.DrawText(Text, Font, ClientRectangle, Colors.Black, mvarHorizontalAlignment, mvarVerticalAlignment);
+			e.Graphics.DrawText(Text, Font, ClientRectangle, Brushes.Black, HorizontalAlignment, VerticalAlignment);
 		}
 	}
 }

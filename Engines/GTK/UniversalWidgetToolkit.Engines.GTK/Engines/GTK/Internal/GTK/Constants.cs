@@ -54,6 +54,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		/// <summary>
 		/// Flags used to influence dialog construction.
 		/// </summary>
+		[Flags()]
 		public enum GtkDialogFlags
 		{
 			/// <summary>
@@ -63,11 +64,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// <summary>
 			/// Make the constructed dialog modal, see <see cref="Methods.gtk_window_set_modal" />
 			/// </summary>
-			Modal = 1 << 0,
+			Modal = 1,
 			/// <summary>
 			/// Destroy the dialog when its parent is destroyed, see <see cref="Methods.gtk_window_set_destroy_with_parent" />
 			/// </summary>
-			DestroyWithParent = 1 << 1
+			DestroyWithParent = 2,
+			/// <summary>
+			/// Create dialog with actions in header bar instead of action area. Since 3.12.
+			/// </summary>
+			UseHeaderBar = 4
 		}
 
 		/// <summary>
@@ -232,6 +237,80 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			End,
 			Center,
 			Baseline
+		}
+
+		public enum GtkPrintOperationResult
+		{
+			Error,
+			Apply,
+			Cancel,
+			InProgress
+		}
+
+		public enum GtkPrintOperationAction
+		{
+			/// <summary>
+			/// Show the print dialog.
+			/// </summary>
+			PrintDialog,
+			/// <summary>
+			/// Start to print without showing the print dialog, based on the current print settings.
+			/// </summary>
+			Print,
+			/// <summary>
+			/// Show the print preview.
+			/// </summary>
+			Preview,
+			/// <summary>
+			/// Export to a file. This requires the export-filename property to be set.
+			/// </summary>
+			Export
+		}
+
+		[Flags()]
+		public enum GtkTargetFlags : uint
+		{
+			/// <summary>
+			/// If this is set, the target will only be selected for drags within a single application.
+			/// </summary>
+			SameApp,
+			/// <summary>
+			/// If this is set, the target will only be selected for drags within a single widget.
+			/// </summary>
+			SameWidget,
+			/// <summary>
+			/// If this is set, the target will not be selected for drags within a single application.
+			/// </summary>
+			OtherApp,
+			/// <summary>
+			/// If this is set, the target will not be selected for drags withing a single widget.
+			/// </summary>
+			OtherWidget
+		}
+
+
+		/// <summary>
+		/// These flags indicate what parts of a <see cref="Structures.GtkFileFilterInfo"/> struct are filled or need to be filled.
+		/// </summary>
+		[Flags()]
+		public enum GtkFileFilterFlags
+		{
+			/// <summary>
+			/// the filename of the file being tested
+			/// </summary>
+			FileName = 1 << 0,
+			/// <summary>
+			/// the URI for the file being tested
+			/// </summary>
+			FilterURI = 1 << 1,
+			/// <summary>
+			/// the string that will be used to display the file in the file chooser
+			/// </summary>
+			DisplayName = 1 << 2,
+			/// <summary>
+			/// the mime type of the file
+			/// </summary>
+			MIMEType = 1 << 3
 		}
 	}
 }

@@ -49,6 +49,11 @@ namespace UniversalWidgetToolkit.Controls
 			}
 		}
 
+		public override string ToString()
+		{
+			return this.Text;
+		}
+
 	}
 }
 

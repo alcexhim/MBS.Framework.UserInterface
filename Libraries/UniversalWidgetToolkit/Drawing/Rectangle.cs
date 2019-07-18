@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using MBS.Framework.Drawing;
+
 namespace UniversalWidgetToolkit.Drawing
 {
 	public struct Rectangle : IComparable<Rectangle>, IEquatable<Rectangle>

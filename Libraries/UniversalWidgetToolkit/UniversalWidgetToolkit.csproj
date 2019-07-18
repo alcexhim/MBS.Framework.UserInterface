@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\MichaelBecker.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,9 +49,6 @@
     <Compile Include="DataFormats\Theming\ThemeXMLDataFormat.cs" />
     <Compile Include="Dialogs\MessageDialog.cs" />
     <Compile Include="Drawing\Brush.cs" />
-    <Compile Include="Drawing\Color.cs" />
-    <Compile Include="Drawing\Colors.cs" />
-    <Compile Include="Drawing\Dimension.cs" />
     <Compile Include="Drawing\Font.cs" />
     <Compile Include="Drawing\FontWeights.cs" />
     <Compile Include="Drawing\Graphics.cs" />
@@ -117,16 +116,64 @@
     <Compile Include="Shortcut.cs" />
     <Compile Include="Input\Keyboard\KeyboardKey.cs" />
     <Compile Include="Input\Keyboard\KeyboardModifierKey.cs" />
+    <Compile Include="Input\Keyboard\KeyEvent.cs" />
+    <Compile Include="Input\Mouse\MouseButtons.cs" />
+    <Compile Include="Input\Mouse\MouseEvent.cs" />
     <Compile Include="Controls\SplitContainer.cs" />
     <Compile Include="NotificationIcon.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="Controls\TreeView.cs" />
+    <Compile Include="Controls\ListView.cs" />
     <Compile Include="TreeModel.cs" />
     <Compile Include="NotificationPopup.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="DialogResult.cs" />
     <Compile Include="Layouts\GridLayout.cs" />
     <Compile Include="Controls\TextBox.cs" />
+    <Compile Include="Controls\Docking\DockingContainer.cs" />
+    <Compile Include="Controls\Docking\DockingItem.cs" />
+    <Compile Include="NativeImplementation.cs" />
+    <Compile Include="Controls\Docking\DockingItemPlacement.cs" />
+    <Compile Include="Controls\Docking\DockingItemBehavior.cs" />
+    <Compile Include="Dialogs\OptionsDialog.cs" />
+    <Compile Include="Dialogs\PrintDialog.cs" />
+    <Compile Include="NativeControl.cs" />
+    <Compile Include="SystemControl.cs" />
+    <Compile Include="CustomControl.cs" />
+    <Compile Include="Drawing\Brushes.cs" />
+    <Compile Include="TreeModelRow.cs" />
+    <Compile Include="TreeModelColumn.cs" />
+    <Compile Include="TreeModelRowColumn.cs" />
+    <Compile Include="Dialogs\AppChooserDialog.cs" />
+    <Compile Include="Controls\Toolbar.cs" />
+    <Compile Include="DragEvent.cs" />
+    <Compile Include="CrossThreadData.cs" />
+    <Compile Include="DragDropEffect.cs" />
+    <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="TreeModelChangedEvent.cs" />
+    <Compile Include="ColumnHeaderStyle.cs" />
+    <Compile Include="ExpandMode.cs" />
+    <Compile Include="DragDrop\DragDropTarget.cs" />
+    <Compile Include="DragDrop\DragDropTargetFlags.cs" />
+    <Compile Include="DataFormats\Layout\Glade\GladeXMLDataFormat.cs" />
+    <Compile Include="ObjectModels\Layout\LayoutObjectModel.cs" />
+    <Compile Include="ObjectModels\Layout\LayoutItem.cs" />
+    <Compile Include="ObjectModels\Layout\LayoutItemProperty.cs" />
+    <Compile Include="Controls\Image.cs" />
+    <Compile Include="Controls\OpenGLCanvas.cs" />
+    <Compile Include="WordWrapMode.cs" />
+    <Compile Include="WindowBorderStyle.cs" />
+    <Compile Include="ISupportsExtraData.cs" />
+    <Compile Include="ContainerLayoutAttribute.cs" />
+    <Compile Include="EventHandlerAttribute.cs" />
+    <Compile Include="TreeModelRowItemRequestedEvent.cs" />
+    <Compile Include="CommandItem.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandShortcutKey.cs" />
+    <Compile Include="CommandDisplayStyle.cs" />
+    <Compile Include="StockCommandType.cs" />
+    <Compile Include="ResizeEvent.cs" />
+    <Compile Include="OpenGLCanvasRenderEvent.cs" />
+    <Compile Include="ListViewMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -136,6 +183,10 @@
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">
       <Project>{30467E5C-05BC-4856-AADC-13906EF4CADD}</Project>
       <Name>UniversalEditor.Essential</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
+      <Project>{23ACD09E-E096-4B05-A6CE-6853EDDC589A}</Project>
+      <Name>MBS.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -149,5 +200,11 @@
   <ItemGroup>
     <Folder Include="Input\" />
     <Folder Include="Input\Keyboard\" />
+    <Folder Include="Input\Mouse\" />
+    <Folder Include="Controls\Docking\" />
+    <Folder Include="DragDrop\" />
+    <Folder Include="DataFormats\Layout\" />
+    <Folder Include="DataFormats\Layout\Glade\" />
+    <Folder Include="ObjectModels\Layout\" />
   </ItemGroup>
 </Project>

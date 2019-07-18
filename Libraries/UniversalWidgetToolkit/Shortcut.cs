@@ -12,7 +12,7 @@ namespace UniversalWidgetToolkit
 		private KeyboardModifierKey mvarModifierKeys = KeyboardModifierKey.None;
 		public KeyboardModifierKey ModifierKeys { get { return mvarModifierKeys; } set { mvarModifierKeys = value; } }
 
-		public Shortcut (KeyboardKey key, KeyboardModifierKey modifierKeys)
+		public Shortcut (KeyboardKey key, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
 		{
 			mvarKey = key;
 			mvarModifierKeys = modifierKeys;

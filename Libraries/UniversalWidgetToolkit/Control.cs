@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Drawing;
+using UniversalWidgetToolkit.Input.Keyboard;
+using UniversalWidgetToolkit.Input.Mouse;
 
 namespace UniversalWidgetToolkit
 {
-	public class Control
+	public abstract class Control : IDisposable, ISupportsExtraData
 	{
 		public class ControlCollection
 			: System.Collections.ObjectModel.Collection<Control>
@@ -48,12 +52,15 @@ namespace UniversalWidgetToolkit
 
 			public void Add(Control item, Constraints constraints)
 			{
-				Add (item);
-				if (constraints != null) {
-					_parent.Layout.SetControlConstraints (item, constraints);
+				Add(item);
+				if (constraints != null)
+				{
+					_parent.Layout?.SetControlConstraints(item, constraints);
 				}
 			}
 		}
+
+		public string Name { get; set; } = String.Empty;
 
 		public Rectangle ClientRectangle
 		{
@@ -71,6 +78,30 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		public virtual void Dispose()
+		{
+			Console.WriteLine("Dispose() not implemented on " + this.GetType().FullName);
+		}
+
+		private Vector2D mvarLocation = new Vector2D(0, 0);
+		public Vector2D Location { get { return mvarLocation; } set { mvarLocation = value; } }
+
+		/// <summary>
+		/// Translates the given <see cref="Vector2D" /> from client coordinates into screen coordinates.
+		/// </summary>
+		/// <returns>The to screen coordinates.</returns>
+		/// <param name="point">Point.</param>
+		public Vector2D ClientToScreenCoordinates(Vector2D point)
+		{
+			return Application.Engine.ClientToScreenCoordinates(point);
+		}
+
+		private Dimension2D mvarSize = new Dimension2D(0, 0);
+		public Dimension2D Size { get { return mvarSize; } set { mvarSize = value; } }
+
+		private NativeImplementation mvarNativeImplementation = null;
+		public NativeImplementation NativeImplementation { get { return mvarNativeImplementation; } internal set { mvarNativeImplementation = value; } }
+
 		public bool IsCreated { get { return Application.Engine.IsControlCreated(this); } }
 
 		private Padding mvarMargin = new Padding();
@@ -85,8 +116,34 @@ namespace UniversalWidgetToolkit
 		private string mvarClassName = null;
 		public string ClassName { get { return mvarClassName; } set { mvarClassName = value; } }
 
+		private bool mvarEnabled = true;
+		public bool Enabled
+		{
+			get
+			{
+				if (Application.Engine == null) return mvarEnabled;
+				if (!Application.Engine.IsControlCreated(this)) return mvarEnabled;
+				return Application.Engine.IsControlEnabled(this);
+			}
+			set
+			{
+				if (Application.Engine != null && Application.Engine.IsControlCreated(this))
+				{
+					Application.Engine.SetControlEnabled(this, value);
+				}
+				mvarEnabled = value;
+			}
+		}
+
 		private Font mvarFont = null;
 		public Font Font { get { return mvarFont; } set { mvarFont = value; } }
+
+
+		/// <summary>
+		/// Gets the attributes.
+		/// </summary>
+		/// <value>The attributes.</value>
+		public System.Collections.Generic.Dictionary<string, object> Attributes { get; } = new Dictionary<string, object>();
 
 		private Container mvarParent = null;
 		public Container Parent { get { return mvarParent; } }
@@ -96,14 +153,14 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				string text = Application.Engine.GetControlText (this);
+				string text = Application.Engine.GetControlText(this);
 				if (text == null) return mvarText;
 				return text;
 			}
 			set
 			{
 				mvarText = value;
-				Application.Engine.UpdateControlProperties (this);
+				Application.Engine.SetControlText(this, value);
 			}
 		}
 
@@ -137,31 +194,90 @@ namespace UniversalWidgetToolkit
 		/// </summary>
 		public void Destroy()
 		{
+			Application.Engine.DestroyControl(this);
+		}
 
+		public event DragEventHandler DragEnter;
+		protected virtual void OnDragEnter(DragEventArgs e)
+		{
+			DragEnter?.Invoke(this, e);
+		}
+		public event DragEventHandler DragDrop;
+		protected virtual void OnDragDrop(DragEventArgs e)
+		{
+			DragDrop?.Invoke(this, e);
+		}
+
+		public event MouseEventHandler MouseDown;
+		public virtual void OnMouseDown(MouseEventArgs e)
+		{
+			MouseDown?.Invoke(this, e);
+		}
+		public event MouseEventHandler MouseMove;
+		public virtual void OnMouseMove(MouseEventArgs e)
+		{
+			MouseMove?.Invoke(this, e);
+		}
+		public event MouseEventHandler MouseUp;
+		public virtual void OnMouseUp(MouseEventArgs e)
+		{
+			MouseUp?.Invoke(this, e);
+		}
+
+		public event KeyEventHandler KeyDown;
+		public virtual void OnKeyDown(KeyEventArgs e)
+		{
+			KeyDown?.Invoke(this, e);
+		}
+		public event KeyEventHandler KeyPress;
+		public virtual void OnKeyPress(KeyEventArgs e)
+		{
+			KeyPress?.Invoke(this, e);
+		}
+		public event KeyEventHandler KeyUp;
+		public virtual void OnKeyUp(KeyEventArgs e)
+		{
+			KeyUp?.Invoke(this, e);
 		}
 
 		public event PaintEventHandler Paint;
 		public virtual void OnPaint(PaintEventArgs e)
 		{
-			if (Paint != null) Paint(this, e);
+			Paint?.Invoke(this, e);
 		}
 
+		public event EventHandler Creating;
+		public virtual void OnCreating(EventArgs e)
+		{
+			Creating?.Invoke(this, e);
+		}
 		public event EventHandler Created;
 		public virtual void OnCreated(EventArgs e)
 		{
-			if (Created != null) Created(this, e);
+			Created?.Invoke(this, e);
 		}
 
 		public event EventHandler Click;
 		public virtual void OnClick(EventArgs e)
 		{
-			if (Click != null) Click(this, e);
+			Click?.Invoke(this, e);
 		}
 
-		public event EventHandler Resizing;
-		public virtual void OnResizing(EventArgs e)
+		public event EventHandler Realize;
+		public virtual void OnRealize(EventArgs e)
 		{
-			if (Resizing != null) Resizing(this, e);
+			Realize?.Invoke(this, e);
+		}
+		public event EventHandler Unrealize;
+		public virtual void OnUnrealize(EventArgs e)
+		{
+			Unrealize?.Invoke(this, e);
+		}
+
+		public event ResizeEventHandler Resizing;
+		public virtual void OnResizing(ResizeEventArgs e)
+		{
+			Resizing?.Invoke(this, e);
 		}
 
 		public Window ParentWindow
@@ -178,15 +294,51 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		public Dimension2D MinimumSize { get; set; } = Dimension2D.Empty;
+
 		public void Invalidate()
 		{
-			Application.Engine.InvalidateControl(this);
+			// TODO: actually get dimensions of this Control
+			Invalidate(0, 0, 4096, 4096);
 		}
-		
+		public void Invalidate(int x, int y, int width, int height)
+		{
+			Application.Engine.InvalidateControl(this, x, y, width, height);
+		}
+		public void Refresh()
+		{
+			// convenience method
+			Invalidate();
+		}
+
 
 		public bool IsDisposed()
 		{
 			return Application.Engine.IsControlDisposed(this);
+		}
+
+		public void RegisterDragSource(Input.Keyboard.KeyboardModifierKey modifiers, DragDrop.DragDropTarget[] targets, DragDropEffect actions)
+		{
+			NativeImplementation.RegisterDragSource(this, modifiers, targets, actions);
+		}
+
+		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
+		public T GetExtraData<T>(string key, T defaultValue = default(T))
+		{
+			if (_ExtraData.ContainsKey(key)) return (T)_ExtraData[key];
+			return defaultValue;
+		}
+		public object GetExtraData(string key, object defaultValue = null)
+		{
+			return GetExtraData<object>(key, defaultValue);
+		}
+		public void SetExtraData<T>(string key, T value)
+		{
+			_ExtraData[key] = value;
+		}
+		public void SetExtraData(string key, object value)
+		{
+			SetExtraData<object>(key, value);
 		}
 	}
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
-	public class SplitContainer : Control
+	public class SplitContainer : SystemControl
 	{
 		private Container mvarPanel1 = new Container ();
 

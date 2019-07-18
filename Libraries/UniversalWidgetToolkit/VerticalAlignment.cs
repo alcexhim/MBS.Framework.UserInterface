@@ -7,6 +7,7 @@ namespace UniversalWidgetToolkit
 {
 	public enum VerticalAlignment
 	{
+		Default = -1,
 		Top = 1,
 		Middle = 2,
 		Bottom = 3,

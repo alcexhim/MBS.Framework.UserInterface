@@ -1,16 +1,16 @@
 using System;
-
+using System.Diagnostics;
 using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit
 {
-	public class Dialog : Container
+	public class Dialog : Window
 	{
 		private string mvarTitle = String.Empty;
 		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
 
 		private Control mvarParent = null;
-		public Control Parent { get { return mvarParent; } set { mvarParent = value; } }
+		public new Control Parent { get { return mvarParent; } set { mvarParent = value; } }
 
 		private Button.ButtonCollection mvarButtons = new Button.ButtonCollection ();
 		public Button.ButtonCollection Buttons { get { return mvarButtons; } }
@@ -18,9 +18,10 @@ namespace UniversalWidgetToolkit
 		private Button mvarDefaultButton = null;
 		public Button DefaultButton { get { return mvarDefaultButton; } set { mvarDefaultButton = value; } }
 
-		public DialogResult ShowDialog()
+		[DebuggerNonUserCode()]
+		public DialogResult ShowDialog(Window parent = null)
 		{
-			return Application.Engine.ShowDialog(this);
+			return Application.Engine.ShowDialog(this, parent);
 		}
 	}
 }

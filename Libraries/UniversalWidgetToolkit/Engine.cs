@@ -1,13 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Drawing;
+
+using MBS.Framework.Collections.Generic;
 
 namespace UniversalWidgetToolkit
 {
 	public abstract class Engine
 	{
+		private static Dictionary<IntPtr, Control> controlsByHandle = new Dictionary<IntPtr, Control>();
+		private static Dictionary<Control, IntPtr> handlesByControl = new Dictionary<Control, IntPtr>();
+
+		public Control GetControlByHandle(IntPtr handle)
+		{
+			if (controlsByHandle.ContainsKey(handle))
+				return controlsByHandle[handle];
+			return null;
+		}
+		[DebuggerNonUserCode()]
+		public IntPtr GetHandleForControl(Control control)
+		{
+			return handlesByControl[control];
+		}
+		public bool IsControlCreated(Control control)
+		{
+			return handlesByControl.ContainsKey(control);
+		}
+
+		protected void RegisterControlHandle(Control control, IntPtr handle)
+		{
+			controlsByHandle[handle] = control;
+			handlesByControl[control] = handle;
+		}
+
+		/// <summary>
+		/// Determines whether the given window has toplevel focus.
+		/// </summary>
+		/// <returns><c>true</c> if window has focus, <c>false</c> otherwise.</returns>
+		/// <param name="window">The window to query.</param>
+		protected abstract bool WindowHasFocusInternal(Window window);
+		public bool WindowHasFocus(Window window) => WindowHasFocusInternal(window);
+
 		public static Engine[] Get()
 		{
 			List<Engine> list = new List<Engine>();
@@ -19,11 +54,50 @@ namespace UniversalWidgetToolkit
 			return list.ToArray();
 		}
 
+
+		private static BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection> mvarStockIDs = new BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection>();
+		public void RegisterStockType(StockType stockType, string name)
+		{
+			if (!mvarStockIDs.ContainsValue1(stockType))
+			{
+				mvarStockIDs.Add(stockType, new System.Collections.Specialized.StringCollection());
+			}
+			mvarStockIDs.GetValue2(stockType).Add(name);
+		}
+
+		public string StockTypeToString(StockType stockType)
+		{
+			if (mvarStockIDs.ContainsValue1(stockType))
+			{
+				System.Collections.Specialized.StringCollection coll = mvarStockIDs.GetValue2(stockType);
+				if (coll.Count > 0)
+				{
+					return coll[0];
+				}
+			}
+			return null;
+		}
+		public StockType StockTypeFromString(string value)
+		{
+			foreach (KeyValuePair<StockType, System.Collections.Specialized.StringCollection> kvp in mvarStockIDs)
+			{
+				if (kvp.Value.Contains(value)) return kvp.Key;
+			}
+			return StockType.None;
+		}
+
+
 		public void Initialize()
 		{
-			InitializeInternal ();
+			InitializeInternal();
 		}
 		protected abstract bool InitializeInternal();
+
+		public Window[] GetToplevelWindows()
+		{
+			return GetToplevelWindowsInternal();
+		}
+		protected abstract Window[] GetToplevelWindowsInternal();
 
 		protected abstract int StartInternal(Window waitForClose = null);
 		protected abstract void StopInternal(int exitCode);
@@ -37,12 +111,80 @@ namespace UniversalWidgetToolkit
 			StopInternal(exitCode);
 		}
 
-		protected abstract bool CreateControlInternal(Control control);
-		protected internal bool CreateControl(Control control)
+		private NativeImplementation FindNativeImplementationForControl(Control control)
 		{
-			bool result = CreateControlInternal(control);
-			if (!result)
+			Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
+			foreach (Type t in ts)
+			{
+				if (t.IsSubclassOf(typeof(NativeImplementation)))
+				{
+					object[] atts = t.GetCustomAttributes(typeof(NativeImplementationAttribute), false);
+					if (atts.Length == 1)
+					{
+						NativeImplementationAttribute att = (atts[0] as NativeImplementationAttribute);
+						if (att == null) continue;
+
+						if (control.GetType() == att.ControlType || (!att.Exact && control.GetType().IsSubclassOf(att.ControlType)))
+						{
+							return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as NativeImplementation);
+						}
+					}
+					else
+					{
+						continue;
+					}
+				}
+			}
+			return null;
+		}
+
+		protected abstract Vector2D ClientToScreenCoordinatesInternal(Vector2D point);
+		public Vector2D ClientToScreenCoordinates(Vector2D point)
+		{
+			return ClientToScreenCoordinatesInternal(point);
+		}
+
+		/// <summary>
+		/// Creates the specified <see cref="Control" />
+		/// </summary>
+		/// <returns>The control handle.</returns>
+		/// <param name="control">Control.</param>
+		protected virtual NativeControl CreateControlInternal(Control control)
+		{
+			NativeControl handle = null;
+
+			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+
+			if (controlCreator != null)
+			{
+				handle = controlCreator.CreateControl(control);
+			}
+			return handle;
+		}
+
+		protected abstract bool IsControlEnabledInternal(Control control);
+		public bool IsControlEnabled(Control control)
+		{
+			return IsControlEnabledInternal(control);
+		}
+		protected abstract void SetControlEnabledInternal(Control control, bool value);
+		public void SetControlEnabled(Control control, bool value)
+		{
+			SetControlEnabledInternal(control, value);
+		}
+
+		public bool CreateControl(Control control)
+		{
+			NativeControl result = CreateControlInternal(control);
+			if (result == null)
 				return false;
+
+			// set the text we've previously set before
+			if (_ControlTextForUncreatedControls.ContainsKey(control))
+			{
+				SetControlText(control, _ControlTextForUncreatedControls[control]);
+				_ControlTextForUncreatedControls.Remove(control);
+			}
 
 			control.OnCreated(EventArgs.Empty);
 			return true;
@@ -54,10 +196,43 @@ namespace UniversalWidgetToolkit
 			SetControlVisibilityInternal(control, visible);
 		}
 
-		protected abstract DialogResult ShowDialogInternal(Dialog dialog);
-		public DialogResult ShowDialog(Dialog dialog)
+		protected abstract void DestroyControlInternal(Control control);
+		/// <summary>
+		/// Destroys the handle associated with the specified <see cref="Control" />.
+		/// </summary>
+		public void DestroyControl(Control control)
 		{
-			return ShowDialogInternal(dialog);
+			DestroyControlInternal(control);
+		}
+
+		public Window GetFocusedToplevelWindow()
+		{
+			// In GTK+, this lists all toplevel windows in the system
+			// Windows might only give us the windows in our process?
+			Window[] toplevels = GetToplevelWindows();
+
+			// figure out which of these toplevels is the window that currently has focus
+			foreach (Window toplevel in toplevels)
+			{
+				if (toplevel.HasFocus)
+				{
+					return toplevel;
+				}
+			}
+			return null;
+		}
+
+		protected abstract DialogResult ShowDialogInternal(Dialog dialog, Window parent);
+
+		[DebuggerNonUserCode()]
+		public DialogResult ShowDialog(Dialog dialog, Window parent)
+		{
+			if (parent == null)
+			{
+				// find the appropriate parent window
+				parent = GetFocusedToplevelWindow();
+			}
+			return ShowDialogInternal(dialog, parent);
 		}
 
 		protected abstract Monitor[] GetMonitorsInternal();
@@ -93,51 +268,97 @@ namespace UniversalWidgetToolkit
 			return SetProperty(propertyName, (object)value);
 		}
 
-		protected abstract bool IsControlCreatedInternal(Control control);
-		public bool IsControlCreated(Control control)
+		protected abstract void InvalidateControlInternal(Control control, int x, int y, int width, int height);
+		public void InvalidateControl(Control control, int x, int y, int width, int height)
 		{
-			return IsControlCreatedInternal(control);
+			InvalidateControlInternal(control, x, y, width, height);
 		}
 
-		protected abstract void InvalidateControlInternal(Control control);
-		public void InvalidateControl(Control control)
-		{
-			InvalidateControlInternal(control);
-		}
+		private Dictionary<Control, string> _ControlTextForUncreatedControls = new Dictionary<Control, string>();
 
-		protected abstract string GetControlTextInternal(Control control);
 		public string GetControlText(Control control)
 		{
-			return GetControlTextInternal(control);
+			if (!IsControlCreated(control))
+			{
+				if (_ControlTextForUncreatedControls.ContainsKey(control))
+				{
+					return _ControlTextForUncreatedControls[control];
+				}
+				return String.Empty;
+			}
+
+			string text = null;
+
+			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+
+			if (controlCreator != null)
+			{
+				text = controlCreator.GetControlText(control);
+			}
+
+
+			if (text != null)
+			{
+				System.Text.StringBuilder sb = new System.Text.StringBuilder();
+				sb.Append(text);
+				return sb.ToString();
+			}
+			return text;
 		}
-		protected abstract void SetControlTextInternal(Control control, string text);
 		public void SetControlText(Control control, string text)
 		{
-			SetControlTextInternal (control, text);
+			if (!IsControlCreated(control))
+			{
+				_ControlTextForUncreatedControls[control] = text;
+				return;
+			}
+
+			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+
+			if (controlCreator != null)
+			{
+				controlCreator.SetControlText(control, text);
+			}
 		}
 
-		protected abstract void UpdateControlPropertiesInternal(Control control);
+		private bool inUpdateControlProperties = false;
+
+		protected abstract void UpdateControlPropertiesInternal(Control control, IntPtr handle);
+		public void UpdateControlProperties(Control control, IntPtr handle)
+		{
+			if (inUpdateControlProperties) return;
+			inUpdateControlProperties = true;
+			UpdateControlPropertiesInternal(control, handle);
+			inUpdateControlProperties = false;
+		}
 		public void UpdateControlProperties(Control control)
 		{
-			UpdateControlPropertiesInternal (control);
+			if (!IsControlCreated(control)) return;
+			IntPtr handle = GetHandleForControl(control);
+			
+			UpdateControlProperties(control, handle);
 		}
-		
-		protected abstract void TabContainer_ClearTabPagesInternal (TabContainer parent);
-		internal void TabContainer_ClearTabPages(TabContainer parent) {
-			TabContainer_ClearTabPagesInternal (parent);
+
+		protected abstract void TabContainer_ClearTabPagesInternal(TabContainer parent);
+		internal void TabContainer_ClearTabPages(TabContainer parent)
+		{
+			TabContainer_ClearTabPagesInternal(parent);
 		}
-		protected abstract void TabContainer_InsertTabPageInternal (TabContainer parent, int index, TabPage tabPage);
-		internal void TabContainer_InsertTabPage(TabContainer parent, int index, TabPage tabPage) {
-			TabContainer_InsertTabPageInternal (parent, index, tabPage);
+		protected abstract void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage);
+		internal void TabContainer_InsertTabPage(TabContainer parent, int index, TabPage tabPage)
+		{
+			TabContainer_InsertTabPageInternal(parent, index, tabPage);
 		}
-		protected abstract void TabContainer_RemoveTabPageInternal (TabContainer parent, TabPage tabPage);
-		internal void TabContainer_RemoveTabPage(TabContainer parent, TabPage tabPage) {
-			TabContainer_RemoveTabPageInternal (parent, tabPage);
+		protected abstract void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage);
+		internal void TabContainer_RemoveTabPage(TabContainer parent, TabPage tabPage)
+		{
+			TabContainer_RemoveTabPageInternal(parent, tabPage);
 		}
 
 		protected abstract void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu);
-		public void UpdateNotificationIcon(NotificationIcon nid, bool updateContextMenu = false) {
-			UpdateNotificationIconInternal (nid, updateContextMenu);
+		public void UpdateNotificationIcon(NotificationIcon nid, bool updateContextMenu = false)
+		{
+			UpdateNotificationIconInternal(nid, updateContextMenu);
 		}
 
 		protected abstract bool IsControlDisposedInternal(Control ctl);
@@ -149,7 +370,9 @@ namespace UniversalWidgetToolkit
 		protected abstract void ShowNotificationPopupInternal(NotificationPopup popup);
 		public void ShowNotificationPopup(NotificationPopup popup)
 		{
-			ShowNotificationPopupInternal (popup);
+			ShowNotificationPopupInternal(popup);
 		}
+
+		protected internal abstract void RepaintCustomControl(CustomControl control, int x, int y, int width, int height);
 	}
 }

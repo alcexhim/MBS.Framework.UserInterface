@@ -11,7 +11,7 @@ namespace UniversalWidgetToolkit.Controls
 		Half,
 		Normal
 	}
-	public class Button : Control
+	public class Button : SystemControl
 	{
 		public class ButtonCollection
 			: System.Collections.ObjectModel.Collection<Button>
@@ -19,6 +19,10 @@ namespace UniversalWidgetToolkit.Controls
 		}
 
 		public Button()
+		{
+		}
+		public Button(string text)
+			: this(text, DialogResult.None)
 		{
 		}
 		public Button(string text, DialogResult responseValue = DialogResult.None)
@@ -30,7 +34,7 @@ namespace UniversalWidgetToolkit.Controls
 			this.Text = text;
 			mvarResponseValue = responseValue;
 		}
-		public Button(ButtonStockType type, DialogResult responseValue = DialogResult.None)
+		public Button(ButtonStockType type, DialogResult responseValue)
 			: this(type, (int)responseValue)
 		{
 		}
@@ -39,6 +43,9 @@ namespace UniversalWidgetToolkit.Controls
 			mvarStockType = type;
 			mvarResponseValue = responseValue;
 		}
+
+		private bool mvarAlwaysShowImage = false;
+		public bool AlwaysShowImage {  get { return mvarAlwaysShowImage;  } set { mvarAlwaysShowImage = value; } }
 
 		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
 		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }

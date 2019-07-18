@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Drawing
 {
@@ -30,9 +31,7 @@ namespace UniversalWidgetToolkit.Drawing
 				return item;
 			}
 		}
-
-		private Color mvarColor = Color.Empty;
-		public Color Color { get { return mvarColor; } set { mvarColor = value; } }
+		public Color Color { get; set; } = Color.Empty;
 
 		private Measurement mvarPosition = Measurement.Empty;
 		public Measurement Position { get { return mvarPosition; } set { mvarPosition = value; } }

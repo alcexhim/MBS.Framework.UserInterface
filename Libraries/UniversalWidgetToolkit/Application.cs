@@ -14,6 +14,61 @@ namespace UniversalWidgetToolkit
 		private static int mvarExitCode = 0;
 		public static int ExitCode { get { return mvarExitCode; } }
 
+		public static string ShortName { get; set; }
+
+
+		private static string[] EnumerateDataPaths()
+		{
+			string basePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+			return new string[]
+			{
+				// first look in the application root directory since this will be overridden by everything else
+				basePath,
+				// then look in /usr/share/universal-editor or C:\ProgramData\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData),
+					Application.ShortName
+				}),
+				// then look in ~/.local/share/universal-editor or C:\Users\USERNAME\AppData\Local\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+					Application.ShortName
+				}),
+				// then look in ~/.universal-editor or C:\Users\USERNAME\AppData\Roaming\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+					Application.ShortName
+				})
+			};
+		}
+
+		public static string ExpandRelativePath(string relativePath)
+		{
+			if (relativePath.StartsWith("~/"))
+			{
+				string[] potentialFileNames = EnumerateDataPaths();
+				for (int i = potentialFileNames.Length - 1; i >= 0; i--)
+				{
+					potentialFileNames[i] = potentialFileNames[i] + '/' + relativePath.Substring(2);
+					Console.WriteLine("Looking for " + potentialFileNames[i]);
+
+					if (System.IO.File.Exists(potentialFileNames[i]))
+					{
+						Console.WriteLine("Using " + potentialFileNames[i]);
+						return potentialFileNames[i];
+					}
+				}
+			}
+			if (System.IO.File.Exists(relativePath))
+			{
+				return relativePath;
+			}
+			return null;
+		}
+
 		public static event EventHandler ApplicationExited;
 
 		private static void OnApplicationExited(EventArgs e)
@@ -21,6 +76,7 @@ namespace UniversalWidgetToolkit
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
+        [DebuggerNonUserCode()]
 		public static void Initialize()
 		{
 			if (mvarEngine == null)
@@ -46,7 +102,9 @@ namespace UniversalWidgetToolkit
 		{
 			if (waitForClose != null)
 			{
-				mvarEngine.CreateControl (waitForClose);
+				if (mvarEngine.IsControlDisposed(waitForClose))
+					mvarEngine.CreateControl (waitForClose);
+
 				waitForClose.Show();
 			}
 

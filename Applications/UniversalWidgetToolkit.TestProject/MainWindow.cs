@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UniversalWidgetToolkit.Controls;
 using UniversalWidgetToolkit.Dialogs;
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Layouts;
+
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.TestProject
 {
@@ -21,19 +20,118 @@ namespace UniversalWidgetToolkit.TestProject
 			this.Padding = new Padding(13);
 
 			TabContainer tbsTabs = new TabContainer ();
+			Button cmdCloseTab = new Button();
+			cmdCloseTab.AlwaysShowImage = true;
+			cmdCloseTab.StockType = ButtonStockType.Close;
+			cmdCloseTab.BorderStyle = ButtonBorderStyle.Half;
+			cmdCloseTab.Click += (sender, e) =>
+			{
+				Button sb = (sender as Button);
+				TabPage tabPageParent = (sb.Parent.Parent as TabPage);
+				MessageDialog.ShowDialog("Closing tab '" + tabPageParent.Text + "'");
+			};
+			tbsTabs.TabTitleControls.Add(cmdCloseTab);
 
 			TabPage tabGeneral = new TabPage ();
 			tabGeneral.Text = "General";
+			tabGeneral.Layout = new BoxLayout(Orientation.Vertical);
+			tabGeneral.Controls.Add(new Label("Test"), new BoxLayout.Constraints(true, true));
+
+			Button btn1 = new Button(ButtonStockType.OK, DialogResult.None);
+			btn1.Click += (sender, e) =>
+			{
+				MessageDialog.ShowDialog("You clicked the button!");
+			};
+			tabGeneral.Controls.Add(btn1);
+
 			tbsTabs.TabPages.Add (tabGeneral);
 			
 			TabPage tabAppearance = new TabPage ();
 			tabAppearance.Text = "Appearance";
 			tbsTabs.TabPages.Add (tabAppearance);
 
+			TabPage tabTreeView = new TabPage();
+			tabTreeView.Layout = new BoxLayout(Orientation.Horizontal);
+			tabTreeView.Text = "Tree View Test";
+
+			ListView tv = new ListView();
+
+			DefaultTreeModel tm = new DefaultTreeModel(new Type[]
+			{
+				typeof(String),
+				typeof(Int32)
+			});
+
+
+			tv.Model = tm;
+			tv.Columns.Add(new ListViewColumnText(tm.Columns[0], "Name"));
+			tv.Columns.Add(new ListViewColumnText(tm.Columns[1], "Age"));
+
+			tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(tm.Columns[0], "Heinz El-Mann"),
+				new TreeModelRowColumn(tm.Columns[1], 51)
+			}));
+			tm.Rows[0].Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(tm.Columns[0], "Franz El-Mann"),
+				new TreeModelRowColumn(tm.Columns[1], 22)
+			}));
+			tm.Rows[0].Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(tm.Columns[0], "Another one"),
+				new TreeModelRowColumn(tm.Columns[1], 25)
+			}));
+			tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(tm.Columns[0], "Jane Doe"),
+				new TreeModelRowColumn(tm.Columns[1], 23)
+			}));
+			tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(tm.Columns[0], "Joe Bungop"),
+				new TreeModelRowColumn(tm.Columns[1], 91)
+			}));
+
+			tabTreeView.Controls.Add(tv);
+
+			tbsTabs.TabPages.Add(tabTreeView);
+
+
+			TabPage tabCustom = new TabPage();
+			tabCustom.Layout = new BoxLayout(Orientation.Vertical);
+			TestCustomControl ctl = new TestCustomControl();
+
+			tabCustom.Text = "Custom Control";
+
+			Container cmdCustomButtons = new Container();
+			cmdCustomButtons.Layout = new BoxLayout(Orientation.Horizontal, 8, true);
+
+			Button cmdCustomAdd = new Button("Add Green Box");
+			cmdCustomAdd.Click += (sender, e) =>
+			{
+				ctl.ShowGreenBox = true;
+				// we do not needs this Invalidate call ?
+				// ctl.Invalidate();
+			};
+			cmdCustomButtons.Controls.Add(cmdCustomAdd, new BoxLayout.Constraints(false, false, 8));
+			Button cmdCustomRemove = new Button("Remove Green Box");
+			cmdCustomRemove.Click += (sender, e) =>
+			{
+				ctl.ShowGreenBox = false;
+				// we do not needs this Invalidate call ?
+				// ctl.Invalidate();
+			};
+			cmdCustomButtons.Controls.Add(cmdCustomRemove, new BoxLayout.Constraints(false, false, 8));
+
+			tabCustom.Controls.Add(cmdCustomButtons);
+			tabCustom.Controls.Add(ctl);
+
+			tbsTabs.TabPages.Add(tabCustom);
+
 			this.Controls.Add (tbsTabs);
 
-			BoxLayout layout = new BoxLayout();
-			layout.Orientation = Orientation.Vertical;
+			BoxLayout layout = new BoxLayout(Orientation.Vertical);
 			layout.SetControlConstraints (tbsTabs, new BoxLayout.Constraints (true, true));
 			this.Layout = layout;
 
@@ -94,7 +192,7 @@ namespace UniversalWidgetToolkit.TestProject
 							FileDialog dlg = new FileDialog();
 							dlg.Mode = FileDialogMode.Open;
 							dlg.MultiSelect = true;
-							if (dlg.ShowDialog() == CommonDialogResult.OK) {
+							if (dlg.ShowDialog() == DialogResult.OK) {
 							}
 						}),
 						new CommandMenuItem("Open _Project")
@@ -105,10 +203,16 @@ namespace UniversalWidgetToolkit.TestProject
 						new CommandMenuItem("Save _Project")
 					}),
 					new SeparatorMenuItem(),
+					new CommandMenuItem("_Print", null, delegate(object sender, EventArgs e)
+					{
+						PrintDialog dlg = new PrintDialog();
+						dlg.ShowDialog();
+					}, new Shortcut(Input.Keyboard.KeyboardKey.P, Input.Keyboard.KeyboardModifierKey.Control)),
+					new SeparatorMenuItem(),
 					new CommandMenuItem("E_xit", null, delegate(object sender, EventArgs e)
 					{
 						Application.Stop ();
-					})
+					}, new Shortcut(Input.Keyboard.KeyboardKey.Q, Input.Keyboard.KeyboardModifierKey.Control))
 				}),
 				new CommandMenuItem("_Edit", new MenuItem[]
 				{
@@ -133,15 +237,15 @@ namespace UniversalWidgetToolkit.TestProject
 				{
 					new CommandMenuItem("_Ask a Question", null, delegate (object sender, EventArgs e)
 					{
-						CommonDialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
+						DialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
 						switch (result)
 						{
-							case CommonDialogResult.Yes:
+							case DialogResult.Yes:
 							{
 								MessageDialog.ShowDialog ("Widgitator frobnicated successfully.", "Good News", MessageDialogButtons.OK, MessageDialogIcon.Information, MessageDialogModality.ApplicationModal, false, this);
 								break;
 							}
-							case CommonDialogResult.No:
+							case DialogResult.No:
 							{
 								MessageDialog.ShowDialog ("Widgitator not frobnicated. Try again later.", "As you wish", MessageDialogButtons.OK, MessageDialogIcon.Warning, MessageDialogModality.ApplicationModal, false, this);
 								break;
@@ -151,18 +255,29 @@ namespace UniversalWidgetToolkit.TestProject
 					new CommandMenuItem("Select _Color", null, delegate (object sender, EventArgs e)
 					{
 						ColorDialog dlg = new ColorDialog();
-						if (dlg.ShowDialog() == CommonDialogResult.OK)
+						if (dlg.ShowDialog() == DialogResult.OK)
 						{
 							Color color = dlg.SelectedColor;
+                            MessageDialog.ShowDialog("You selected color " + dlg.SelectedColor.ToString());
 						}
 					}),
 					new CommandMenuItem("Select _Font", null, delegate (object sender, EventArgs e)
 					{
 						FontDialog dlg = new FontDialog();
 						// dlg.AutoUpgradeEnabled = false;
-						if (dlg.ShowDialog() == CommonDialogResult.OK)
+						if (dlg.ShowDialog() == DialogResult.OK)
 						{
 							MessageDialog.ShowDialog(dlg.SelectedFont.ToString());
+						}
+					}),
+					new CommandMenuItem("Select _Application", null, delegate (object sender, EventArgs e)
+					{
+						AppChooserDialog dlg = new AppChooserDialog();
+						dlg.ContentType = "text/plain";
+						// dlg.AutoUpgradeEnabled = false;
+						if (dlg.ShowDialog() == DialogResult.OK)
+						{
+							// MessageDialog.ShowDialog(dlg.SelectedFont.ToString());
 						}
 					})
 				}),

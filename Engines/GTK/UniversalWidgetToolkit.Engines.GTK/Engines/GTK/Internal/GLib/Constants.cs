@@ -4,6 +4,58 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GLib
 {
 	internal class Constants
 	{
+		public class GType
+		{
+			public static IntPtr Invalid { get; } = new IntPtr(0 << 2);
+			public static IntPtr None { get; } = new IntPtr(1 << 2);
+			public static IntPtr Interface { get; } = new IntPtr(2 << 2);
+			public static IntPtr Char { get; } = new IntPtr(3 << 2);
+			public static IntPtr UChar { get; } = new IntPtr(4 << 2);
+			public static IntPtr Boolean { get; } = new IntPtr(5 << 2);
+			public static IntPtr Int { get; } = new IntPtr(6 << 2);
+			public static IntPtr UInt { get; } = new IntPtr(7 << 2);
+			public static IntPtr Long { get; } = new IntPtr(8 << 2);
+			public static IntPtr ULong { get; } = new IntPtr(9 << 2);
+			public static IntPtr Int64 { get; } = new IntPtr(10 << 2);
+			public static IntPtr UInt64 { get; } = new IntPtr(11 << 2);
+			public static IntPtr Enum { get; } = new IntPtr(12 << 2);
+			public static IntPtr Flags { get; } = new IntPtr(13 << 2);
+			public static IntPtr Float { get; } = new IntPtr(14 << 2);
+			public static IntPtr Double { get; } = new IntPtr(15 << 2);
+			public static IntPtr String { get; } = new IntPtr(16 << 2);
+			public static IntPtr Pointer { get; } = new IntPtr(17 << 2);
+			public static IntPtr Boxed { get; } = new IntPtr(18 << 2);
+			public static IntPtr Param { get; } = new IntPtr(19 << 2);
+			public static IntPtr Object { get; } = new IntPtr(20 << 2);
+			public static IntPtr Variant { get; } = new IntPtr(21 << 2);
+
+			public static IntPtr FromType(Type t)
+			{
+				if (t == typeof(bool)) return Boolean;
+				// else if (t == typeof(Boxed)) return Boxed;
+				else if (t == typeof(char)) return Char;
+				else if (t == typeof(double)) return Double;
+				else if (t == typeof(Enum)) return Enum;
+				// else if (t == typeof(Enum)) return Flags;
+				else if (t == typeof(float)) return Float;
+				else if (t == typeof(Int16)) return Int;
+				else if (t == typeof(Int64)) return Int64;
+				// else if (t == typeof(interface)) return Interface;
+				// else if (t == typeof(Enum)) return Invalid;
+				else if (t == typeof(Int32)) return Long;
+				// else if (t == typeof(Enum)) return None;
+				else if (t == typeof(object)) return Object;
+				// else if (t == typeof(Enum)) return Param;
+				// else if (t == typeof(Enum)) return Pointer;
+				else if (t == typeof(string)) return String;
+				// else if (t == typeof(uchar)) return UChar;
+				else if (t == typeof(UInt16)) return UInt;
+				else if (t == typeof(UInt64)) return UInt64;
+				else if (t == typeof(UInt32)) return ULong;
+				// else if (t == typeof(Enum)) return Variant;
+				return IntPtr.Zero;
+			}
+		}
 		public class GVariantType
 		{
 

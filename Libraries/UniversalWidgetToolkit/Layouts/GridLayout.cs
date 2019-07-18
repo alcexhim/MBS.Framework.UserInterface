@@ -18,20 +18,23 @@ namespace UniversalWidgetToolkit.Layouts
 			private int mvarColumnSpan = 0;
 			public int ColumnSpan { get { return mvarColumnSpan; } set { mvarColumnSpan = value; } }
 
-			public Constraints(int row, int column, int rowSpan = 1, int columnSpan = 1)
+			public ExpandMode Expand { get; set; } = ExpandMode.None;
+
+			public Constraints(int row, int column, int rowSpan = 1, int columnSpan = 1, ExpandMode expand = ExpandMode.None)
 			{
 				mvarRow = row;
 				mvarColumn = column;
 				mvarRowSpan = rowSpan;
 				mvarColumnSpan = columnSpan;
+				Expand = expand;
 			}
 		}
 
-		private uint mvarRowSpacing = 6;
-		public uint RowSpacing { get { return mvarRowSpacing; } set { mvarRowSpacing = value; } }
+		private int mvarRowSpacing = 6;
+		public int RowSpacing { get { return mvarRowSpacing; } set { mvarRowSpacing = value; } }
 
-		private uint mvarColumnSpacing = 6;
-		public uint ColumnSpacing { get { return mvarColumnSpacing; } set { mvarColumnSpacing = value; } }
+		private int mvarColumnSpacing = 6;
+		public int ColumnSpacing { get { return mvarColumnSpacing; } set { mvarColumnSpacing = value; } }
 
 		protected override UniversalWidgetToolkit.Drawing.Rectangle GetControlBoundsInternal (Control ctl)
 		{

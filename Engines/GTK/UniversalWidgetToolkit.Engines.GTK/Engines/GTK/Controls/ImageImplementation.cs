@@ -28,7 +28,7 @@ using MBS.Framework.Drawing;
 namespace UniversalWidgetToolkit.Engines.GTK
 {
 	[NativeImplementation(typeof(Image))]
-	public class ImageImplementation : NativeImplementation
+	public class ImageImplementation : GTKNativeImplementation
 	{
 		public ImageImplementation(Engine engine, Control control) : base(engine, control)
 		{
@@ -42,11 +42,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (ctl.IconSize != Dimension2D.Empty)
 				Internal.GTK.Methods.gtk_image_set_pixel_size(handle, (int) ctl.IconSize.Width);
 			return new GTKNativeControl(handle);
-		}
-
-		protected override void RegisterDragSourceInternal(Control control, KeyboardModifierKey modifiers, DragDropTarget[] targets, DragDropEffect actions)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

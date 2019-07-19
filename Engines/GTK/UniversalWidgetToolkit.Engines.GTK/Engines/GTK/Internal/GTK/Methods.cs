@@ -320,6 +320,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_tree_selection_select_all(IntPtr /*GtkTreeSelection*/ selection);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_tree_selection_unselect_all(IntPtr /*GtkTreeSelection*/ selection);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_tree_selection_set_mode(IntPtr /*GtkTreeSelection*/ selection, Constants.GtkSelectionMode type);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern Constants.GtkSelectionMode gtk_tree_selection_get_mode(IntPtr /*GtkTreeSelection*/ selection);
 		#endregion
 		#endregion
 

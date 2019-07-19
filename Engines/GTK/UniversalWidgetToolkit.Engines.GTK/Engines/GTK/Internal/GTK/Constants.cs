@@ -336,6 +336,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// </summary>
 			All = Motion | Highlight | Drop
 		}
+
+		/// <summary>
+		/// Used to control what selections users are allowed to make.
+		/// </summary>
+		public enum GtkSelectionMode
+		{
+			/// <summary>
+			/// No selection is possible.
+			/// </summary>
+			None,
+			/// <summary>
+			/// Zero or one element may be selected.
+			/// </summary>
+			Single,
+			/// <summary>
+			/// Exactly one element is selected. In some circumstances, such as initially or during a search operation, it’s possible for no element to be selected with GTK_SELECTION_BROWSE. What is really enforced is that the user can’t deselect a currently selected element except by selecting another element.
+			/// </summary>
+			Browse,
+			/// <summary>
+			/// Any number of elements may be selected. The Ctrl key may be used to enlarge the selection, and Shift key to select between the focus and the child pointed to. Some widgets may also allow Click-drag to select a range of elements.
+			/// </summary>
+			Multiple
+		}
 	}
 }
 

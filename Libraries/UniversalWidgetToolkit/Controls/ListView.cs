@@ -7,6 +7,9 @@ namespace UniversalWidgetToolkit.Controls
 		public interface IListViewNativeImplementation
 		{
 			void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e);
+			
+			SelectionMode GetSelectionMode();
+			void SetSelectionMode(SelectionMode value);
 		}
 	}
 
@@ -57,6 +60,23 @@ namespace UniversalWidgetToolkit.Controls
 		public ListView()
 		{
 			this.SelectedRows = new TreeModelRow.TreeModelSelectedRowCollection(this);
+		}
+
+		private SelectionMode mvarSelectionMode = SelectionMode.Single;
+		public SelectionMode SelectionMode
+		{
+			get
+			{
+				if (this.IsCreated)
+					mvarSelectionMode = (NativeImplementation as Native.IListViewNativeImplementation).GetSelectionMode();
+				return mvarSelectionMode;
+			}
+			set
+			{
+				if (this.IsCreated)
+					(NativeImplementation as Native.IListViewNativeImplementation).SetSelectionMode(value);
+				mvarSelectionMode = value;
+			}
 		}
 
 		private DefaultTreeModel mvarModel = null;

@@ -14,6 +14,31 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 		}
 
+		public void SetSelectionMode(SelectionMode value)
+		{
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).Handle);
+			switch (value)
+			{
+				case SelectionMode.None:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None); break;
+				case SelectionMode.Single:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single); break;
+				case SelectionMode.Browse:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse); break;
+				case SelectionMode.Multiple:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple); break;
+			}
+		}
+		public SelectionMode GetSelectionMode()
+		{
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).Handle);
+			Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
+			switch (mode)
+			{
+				case Internal.GTK.Constants.GtkSelectionMode.None: return SelectionMode.None;
+				case Internal.GTK.Constants.GtkSelectionMode.Single: return SelectionMode.Single;
+				case Internal.GTK.Constants.GtkSelectionMode.Browse: return SelectionMode.Browse;
+				case Internal.GTK.Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
+			}
+			throw new InvalidOperationException();
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			ListView tv = (control as ListView);
@@ -113,6 +138,31 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GObject.Methods.g_signal_connect(handle, "row_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
 			Internal.GObject.Methods.g_signal_connect(handle, "cursor_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_changed);
 			RegisterListViewHandle(tv, handle);
+
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+			switch (tv.SelectionMode)
+			{
+				case SelectionMode.None:
+				{
+					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None);
+					break;
+				}
+				case SelectionMode.Single:
+				{
+					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single);
+					break;
+				}
+				case SelectionMode.Browse:
+				{
+					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse);
+					break;
+				}
+				case SelectionMode.Multiple:
+				{
+					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple);
+					break;
+				}
+			}
 
 			return new GTKNativeControl(hScrolledWindow, handle);
 		}

@@ -273,19 +273,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// <summary>
 			/// If this is set, the target will only be selected for drags within a single application.
 			/// </summary>
-			SameApp,
+			SameApp = 1 << 0,
 			/// <summary>
 			/// If this is set, the target will only be selected for drags within a single widget.
 			/// </summary>
-			SameWidget,
+			SameWidget = 1 << 1,
 			/// <summary>
 			/// If this is set, the target will not be selected for drags within a single application.
 			/// </summary>
-			OtherApp,
+			OtherApp = 1 << 2,
 			/// <summary>
 			/// If this is set, the target will not be selected for drags withing a single widget.
 			/// </summary>
-			OtherWidget
+			OtherWidget = 1 << 3
 		}
 
 

@@ -35,7 +35,19 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			Internal.GTK.Methods.gtk_drag_source_set(handle, modifiers, targets, targets.Length, actions);
 		}
-
+		internal virtual void RegisterDropTargetGTK(IntPtr handle, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
+		{
+			Internal.GTK.Methods.gtk_drag_dest_set(handle, Internal.GTK.Constants.GtkDestDefaults.All, targets, targets.Length, actions);
+		}
+		protected override void RegisterDropTargetInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		{
+			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
+			
+			IntPtr handle = Engine.GetHandleForControl(control);
+			if (handle == IntPtr.Zero) return;
+			
+			RegisterDropTargetGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
+		}
 		protected override void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);

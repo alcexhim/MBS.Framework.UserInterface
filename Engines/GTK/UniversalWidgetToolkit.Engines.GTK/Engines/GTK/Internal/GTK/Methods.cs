@@ -999,6 +999,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		#region Drag-n-Drop
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_drag_source_set(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkModifierType start_button_mask, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_drag_dest_set(IntPtr /*GtkWidget*/ widget, Constants.GtkDestDefaults flags, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 		#endregion
 
 		#region GtkImage

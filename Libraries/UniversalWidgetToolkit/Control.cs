@@ -211,9 +211,14 @@ namespace UniversalWidgetToolkit
 		{
 			DragDrop?.Invoke(this, e);
 		}
+		
 		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
 		{
 			NativeImplementation.RegisterDragSource(this, targets, actions, buttons, modifierKeys);
+		}
+		public void RegisterDropTarget(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
+		{
+			NativeImplementation.RegisterDropTarget(this, targets, actions, buttons, modifierKeys);
 		}
 
 

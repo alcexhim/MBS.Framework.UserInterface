@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System.ComponentModel;
 
+using UniversalWidgetToolkit.Input.Keyboard;
+
 namespace UniversalWidgetToolkit.Input.Mouse
 {
 	public delegate void MouseEventHandler(object sender, MouseEventArgs e);
@@ -29,14 +31,16 @@ namespace UniversalWidgetToolkit.Input.Mouse
 		public double Y { get; private set; }
 		
 		public MouseButtons Buttons { get; private set; }
+		public KeyboardModifierKey ModifierKeys { get; private set; }
 
 		public bool Handled { get; set; } = false;
 		
-		public MouseEventArgs(double x, double y, MouseButtons buttons)
+		public MouseEventArgs(double x, double y, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 			X = x;
 			Y = y;
 			Buttons = buttons;
+			ModifierKeys = modifierKeys;
 		}
 	}
 }

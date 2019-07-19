@@ -29,9 +29,19 @@ namespace UniversalWidgetToolkit
 			return handlesByControl.ContainsKey(control);
 		}
 
-		protected void RegisterControlHandle(Control control, IntPtr handle)
+		protected void RegisterControlHandle(Control control, IntPtr handle, params IntPtr[] additionalHandles)
 		{
 			controlsByHandle[handle] = control;
+			
+			// BEGIN: 2019-07-19 12:13 by beckermj - support for additional handles used by control
+			// (e.g. for scrolled window container, etc.)
+			foreach (IntPtr ptr in additionalHandles)
+			{
+				controlsByHandle[ptr] = control;
+			}
+			// we can only store the primary handle for the control in our dictionary, though...
+			// END: 2019-07-19 12:13 by beckermj - support for additional handles used by control
+			
 			handlesByControl[control] = handle;
 		}
 

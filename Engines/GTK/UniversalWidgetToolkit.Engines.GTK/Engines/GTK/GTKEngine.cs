@@ -801,7 +801,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					}
 				}
 
-				RegisterControlHandle(control, (handle as GTKNativeControl).Handle);
+				RegisterControlHandle(control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
 				UpdateControlProperties(control);
 
 				if (control.MinimumSize != Dimension2D.Empty)

@@ -114,7 +114,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GObject.Methods.g_signal_connect(handle, "cursor_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_changed);
 			RegisterListViewHandle(tv, handle);
 
-			return new GTKNativeControl(hScrolledWindow);
+			return new GTKNativeControl(hScrolledWindow, handle);
 		}
 
 		private static void SelectedRows_ItemRequested(object sender, TreeModelRowItemRequestedEventArgs e)

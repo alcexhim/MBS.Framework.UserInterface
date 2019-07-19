@@ -29,5 +29,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public delegate bool GtkFileFilterFunc(ref Structures.GtkFileFilterInfo filter_info, IntPtr data);
 		public delegate void GtkTreeViewFunc(IntPtr /*GtkTreeView*/ tree_view);
 		public delegate bool GtkGlAreaRenderFunc(IntPtr /*GtkGLArea*/ area, IntPtr /*GdkGLContext*/ context);
+		public delegate void GtkDragEvent(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data);
+		public delegate void GtkDragDataGetEvent(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data);
 	}
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using UniversalWidgetToolkit.Input.Keyboard;
+using UniversalWidgetToolkit.Input.Mouse;
+
 namespace UniversalWidgetToolkit
 {
 	/// <summary>
@@ -61,10 +64,10 @@ namespace UniversalWidgetToolkit
 
 		}
 
-		protected abstract void RegisterDragSourceInternal(Control control, Input.Keyboard.KeyboardModifierKey modifiers, DragDrop.DragDropTarget[] targets, DragDropEffect actions);
-		public void RegisterDragSource(Control control, Input.Keyboard.KeyboardModifierKey modifiers, DragDrop.DragDropTarget[] targets, DragDropEffect actions)
+		protected abstract void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
+		public void RegisterDragSource(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			RegisterDragSourceInternal(control, modifiers, targets, actions);
+			RegisterDragSourceInternal(control, targets, actions, buttons, modifierKeys);
 		}
 
 		protected internal virtual void OnRealize(EventArgs e)

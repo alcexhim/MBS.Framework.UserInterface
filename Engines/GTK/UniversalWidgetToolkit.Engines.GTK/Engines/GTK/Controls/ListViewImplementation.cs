@@ -245,6 +245,21 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			_TreeModelForHandle[handle] = tm;
 			_HandleForTreeModel[tm] = handle;
 		}
+		
+		/// <summary>
+		/// Registers the control with the given handle as a drag source. Overridden for GtkTreeView (which in UWT is always a child of a GtkScrolledWindow).
+		/// </summary>
+		/// <remarks>
+		/// We need to override this to handle GTK tree view DnD. Not mentioned in the docs at all. Took about a half hour to figure out... Also to properly identify
+		/// control handle since the GtkTreeView in UWT is always a child of a GtkScrolledWindow.
+		/// 
+		/// Even still, we need to figure out how to actually make use of the dragged row. How to pass data? Also why does it only work with the primary mouse button...
+		/// </remarks>
+		internal override void RegisterDragSourceGTK(IntPtr hScrolledWindow, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
+		{
+			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
+			Internal.GTK.Methods.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+		}
 
 		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)
 		{

@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using UniversalWidgetToolkit.Input.Keyboard;
+using UniversalWidgetToolkit.Input.Mouse;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -30,10 +31,19 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		}
 
-		protected override void RegisterDragSourceInternal(Control control, KeyboardModifierKey modifiers, DragDrop.DragDropTarget[] targets, DragDropEffect actions)
+		internal virtual void RegisterDragSourceGTK(IntPtr handle, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
 		{
+			Internal.GTK.Methods.gtk_drag_source_set(handle, modifiers, targets, targets.Length, actions);
+		}
+
+		protected override void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		{
+			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
+			
 			IntPtr handle = Engine.GetHandleForControl(control);
-			Internal.GTK.Methods.gtk_drag_source_set(handle, GTKEngine.KeyboardModifierKeyToGdkModifierType(modifiers), GTKEngine.DragDropTargetToGtkTargetEntry(targets), targets.Length, GTKEngine.DragDropEffectToGdkDragAction(actions));
+			if (handle == IntPtr.Zero) return;
+			
+			RegisterDragSourceGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
 		}
 	}
 }

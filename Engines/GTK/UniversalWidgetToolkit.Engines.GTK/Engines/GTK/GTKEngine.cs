@@ -129,7 +129,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				list.Add(new Internal.GTK.Structures.GtkTargetEntry() { flags = flags, info = (uint)target.ID, target = target.Name });
 			}
-			throw new NotImplementedException();
+			return list.ToArray();
 		}
 
 		internal static Internal.GDK.Constants.GdkDragAction DragDropEffectToGdkDragAction(DragDropEffect actions)
@@ -167,16 +167,27 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return modifierType;
 		}
 
-		private MouseButtons GdkModifierTypeToMouseButtons(Internal.GDK.Constants.GdkModifierType modifierType)
+		internal static MouseButtons GdkModifierTypeToMouseButtons(Internal.GDK.Constants.GdkModifierType modifierType)
 		{
 			MouseButtons button = MouseButtons.None;
 			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button1) == Internal.GDK.Constants.GdkModifierType.Button1) button |= MouseButtons.Primary;
-			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button2) == Internal.GDK.Constants.GdkModifierType.Button2) button |= MouseButtons.Secondary;
-			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button3) == Internal.GDK.Constants.GdkModifierType.Button3) button |= MouseButtons.Wheel;
+			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button3) == Internal.GDK.Constants.GdkModifierType.Button2) button |= MouseButtons.Secondary;
+			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button2) == Internal.GDK.Constants.GdkModifierType.Button3) button |= MouseButtons.Wheel;
 			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button4) == Internal.GDK.Constants.GdkModifierType.Button4) button |= MouseButtons.XButton1;
 			if ((modifierType & Internal.GDK.Constants.GdkModifierType.Button5) == Internal.GDK.Constants.GdkModifierType.Button5) button |= MouseButtons.XButton2;
 			return button;
 		}
+		internal static Internal.GDK.Constants.GdkModifierType MouseButtonsToGdkModifierType(MouseButtons buttons)
+		{
+			Internal.GDK.Constants.GdkModifierType button = Internal.GDK.Constants.GdkModifierType.None;
+			if ((buttons & MouseButtons.Primary) == MouseButtons.Primary) button |= Internal.GDK.Constants.GdkModifierType.Button1;
+			if ((buttons & MouseButtons.Secondary) == MouseButtons.Secondary) button |= Internal.GDK.Constants.GdkModifierType.Button3;
+			if ((buttons & MouseButtons.Wheel) == MouseButtons.Wheel) button |= Internal.GDK.Constants.GdkModifierType.Button2;
+			if ((buttons & MouseButtons.XButton1) == MouseButtons.XButton1) button |= Internal.GDK.Constants.GdkModifierType.Button4;
+			if ((buttons & MouseButtons.XButton2) == MouseButtons.XButton2) button |= Internal.GDK.Constants.GdkModifierType.Button5;
+			return button;
+		}
+
 
 		protected override bool InitializeInternal()
 		{
@@ -545,15 +556,19 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				case 4: buttons = MouseButtons.XButton1; break;
 				case 5: buttons = MouseButtons.XButton2; break;
 			}
-			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons);
+			KeyboardModifierKey modifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
+			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons, modifierKeys);
 			return ee;
 		}
 		private MouseEventArgs GdkEventMotionToMouseEventArgs(Internal.GDK.Structures.GdkEventMotion e)
 		{
-			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, GdkModifierTypeToMouseButtons(e.state));
+			MouseButtons buttons = GdkModifierTypeToMouseButtons(e.state);
+			KeyboardModifierKey modifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
+			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons, modifierKeys);
 			return ee;
 		}
 
+		private MouseButtons _mousedown_buttons = MouseButtons.None;
 		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
@@ -562,13 +577,36 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Control ctl = GetControlByHandle(widget);
 			if (ctl != null)
 			{
+				_mousedown_buttons = ee.Buttons;
 				ctl.OnMouseDown(ee);
 				if (ee.Handled) return true;
 			}
 			return false;
 		}
+		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		{
+			Internal.GDK.Structures.GdkEventMotion e = (Internal.GDK.Structures.GdkEventMotion)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventMotion));
+
+			Control ctl = GetControlByHandle(widget);
+			MouseEventArgs ee = GdkEventMotionToMouseEventArgs(e);
+			ee = new MouseEventArgs(ee.X, ee.Y, _mousedown_buttons, ee.ModifierKeys);
+			if (ctl != null)
+			{
+				ctl.OnMouseMove(ee);
+			}
+			else
+			{
+				Console.Error.WriteLine("uwt: gtk: motion_notify_event called on empty control");
+			}
+
+			if (ee.Handled) return true;
+
+			// TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.
+			return false;
+		}
 		private bool gc_button_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			_mousedown_buttons = MouseButtons.None;
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GdkEventButtonToMouseEventArgs(e);
 			
@@ -585,23 +623,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return false;
 		}
 
-		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
-		{
-			Internal.GDK.Structures.GdkEventMotion e = (Internal.GDK.Structures.GdkEventMotion)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventMotion));
-
-			Control ctl = GetControlByHandle(widget);
-			MouseEventArgs ee = GdkEventMotionToMouseEventArgs(e);
-			if (ctl != null)
-			{
-				ctl.OnMouseMove(ee);
-			}
-
-			if (ee.Handled) return true;
-
-			// TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.
-			return false;
-		}
-
 		// converting these into standalone fields solved a HUGE (and esoteric) crash in handling keyboard events...
 		private Internal.GObject.Delegates.GCallback gc_realize_handler = null;
 		private Internal.GObject.Delegates.GCallback gc_unrealize_handler = null;
@@ -610,6 +631,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_press_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_release_event_handler = null;
+
+		private Internal.GTK.Delegates.GtkDragEvent gc_drag_begin_handler = null;
+		private Internal.GTK.Delegates.GtkDragEvent gc_drag_data_delete_handler = null;
+		private Internal.GTK.Delegates.GtkDragDataGetEvent gc_drag_data_get_handler = null;
 		private void InitializeEventHandlers()
 		{
 			gc_realize_handler = new Internal.GObject.Delegates.GCallback(gc_realize);
@@ -619,6 +644,40 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			gc_motion_notify_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_motion_notify_event);
 			gc_key_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_press_event);
 			gc_key_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_release_event);
+			gc_drag_begin_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_begin);
+			gc_drag_data_delete_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_data_delete);
+			gc_drag_data_get_handler = new Internal.GTK.Delegates.GtkDragDataGetEvent(gc_drag_data_get);
+		}
+		/// <summary>
+		/// Connects the native GTK signals for the base GtkWidget class to the control with the given handle.
+		/// </summary>
+		/// <param name="nativeHandle">The handle of the control for which to connect signals</param>
+		private void SetupCommonEvents(IntPtr nativeHandle)
+		{
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "motion_notify_event", gc_motion_notify_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_press_event", gc_button_press_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_release_event", gc_button_release_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_press_event", gc_key_press_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_release_event", gc_key_release_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "realize", gc_realize_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "unrealize", gc_unrealize_handler);
+
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_begin", gc_drag_begin_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_data_get", gc_drag_data_get_handler);
+		}
+
+		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
+		{
+			Console.WriteLine("gc_drag_begin");
+		}
+		private void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
+		{
+			Console.WriteLine("gc_drag_data_delete");
+		}
+		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
+		{
+			Console.WriteLine("gc_drag_data_get");
 		}
 
 		private void InvokeMethod(object obj, string meth, params object[] parms)
@@ -655,6 +714,26 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				InvokeMethod(ctl.NativeImplementation, "OnUnrealize", EventArgs.Empty);
 			}
 		}
+		
+		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)
+		{
+			IntPtr hList = Internal.GTK.Methods.gtk_container_get_children(hScrolledWindow);
+			IntPtr hTreeView = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+			Console.WriteLine("returning {0} child handle for scrolled window {1}", hTreeView, hScrolledWindow);
+			return hTreeView;
+		}
+
+		/// <summary>
+		/// Returns the actual control handle (for event signaling) if a control is e.g. surrounded by GtkScrolledWindow
+		/// </summary>
+		private IntPtr FindRealHandle(IntPtr fakeHandle, Control ctl)
+		{
+			if (ctl is ListView)
+			{
+				return GetScrolledWindowChild(fakeHandle);
+			}
+			return fakeHandle;
+		}
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
@@ -677,14 +756,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			if (handle != null)
 			{
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "motion_notify_event", gc_motion_notify_event_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "button_press_event", gc_button_press_event_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "button_release_event", gc_button_release_event_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "key_press_event", gc_key_press_event_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "key_release_event", gc_key_release_event_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "realize", gc_realize_handler);
-				Internal.GObject.Methods.g_signal_connect((handle as GTKNativeControl).Handle, "unrealize", gc_unrealize_handler);
-
+				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
+				Console.WriteLine("setting events on {0} \"{1}\" [{2}]", handle, control.Name, control.GetType().FullName);
+				SetupCommonEvents(FindRealHandle(nativeHandle, control));
+				
 				if (control.Parent != null && control.Parent.Layout != null)
 				{
 					Constraints constraints = control.Parent.Layout.GetControlConstraints(control);

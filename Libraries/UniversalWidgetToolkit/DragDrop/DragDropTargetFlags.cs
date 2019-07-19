@@ -24,6 +24,7 @@ namespace UniversalWidgetToolkit.DragDrop
 	[Flags()]
 	public enum DragDropTargetFlags
 	{
+		None = 0,
 		/// <summary>
 		/// If this is set, the target will only be selected for drags within a single application.
 		/// </summary>

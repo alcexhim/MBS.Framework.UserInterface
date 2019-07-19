@@ -257,6 +257,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_tree_model_iter_previous(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_enable_model_drag_source(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkModifierType start_button_mask, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_store_newv(int columns, IntPtr[] columnTypes);
 
 		/// <summary>

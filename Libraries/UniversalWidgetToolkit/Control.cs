@@ -197,6 +197,9 @@ namespace UniversalWidgetToolkit
 			Application.Engine.DestroyControl(this);
 		}
 
+
+
+		#region Drag-n-Drop
 		public event DragEventHandler DragEnter;
 		protected virtual void OnDragEnter(DragEventArgs e)
 		{
@@ -207,6 +210,13 @@ namespace UniversalWidgetToolkit
 		{
 			DragDrop?.Invoke(this, e);
 		}
+		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
+		{
+			NativeImplementation.RegisterDragSource(this, targets, actions, buttons, modifierKeys);
+		}
+
+
+		#endregion
 
 		public event MouseEventHandler MouseDown;
 		public virtual void OnMouseDown(MouseEventArgs e)
@@ -315,11 +325,6 @@ namespace UniversalWidgetToolkit
 		public bool IsDisposed()
 		{
 			return Application.Engine.IsControlDisposed(this);
-		}
-
-		public void RegisterDragSource(Input.Keyboard.KeyboardModifierKey modifiers, DragDrop.DragDropTarget[] targets, DragDropEffect actions)
-		{
-			NativeImplementation.RegisterDragSource(this, modifiers, targets, actions);
 		}
 
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();

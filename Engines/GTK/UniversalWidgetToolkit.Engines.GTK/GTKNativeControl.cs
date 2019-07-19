@@ -9,5 +9,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			this.Handle = handle;
 		}
+
+		public override string ToString()
+		{
+			return Handle.ToString();
+		}
 	}
 }

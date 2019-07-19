@@ -1023,6 +1023,32 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern IntPtr /*GError*/ gtk_gl_area_get_error(IntPtr /*GtkWidget*/ area);
 		#endregion
 
+		#region GtkSelection
+		/// <summary>
+		/// </summary>
+		/// <param name="selection_data">a pointer to a GtkSelectionData</param>
+		/// <param name="type">the type of selection data</param>
+		/// <param name="format">format (number of bits in a unit)</param>
+		/// <param name="data">pointer to the data (will be copied)</param>
+		/// <param name="length">length of the data</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_selection_data_set(IntPtr /*GtkSelectionData*/ selection_data, IntPtr /*GdkAtom*/ type, int format, byte[] data, int length);
+		/// <summary>
+		/// Sets the contents of the selection from a UTF-8 encoded string. The string is converted to the form determined by selection_data->target.
+		/// </summary>
+		/// <param name="selection_data">a GtkSelectionData</param>
+		/// <param name="str">a UTF-8 string</param>
+		/// <param name="len">the length of str , or -1 if str is nul-terminated.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_selection_data_set_text(IntPtr /*GtkSelectionData*/ selection_data, string str, int len);
+		/// <summary>
+		/// Gets the contents of the selection data as a UTF-8 string.
+		/// </summary>
+		/// <returns>if the selection data contained a recognized text type and it could be converted to UTF-8, a newly allocated string containing the converted text, otherwise NULL. If the result is non-NULL it must be freed with g_free().</returns>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_selection_data_get_text (IntPtr /*GtkSelectionData*/ selection_data);
+		#endregion
+
 	}
 }
 

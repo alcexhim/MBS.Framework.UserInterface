@@ -677,7 +677,28 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
-			Console.WriteLine("gc_drag_data_get");
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null)
+			{
+				Console.Error.WriteLine("GetControlByHandle({0}) returned null", widget);
+				return;
+			}
+			
+			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
+			ctl.OnDragDropDataRequest(e);
+			if (e.Cancel) return;
+			
+			if (e.Data is string)
+			{
+				Internal.GTK.Methods.gtk_selection_data_set_text(data, ((string)e.Data), ((string)e.Data).Length);
+			}
+			else if (e.Data is byte[])
+			{
+				Internal.GTK.Methods.gtk_selection_data_set(data, IntPtr.Zero, 8, ((byte[])e.Data), ((byte[])e.Data).Length);
+			}
+			else if (e.Data == null)
+			{
+			}
 		}
 
 		private void InvokeMethod(object obj, string meth, params object[] parms)

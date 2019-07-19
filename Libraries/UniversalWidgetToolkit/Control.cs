@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using MBS.Framework.Drawing;
+using UniversalWidgetToolkit.DragDrop;
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.Input.Mouse;
@@ -217,7 +218,7 @@ namespace UniversalWidgetToolkit
 
 
 		#endregion
-
+		#region Mouse Events
 		public event MouseEventHandler MouseDown;
 		public virtual void OnMouseDown(MouseEventArgs e)
 		{
@@ -233,7 +234,8 @@ namespace UniversalWidgetToolkit
 		{
 			MouseUp?.Invoke(this, e);
 		}
-
+		#endregion
+		#region Keyboard Events
 		public event KeyEventHandler KeyDown;
 		public virtual void OnKeyDown(KeyEventArgs e)
 		{
@@ -249,7 +251,14 @@ namespace UniversalWidgetToolkit
 		{
 			KeyUp?.Invoke(this, e);
 		}
-
+		#endregion
+		#region Drag Events
+		public event DragDropDataRequestEventHandler DragDropDataRequest;
+		public virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		{
+			DragDropDataRequest?.Invoke(this, e);
+		}
+		#endregion
 		public event PaintEventHandler Paint;
 		public virtual void OnPaint(PaintEventArgs e)
 		{

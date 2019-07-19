@@ -152,6 +152,7 @@
     <Compile Include="TreeModelChangedEvent.cs" />
     <Compile Include="ColumnHeaderStyle.cs" />
     <Compile Include="ExpandMode.cs" />
+    <Compile Include="DragDrop\DragDropDataRequestEvent.cs" />
     <Compile Include="DragDrop\DragDropTarget.cs" />
     <Compile Include="DragDrop\DragDropTargetFlags.cs" />
     <Compile Include="DataFormats\Layout\Glade\GladeXMLDataFormat.cs" />

@@ -58,10 +58,10 @@ namespace UniversalWidgetToolkit
 			{
 				TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(tn, _list.Count, -1);
 				OnItemRequested(e);
-				Console.WriteLine("count: {0} item: {1}", e.Count, e.Item);
+				
 				if (e.Cancel) return _list.Contains(tn);
 				if (e.Count == 0 || e.Item == null) return false;
-				Console.WriteLine("found item: {0} requested item: {1}", e.Item, tn);
+				
 				return (e.Item == tn);
 			}
 

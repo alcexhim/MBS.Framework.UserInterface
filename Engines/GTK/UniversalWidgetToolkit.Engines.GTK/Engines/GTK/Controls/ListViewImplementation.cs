@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 
 using UniversalWidgetToolkit;
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.Input.Mouse;
 using UniversalWidgetToolkit.Engines.GTK.Internal.GLib;
 using UniversalWidgetToolkit.Engines.GTK.Internal.GTK;
@@ -18,7 +19,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			TreeView,
 			IconView
 		}
-		private ImplementedAsType ImplementedAs(ListView tv)
+		private static ImplementedAsType ImplementedAs(ListView tv)
 		{
 			switch (tv.Mode)
 			{
@@ -152,7 +153,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			// still slightly buggy, but works well enough
-			if (e.Buttons == MouseButtons.Primary)
+			if (e.Buttons == MouseButtons.Primary && e.ModifierKeys == KeyboardModifierKey.None)
 			{
 				ListView tv = Control as ListView;
 				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
@@ -180,11 +181,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			ListView tv = Control as ListView;
 			UnblockSelection();
-			if (prevSelectedRow != null)
+			if (e.ModifierKeys == KeyboardModifierKey.None)
 			{
-				tv.SelectedRows.Clear();
-				tv.SelectedRows.Add(prevSelectedRow);
-				prevSelectedRow = null;
+				if (prevSelectedRow != null)
+				{
+					tv.SelectedRows.Clear();
+					tv.SelectedRows.Add(prevSelectedRow);
+					prevSelectedRow = null;
+				}
 			}
 		}
 
@@ -349,53 +353,76 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				{
 					hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
 					hListRows = Internal.GTK.Methods.gtk_icon_view_get_selected_items(hTreeView);
-					count = (int)Internal.GLib.Methods.g_list_length(hListRows);
+					
+					if (hListRows != IntPtr.Zero)
+						count = (int)Internal.GLib.Methods.g_list_length(hListRows);
 				}
 
-				if (hTreeModel == IntPtr.Zero || hListRows == IntPtr.Zero)
+				if (hTreeModel == IntPtr.Zero)
 				{
-					if (hTreeModel == IntPtr.Zero) Console.Error.WriteLine("uwt: gtk: tree model is null");
-					if (hListRows == IntPtr.Zero) Console.Error.WriteLine("uwt: gtk: row list is null");
+					Console.Error.WriteLine("uwt: gtk: tree model is null");
 					return;
 				}
+
 				
-				e.Count = count;
-				Console.WriteLine("returning {0} items", count);
-				if (count > 0 && e.Index > -1)
+				if (e.Index == -1 && e.Count == 1)
 				{
-					IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)e.Index);
-					Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
-					bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
-					if (ret)
+					// we are adding a new row to the selected collection
+					Internal.GTK.Structures.GtkTreeIter iter = _GtkTreeIterForTreeModelRow[e.Item];
+					switch (ImplementedAs(coll.Parent))
 					{
-						TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
-						e.Item = row;
+						case ImplementedAsType.TreeView:
+						{
+							IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(hTreeView);
+							Internal.GTK.Methods.gtk_tree_selection_select_iter(hTreeSelection, ref iter);
+							break;
+						}
+						case ImplementedAsType.IconView:
+						{
+							break;
+						}
 					}
+					return;
 				}
-				else if (count > 0 && e.Index == -1 && e.Item != null)
+				else if (hListRows != IntPtr.Zero)
 				{
-					// we are checking if selection contains a row
-					bool found = false;
-					for (int i = 0; i < count; i++)
+					e.Count = count;
+					if (count > 0 && e.Index > -1)
 					{
-						IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)i);
+						IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)e.Index);
 						Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 						bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 						if (ret)
 						{
 							TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
-							if (row == e.Item)
-							{
-								found = true;
-								break;
-							}
+							e.Item = row;
 						}
 					}
-					if (!found) e.Item = null;
-				}
-				else
-				{
-					e.Item = null;
+					else if (count > 0 && e.Index == -1 && e.Item != null)
+					{
+						// we are checking if selection contains a row
+						bool found = false;
+						for (int i = 0; i < count; i++)
+						{
+							IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)i);
+							Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+							bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
+							if (ret)
+							{
+								TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+								if (row == e.Item)
+								{
+									found = true;
+									break;
+								}
+							}
+						}
+						if (!found) e.Item = null;
+					}
+					else
+					{
+						e.Item = null;
+					}
 				}
 			}
 		}

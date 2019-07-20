@@ -342,6 +342,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_tree_selection_set_select_function(IntPtr /*GtkTreeSelection*/ selection, Delegates.GtkTreeSelectionFunc func, IntPtr data, IntPtr destroy);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_selection_set_select_function(IntPtr /*GtkTreeSelection*/ selection, IntPtr func, IntPtr data, IntPtr destroy);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_tree_selection_select_iter(IntPtr /*GtkTreeSelection*/ selection, ref Structures.GtkTreeIter iter);
 		#endregion
 		#region Tree Path
 		[DllImport(LIBRARY_FILENAME)]

@@ -173,6 +173,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					BlockSelection();
 					prevSelectedRow = row;
 				}
+				else
+				{
+					UnblockSelection();
+					prevSelectedRow = null;
+				}
 			}
 			base.OnMouseDown(e);
 		}

@@ -306,14 +306,17 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_icon_view_set_item_width(IntPtr /*GtkIconView*/ icon_view, int column);
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern int gtk_icon_view_get_item_width(IntPtr /*GtkIconView*/ icon_view);
+		public static extern int gtk_icon_view_get_item_width(IntPtr /*GtkIconView*/ icon_view);[DllImport(LIBRARY_FILENAME)]
+		public static extern Constants.GtkSelectionMode gtk_icon_view_get_selection_mode(IntPtr /*GtkIconView*/ icon_view);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_icon_view_set_selection_mode(IntPtr /*GtkIconView*/ icon_view, Constants.GtkSelectionMode type);
 		#endregion
 
 		#region Tree Selection
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_selection_get_selected(IntPtr /*GtkTreeSelection*/ selection, ref IntPtr /*GtkTreeModel*/ model, Structures.GtkTreeIter[] iter);
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern IntPtr /*GList*/ gtk_tree_selection_get_selected_rows(IntPtr /*GtkTreeSelection*/ selection, IntPtr /*GtkTreeModel*/ model);
+		public static extern IntPtr /*GList*/ gtk_tree_selection_get_selected_rows(IntPtr /*GtkTreeSelection*/ selection, ref IntPtr /*GtkTreeModel*/ model);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gtk_tree_selection_count_selected_rows(IntPtr /*GtkTreeSelection*/ selection);
 		[DllImport(LIBRARY_FILENAME)]
@@ -324,6 +327,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_tree_selection_set_mode(IntPtr /*GtkTreeSelection*/ selection, Constants.GtkSelectionMode type);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern Constants.GtkSelectionMode gtk_tree_selection_get_mode(IntPtr /*GtkTreeSelection*/ selection);
+		#endregion
+		#region Tree Path
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern string gtk_tree_path_to_string(IntPtr /*GtkTreePath*/ path);
 		#endregion
 		#endregion
 

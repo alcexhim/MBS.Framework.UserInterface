@@ -24,12 +24,14 @@ namespace UniversalWidgetToolkit
 	public class TreeModelRowItemRequestedEventArgs : System.ComponentModel.CancelEventArgs
 	{
 		public TreeModelRow Item { get; set; }
+		public int Index { get; set; } = -1;
 		public int Count { get; set; }
 
-		public TreeModelRowItemRequestedEventArgs(TreeModelRow item, int count)
+		public TreeModelRowItemRequestedEventArgs(TreeModelRow item, int count, int index)
 		{
 			Item = item;
 			Count = count;
+			Index = index;
 		}
 	}
 	public delegate void TreeModelRowItemRequestedEventHandler(object sender, TreeModelRowItemRequestedEventArgs e);

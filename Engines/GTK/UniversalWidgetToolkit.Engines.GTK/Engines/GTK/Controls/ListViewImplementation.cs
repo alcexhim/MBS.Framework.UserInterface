@@ -16,7 +16,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public void SetSelectionMode(SelectionMode value)
 		{
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).Handle);
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
 			switch (value)
 			{
 				case SelectionMode.None:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None); break;
@@ -27,7 +27,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		}
 		public SelectionMode GetSelectionMode()
 		{
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).Handle);
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
 			Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
 			switch (mode)
 			{
@@ -135,36 +135,89 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.gtk_container_add(hScrolledWindow, handle);
 
 			// connect the signals
-			Internal.GObject.Methods.g_signal_connect(handle, "row_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
-			Internal.GObject.Methods.g_signal_connect(handle, "cursor_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_changed);
-			RegisterListViewHandle(tv, handle);
-
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
-			switch (tv.SelectionMode)
+			switch (tv.Mode)
 			{
-				case SelectionMode.None:
+				case ListViewMode.Detail:
 				{
-					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None);
+					Internal.GObject.Methods.g_signal_connect(handle, "row_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
+					Internal.GObject.Methods.g_signal_connect(handle, "cursor_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_or_selection_changed);
 					break;
 				}
-				case SelectionMode.Single:
+				case ListViewMode.LargeIcon:
 				{
-					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single);
-					break;
-				}
-				case SelectionMode.Browse:
-				{
-					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse);
-					break;
-				}
-				case SelectionMode.Multiple:
-				{
-					Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple);
+					Internal.GObject.Methods.g_signal_connect(handle, "item_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
+					Internal.GObject.Methods.g_signal_connect(handle, "selection_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_or_selection_changed);
 					break;
 				}
 			}
-
-			return new GTKNativeControl(hScrolledWindow, handle);
+			RegisterListViewHandle(tv, handle);
+			
+			switch (tv.Mode)
+			{
+				case ListViewMode.Detail:
+				{
+					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+					if (hTreeSelection != IntPtr.Zero)
+					{
+						switch (tv.SelectionMode)
+						{
+							case SelectionMode.None:
+							{
+								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None);
+								break;
+							}
+							case SelectionMode.Single:
+							{
+								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single);
+								break;
+							}
+							case SelectionMode.Browse:
+							{
+								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse);
+								break;
+							}
+							case SelectionMode.Multiple:
+							{
+								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple);
+								break;
+							}
+						}
+					}
+					break;
+				}
+				case ListViewMode.LargeIcon:
+				{
+					switch (tv.SelectionMode)
+					{
+						case SelectionMode.None:
+						{
+							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.None);
+							break;
+						}
+						case SelectionMode.Single:
+						{
+							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Single);
+							break;
+						}
+						case SelectionMode.Browse:
+						{
+							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Browse);
+							break;
+						}
+						case SelectionMode.Multiple:
+						{
+							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Multiple);
+							break;
+						}
+					}
+					break;
+				}
+			}
+			
+			GTKNativeControl native = new GTKNativeControl(hScrolledWindow, handle);
+			native.SetNamedHandle("TreeView", handle);
+			native.SetNamedHandle("ScrolledWindow", hScrolledWindow);
+			return native;
 		}
 
 		private static void SelectedRows_ItemRequested(object sender, TreeModelRowItemRequestedEventArgs e)
@@ -172,41 +225,46 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			TreeModelRow.TreeModelSelectedRowCollection coll = (sender as TreeModelRow.TreeModelSelectedRowCollection);
 			if (coll.Parent != null)
 			{
+				IntPtr hTreeView = GetHandleForControl(coll.Parent);
+				IntPtr hTreeModel = IntPtr.Zero;
+				IntPtr hListRows = IntPtr.Zero;
+				int count = 0;
 				if (coll.Parent.Mode == ListViewMode.Detail)
 				{
-					IntPtr hTreeView = GetHandleForControl(coll.Parent);
-					IntPtr hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(hTreeView);
+					hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(hTreeView);
+					
 					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(hTreeView);
-
-					int count = Internal.GTK.Methods.gtk_tree_selection_count_selected_rows(hTreeSelection);
-
-					Internal.GTK.Structures.GtkTreeIter[] iters = new Internal.GTK.Structures.GtkTreeIter[count];
-					bool ret = Internal.GTK.Methods.gtk_tree_selection_get_selected(hTreeSelection, ref hTreeModel, iters);
-
-					List<TreeModelRow> list = new List<TreeModelRow>();
-					for (int i = 0; i < count; i++)
-					{
-						TreeModelRow row = _TreeModelRowForGtkTreeIter[iters[i]];
-						list.Add(row);
-					}
-
-					e.Count = count;
-					if (list.Count > 0)
-					{
-						e.Item = list[0];
-					}
-					else
-					{
-						e.Item = null;
-					}
+					count = Internal.GTK.Methods.gtk_tree_selection_count_selected_rows(hTreeSelection);
+					hListRows = Internal.GTK.Methods.gtk_tree_selection_get_selected_rows(hTreeSelection, ref hTreeModel);
 				}
 				else if (coll.Parent.Mode == ListViewMode.LargeIcon)
 				{
-					IntPtr hTreeView = GetHandleForControl(coll.Parent);
-					IntPtr hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
-					IntPtr /*GList*/ hTreeSelection = Internal.GTK.Methods.gtk_icon_view_get_selected_items(hTreeView);
-					
-					// TODO: implement this
+					hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
+					hListRows = Internal.GTK.Methods.gtk_icon_view_get_selected_items(hTreeView);
+				}
+
+				if (hTreeModel == IntPtr.Zero || hListRows == IntPtr.Zero)
+				{
+					if (hTreeModel == IntPtr.Zero) Console.Error.WriteLine("uwt: gtk: tree model is null");
+					if (hListRows == IntPtr.Zero) Console.Error.WriteLine("uwt: gtk: row list is null");
+					return;
+				}
+				
+				e.Count = count;
+				if (count > 0 && e.Index > -1)
+				{
+					IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)e.Index);
+					Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+					bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
+					if (ret)
+					{
+						TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+						e.Item = row;
+					}
+				}
+				else
+				{
+					e.Item = null;
 				}
 			}
 		}
@@ -250,7 +308,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			return null;
 		}
 
-		private static void gc_cursor_changed(IntPtr handle)
+		private static void gc_cursor_or_selection_changed(IntPtr handle)
 		{
 			ListView ctl = GetControlByHandle(handle);
 			if (ctl != null)
@@ -258,7 +316,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				ctl.OnSelectionChanged(EventArgs.Empty);
 			}
 		}
-
+		
 		private static void gc_row_activated(IntPtr handle, IntPtr /*GtkTreePath*/ path, IntPtr /*GtkTreeViewColumn*/ column)
 		{
 			ListView lv = (GetControlByHandle(handle) as ListView);

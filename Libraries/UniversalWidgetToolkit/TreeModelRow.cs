@@ -19,14 +19,14 @@ namespace UniversalWidgetToolkit
 
 			public void Add(TreeModelRow row)
 			{
-				OnItemRequested(new TreeModelRowItemRequestedEventArgs(row, 1));
+				OnItemRequested(new TreeModelRowItemRequestedEventArgs(row, 1, -1));
 			}
 			public TreeModelRow this[int index]
 			{
 				get
 				{
 					TreeModelRow item = (index < _list.Count ? _list[index] : null);
-					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(item, _list.Count);
+					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(item, _list.Count, index);
 					OnItemRequested(e);
 					if (e.Cancel) return item;
 					return e.Item;
@@ -36,7 +36,7 @@ namespace UniversalWidgetToolkit
 			{
 				get
 				{
-					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(null, _list.Count);
+					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(null, _list.Count, -1);
 					OnItemRequested(e);
 					if (e.Cancel) return _list.Count;
 					return e.Count;
@@ -56,7 +56,7 @@ namespace UniversalWidgetToolkit
 
 			public bool Contains(TreeModelRow tn)
 			{
-				TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(tn, _list.Count);
+				TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(tn, _list.Count, -1);
 				OnItemRequested(e);
 				if (e.Cancel) return _list.Contains(tn);
 				if (e.Count == 0 || e.Item == null) return false;
@@ -115,7 +115,7 @@ namespace UniversalWidgetToolkit
 			{
 				get
 				{
-					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(null, base.Count);
+					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(null, base.Count, -1);
 					OnItemRequested(e);
 					if (e.Cancel) return base.Count;
 					return e.Count;
@@ -126,7 +126,7 @@ namespace UniversalWidgetToolkit
 				get
 				{
 					TreeModelRow originalItem = index < base.Count ? base[index] : null;
-					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(originalItem, base.Count);
+					TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(originalItem, base.Count, index);
 					OnItemRequested(e);
 					if (e.Cancel) return originalItem;
 					return e.Item;

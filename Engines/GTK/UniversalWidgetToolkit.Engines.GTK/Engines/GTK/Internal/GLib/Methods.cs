@@ -16,6 +16,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GLib
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_list_foreach(IntPtr /*GList*/ list, Delegates.GFunc func, IntPtr user_data);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_list_length(IntPtr /*GList*/ list);
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_list_free(IntPtr /*GList*/ list);
 
 		[DllImport(LIBRARY_FILENAME)]

@@ -14,21 +14,60 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 		}
 
-		public void SetSelectionMode(SelectionMode value)
+		private void SetSelectionModeInternal(IntPtr handle, ListView tv, SelectionMode value)
 		{
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
-			switch (value)
+			switch (tv.Mode)
 			{
-				case SelectionMode.None:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None); break;
-				case SelectionMode.Single:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single); break;
-				case SelectionMode.Browse:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse); break;
-				case SelectionMode.Multiple:  Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple); break;
+				case ListViewMode.Detail:
+				{
+					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+					if (hTreeSelection != IntPtr.Zero)
+					{
+						Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+					}
+					break;
+				}
+				case ListViewMode.LargeIcon:
+				{
+					Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+					break;
+				}
 			}
+			
 		}
-		public SelectionMode GetSelectionMode()
+
+		private SelectionMode GetSelectionModeInternal(IntPtr handle, ListView tv)
 		{
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
-			Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
+			switch (tv.Mode)
+			{
+				case ListViewMode.Detail:
+				{
+					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
+					return GtkSelectionModeToSelectionMode(mode);
+				}
+				case ListViewMode.LargeIcon:
+				{
+					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_icon_view_get_selection_mode(handle);
+					return GtkSelectionModeToSelectionMode(mode);
+				}
+			}
+			throw new InvalidOperationException();
+		}
+
+		private Internal.GTK.Constants.GtkSelectionMode SelectionModeToGtkSelectionMode(SelectionMode mode)
+		{
+			switch (mode)
+			{
+				case SelectionMode.None: return Internal.GTK.Constants.GtkSelectionMode.None;
+				case SelectionMode.Single: return Internal.GTK.Constants.GtkSelectionMode.Single;
+				case SelectionMode.Browse: return Internal.GTK.Constants.GtkSelectionMode.Browse;
+				case SelectionMode.Multiple: return Internal.GTK.Constants.GtkSelectionMode.Multiple;
+			}
+			throw new InvalidOperationException();
+		}
+		private SelectionMode GtkSelectionModeToSelectionMode(Internal.GTK.Constants.GtkSelectionMode mode)
+		{
 			switch (mode)
 			{
 				case Internal.GTK.Constants.GtkSelectionMode.None: return SelectionMode.None;
@@ -37,6 +76,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				case Internal.GTK.Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
 			}
 			throw new InvalidOperationException();
+		}
+
+		public void SetSelectionMode(SelectionMode value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			ListView tv = Control as ListView;
+			SetSelectionModeInternal(handle, tv, value);
+		}
+		public SelectionMode GetSelectionMode()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			ListView tv = Control as ListView;
+			return GetSelectionModeInternal(handle, tv);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -152,67 +204,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			RegisterListViewHandle(tv, handle);
 			
-			switch (tv.Mode)
-			{
-				case ListViewMode.Detail:
-				{
-					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
-					if (hTreeSelection != IntPtr.Zero)
-					{
-						switch (tv.SelectionMode)
-						{
-							case SelectionMode.None:
-							{
-								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.None);
-								break;
-							}
-							case SelectionMode.Single:
-							{
-								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Single);
-								break;
-							}
-							case SelectionMode.Browse:
-							{
-								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Browse);
-								break;
-							}
-							case SelectionMode.Multiple:
-							{
-								Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, Internal.GTK.Constants.GtkSelectionMode.Multiple);
-								break;
-							}
-						}
-					}
-					break;
-				}
-				case ListViewMode.LargeIcon:
-				{
-					switch (tv.SelectionMode)
-					{
-						case SelectionMode.None:
-						{
-							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.None);
-							break;
-						}
-						case SelectionMode.Single:
-						{
-							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Single);
-							break;
-						}
-						case SelectionMode.Browse:
-						{
-							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Browse);
-							break;
-						}
-						case SelectionMode.Multiple:
-						{
-							Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, Internal.GTK.Constants.GtkSelectionMode.Multiple);
-							break;
-						}
-					}
-					break;
-				}
-			}
+			SetSelectionModeInternal(handle, tv, tv.SelectionMode);
 			
 			GTKNativeControl native = new GTKNativeControl(hScrolledWindow, handle);
 			native.SetNamedHandle("TreeView", handle);
@@ -241,6 +233,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				{
 					hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
 					hListRows = Internal.GTK.Methods.gtk_icon_view_get_selected_items(hTreeView);
+					count = (int)Internal.GLib.Methods.g_list_length(hListRows);
 				}
 
 				if (hTreeModel == IntPtr.Zero || hListRows == IntPtr.Zero)
@@ -251,6 +244,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 				
 				e.Count = count;
+				Console.WriteLine("returning {0} items", count);
 				if (count > 0 && e.Index > -1)
 				{
 					IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)e.Index);
@@ -366,7 +360,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		internal override void RegisterDragSourceGTK(IntPtr hScrolledWindow, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
 		{
 			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
-			Internal.GTK.Methods.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+			ListView tv = (GetControlByHandle(hTreeView) as ListView);
+			switch (tv.Mode)
+			{
+				case ListViewMode.LargeIcon:
+				{
+					Internal.GTK.Methods.gtk_icon_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+					break;
+				}
+				case ListViewMode.Detail:
+				{
+					Internal.GTK.Methods.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+					break;
+				}
+			}
 		}
 
 		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)

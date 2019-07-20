@@ -258,6 +258,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_enable_model_drag_source(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkModifierType start_button_mask, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_enable_model_drag_dest(IntPtr /*GtkWidget*/ widget, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_store_newv(int columns, IntPtr[] columnTypes);
@@ -310,6 +312,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern Constants.GtkSelectionMode gtk_icon_view_get_selection_mode(IntPtr /*GtkIconView*/ icon_view);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_icon_view_set_selection_mode(IntPtr /*GtkIconView*/ icon_view, Constants.GtkSelectionMode type);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_icon_view_enable_model_drag_source(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkModifierType start_button_mask, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_icon_view_enable_model_drag_dest(IntPtr /*GtkWidget*/ widget, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 		#endregion
 
 		#region Tree Selection

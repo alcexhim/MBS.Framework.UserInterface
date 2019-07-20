@@ -196,4 +196,7 @@ FakesAssemblies/
 *.opt
 
 # MonoDevelop crap
+.vs
 *.resources
+mono_crash.*.blob
+

@@ -578,7 +578,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (ctl != null)
 			{
 				_mousedown_buttons = ee.Buttons;
-				ctl.OnMouseDown(ee);
+				InvokeMethod(ctl.NativeImplementation, "OnMouseDown", ee);
 				if (ee.Handled) return true;
 			}
 			return false;
@@ -592,7 +592,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			ee = new MouseEventArgs(ee.X, ee.Y, _mousedown_buttons, ee.ModifierKeys);
 			if (ctl != null)
 			{
-				ctl.OnMouseMove(ee);
+				InvokeMethod(ctl.NativeImplementation, "OnMouseMove", ee);
 			}
 			else
 			{
@@ -613,10 +613,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Control ctl = GetControlByHandle(widget);
 			if (ctl != null)
 			{
-				ctl.OnMouseUp(ee);
+				InvokeMethod(ctl.NativeImplementation, "OnMouseUp", ee);
 				
 				if (ee.Buttons == MouseButtons.Primary)
-					ctl.OnClick(EventArgs.Empty);
+					InvokeMethod(ctl.NativeImplementation, "OnClick", ee);
 
 				if (ee.Handled) return true;
 			}
@@ -662,9 +662,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "realize", gc_realize_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "unrealize", gc_unrealize_handler);
 
-			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_begin", gc_drag_begin_handler);
-			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
-			Internal.GObject.Methods.g_signal_connect(nativeHandle, "drag_data_get", gc_drag_data_get_handler);
+			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_begin", gc_drag_begin_handler);
+			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
+			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_get", gc_drag_data_get_handler);
 		}
 
 		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
@@ -703,6 +703,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		private void InvokeMethod(object obj, string meth, params object[] parms)
 		{
+			if (obj == null)
+			{
+				Console.WriteLine("Engine::InvokeMethod: obj is null");
+				return;
+			}
+			
 			Type t = obj.GetType();
 			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 			if (mi != null)
@@ -719,21 +725,15 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
-
-			if (ctl.NativeImplementation != null)
-			{
-				InvokeMethod(ctl.NativeImplementation, "OnRealize", EventArgs.Empty);
-			}
+			
+			InvokeMethod(ctl.NativeImplementation, "OnRealize", EventArgs.Empty);
 		}
 		private void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
 			
-			if (ctl.NativeImplementation != null)
-			{
-				InvokeMethod(ctl.NativeImplementation, "OnUnrealize", EventArgs.Empty);
-			}
+			InvokeMethod(ctl.NativeImplementation, "OnUnrealize", EventArgs.Empty);
 		}
 		
 		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)

@@ -76,6 +76,23 @@ namespace UniversalWidgetToolkit
 			RegisterDropTargetInternal(control, targets, actions, buttons, modifierKeys);
 		}
 
+		protected internal virtual void OnClick(EventArgs e)
+		{
+			Control?.OnClick(e);
+		}
+		protected internal virtual void OnMouseDown(MouseEventArgs e)
+		{
+			Control?.OnMouseDown(e);
+		}
+		protected internal virtual void OnMouseMove(MouseEventArgs e)
+		{
+			Control?.OnMouseMove(e);
+		}
+		protected internal virtual void OnMouseUp(MouseEventArgs e)
+		{
+			Control?.OnMouseUp(e);
+		}
+
 		protected internal virtual void OnRealize(EventArgs e)
 		{
 			Control?.OnRealize(e);

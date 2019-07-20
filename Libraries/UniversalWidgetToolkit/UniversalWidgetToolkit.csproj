@@ -175,6 +175,7 @@
     <Compile Include="ResizeEvent.cs" />
     <Compile Include="OpenGLCanvasRenderEvent.cs" />
     <Compile Include="ListViewMode.cs" />
+    <Compile Include="ListViewHitTestInfo.cs" />
     <Compile Include="SelectionMode.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+
+using UniversalWidgetToolkit;
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Input.Mouse;
 using UniversalWidgetToolkit.Engines.GTK.Internal.GLib;
 using UniversalWidgetToolkit.Engines.GTK.Internal.GTK;
 
@@ -37,6 +40,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		
 		public ListViewImplementation(Engine engine, Control control) : base(engine, control)
 		{
+			block_selection_func_handler =  new Internal.GTK.Delegates.GtkTreeSelectionFunc(block_selection_func);
 		}
 
 		private void SetSelectionModeInternal(IntPtr handle, ListView tv, SelectionMode value)
@@ -114,6 +118,93 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 			ListView tv = Control as ListView;
 			return GetSelectionModeInternal(handle, tv);
+		}
+
+		private ListViewHitTestInfo HitTest(IntPtr handle, double x, double y)
+		{
+			IntPtr hPath = IntPtr.Zero;
+			IntPtr hColumn = IntPtr.Zero;
+			int cx = 0, cy = 0;
+			
+			TreeModelRow row = null;
+			TreeModelColumn column = null;
+			bool ret = Internal.GTK.Methods.gtk_tree_view_get_path_at_pos(handle, (int)x, (int)y, ref hPath, ref hColumn, ref cx, ref cy);
+			if (ret)
+			{
+				Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+				IntPtr hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(handle);
+				bool retIter = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
+				if (retIter)
+				{
+					if (_TreeModelRowForGtkTreeIter.ContainsKey(iter))
+					{
+						row = _TreeModelRowForGtkTreeIter[iter];
+					}
+				}
+			}
+			return new ListViewHitTestInfo(row, column);
+		}
+		
+		/// <summary>
+		/// We catch the GtkTreeView.OnMouseDown event to prevent selection from changing
+		/// if it is a multi-select view.
+		/// </summary>
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			// still slightly buggy, but works well enough
+			if (e.Buttons == MouseButtons.Primary)
+			{
+				ListView tv = Control as ListView;
+				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+				if (tv == null) return;
+				
+				if (tv.SelectedRows.Count <= 1) return;
+				
+				// stop the selection
+				// we need to check if the row we're mouse-downing on is in
+				// the selection list or not
+				// if it is, we should cancel the selection because we might
+				// be dragging
+				// if it isn't, we're safe to allow the selection
+				TreeModelRow row = HitTest(handle, e.X, e.Y).Row;
+				if (tv.SelectedRows.Contains(row))
+				{
+					BlockSelection();
+					prevSelectedRow = row;
+				}
+			}
+			base.OnMouseDown(e);
+		}
+		private TreeModelRow prevSelectedRow = null;
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			ListView tv = Control as ListView;
+			UnblockSelection();
+			if (prevSelectedRow != null)
+			{
+				tv.SelectedRows.Clear();
+				tv.SelectedRows.Add(prevSelectedRow);
+				prevSelectedRow = null;
+			}
+		}
+
+		private Internal.GTK.Delegates.GtkTreeSelectionFunc block_selection_func_handler = null;
+		private bool block_selection_func(IntPtr /*GtkTreeSelection*/ selection, IntPtr /*GtkTreeModel*/ model, IntPtr /*GtkTreePath*/ path, bool path_currently_selected, IntPtr data)
+		{
+			return false;
+		}
+
+		private void BlockSelection()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+			Internal.GTK.Methods.gtk_tree_selection_set_select_function(hTreeSelection, block_selection_func_handler, IntPtr.Zero, IntPtr.Zero);
+		}
+		private void UnblockSelection()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+			Internal.GTK.Methods.gtk_tree_selection_set_select_function(hTreeSelection, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -280,6 +371,27 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
 						e.Item = row;
 					}
+				}
+				else if (count > 0 && e.Index == -1 && e.Item != null)
+				{
+					// we are checking if selection contains a row
+					bool found = false;
+					for (int i = 0; i < count; i++)
+					{
+						IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)i);
+						Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+						bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
+						if (ret)
+						{
+							TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+							if (row == e.Item)
+							{
+								found = true;
+								break;
+							}
+						}
+					}
+					if (!found) e.Item = null;
 				}
 				else
 				{

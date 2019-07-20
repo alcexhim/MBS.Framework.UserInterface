@@ -246,6 +246,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_tree_view_set_model(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreeModel*/ model);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_get_path_at_pos(IntPtr /*GtkTreeView*/ tree_view, int x, int y, ref IntPtr /*GtkTreePath**/ path, ref IntPtr /*GtkTreeViewColumn**/ column, ref int cell_x, ref int cell_y);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_model_get_iter(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter, IntPtr /*GtkTreePath*/ path);
 
 		[DllImport(LIBRARY_FILENAME)]
@@ -334,6 +337,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_tree_selection_set_mode(IntPtr /*GtkTreeSelection*/ selection, Constants.GtkSelectionMode type);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern Constants.GtkSelectionMode gtk_tree_selection_get_mode(IntPtr /*GtkTreeSelection*/ selection);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_selection_set_select_function(IntPtr /*GtkTreeSelection*/ selection, Delegates.GtkTreeSelectionFunc func, IntPtr data, IntPtr destroy);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_selection_set_select_function(IntPtr /*GtkTreeSelection*/ selection, IntPtr func, IntPtr data, IntPtr destroy);
 		#endregion
 		#region Tree Path
 		[DllImport(LIBRARY_FILENAME)]

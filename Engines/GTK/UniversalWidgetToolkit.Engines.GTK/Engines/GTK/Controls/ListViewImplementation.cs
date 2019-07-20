@@ -331,9 +331,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			
 			SetSelectionModeInternal(handle, tv, tv.SelectionMode);
 			
-			GTKNativeControl native = new GTKNativeControl(hScrolledWindow, handle);
-			native.SetNamedHandle("TreeView", handle);
-			native.SetNamedHandle("ScrolledWindow", hScrolledWindow);
+			GTKNativeControl native = new GTKNativeControl(hScrolledWindow,
+			new KeyValuePair<string, IntPtr>[]
+			{
+				new KeyValuePair<string, IntPtr>("TreeView", handle),
+				new KeyValuePair<string, IntPtr>("ScrolledWindow", hScrolledWindow)
+			});
 			return native;
 		}
 

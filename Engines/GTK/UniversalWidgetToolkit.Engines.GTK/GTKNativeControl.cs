@@ -6,7 +6,18 @@ namespace UniversalWidgetToolkit.Engines.GTK
 	public class GTKNativeControl : NativeControl
 	{
 		public IntPtr Handle { get; private set; } = IntPtr.Zero;
-		public IntPtr[] AdditionalHandles { get; private set; } = new IntPtr[0];
+		public IntPtr[] AdditionalHandles
+		{
+			get
+			{
+				List<IntPtr> list = new List<IntPtr>();
+				foreach (KeyValuePair<string, IntPtr> kvp in _NamedHandles)
+				{
+					list.Add(kvp.Value);
+				}
+				return list.ToArray();
+			}
+		}
 
 		private Dictionary<string, IntPtr> _NamedHandles = new Dictionary<string, IntPtr>();
 		public void SetNamedHandle(string name, IntPtr value)
@@ -19,10 +30,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return defaultValue;
 		}
 
-		public GTKNativeControl(IntPtr handle, params IntPtr[] additionalHandles)
+		public GTKNativeControl(IntPtr handle, params KeyValuePair<string, IntPtr>[] namedHandles)
 		{
 			this.Handle = handle;
-			this.AdditionalHandles = additionalHandles;
+			foreach (KeyValuePair<string, IntPtr> kvp in namedHandles)
+			{
+				SetNamedHandle(kvp.Key, kvp.Value);
+			}
 		}
 
 		public override string ToString()

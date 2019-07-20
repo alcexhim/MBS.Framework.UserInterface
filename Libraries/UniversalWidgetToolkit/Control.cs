@@ -78,11 +78,6 @@ namespace UniversalWidgetToolkit
 				return mvarParent.Layout.GetControlBounds(this);
 			}
 		}
-
-		public virtual void Dispose()
-		{
-			Console.WriteLine("Dispose() not implemented on " + this.GetType().FullName);
-		}
 		
 
 		private Vector2D mvarLocation = new Vector2D(0, 0);
@@ -335,11 +330,50 @@ namespace UniversalWidgetToolkit
 			// convenience method
 			Invalidate();
 		}
-
-
-		public bool IsDisposed()
+		
+		private bool mvarIsDisposed = false;
+		public bool IsDisposed
 		{
-			return Application.Engine.IsControlDisposed(this);
+			get
+			{
+				if (Application.Engine != null)
+					return Application.Engine.IsControlDisposed(this);
+				return mvarIsDisposed;
+			}
+		}
+		
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		
+		protected virtual void DisposeManagedInternal()
+		{
+		}
+		protected virtual void DisposeUnmanagedInternal()
+		{
+		}
+		
+		protected void Dispose(bool disposing)
+		{
+			if (mvarIsDisposed)
+				return;
+			
+			if (disposing) {
+				// free any managed objects here
+				DisposeManagedInternal();
+			}
+
+			// free any unmanaged objects here
+			DisposeUnmanagedInternal();
+			
+			mvarIsDisposed = true;
+		}
+		
+		~Control()
+		{
+			Dispose(false);
 		}
 
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();

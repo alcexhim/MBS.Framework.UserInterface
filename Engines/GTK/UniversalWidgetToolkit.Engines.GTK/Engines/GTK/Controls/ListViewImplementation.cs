@@ -10,15 +10,40 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 	[NativeImplementation(typeof(ListView))]
 	public class ListViewImplementation : GTKNativeImplementation, UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation
 	{
+		private enum ImplementedAsType
+		{
+			TreeView,
+			IconView
+		}
+		private ImplementedAsType ImplementedAs(ListView tv)
+		{
+			switch (tv.Mode)
+			{
+				case ListViewMode.LargeIcon:
+				case ListViewMode.SmallIcon:
+				case ListViewMode.Thumbnail:
+				case ListViewMode.Tile:
+				{
+					return ImplementedAsType.IconView; 
+				}
+				case ListViewMode.List:
+				case ListViewMode.Detail:
+				{
+					return ImplementedAsType.TreeView;
+				}
+			}
+			throw new ArgumentException(String.Format("ListViewMode not supported {0}", tv.Mode));
+		}
+		
 		public ListViewImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
 
 		private void SetSelectionModeInternal(IntPtr handle, ListView tv, SelectionMode value)
 		{
-			switch (tv.Mode)
+			switch (ImplementedAs(tv))
 			{
-				case ListViewMode.Detail:
+				case ImplementedAsType.TreeView:
 				{
 					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
 					if (hTreeSelection != IntPtr.Zero)
@@ -27,7 +52,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					}
 					break;
 				}
-				case ListViewMode.LargeIcon:
+				case ImplementedAsType.IconView:
 				{
 					Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, SelectionModeToGtkSelectionMode(tv.SelectionMode));
 					break;
@@ -38,15 +63,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private SelectionMode GetSelectionModeInternal(IntPtr handle, ListView tv)
 		{
-			switch (tv.Mode)
+			switch (ImplementedAs(tv))
 			{
-				case ListViewMode.Detail:
+				case ImplementedAsType.TreeView:
 				{
 					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
 					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
 					return GtkSelectionModeToSelectionMode(mode);
 				}
-				case ListViewMode.LargeIcon:
+				case ImplementedAsType.IconView:
 				{
 					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_icon_view_get_selection_mode(handle);
 					return GtkSelectionModeToSelectionMode(mode);
@@ -139,9 +164,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 			}
 
-			switch (tv.Mode)
+			switch (ImplementedAs(tv))
 			{
-				case ListViewMode.Detail:
+				case ImplementedAsType.TreeView:
 				{
 					handle = Internal.GTK.Methods.gtk_tree_view_new();
 
@@ -169,7 +194,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					Internal.GTK.Methods.gtk_tree_view_set_model(handle, hTreeStore);
 					break;
 				}
-				case ListViewMode.LargeIcon:
+				case ImplementedAsType.IconView:
 				{
 					handle = Internal.GTK.Methods.gtk_icon_view_new();
 					Internal.GTK.Methods.gtk_icon_view_set_model(handle, hTreeStore);
@@ -187,15 +212,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.gtk_container_add(hScrolledWindow, handle);
 
 			// connect the signals
-			switch (tv.Mode)
+			switch (ImplementedAs(tv))
 			{
-				case ListViewMode.Detail:
+				case ImplementedAsType.TreeView:
 				{
 					Internal.GObject.Methods.g_signal_connect(handle, "row_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
 					Internal.GObject.Methods.g_signal_connect(handle, "cursor_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_or_selection_changed);
 					break;
 				}
-				case ListViewMode.LargeIcon:
+				case ImplementedAsType.IconView:
 				{
 					Internal.GObject.Methods.g_signal_connect(handle, "item_activated", (Internal.GTK.Delegates.GtkTreeViewRowActivatedFunc)gc_row_activated);
 					Internal.GObject.Methods.g_signal_connect(handle, "selection_changed", (Internal.GTK.Delegates.GtkTreeViewFunc)gc_cursor_or_selection_changed);
@@ -361,14 +386,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
 			ListView tv = (GetControlByHandle(hTreeView) as ListView);
-			switch (tv.Mode)
+			switch (ImplementedAs(tv))
 			{
-				case ListViewMode.LargeIcon:
+				case ImplementedAsType.IconView:
 				{
 					Internal.GTK.Methods.gtk_icon_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
 					break;
 				}
-				case ListViewMode.Detail:
+				case ImplementedAsType.TreeView:
 				{
 					Internal.GTK.Methods.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
 					break;

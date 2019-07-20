@@ -82,7 +82,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (window == null)
 				return;
 
-			window.OnActivate(EventArgs.Empty);
+			InvokeMethod(window, "OnActivate", EventArgs.Empty);
 		}
 
 		private void Window_Closing(IntPtr handle, IntPtr data)
@@ -91,7 +91,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (window != null)
 			{
 				CancelEventArgs e = new CancelEventArgs();
-				window.OnClosing(e);
+				InvokeMethod(window, "OnClosing", e);
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Window window = (Application.Engine.GetControlByHandle(handle) as Window);
 			if (window != null)
 			{
-				window.OnClosed(EventArgs.Empty);
+				InvokeMethod(window, "OnClosed", EventArgs.Empty);
 			}
 		}
 

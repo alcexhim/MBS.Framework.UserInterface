@@ -41,14 +41,14 @@ namespace UniversalWidgetToolkit.Controls
 		/// <value><c>true</c> if is changed by user; otherwise, <c>false</c>.</value>
 		public bool IsChangedByUser { get; private set; }
 
-		public override void OnKeyDown(KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
 			this.IsChangedByUser = true;
 		}
 
 		public event EventHandler Changed;
-		public virtual void OnChanged(EventArgs e)
+		protected virtual void OnChanged(EventArgs e)
 		{
 			if (Changed != null)
 				Changed (this, e);

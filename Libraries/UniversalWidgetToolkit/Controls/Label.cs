@@ -23,7 +23,7 @@ namespace UniversalWidgetToolkit.Controls
 		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
 		public WordWrapMode WordWrap { get; set; } = WordWrapMode.Default;
 
-		public override void OnPaint(PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 			e.Graphics.DrawText(Text, Font, ClientRectangle, Brushes.Black, HorizontalAlignment, VerticalAlignment);

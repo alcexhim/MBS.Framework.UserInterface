@@ -298,7 +298,7 @@ namespace UniversalWidgetToolkit.TestProject
 			});
 		}
 
-		public override void OnClosed (EventArgs e)
+		protected override void OnClosed (EventArgs e)
 		{
 			base.OnClosed (e);
 

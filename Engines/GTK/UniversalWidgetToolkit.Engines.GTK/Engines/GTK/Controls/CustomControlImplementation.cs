@@ -9,18 +9,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 	{
 		public CustomControlImplementation(Engine engine, Control control) : base(engine, control)
 		{
+			DrawHandler_Handler = new Internal.GObject.Delegates.DrawFunc(DrawHandler);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			IntPtr handle = Internal.GTK.Methods.gtk_drawing_area_new();
 
-			Internal.GObject.Methods.g_signal_connect(handle, "draw", (Internal.GObject.Delegates.DrawFunc) DrawHandler);
+			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 
 			return new GTKNativeControl(handle);
 		}
 
-
+		private Internal.GObject.Delegates.DrawFunc DrawHandler_Handler;
 		/// <summary>
 		/// Handler for draw signal
 		/// </summary>
@@ -36,7 +37,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			GTKGraphics graphics = new GTKGraphics(cr);
 
 			PaintEventArgs e = new PaintEventArgs(graphics);
-			ctl.OnPaint(e);
+			InvokeMethod(ctl, "OnPaint", e);
 			if (e.Handled) return true;
 
 			return false;

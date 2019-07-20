@@ -11,6 +11,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 	{
 		public TextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
+			TextBox_Changed_Handler = new Internal.GObject.Delegates.GCallback(TextBox_Changed);
 		}
 
 		protected override string GetControlTextInternal(Control control)
@@ -89,7 +90,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				handle = Internal.GTK.Methods.gtk_entry_new();
 			}
-			Internal.GObject.Methods.g_signal_connect(handle, "changed", (Internal.GObject.Delegates.GCallback)TextBox_Changed);
+			Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
 
 			string ctlText = ctl.Text;
 			if (ctlText != null)
@@ -132,14 +133,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 		}
 
-		private static Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
-		private static void TextBox_Changed(IntPtr handle, IntPtr data)
+		private Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
+		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;
+		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
 			TextBox ctl = Application.Engine.GetControlByHandle(handle) as TextBox;
 			Contract.Assert(ctl != null);
 
 			textboxChanged[handle] = true;
-			ctl.OnChanged(EventArgs.Empty);
+			InvokeMethod(ctl, "OnChanged", EventArgs.Empty);
 		}
 	}
 }

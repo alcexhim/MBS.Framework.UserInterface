@@ -17,7 +17,7 @@ namespace UniversalWidgetToolkit.TestProject
 
 		public bool ShowGreenBox { get; set; } = false;
 
-		public override void OnPaint(PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 

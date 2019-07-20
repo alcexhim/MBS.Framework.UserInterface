@@ -83,6 +83,7 @@ namespace UniversalWidgetToolkit
 		{
 			Console.WriteLine("Dispose() not implemented on " + this.GetType().FullName);
 		}
+		
 
 		private Vector2D mvarLocation = new Vector2D(0, 0);
 		public Vector2D Location { get { return mvarLocation; } set { mvarLocation = value; } }
@@ -225,81 +226,81 @@ namespace UniversalWidgetToolkit
 		#endregion
 		#region Mouse Events
 		public event MouseEventHandler MouseDown;
-		public virtual void OnMouseDown(MouseEventArgs e)
+		protected virtual void OnMouseDown(MouseEventArgs e)
 		{
 			MouseDown?.Invoke(this, e);
 		}
 		public event MouseEventHandler MouseMove;
-		public virtual void OnMouseMove(MouseEventArgs e)
+		protected virtual void OnMouseMove(MouseEventArgs e)
 		{
 			MouseMove?.Invoke(this, e);
 		}
 		public event MouseEventHandler MouseUp;
-		public virtual void OnMouseUp(MouseEventArgs e)
+		protected virtual void OnMouseUp(MouseEventArgs e)
 		{
 			MouseUp?.Invoke(this, e);
 		}
 		#endregion
 		#region Keyboard Events
 		public event KeyEventHandler KeyDown;
-		public virtual void OnKeyDown(KeyEventArgs e)
+		protected virtual void OnKeyDown(KeyEventArgs e)
 		{
 			KeyDown?.Invoke(this, e);
 		}
 		public event KeyEventHandler KeyPress;
-		public virtual void OnKeyPress(KeyEventArgs e)
+		protected virtual void OnKeyPress(KeyEventArgs e)
 		{
 			KeyPress?.Invoke(this, e);
 		}
 		public event KeyEventHandler KeyUp;
-		public virtual void OnKeyUp(KeyEventArgs e)
+		protected virtual void OnKeyUp(KeyEventArgs e)
 		{
 			KeyUp?.Invoke(this, e);
 		}
 		#endregion
 		#region Drag Events
 		public event DragDropDataRequestEventHandler DragDropDataRequest;
-		public virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		protected virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
 		{
 			DragDropDataRequest?.Invoke(this, e);
 		}
 		#endregion
 		public event PaintEventHandler Paint;
-		public virtual void OnPaint(PaintEventArgs e)
+		protected virtual void OnPaint(PaintEventArgs e)
 		{
 			Paint?.Invoke(this, e);
 		}
 
 		public event EventHandler Creating;
-		public virtual void OnCreating(EventArgs e)
+		protected virtual void OnCreating(EventArgs e)
 		{
 			Creating?.Invoke(this, e);
 		}
 		public event EventHandler Created;
-		public virtual void OnCreated(EventArgs e)
+		protected virtual void OnCreated(EventArgs e)
 		{
 			Created?.Invoke(this, e);
 		}
 
 		public event EventHandler Click;
-		public virtual void OnClick(EventArgs e)
+		protected virtual void OnClick(EventArgs e)
 		{
 			Click?.Invoke(this, e);
 		}
 
 		public event EventHandler Realize;
-		public virtual void OnRealize(EventArgs e)
+		protected virtual void OnRealize(EventArgs e)
 		{
 			Realize?.Invoke(this, e);
 		}
 		public event EventHandler Unrealize;
-		public virtual void OnUnrealize(EventArgs e)
+		protected virtual void OnUnrealize(EventArgs e)
 		{
 			Unrealize?.Invoke(this, e);
 		}
 
 		public event ResizeEventHandler Resizing;
-		public virtual void OnResizing(ResizeEventArgs e)
+		protected virtual void OnResizing(ResizeEventArgs e)
 		{
 			Resizing?.Invoke(this, e);
 		}

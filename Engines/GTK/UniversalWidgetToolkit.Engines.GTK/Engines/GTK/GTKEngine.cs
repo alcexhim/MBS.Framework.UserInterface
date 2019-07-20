@@ -428,7 +428,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 			
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			ctl.OnKeyDown(ee);
+			InvokeMethod(ctl, "OnKeyDown", ee);
 			return ee.Cancel;
 		}
 		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -442,7 +442,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			ctl.OnKeyUp(ee);
+			InvokeMethod(ctl, "OnKeyUp", ee);
 			return ee.Cancel;
 		}
 
@@ -685,7 +685,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
-			ctl.OnDragDropDataRequest(e);
+			InvokeMethod(ctl, "OnDragDropDataRequest", e);
 			if (e.Cancel) return;
 			
 			if (e.Data is string)
@@ -698,26 +698,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			else if (e.Data == null)
 			{
-			}
-		}
-
-		private void InvokeMethod(object obj, string meth, params object[] parms)
-		{
-			if (obj == null)
-			{
-				Console.WriteLine("Engine::InvokeMethod: obj is null");
-				return;
-			}
-			
-			Type t = obj.GetType();
-			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-			if (mi != null)
-			{
-				mi.Invoke(obj, parms);
-			}
-			else
-			{
-				Console.WriteLine("Engine::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
 			}
 		}
 
@@ -873,7 +853,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		[DebuggerNonUserCode()]
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
-			dialog.OnCreating(EventArgs.Empty);
+			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
 
 			IntPtr parentHandle = IntPtr.Zero;
 			if (parent == null)
@@ -1030,7 +1010,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			DialogResult result = DialogResult.None;
 
-			dialog.OnCreated(EventArgs.Empty);
+			InvokeMethod(dialog, "OnCreated", EventArgs.Empty);
 
 			if (handle != IntPtr.Zero)
 			{

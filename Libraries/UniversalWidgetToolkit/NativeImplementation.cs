@@ -11,6 +11,26 @@ namespace UniversalWidgetToolkit
 	/// </summary>
 	public abstract class NativeImplementation
 	{
+		protected void InvokeMethod(object obj, string meth, params object[] parms)
+		{
+			if (obj == null)
+			{
+				Console.WriteLine("NativeImplementation::InvokeMethod: obj is null");
+				return;
+			}
+			
+			Type t = obj.GetType();
+			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			if (mi != null)
+			{
+				mi.Invoke(obj, parms);
+			}
+			else
+			{
+				Console.WriteLine("NativeImplementation::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
+			}
+		}
+		
 		private Control mvarControl = null;
 		public Control Control {  get { return mvarControl; } }
 
@@ -78,24 +98,24 @@ namespace UniversalWidgetToolkit
 
 		protected internal virtual void OnClick(EventArgs e)
 		{
-			Control?.OnClick(e);
+			InvokeMethod(Control, "OnClick", e);
 		}
 		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
-			Control?.OnMouseDown(e);
+			InvokeMethod(Control, "OnMouseDown", e);
 		}
 		protected internal virtual void OnMouseMove(MouseEventArgs e)
 		{
-			Control?.OnMouseMove(e);
+			InvokeMethod(Control, "OnMouseMove", e);
 		}
 		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
-			Control?.OnMouseUp(e);
+			InvokeMethod(Control, "OnMouseUp", e);
 		}
 
 		protected internal virtual void OnRealize(EventArgs e)
 		{
-			Control?.OnRealize(e);
+			InvokeMethod(Control, "OnRealize", e);
 		}
 	}
 

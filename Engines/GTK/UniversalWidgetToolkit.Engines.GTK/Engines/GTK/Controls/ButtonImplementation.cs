@@ -21,7 +21,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (button != null)
 			{
 				EventArgs e = new EventArgs();
-				button.OnClick(e);
+				InvokeMethod(button, "OnClick", e);
 			}
 		}
 

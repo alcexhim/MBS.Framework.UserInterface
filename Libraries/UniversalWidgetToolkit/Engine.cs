@@ -29,6 +29,26 @@ namespace UniversalWidgetToolkit
 			return handlesByControl.ContainsKey(control);
 		}
 
+		protected void InvokeMethod(object obj, string meth, params object[] parms)
+		{
+			if (obj == null)
+			{
+				Console.WriteLine("Engine::InvokeMethod: obj is null");
+				return;
+			}
+			
+			Type t = obj.GetType();
+			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			if (mi != null)
+			{
+				mi.Invoke(obj, parms);
+			}
+			else
+			{
+				Console.WriteLine("Engine::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
+			}
+		}
+
 		protected void RegisterControlHandle(Control control, IntPtr handle, params IntPtr[] additionalHandles)
 		{
 			controlsByHandle[handle] = control;
@@ -196,7 +216,7 @@ namespace UniversalWidgetToolkit
 				_ControlTextForUncreatedControls.Remove(control);
 			}
 
-			control.OnCreated(EventArgs.Empty);
+			InvokeMethod(control, "OnCreated", EventArgs.Empty);
 			return true;
 		}
 

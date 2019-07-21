@@ -22,6 +22,8 @@ namespace UniversalWidgetToolkit
 		private Menu mvarMenuBar = new Menu();
 		public Menu MenuBar { get { return mvarMenuBar; } }
 
+		public WindowStartPosition StartPosition { get; set; } = WindowStartPosition.Default;
+
 		private string mvarIconName = null;
 		public string IconName
 		{

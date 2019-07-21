@@ -134,6 +134,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
 			PadGroupMode = 47,
 			Last                /* helper variable for decls */
 		}
+
+		public enum GdkGravity
+		{
+			NorthWest = 1,
+			North,
+			NorthEast,
+			West,
+			Center,
+			East,
+			SouthWest,
+			South,
+			SouthEast,
+			Static
+		}
 	}
 }
 

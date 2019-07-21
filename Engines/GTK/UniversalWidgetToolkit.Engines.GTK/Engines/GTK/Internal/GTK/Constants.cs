@@ -359,6 +359,33 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// </summary>
 			Multiple
 		}
+		/// <summary>
+		/// Window placement can be influenced using this enumeration. 
+		/// </summary>
+		public enum GtkWindowPosition
+		{
+			/// <summary>
+			/// No influence is made on placement.
+			/// </summary>
+			None,
+			/// <summary>
+			/// Windows should be placed in the center of the screen.
+			/// </summary>
+			Center,
+			/// <summary>
+			/// Windows should be placed at the current mouse position.
+			/// </summary>
+			Mouse,
+			/// <summary>
+			/// Keep window centered as it changes size, etc.
+			/// </summary>
+			/// <remarks>Note that using CenterAlways is almost always a bad idea. It won’t necessarily work well with all window managers or on all windowing systems.</remarks>
+			CenterAlways,
+			/// <summary>
+			/// Center the window on its transient parent (see <see cref="Methods.gtk_window_set_transient_for" />).
+			/// </summary>
+			CenterOnParent
+		}
 	}
 }
 

@@ -190,6 +190,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_decorated(IntPtr /*GtkWindow*/ handle, bool decorated);
+		
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_window_set_gravity(IntPtr /*GtkWindow*/ handle, GDK.Constants.GdkGravity gravity);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_window_set_position(IntPtr /*GtkWindow*/ handle, Constants.GtkWindowPosition position);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gtk_window_has_toplevel_focus(IntPtr /*GtkWindow*/ window);

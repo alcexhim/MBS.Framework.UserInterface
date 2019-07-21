@@ -247,6 +247,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Methods.gtk_header_bar_set_title(hHeaderBar, window.Text);
 				Internal.GTK.Methods.gtk_window_set_titlebar(handle, hHeaderBar);
 			}
+			switch (window.StartPosition)
+			{
+				case WindowStartPosition.Center:
+				{
+					Internal.GTK.Methods.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
+					break;
+				}
+			}
 
 			// HACK: required for Universal Editor splash screen to work
 			Internal.GTK.Methods.gtk_widget_show_now(handle);

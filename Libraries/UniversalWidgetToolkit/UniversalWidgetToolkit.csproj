@@ -177,6 +177,7 @@
     <Compile Include="ListViewMode.cs" />
     <Compile Include="ListViewHitTestInfo.cs" />
     <Compile Include="SelectionMode.cs" />
+    <Compile Include="WindowStartPosition.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

@@ -248,6 +248,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Methods.gtk_window_set_titlebar(handle, hHeaderBar);
 			}
 
+			// HACK: required for Universal Editor splash screen to work
+			Internal.GTK.Methods.gtk_widget_show_now(handle);
+			Internal.GTK.Methods.gtk_widget_show_all(handle);
+			Application.DoEvents();
+
 			return new GTKNativeControl(handle);
 		}
 	}

@@ -203,18 +203,28 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			gc_Application_Activate = new Internal.GObject.Delegates.GCallback(Application_Activate);
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
-
-			IntPtr hApp = Internal.GTK.Methods.gtk_application_new("net.alcetech.UniversalEditor", Internal.GIO.Constants.GApplicationFlags.None);
-			// hApp = IntPtr.Zero;
-			// IntPtr hApp = Internal.GIO.Methods.g_application_new ("net.alcetech.UniversalEditor", Internal.GIO.Constants.GApplicationFlags.None);
+			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
+			
+			IntPtr hApp = Internal.GTK.Methods.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
+			
+			if (hApp == IntPtr.Zero)
+			{
+				Console.WriteLine("error initting app {0}", Application.UniqueName);
+			}
 			if (hApp != IntPtr.Zero)
 			{
 				bool isRegistered = Internal.GIO.Methods.g_application_get_is_registered(hApp);
+				Console.WriteLine("GtkApplication is registered? {0}", isRegistered);
 
-				Internal.GIO.Methods.g_application_register(hApp, IntPtr.Zero, IntPtr.Zero);
+				if (!isRegistered)
+				{
+					Console.WriteLine("no, we are registering it now");
+					Internal.GIO.Methods.g_application_register(hApp, IntPtr.Zero, IntPtr.Zero);
+				}
 
 				isRegistered = Internal.GIO.Methods.g_application_get_is_registered(hApp);
-
+				Console.WriteLine("GtkApplication is registered? How about now? {0}", isRegistered);
+				/*
 				IntPtr simpleActionGroup = Internal.GIO.Methods.g_simple_action_group_new();
 
 				IntPtr hActionNew = Internal.GIO.Methods.g_simple_action_new("new", Internal.GLib.Constants.GVariantType.Byte);
@@ -228,10 +238,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Internal.GIO.Methods.g_menu_append_item(hMenu, hMenuItemFile);
 
 				Internal.GTK.Methods.gtk_application_set_app_menu(hApp, hMenu);
-
+				*/
 				mvarApplicationHandle = hApp;
 			}
-
+			
 			// TODO: fix this, it doesn't work (crashes with SIGSEGV)
 			// Internal.GIO.Methods.g_action_map_add_action (hApp, actionFile);
 
@@ -253,6 +263,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				int argc = argv.Length;
 				
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
 				Internal.GIO.Methods.g_application_run(mvarApplicationHandle, argc, argv);
 			}
 
@@ -272,9 +283,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
+		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
 
 		private void Application_Activate(IntPtr handle, IntPtr data)
 		{
+		}
+		private int Application_CommandLine(IntPtr handle, IntPtr commandLine, IntPtr data)
+		{
+			return 0;
 		}
 
 		private void MenuItem_Activate(IntPtr handle, IntPtr data)

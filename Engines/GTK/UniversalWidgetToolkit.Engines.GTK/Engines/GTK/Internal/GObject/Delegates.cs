@@ -22,6 +22,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 		/// <returns>TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.</returns>
 		public delegate bool DrawFunc(IntPtr /*GtkWidget*/ widget, IntPtr /*CairoContext*/ cr, IntPtr user_data);
 
+		public delegate int GApplicationCommandLineHandler(IntPtr handle, IntPtr commandLine, IntPtr user_data);
+
 	}
 }
 

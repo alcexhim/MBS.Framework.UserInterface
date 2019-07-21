@@ -404,5 +404,11 @@ namespace UniversalWidgetToolkit
 		}
 
 		protected internal abstract void RepaintCustomControl(CustomControl control, int x, int y, int width, int height);
+
+		protected abstract void DoEventsInternal();
+		public void DoEvents()
+		{
+			DoEventsInternal();
+		}
 	}
 }

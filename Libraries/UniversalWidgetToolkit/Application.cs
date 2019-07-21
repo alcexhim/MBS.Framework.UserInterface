@@ -139,5 +139,10 @@ namespace UniversalWidgetToolkit
 			}
 			mvarEngine.Stop(exitCode);
 		}
+
+		public static void DoEvents()
+		{
+			mvarEngine?.DoEvents();
+		}
     }
 }

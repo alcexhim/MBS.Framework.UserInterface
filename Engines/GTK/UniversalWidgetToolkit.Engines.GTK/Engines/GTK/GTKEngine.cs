@@ -1753,6 +1753,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			IntPtr handle = GetHandleForControl(control);
 			Internal.GTK.Methods.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
+
+		protected override void DoEventsInternal()
+		{
+			while (Internal.GTK.Methods.gtk_events_pending())
+			{
+				Internal.GTK.Methods.gtk_main_iteration();
+			}
+		}
 	}
 }
 

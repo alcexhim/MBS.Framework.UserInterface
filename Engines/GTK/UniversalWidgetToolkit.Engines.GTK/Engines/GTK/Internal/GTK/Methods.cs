@@ -28,6 +28,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_main_quit();
 
+		// used to implement the equivalent of System.Windows.Forms.Application.DoEvents() in GTK
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_events_pending();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_main_iteration();
+
 		#region Application
 		[DllImport(LIBRARY_FILENAME_V3, EntryPoint = "gtk_application_new")]
 		public static extern IntPtr gtk_application_new_v3(string application_id, Internal.GIO.Constants.GApplicationFlags flags);
@@ -86,12 +92,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show_all(IntPtr widget);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_show_now(IntPtr widget);
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_hide(IntPtr widget);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_queue_draw(IntPtr widget);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_queue_draw_area(IntPtr widget, int x, int y, int width, int height);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_widget_realize(IntPtr /*GtkWidget*/ widget);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_size_request(IntPtr widget, int width, int height);

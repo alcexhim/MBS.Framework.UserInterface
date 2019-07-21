@@ -17,6 +17,9 @@ namespace UniversalWidgetToolkit
 		public static Guid ID { get; set; } = Guid.Empty;
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
+
+		public static event EventHandler Startup;
+		public static event EventHandler Shutdown;
 		
 		private static string[] EnumerateDataPaths()
 		{
@@ -112,6 +115,7 @@ namespace UniversalWidgetToolkit
 		// [DebuggerNonUserCode()]
 		public static int Start(Window waitForClose = null)
 		{
+			Console.WriteLine("Application_Start");
 			if (waitForClose != null)
 			{
 				if (mvarEngine.IsControlDisposed(waitForClose))

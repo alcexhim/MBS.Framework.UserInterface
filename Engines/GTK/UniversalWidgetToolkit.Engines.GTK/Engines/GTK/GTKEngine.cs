@@ -202,6 +202,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.Notify.Methods.notify_init(appname);
 
 			gc_Application_Activate = new Internal.GObject.Delegates.GCallback(Application_Activate);
+			gc_Application_Startup = new Internal.GObject.Delegates.GCallback(Application_Startup);
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 			
@@ -263,10 +264,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				int argc = argv.Length;
 				
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
 				Internal.GIO.Methods.g_application_run(mvarApplicationHandle, argc, argv);
 			}
 
+			Console.WriteLine("In main loop");
 			Internal.GTK.Methods.gtk_main();
 
 			return _exitCode;
@@ -283,10 +286,16 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
+		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;
 		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
 
 		private void Application_Activate(IntPtr handle, IntPtr data)
 		{
+		}
+		private void Application_Startup(IntPtr application, IntPtr user_data)
+		{
+			Console.WriteLine("Application_Startup");
+			InvokeStaticMethod(typeof(Application), "OnStartup");
 		}
 		private int Application_CommandLine(IntPtr handle, IntPtr commandLine, IntPtr data)
 		{
@@ -640,8 +649,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 
 		// converting these into standalone fields solved a HUGE (and esoteric) crash in handling keyboard events...
+		private Internal.GObject.Delegates.GCallbackV1I gc_show_handler = null;
 		private Internal.GObject.Delegates.GCallback gc_realize_handler = null;
 		private Internal.GObject.Delegates.GCallback gc_unrealize_handler = null;
+		private Internal.GObject.Delegates.GCallback gc_map_handler = null;
+		private Internal.GObject.Delegates.GCallbackV3I gc_map_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_press_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_release_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
@@ -655,6 +667,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			gc_realize_handler = new Internal.GObject.Delegates.GCallback(gc_realize);
 			gc_unrealize_handler = new Internal.GObject.Delegates.GCallback(gc_unrealize);
+			gc_map_handler = new Internal.GObject.Delegates.GCallback(gc_map);
+			gc_map_event_handler = new Internal.GObject.Delegates.GCallbackV3I(gc_map_event);
+			gc_show_handler = new Internal.GObject.Delegates.GCallbackV1I(gc_show);
 			gc_button_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_press_event);
 			gc_button_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_release_event);
 			gc_motion_notify_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_motion_notify_event);
@@ -677,10 +692,24 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_release_event", gc_key_release_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "realize", gc_realize_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "unrealize", gc_unrealize_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "show", gc_show_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "map", gc_map_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "map_event", gc_map_event_handler);
 
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_begin", gc_drag_begin_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_get", gc_drag_data_get_handler);
+		}
+
+		private void gc_show(IntPtr /*GtkWidget*/ widget)
+		{
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null)
+			{
+				Console.Error.WriteLine("GetControlByHandle({0}) returned null", widget);
+				return;
+			}
+			InvokeMethod(ctl.NativeImplementation, "OnShown", EventArgs.Empty);
 		}
 
 		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
@@ -736,6 +765,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private void gc_realize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
+			Console.WriteLine("gc_realize for {0}", ctl);
 			if (ctl == null) return;
 			
 			InvokeMethod(ctl.NativeImplementation, "OnRealize", EventArgs.Empty);
@@ -746,6 +776,20 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (ctl == null) return;
 			
 			InvokeMethod(ctl.NativeImplementation, "OnUnrealize", EventArgs.Empty);
+		}
+		private void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
+		{
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null) return;
+			
+			InvokeMethod(ctl.NativeImplementation, "OnMapping", EventArgs.Empty);
+		}
+		private void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
+		{
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null) return;
+			
+			InvokeMethod(ctl.NativeImplementation, "OnMapped", EventArgs.Empty);
 		}
 		
 		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)
@@ -840,6 +884,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					Internal.GTK.Methods.gtk_widget_set_size_request((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
 				
 				Internal.GTK.Methods.gtk_widget_show_all((handle as GTKNativeControl).Handle);
+				Application.DoEvents();
 			}
 			return handle;
 		}

@@ -144,6 +144,19 @@ namespace UniversalWidgetToolkit
 		{
 			Control.OnUnrealize(e);
 		}
+		
+		protected internal virtual void OnMapping(EventArgs e)
+		{
+			Control.OnMapping(e);
+		}
+		protected internal virtual void OnMapped(EventArgs e)
+		{
+			Control.OnMapped(e);
+		}
+		protected internal virtual void OnShown(EventArgs e)
+		{
+			Control.OnShown(e);
+		}
 	}
 
 	public class NativeImplementationAttribute : Attribute

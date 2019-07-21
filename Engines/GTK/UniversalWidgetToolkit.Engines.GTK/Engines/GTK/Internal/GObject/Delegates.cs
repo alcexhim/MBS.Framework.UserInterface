@@ -8,6 +8,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 
 		public delegate void GCallback(IntPtr handle, IntPtr data);
 		public delegate T GCallback<T>(IntPtr handle, IntPtr data);
+		
+		public delegate void GCallbackV1I(IntPtr handle);
+		public delegate void GCallbackV3I(IntPtr handle, IntPtr evt, IntPtr data);
 
 		public delegate void ListViewRowActivatedFunc(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path, IntPtr /*GtkTreeViewColumn*/ column);
 

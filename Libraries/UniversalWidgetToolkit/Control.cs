@@ -302,6 +302,23 @@ namespace UniversalWidgetToolkit
 			Unrealize?.Invoke(this, e);
 		}
 
+		public event EventHandler Mapping;
+		protected internal virtual void OnMapping(EventArgs e)
+		{
+			Mapping?.Invoke(this, e);
+		}
+		public event EventHandler Mapped;
+		protected internal virtual void OnMapped(EventArgs e)
+		{
+			Mapped?.Invoke(this, e);
+		}
+
+		public event EventHandler Shown;
+		protected internal virtual void OnShown(EventArgs e)
+		{
+			Shown?.Invoke(this, e);
+		}
+
 		public event ResizeEventHandler Resizing;
 		protected internal virtual void OnResizing(ResizeEventArgs e)
 		{

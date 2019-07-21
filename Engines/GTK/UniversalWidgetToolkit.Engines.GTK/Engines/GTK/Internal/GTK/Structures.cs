@@ -27,5 +27,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			public string display_name;
 			public string mime_type;
 		}
+		public struct GtkStockItem
+		{
+			public /*string*/ IntPtr stock_id;
+			public /*string*/ IntPtr label;
+			public GDK.Constants.GdkModifierType modifier;
+			public uint keyval;
+			public /*string*/ IntPtr translation_domain;
+		}
 	}
 }

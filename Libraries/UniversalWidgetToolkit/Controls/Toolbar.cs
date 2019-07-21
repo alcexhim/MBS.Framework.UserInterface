@@ -19,8 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 namespace UniversalWidgetToolkit.Controls
 {
+	public class ToolbarItemSeparator
+		: ToolbarItem
+	{
+	}
 	public class ToolbarItemButton
 		: ToolbarItem
 	{
@@ -29,8 +34,21 @@ namespace UniversalWidgetToolkit.Controls
 		{
 
 		}
+		public ToolbarItemButton(string name, StockType stockType)
+			: base(name, stockType)
+		{
+
+		}
+
+		public event EventHandler Click;
+		protected virtual void OnClick(EventArgs e)
+		{
+			Click?.Invoke(this, e);
+		}
+		
+		public bool CheckOnClick { get; set; } = false;
 	}
-	public abstract class ToolbarItem
+	public abstract class ToolbarItem : ISupportsExtraData
 	{
 		public class ToolbarItemCollection
 			: System.Collections.ObjectModel.Collection<ToolbarItem>
@@ -40,12 +58,39 @@ namespace UniversalWidgetToolkit.Controls
 
 		public string Name { get; set; } = String.Empty;
 		public string Title { get; set; } = String.Empty;
+		public StockType StockType { get; set; } = StockType.None;
 
-		public ToolbarItem(string name, string title = "")
+		public ToolbarItem(string name = "", string title = "")
 		{
 			Name = name;
 			Title = title;
 		}
+		public ToolbarItem(string name, StockType stockType)
+		{
+			Name = name;
+			StockType = stockType;
+		}
+
+		#region ISupportsExtraData members
+		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
+		public T GetExtraData<T>(string key, T defaultValue = default(T))
+		{
+			if (_ExtraData.ContainsKey(key)) return (T)_ExtraData[key];
+			return defaultValue;
+		}
+		public object GetExtraData(string key, object defaultValue = null)
+		{
+			return GetExtraData<object>(key, defaultValue);
+		}
+		public void SetExtraData<T>(string key, T value)
+		{
+			_ExtraData[key] = value;
+		}
+		public void SetExtraData(string key, object value)
+		{
+			SetExtraData<object>(key, value);
+		}
+		#endregion
 	}
 	public class Toolbar : SystemControl
 	{

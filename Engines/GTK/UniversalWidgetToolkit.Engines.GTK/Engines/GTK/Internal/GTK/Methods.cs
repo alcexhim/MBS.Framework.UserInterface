@@ -69,6 +69,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, string label);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_toggle_tool_button_new();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_separator_tool_item_new();
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GMenuModel*/ gtk_application_get_menubar(IntPtr /*GtkApplication*/ application);
@@ -1093,6 +1095,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		/// <returns>if the selection data contained a recognized text type and it could be converted to UTF-8, a newly allocated string containing the converted text, otherwise NULL. If the result is non-NULL it must be freed with g_free().</returns>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern string gtk_selection_data_get_text (IntPtr /*GtkSelectionData*/ selection_data);
+		#endregion
+
+		#region Stock Items
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_stock_lookup(string stock_id, ref Internal.GTK.Structures.GtkStockItem item);
 		#endregion
 
 	}

@@ -44,6 +44,8 @@ namespace UniversalWidgetToolkit.Controls
 		protected internal override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
+			if (e.Cancel) return;
+			
 			this.IsChangedByUser = true;
 		}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using UniversalWidgetToolkit.DragDrop;
 using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.Input.Mouse;
 
@@ -96,6 +97,28 @@ namespace UniversalWidgetToolkit
 			RegisterDropTargetInternal(control, targets, actions, buttons, modifierKeys);
 		}
 
+		protected internal virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		{
+			InvokeMethod(Control, "OnDragDropDataRequest", e);
+		}
+		protected internal virtual void OnDragBegin(DragEventArgs e)
+		{
+			InvokeMethod(Control, "OnDragBegin", e);
+		}
+		protected internal virtual void OnDragDataDelete(EventArgs e)
+		{
+			InvokeMethod(Control, "OnDragDataDelete", e);
+		}
+		
+		protected internal virtual void OnKeyDown(KeyEventArgs e)
+		{
+			InvokeMethod(Control, "OnKeyDown", e);
+		}
+		protected internal virtual void OnKeyUp(KeyEventArgs e)
+		{
+			InvokeMethod(Control, "OnKeyUp", e);
+		}
+
 		protected internal virtual void OnClick(EventArgs e)
 		{
 			InvokeMethod(Control, "OnClick", e);
@@ -116,6 +139,10 @@ namespace UniversalWidgetToolkit
 		protected internal virtual void OnRealize(EventArgs e)
 		{
 			InvokeMethod(Control, "OnRealize", e);
+		}
+		protected internal virtual void OnUnrealize(EventArgs e)
+		{
+			InvokeMethod(Control, "OnUnrealize", e);
 		}
 	}
 

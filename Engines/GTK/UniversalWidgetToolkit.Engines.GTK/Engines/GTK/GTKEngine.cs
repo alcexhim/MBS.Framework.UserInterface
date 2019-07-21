@@ -428,7 +428,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 			
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			InvokeMethod(ctl, "OnKeyDown", ee);
+			InvokeMethod(ctl.NativeImplementation, "OnKeyDown", ee);
 			return ee.Cancel;
 		}
 		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -442,7 +442,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			InvokeMethod(ctl, "OnKeyUp", ee);
+			InvokeMethod(ctl.NativeImplementation, "OnKeyUp", ee);
 			return ee.Cancel;
 		}
 
@@ -669,11 +669,27 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			Console.WriteLine("gc_drag_begin");
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null)
+			{
+				Console.Error.WriteLine("GetControlByHandle({0}) returned null", widget);
+				return;
+			}
+			
+			DragEventArgs e = new DragEventArgs();
+			InvokeMethod(ctl.NativeImplementation, "OnDragBegin", e);
 		}
 		private void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			Console.WriteLine("gc_drag_data_delete");
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null)
+			{
+				Console.Error.WriteLine("GetControlByHandle({0}) returned null", widget);
+				return;
+			}
+			
+			EventArgs e = new EventArgs();
+			InvokeMethod(ctl.NativeImplementation, "OnDragDataDelete", e);
 		}
 		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
@@ -685,7 +701,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
-			InvokeMethod(ctl, "OnDragDropDataRequest", e);
+			InvokeMethod(ctl.NativeImplementation, "OnDragDropDataRequest", e);
 			if (e.Cancel) return;
 			
 			if (e.Data is string)
@@ -758,7 +774,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (handle != null)
 			{
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
-				Console.WriteLine("setting events on {0} \"{1}\" [{2}]", handle, control.Name, control.GetType().FullName);
 				SetupCommonEvents(FindRealHandle(nativeHandle, control));
 				
 				if (control.Parent != null && control.Parent.Layout != null)

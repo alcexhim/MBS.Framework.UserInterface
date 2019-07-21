@@ -197,6 +197,11 @@ namespace UniversalWidgetToolkit
 
 
 		#region Drag-n-Drop
+		public event DragEventHandler DragBegin;
+		protected virtual void OnDragBegin(DragEventArgs e)
+		{
+			DragBegin?.Invoke(this, e);
+		}
 		public event DragEventHandler DragEnter;
 		protected virtual void OnDragEnter(DragEventArgs e)
 		{
@@ -206,6 +211,11 @@ namespace UniversalWidgetToolkit
 		protected virtual void OnDragDrop(DragEventArgs e)
 		{
 			DragDrop?.Invoke(this, e);
+		}
+		public event DragDropDataRequestEventHandler DragDropDataRequest;
+		protected virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		{
+			DragDropDataRequest?.Invoke(this, e);
 		}
 		
 		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
@@ -251,13 +261,6 @@ namespace UniversalWidgetToolkit
 		protected virtual void OnKeyUp(KeyEventArgs e)
 		{
 			KeyUp?.Invoke(this, e);
-		}
-		#endregion
-		#region Drag Events
-		public event DragDropDataRequestEventHandler DragDropDataRequest;
-		protected virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
-		{
-			DragDropDataRequest?.Invoke(this, e);
 		}
 		#endregion
 		public event PaintEventHandler Paint;

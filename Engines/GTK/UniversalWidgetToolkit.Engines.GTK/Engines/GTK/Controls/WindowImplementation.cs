@@ -239,10 +239,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.gtk_window_set_default_size(handle, (int)window.Size.Width, (int)window.Size.Height);
 			Internal.GTK.Methods.gtk_window_set_decorated(handle, window.Decorated);
 			Internal.GTK.Methods.gtk_window_set_focus_on_map(handle, true);
-			IntPtr hHeaderBar = Internal.GTK.Methods.gtk_header_bar_new();
-			Internal.GTK.Methods.gtk_header_bar_set_title(hHeaderBar, window.Text);
-			Internal.GTK.Methods.gtk_window_set_titlebar(handle, hHeaderBar);
 			Internal.GTK.Methods.gtk_window_set_icon_name(handle, window.IconName);
+			
+			if (window.Decorated)
+			{
+				IntPtr hHeaderBar = Internal.GTK.Methods.gtk_header_bar_new();
+				Internal.GTK.Methods.gtk_header_bar_set_title(hHeaderBar, window.Text);
+				Internal.GTK.Methods.gtk_window_set_titlebar(handle, hHeaderBar);
+			}
 
 			return new GTKNativeControl(handle);
 		}

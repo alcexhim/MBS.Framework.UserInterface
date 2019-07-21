@@ -198,24 +198,29 @@ namespace UniversalWidgetToolkit
 
 		#region Drag-n-Drop
 		public event DragEventHandler DragBegin;
-		protected virtual void OnDragBegin(DragEventArgs e)
+		protected internal virtual void OnDragBegin(DragEventArgs e)
 		{
 			DragBegin?.Invoke(this, e);
 		}
 		public event DragEventHandler DragEnter;
-		protected virtual void OnDragEnter(DragEventArgs e)
+		protected internal virtual void OnDragEnter(DragEventArgs e)
 		{
 			DragEnter?.Invoke(this, e);
 		}
 		public event DragEventHandler DragDrop;
-		protected virtual void OnDragDrop(DragEventArgs e)
+		protected internal virtual void OnDragDrop(DragEventArgs e)
 		{
 			DragDrop?.Invoke(this, e);
 		}
 		public event DragDropDataRequestEventHandler DragDropDataRequest;
-		protected virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		protected internal virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
 		{
 			DragDropDataRequest?.Invoke(this, e);
+		}
+		public event EventHandler DragDataDelete;
+		protected internal virtual void OnDragDataDelete(EventArgs e)
+		{
+			DragDataDelete?.Invoke(this, e);
 		}
 		
 		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
@@ -231,74 +236,74 @@ namespace UniversalWidgetToolkit
 		#endregion
 		#region Mouse Events
 		public event MouseEventHandler MouseDown;
-		protected virtual void OnMouseDown(MouseEventArgs e)
+		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
 			MouseDown?.Invoke(this, e);
 		}
 		public event MouseEventHandler MouseMove;
-		protected virtual void OnMouseMove(MouseEventArgs e)
+		protected internal virtual void OnMouseMove(MouseEventArgs e)
 		{
 			MouseMove?.Invoke(this, e);
 		}
 		public event MouseEventHandler MouseUp;
-		protected virtual void OnMouseUp(MouseEventArgs e)
+		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
 			MouseUp?.Invoke(this, e);
 		}
 		#endregion
 		#region Keyboard Events
 		public event KeyEventHandler KeyDown;
-		protected virtual void OnKeyDown(KeyEventArgs e)
+		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
 			KeyDown?.Invoke(this, e);
 		}
 		public event KeyEventHandler KeyPress;
-		protected virtual void OnKeyPress(KeyEventArgs e)
+		protected internal virtual void OnKeyPress(KeyEventArgs e)
 		{
 			KeyPress?.Invoke(this, e);
 		}
 		public event KeyEventHandler KeyUp;
-		protected virtual void OnKeyUp(KeyEventArgs e)
+		protected internal virtual void OnKeyUp(KeyEventArgs e)
 		{
 			KeyUp?.Invoke(this, e);
 		}
 		#endregion
 		public event PaintEventHandler Paint;
-		protected virtual void OnPaint(PaintEventArgs e)
+		protected internal virtual void OnPaint(PaintEventArgs e)
 		{
 			Paint?.Invoke(this, e);
 		}
 
 		public event EventHandler Creating;
-		protected virtual void OnCreating(EventArgs e)
+		protected internal virtual void OnCreating(EventArgs e)
 		{
 			Creating?.Invoke(this, e);
 		}
 		public event EventHandler Created;
-		protected virtual void OnCreated(EventArgs e)
+		protected internal virtual void OnCreated(EventArgs e)
 		{
 			Created?.Invoke(this, e);
 		}
 
 		public event EventHandler Click;
-		protected virtual void OnClick(EventArgs e)
+		protected internal virtual void OnClick(EventArgs e)
 		{
 			Click?.Invoke(this, e);
 		}
 
 		public event EventHandler Realize;
-		protected virtual void OnRealize(EventArgs e)
+		protected internal virtual void OnRealize(EventArgs e)
 		{
 			Realize?.Invoke(this, e);
 		}
 		public event EventHandler Unrealize;
-		protected virtual void OnUnrealize(EventArgs e)
+		protected internal virtual void OnUnrealize(EventArgs e)
 		{
 			Unrealize?.Invoke(this, e);
 		}
 
 		public event ResizeEventHandler Resizing;
-		protected virtual void OnResizing(ResizeEventArgs e)
+		protected internal virtual void OnResizing(ResizeEventArgs e)
 		{
 			Resizing?.Invoke(this, e);
 		}

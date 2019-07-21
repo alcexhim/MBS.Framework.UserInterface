@@ -22,11 +22,5 @@ namespace UniversalWidgetToolkit.Controls
 		public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Default;
 		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
 		public WordWrapMode WordWrap { get; set; } = WordWrapMode.Default;
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-			e.Graphics.DrawText(Text, Font, ClientRectangle, Brushes.Black, HorizontalAlignment, VerticalAlignment);
-		}
 	}
 }

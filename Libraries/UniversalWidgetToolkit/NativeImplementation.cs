@@ -99,50 +99,50 @@ namespace UniversalWidgetToolkit
 
 		protected internal virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
 		{
-			InvokeMethod(Control, "OnDragDropDataRequest", e);
+			Control.OnDragDropDataRequest(e);
 		}
 		protected internal virtual void OnDragBegin(DragEventArgs e)
 		{
-			InvokeMethod(Control, "OnDragBegin", e);
+			Control.OnDragBegin(e);
 		}
 		protected internal virtual void OnDragDataDelete(EventArgs e)
 		{
-			InvokeMethod(Control, "OnDragDataDelete", e);
+			Control.OnDragDataDelete(e);
 		}
 		
 		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
-			InvokeMethod(Control, "OnKeyDown", e);
+			Control.OnKeyDown(e);
 		}
 		protected internal virtual void OnKeyUp(KeyEventArgs e)
 		{
-			InvokeMethod(Control, "OnKeyUp", e);
+			Control.OnKeyUp(e);
 		}
 
 		protected internal virtual void OnClick(EventArgs e)
 		{
-			InvokeMethod(Control, "OnClick", e);
+			Control.OnClick(e);
 		}
 		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
-			InvokeMethod(Control, "OnMouseDown", e);
+			Control.OnMouseDown(e);
 		}
 		protected internal virtual void OnMouseMove(MouseEventArgs e)
 		{
-			InvokeMethod(Control, "OnMouseMove", e);
+			Control.OnMouseMove(e);
 		}
 		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
-			InvokeMethod(Control, "OnMouseUp", e);
+			Control.OnMouseUp(e);
 		}
 
 		protected internal virtual void OnRealize(EventArgs e)
 		{
-			InvokeMethod(Control, "OnRealize", e);
+			Control.OnRealize(e);
 		}
 		protected internal virtual void OnUnrealize(EventArgs e)
 		{
-			InvokeMethod(Control, "OnUnrealize", e);
+			Control.OnUnrealize(e);
 		}
 	}
 

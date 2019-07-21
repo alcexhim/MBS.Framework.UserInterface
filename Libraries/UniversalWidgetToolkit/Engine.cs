@@ -29,6 +29,23 @@ namespace UniversalWidgetToolkit
 			return handlesByControl.ContainsKey(control);
 		}
 
+		protected void InvokeStaticMethod(Type typ, string meth, params object[] parms)
+		{
+			if (typ == null)
+			{
+				Console.WriteLine("Engine::InvokeStaticMethod: typ is null");
+				return;
+			}
+			System.Reflection.MethodInfo mi = typ.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			if (mi != null)
+			{
+				mi.Invoke(null, parms);
+			}
+			else
+			{
+				Console.WriteLine("Engine::InvokeStaticMethod: not found '" + meth + "' on '" + typ.FullName + "'");
+			}
+		}
 		protected void InvokeMethod(object obj, string meth, params object[] parms)
 		{
 			if (obj == null)

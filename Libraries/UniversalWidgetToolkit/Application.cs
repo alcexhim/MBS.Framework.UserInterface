@@ -14,9 +14,10 @@ namespace UniversalWidgetToolkit
 		private static int mvarExitCode = 0;
 		public static int ExitCode { get { return mvarExitCode; } }
 
+		public static Guid ID { get; set; } = Guid.Empty;
+		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
-
-
+		
 		private static string[] EnumerateDataPaths()
 		{
 			string basePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -95,6 +96,17 @@ namespace UniversalWidgetToolkit
 		{
 			Engine[] engines = Engine.Get();
 			if (engines.Length > 0) mvarEngine = engines[0];
+			
+			string sv = System.Reflection.Assembly.GetEntryAssembly().Location;
+			if (sv.StartsWith("/")) sv = sv.Substring(1);
+			
+			sv = sv.Replace(".", "_");
+			sv = sv.Replace("\\", ".");
+			sv = sv.Replace("/", ".");
+			
+			// ID = Guid.NewGuid();
+			// sv = sv + ID.ToString().Replace("-", String.Empty);
+			UniqueName = sv;
 		}
 
 		// [DebuggerNonUserCode()]

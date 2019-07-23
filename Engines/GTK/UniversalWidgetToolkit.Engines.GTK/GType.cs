@@ -144,7 +144,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		public static explicit operator GType(Type type)
 		{
-			if (gtypes.TryGetValue(type, out GType value))
+			GType value;
+			if (gtypes.TryGetValue(type, out value))
 			{
 				return value;
 			}
@@ -208,7 +209,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		public static Type LookupType(IntPtr typeid)
 		{
-			if (types.TryGetValue(typeid, out Type value))
+			Type value;
+			if (types.TryGetValue(typeid, out value))
 			{
 				return value;
 			}

@@ -385,9 +385,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern IntPtr gtk_window_new(Constants.GtkWindowType windowType);
 
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern string gtk_window_get_title(IntPtr window);
+		public static extern IntPtr gtk_window_get_title(IntPtr window);
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern void gtk_window_set_title(IntPtr window, string title);
+		public static extern void gtk_window_set_title(IntPtr window, IntPtr title);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern string gtk_window_get_icon_name(IntPtr window);

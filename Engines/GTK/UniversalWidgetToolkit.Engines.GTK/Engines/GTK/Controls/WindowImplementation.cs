@@ -4,6 +4,7 @@ using System.ComponentModel;
 
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Native;
+using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
@@ -180,11 +181,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			return Internal.GTK.Methods.gtk_window_get_title(Engine.GetHandleForControl(control));
+			IntPtr hTitle = Internal.GTK.Methods.gtk_window_get_title(Engine.GetHandleForControl(control));
+			return Marshal.PtrToStringAuto (hTitle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
-			Internal.GTK.Methods.gtk_window_set_title(Engine.GetHandleForControl(control), control.Text);
+			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
+			Internal.GTK.Methods.gtk_window_set_title(Engine.GetHandleForControl(control), hTitle);
 		}
 
 		[System.Diagnostics.DebuggerNonUserCode()]

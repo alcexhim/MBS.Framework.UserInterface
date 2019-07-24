@@ -1509,7 +1509,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private IntPtr Dialog_Create(Dialog dlg, IntPtr hParent)
 		{
 			IntPtr handle = Internal.GTK.Methods.gtk_dialog_new_with_buttons(dlg.Title, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
-			Internal.GTK.Methods.gtk_window_set_title(handle, dlg.Title);
+			// Internal.GTK.Methods.gtk_window_set_title(handle, dlg.Title);
 
 			IntPtr hDialogContent = Internal.GTK.Methods.gtk_dialog_get_content_area(handle);
 

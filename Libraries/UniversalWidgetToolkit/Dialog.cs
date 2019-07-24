@@ -6,9 +6,6 @@ namespace UniversalWidgetToolkit
 {
 	public class Dialog : Window
 	{
-		private string mvarTitle = String.Empty;
-		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
-
 		private Control mvarParent = null;
 		public new Control Parent { get { return mvarParent; } set { mvarParent = value; } }
 

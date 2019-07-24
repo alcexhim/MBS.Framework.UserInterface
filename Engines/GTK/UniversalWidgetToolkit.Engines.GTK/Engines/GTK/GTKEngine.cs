@@ -1218,7 +1218,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		#region File Dialog
 		private IntPtr FileDialog_Create(FileDialog dlg)
 		{
-			string title = dlg.Title;
+			string title = dlg.Text;
 
 			Internal.GTK.Constants.GtkFileChooserAction fca = Internal.GTK.Constants.GtkFileChooserAction.Open;
 			switch (dlg.Mode)
@@ -1347,7 +1347,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		#region Color Dialog
 		private IntPtr ColorDialog_Create(ColorDialog dlg)
 		{
-			string title = dlg.Title;
+			string title = dlg.Text;
 			if (title == null)
 				title = "Select Color";
 
@@ -1364,7 +1364,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		#region Font Dialog
 		private IntPtr FontDialog_Create(FontDialog dlg)
 		{
-			string title = dlg.Title;
+			string title = dlg.Text;
 			if (title == null)
 				title = "Select Font";
 
@@ -1508,8 +1508,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 		private IntPtr Dialog_Create(Dialog dlg, IntPtr hParent)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_dialog_new_with_buttons(dlg.Title, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
-			// Internal.GTK.Methods.gtk_window_set_title(handle, dlg.Title);
+			IntPtr handle = Internal.GTK.Methods.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
+			// Internal.GTK.Methods.gtk_window_set_title(handle, dlg.Text);
 
 			IntPtr hDialogContent = Internal.GTK.Methods.gtk_dialog_get_content_area(handle);
 

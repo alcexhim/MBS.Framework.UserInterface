@@ -109,7 +109,7 @@ namespace UniversalWidgetToolkit.Dialogs
 			dialog.Content = prompt;
 			dialog.Modality = modality;
 			dialog.Icon = icon;
-			dialog.Title = title;
+			dialog.Text = title;
 			dialog.ShowHelp = showHelp;
 			dialog.Parent = parent;
 			return dialog.ShowDialog();
@@ -122,7 +122,7 @@ namespace UniversalWidgetToolkit.Dialogs
 			dialog.Content = prompt;
 			dialog.Modality = modality;
 			dialog.Icon = icon;
-			dialog.Title = title;
+			dialog.Text = title;
 			dialog.ShowHelp = showHelp;
 			dialog.Parent = parent;
 			return dialog;

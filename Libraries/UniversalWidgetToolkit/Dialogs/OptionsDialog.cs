@@ -27,7 +27,7 @@ namespace UniversalWidgetToolkit.Dialogs
 
 			this.Controls.Add(vpaned, new BoxLayout.Constraints(true, true, 0, BoxLayout.PackType.Start));
 
-			this.Title = "Options";
+			this.Text = "Options";
 			this.Size = new Dimension2D(600, 400);
 		}
 	}

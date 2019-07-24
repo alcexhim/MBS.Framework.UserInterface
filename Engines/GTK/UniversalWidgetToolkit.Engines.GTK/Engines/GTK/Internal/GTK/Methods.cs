@@ -1113,6 +1113,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_stock_lookup(string stock_id, ref Internal.GTK.Structures.GtkStockItem item);
 		#endregion
 
+		#region Table
+		[DllImport(LIBRARY_FILENAME), Obsolete("GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.")]
+		public static extern IntPtr /*GtkTable*/ gtk_table_new();
+		[DllImport(LIBRARY_FILENAME), Obsolete("GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.")]
+		public static extern void gtk_table_attach(IntPtr /*GtkTable*/ table, IntPtr /*GtkWidget*/ child, uint left_attach, uint right_attach, uint top_attach, uint bottom_attach, Constants.GtkAttachOptions xoptions, Constants.GtkAttachOptions yoptions, uint xpadding, uint ypadding);
+		#endregion
+
 	}
 }
 

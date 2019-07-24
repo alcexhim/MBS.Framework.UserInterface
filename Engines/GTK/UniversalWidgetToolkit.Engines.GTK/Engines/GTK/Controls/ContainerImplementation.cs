@@ -56,7 +56,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Layouts.GridLayout.Constraints constraints = (Layouts.GridLayout.Constraints)layout.GetControlConstraints(ctl);
 				if (constraints != null)
 				{
+					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
 					Internal.GTK.Methods.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
+					// Internal.GTK.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 
 					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
 					{
@@ -110,7 +112,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			else if (layout is Layouts.GridLayout)
 			{
 				Layouts.GridLayout grid = (layout as Layouts.GridLayout);
+				// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
 				hContainer = Internal.GTK.Methods.gtk_grid_new();
+				// hContainer = Internal.GTK.Methods.gtk_table_new();
 				Internal.GTK.Methods.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
 				Internal.GTK.Methods.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
 			}

@@ -386,6 +386,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// </summary>
 			CenterOnParent
 		}
+
+		public enum GtkAttachOptions
+		{
+			Expand = 1 << 0,
+			Shrink = 1 << 1,
+			Fill = 1 << 2
+		}
 	}
 }
 

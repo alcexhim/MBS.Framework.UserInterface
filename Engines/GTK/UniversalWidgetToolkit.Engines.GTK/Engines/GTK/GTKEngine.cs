@@ -1069,6 +1069,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 
 			Internal.GTK.Methods.gtk_window_set_decorated(handle, dialog.Decorated);
+			Internal.GTK.Methods.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
+			Internal.GTK.Methods.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
 
 			// Add any additional buttons to the end of the buttons list
 			foreach (Button button in dialog.Buttons)

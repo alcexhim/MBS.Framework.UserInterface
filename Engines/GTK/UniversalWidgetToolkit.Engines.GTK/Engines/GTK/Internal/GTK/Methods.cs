@@ -278,9 +278,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public static extern bool gtk_tree_model_iter_previous(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_tree_model_get_path (IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_enable_model_drag_source(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkModifierType start_button_mask, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_enable_model_drag_dest(IntPtr /*GtkWidget*/ widget, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_expand_row(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path, bool open_all);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_collapse_row(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_row_expanded(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path);
+		
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_store_newv(int columns, IntPtr[] columnTypes);

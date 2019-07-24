@@ -5,6 +5,14 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit
 {
+	namespace Native
+	{
+		public interface ITreeModelRowCollectionNativeImplementation
+		{
+			bool IsRowExpanded(TreeModelRow row);
+			void SetRowExpanded(TreeModelRow row, bool expanded);
+		}
+	}
 	public class TreeModelRow
 	{
 		public class TreeModelSelectedRowCollection
@@ -171,6 +179,7 @@ namespace UniversalWidgetToolkit
 					{
 						Console.WriteLine("setting parent row");
 						row.ParentRow = this;
+						row.ParentControl = this.ParentControl;
 						list.Add(row);
 					}
 					if (ParentControl != null)
@@ -179,6 +188,26 @@ namespace UniversalWidgetToolkit
 					}
 					break;
 				}
+			}
+		}
+
+		private bool mvarExpanded = false;
+		public bool Expanded
+		{
+			get
+			{
+				mvarExpanded = ((ParentControl?.NativeImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(this)).GetValueOrDefault(false);
+				return mvarExpanded;
+			}
+			set
+			{
+				if (ParentControl == null) {
+					Console.Error.WriteLine ("uwt: TreeModelRow: parent control is NULL");
+				} else if (ParentControl.NativeImplementation == null) {
+					Console.Error.WriteLine ("uwt: TreeModelRow: NativeImplementation is NULL");
+				}
+				(ParentControl?.NativeImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded (this, value);
+				mvarExpanded = value;
 			}
 		}
 

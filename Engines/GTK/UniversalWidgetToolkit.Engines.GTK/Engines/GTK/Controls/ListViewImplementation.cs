@@ -12,7 +12,7 @@ using UniversalWidgetToolkit.Engines.GTK.Internal.GTK;
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[NativeImplementation(typeof(ListView))]
-	public class ListViewImplementation : GTKNativeImplementation, UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation
+	public class ListViewImplementation : GTKNativeImplementation, UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation, UniversalWidgetToolkit.Native.ITreeModelRowCollectionNativeImplementation
 	{
 		private enum ImplementedAsType
 		{
@@ -514,6 +514,32 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			return IntPtr.Zero;
 		}
 
+		protected override void OnKeyDown (KeyEventArgs e)
+		{
+			base.OnKeyDown (e);
+
+			ListView lv = Control as ListView;
+			if (lv == null) return;
+
+			if (lv.SelectedRows.Count != 1) return;
+
+			if (e.Key == KeyboardKey.ArrowRight) {
+				lv.SelectedRows [0].Expanded = true;
+			}
+			else if (e.Key == KeyboardKey.ArrowLeft) {
+				if (!lv.SelectedRows [0].Expanded) {
+					// we're already closed, so move selection up to our parent
+					TreeModelRow rowCurrent = lv.SelectedRows [0];
+					if (rowCurrent.ParentRow != null) {
+						lv.SelectedRows.Clear ();
+						lv.SelectedRows.Add (rowCurrent.ParentRow);
+					}
+				} else {
+					lv.SelectedRows [0].Expanded = false;
+				}
+			}
+		}
+
 		private static void RegisterTreeModel(TreeModel tm, IntPtr handle)
 		{
 			_TreeModelForHandle[handle] = tm;
@@ -609,6 +635,41 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hList = Internal.GTK.Methods.gtk_container_get_children(hScrolledWindow);
 			IntPtr hTreeView = Internal.GLib.Methods.g_list_nth_data(hList, 0);
 			return hTreeView;
+		}
+
+
+		public bool IsRowExpanded(TreeModelRow row)
+		{
+			ListView lv = Control as ListView;
+			if (lv == null)
+				return false;
+
+			IntPtr hTreeView = GetHandleForControl (lv);
+			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
+			
+			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
+			IntPtr hRowPath = Internal.GTK.Methods.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
+
+			bool value = Internal.GTK.Methods.gtk_tree_view_row_expanded (hTreeView, hRowPath);
+			return value;
+		}
+		public void SetRowExpanded(TreeModelRow row, bool expanded)
+		{
+			ListView lv = Control as ListView;
+			if (lv == null)
+				return;
+
+			IntPtr hTreeView = GetHandleForControl (lv);
+			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
+
+			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
+			IntPtr hRowPath = Internal.GTK.Methods.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
+
+			if (expanded) {
+				Internal.GTK.Methods.gtk_tree_view_expand_row (hTreeView, hRowPath, false);
+			} else {
+				Internal.GTK.Methods.gtk_tree_view_collapse_row (hTreeView, hRowPath);
+			}
 		}
 
 		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, IntPtr hTreeStore, out Internal.GTK.Structures.GtkTreeIter hIter, Internal.GTK.Structures.GtkTreeIter? parent, int position, bool append = false)

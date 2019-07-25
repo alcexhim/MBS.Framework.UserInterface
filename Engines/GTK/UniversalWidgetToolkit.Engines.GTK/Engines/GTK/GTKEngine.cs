@@ -24,7 +24,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override bool WindowHasFocusInternal(Window window)
 		{
 			IntPtr hWindow = GetHandleForControl(window);
-			return Internal.GTK.Methods.gtk_window_has_toplevel_focus(hWindow);
+			return Internal.GTK.Methods.GtkWindow.gtk_window_has_toplevel_focus(hWindow);
 		}
 
 		protected override Vector2D ClientToScreenCoordinatesInternal(Vector2D point)
@@ -35,12 +35,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override bool IsControlEnabledInternal(Control control)
 		{
 			IntPtr handle = GetHandleForControl(control);
-			return Internal.GTK.Methods.gtk_widget_is_sensitive(handle);
+			return Internal.GTK.Methods.GtkWidget.gtk_widget_is_sensitive(handle);
 		}
 		protected override void SetControlEnabledInternal(Control control, bool value)
 		{
 			IntPtr handle = GetHandleForControl(control);
-			Internal.GTK.Methods.gtk_widget_set_sensitive(handle, value);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, value);
 		}
 
 		private List<Window> _GetToplevelWindowsRetval = null;
@@ -53,7 +53,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 
 			_GetToplevelWindowsRetval = new List<Window>();
-			IntPtr hList = Internal.GTK.Methods.gtk_window_list_toplevels();
+			IntPtr hList = Internal.GTK.Methods.GtkWindow.gtk_window_list_toplevels();
 			Internal.GLib.Methods.g_list_foreach(hList, _AddToList, IntPtr.Zero);
 
 			Window[] retval = _GetToplevelWindowsRetval.ToArray();
@@ -194,7 +194,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			string[] argv = System.Environment.GetCommandLineArgs();
 			int argc = argv.Length;
 
-			bool check = Internal.GTK.Methods.gtk_init_check(ref argc, ref argv);
+			bool check = Internal.GTK.Methods.Gtk.gtk_init_check(ref argc, ref argv);
 			if (!check)
 				return check;
 
@@ -206,7 +206,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 			
-			IntPtr hApp = Internal.GTK.Methods.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
+			IntPtr hApp = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
 			
 			if (hApp == IntPtr.Zero)
 			{
@@ -238,7 +238,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				Internal.GIO.Methods.g_menu_append_item(hMenu, hMenuItemFile);
 
-				Internal.GTK.Methods.gtk_application_set_app_menu(hApp, hMenu);
+				Internal.GTK.Methods.Methods.gtk_application_set_app_menu(hApp, hMenu);
 				*/
 				mvarApplicationHandle = hApp;
 			}
@@ -251,7 +251,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			IntPtr hMenuItem = Internal.GIO.Methods.g_menu_item_new ("File", "app.file");
 			Internal.GIO.Methods.g_menu_append_item (hMenu, hMenuItem);
 
-			Internal.GTK.Methods.gtk_application_set_menubar (hApp, hMenu);
+			Internal.GTK.Methods.Methods.gtk_application_set_menubar (hApp, hMenu);
 			*/
 
 			return check;
@@ -269,14 +269,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Internal.GIO.Methods.g_application_run(mvarApplicationHandle, argc, argv);
 			}
 
-			Console.WriteLine("In main loop");
-			Internal.GTK.Methods.gtk_main();
+			Internal.GTK.Methods.Gtk.gtk_main();
 
 			return _exitCode;
 		}
 		protected override void StopInternal(int exitCode)
 		{
-			Internal.GTK.Methods.gtk_main_quit();
+			Internal.GTK.Methods.Gtk.gtk_main_quit();
 			_exitCode = exitCode;
 		}
 
@@ -436,10 +435,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				// this way is recommended per GTK3.0 docs:
 				// "destroying the dialog during gtk_dialog_run() is a very bad idea, because your post-run code won't know whether the dialog was destroyed or not"
-				Internal.GTK.Methods.gtk_dialog_response(handle, Internal.GTK.Constants.GtkResponseType.None);
+				Internal.GTK.Methods.GtkDialog.gtk_dialog_response(handle, Internal.GTK.Constants.GtkResponseType.None);
 				return;
 			}
-			Internal.GTK.Methods.gtk_widget_destroy(handle);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 		}
 
 		private bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -751,11 +750,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			
 			if (e.Data is string)
 			{
-				Internal.GTK.Methods.gtk_selection_data_set_text(data, ((string)e.Data), ((string)e.Data).Length);
+				Internal.GTK.Methods.GtkSelection.gtk_selection_data_set_text(data, ((string)e.Data), ((string)e.Data).Length);
 			}
 			else if (e.Data is byte[])
 			{
-				Internal.GTK.Methods.gtk_selection_data_set(data, IntPtr.Zero, 8, ((byte[])e.Data), ((byte[])e.Data).Length);
+				Internal.GTK.Methods.GtkSelection.gtk_selection_data_set(data, IntPtr.Zero, 8, ((byte[])e.Data), ((byte[])e.Data).Length);
 			}
 			else if (e.Data == null)
 			{
@@ -794,7 +793,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		
 		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)
 		{
-			IntPtr hList = Internal.GTK.Methods.gtk_container_get_children(hScrolledWindow);
+			IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
 			IntPtr hTreeView = Internal.GLib.Methods.g_list_nth_data(hList, 0);
 			Console.WriteLine("returning {0} child handle for scrolled window {1}", hTreeView, hScrolledWindow);
 			return hTreeView;
@@ -868,10 +867,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 								}
 								else
 								{
-									hLayout = Internal.GTK.Methods.gtk_hbox_new(true, 0);
+									hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new(true, 0);
 								}
 								int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
-								Internal.GTK.Methods.gtk_box_set_child_packing(hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
+								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing(hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
 							}
 						}
 					}
@@ -881,9 +880,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				UpdateControlProperties(control);
 
 				if (control.MinimumSize != Dimension2D.Empty)
-					Internal.GTK.Methods.gtk_widget_set_size_request((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
 				
-				Internal.GTK.Methods.gtk_widget_show_all((handle as GTKNativeControl).Handle);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all((handle as GTKNativeControl).Handle);
 				Application.DoEvents();
 			}
 			return handle;
@@ -898,11 +897,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			if (visible)
 			{
-				Internal.GTK.Methods.gtk_widget_show(handle);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(handle);
 			}
 			else
 			{
-				Internal.GTK.Methods.gtk_widget_hide(handle);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(handle);
 			}
 		}
 
@@ -913,7 +912,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			IntPtr handle = GetHandleForControl(control);
 
-			bool isgood = Internal.GObject.Methods.g_type_check_instance_is_a(handle, Internal.GTK.Methods.gtk_widget_get_type());
+			bool isgood = Internal.GObject.Methods.g_type_check_instance_is_a(handle, Internal.GTK.Methods.GtkWidget.gtk_widget_get_type());
 			return !isgood;
 		}
 
@@ -1003,7 +1002,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						break;
 					}
 				}
-				handle = Internal.GTK.Methods.gtk_message_dialog_new(parentHandle, Internal.GTK.Constants.GtkDialogFlags.Modal, messageType, buttonsType, dlg.Content);
+				handle = Internal.GTK.Methods.GtkMessageDialog.gtk_message_dialog_new(parentHandle, Internal.GTK.Constants.GtkDialogFlags.Modal, messageType, buttonsType, dlg.Content);
 
 				switch (dlg.Buttons)
 				{
@@ -1068,9 +1067,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				handle = Dialog_Create(dialog, parentHandle);
 			}
 
-			Internal.GTK.Methods.gtk_window_set_decorated(handle, dialog.Decorated);
-			Internal.GTK.Methods.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
-			Internal.GTK.Methods.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, dialog.Decorated);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
 
 			// Add any additional buttons to the end of the buttons list
 			foreach (Button button in dialog.Buttons)
@@ -1083,7 +1082,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (dialog.DefaultButton != null)
 			{
 				IntPtr hButtonDefault = GetHandleForControl(dialog.DefaultButton);
-				Internal.GTK.Methods.gtk_widget_grab_default(hButtonDefault);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
 			}
 
 			DialogResult result = DialogResult.None;
@@ -1094,7 +1093,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				while (true)
 				{
-					int nativeResult = Internal.GTK.Methods.gtk_dialog_run(handle);
+					int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
 
 					switch (nativeResult)
 					{
@@ -1171,24 +1170,24 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				for (int i = 0; i < hButtons.Length; i++)
 				{
 					Console.WriteLine("uwt: gtk: destroying dialog button at handle " + hButtons[i].ToString());
-					Internal.GTK.Methods.gtk_widget_destroy(hButtons[i]);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hButtons[i]);
 				}
 				Console.WriteLine("uwt: gtk: gtk_widget_destroy");
-				Internal.GTK.Methods.gtk_widget_destroy(handle);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 			}
 			return result;
 		}
 
 		private IntPtr AppChooserDialog_Create(AppChooserDialog dialog)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_app_chooser_dialog_new_for_content_type(CommonDialog_GetParentHandle(dialog), Internal.GTK.Constants.GtkDialogFlags.Modal, dialog.ContentType);
+			IntPtr handle = Internal.GTK.Methods.GtkAppChooserDialog.gtk_app_chooser_dialog_new_for_content_type(CommonDialog_GetParentHandle(dialog), Internal.GTK.Constants.GtkDialogFlags.Modal, dialog.ContentType);
 			return handle;
 		}
 
 		private DialogResult PrintDialog_Run(IntPtr parent, IntPtr handle)
 		{
 			IntPtr error = IntPtr.Zero;
-			Internal.GTK.Constants.GtkPrintOperationResult gtkResult = Internal.GTK.Methods.gtk_print_operation_run(handle, Internal.GTK.Constants.GtkPrintOperationAction.PrintDialog, parent, error);
+			Internal.GTK.Constants.GtkPrintOperationResult gtkResult = Internal.GTK.Methods.GtkPrintOperation.gtk_print_operation_run(handle, Internal.GTK.Constants.GtkPrintOperationAction.PrintDialog, parent, error);
 			return GtkPrintOperationResultToDialogResult(gtkResult);
 		}
 
@@ -1204,7 +1203,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				throw new NullReferenceException("Control handle not found");
 
 			IntPtr handle = GetHandleForControl(control);
-			Internal.GTK.Methods.gtk_widget_queue_draw_area(handle, x, y, width, height);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 
 		#region Common Dialog
@@ -1255,12 +1254,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				}
 			}
 
-			IntPtr handle = Internal.GTK.Methods.gtk_file_chooser_dialog_new(title, CommonDialog_GetParentHandle(dlg), fca);
+			IntPtr handle = Internal.GTK.Methods.GtkFileChooserDialog.gtk_file_chooser_dialog_new(title, CommonDialog_GetParentHandle(dlg), fca);
 
 			// set up the file filters
 			foreach (FileDialogFileNameFilter filter in dlg.FileNameFilters)
 			{
-				Internal.GTK.Methods.gtk_file_chooser_add_filter(handle, CreateGTKFileChooserFilter(filter));
+				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(handle, CreateGTKFileChooserFilter(filter));
 			}
 
 			string accept_button = "gtk-save";
@@ -1288,8 +1287,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				case PlatformID.Unix:
 				{
 					// buttons go cancel, then accept
-					Internal.GTK.Methods.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
-					Internal.GTK.Methods.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
+					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
+					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
 					break;
 				}
 				case PlatformID.Win32NT:
@@ -1299,31 +1298,31 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				case PlatformID.Xbox:
 				{
 					// buttons go accept, then cancel
-					Internal.GTK.Methods.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
-					Internal.GTK.Methods.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
+					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
+					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
 					break;
 				}
 			}
 
-			Internal.GTK.Methods.gtk_file_chooser_set_select_multiple(handle, dlg.MultiSelect);
+			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_select_multiple(handle, dlg.MultiSelect);
 			return handle;
 		}
 
 		private IntPtr CreateGTKFileChooserFilter(FileDialogFileNameFilter filter)
 		{
-			IntPtr hFileFilter = Internal.GTK.Methods.gtk_file_filter_new();
-			Internal.GTK.Methods.gtk_file_filter_set_name(hFileFilter, filter.Title);
+			IntPtr hFileFilter = Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_new();
+			Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_set_name(hFileFilter, filter.Title);
 			string[] patterns = filter.Filter.Split(new char[] { ';' });
 			foreach (string pattern in patterns)
 			{
-				Internal.GTK.Methods.gtk_file_filter_add_pattern(hFileFilter, pattern);
+				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, pattern);
 			}
 			return hFileFilter;
 		}
 
 		private void FileDialog_Accept(FileDialog dlg, IntPtr handle)
 		{
-			IntPtr gslist = Internal.GTK.Methods.gtk_file_chooser_get_filenames(handle);
+			IntPtr gslist = Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_get_filenames(handle);
 
 			uint length = Internal.GLib.Methods.g_slist_length(gslist);
 			dlg.SelectedFileNames.Clear();
@@ -1353,13 +1352,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (title == null)
 				title = "Select Color";
 
-			IntPtr handle = Internal.GTK.Methods.gtk_color_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
+			IntPtr handle = Internal.GTK.Methods.GtkColorDialog.gtk_color_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
 			return handle;
 		}
 		private void ColorDialog_Accept(ColorDialog dlg, IntPtr handle)
 		{
 			Internal.GDK.Structures.GdkRGBA color = new Internal.GDK.Structures.GdkRGBA();
-			Internal.GTK.Methods.gtk_color_chooser_get_rgba(handle, out color);
+			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_get_rgba(handle, out color);
 			dlg.SelectedColor = Color.FromRGBADouble(color.red, color.green, color.blue, color.alpha);
 		}
 		#endregion
@@ -1370,37 +1369,37 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (title == null)
 				title = "Select Font";
 
-			IntPtr handle = Internal.GTK.Methods.gtk_font_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
+			IntPtr handle = Internal.GTK.Methods.GtkFontChooserDialog.gtk_font_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
 			return handle;
 		}
 		private void FontDialog_Accept(FontDialog dlg, IntPtr handle)
 		{
-			UniversalWidgetToolkit.Drawing.Font font = Internal.GTK.Methods.gtk_font_dialog_get_font(handle, !dlg.AutoUpgradeEnabled);
+			UniversalWidgetToolkit.Drawing.Font font = Internal.GTK.Methods.GtkFontChooserDialog.gtk_font_dialog_get_font(handle, !dlg.AutoUpgradeEnabled);
 			dlg.SelectedFont = font;
 		}
 		#endregion
 		#region About Dialog
 		private IntPtr AboutDialog_Create(AboutDialog dlg)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_about_dialog_new();
-			Internal.GTK.Methods.gtk_about_dialog_set_program_name(handle, dlg.ProgramName);
+			IntPtr handle = Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_new();
+			Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_program_name(handle, dlg.ProgramName);
 			if (dlg.Version != null)
 			{
-				Internal.GTK.Methods.gtk_about_dialog_set_version(handle, dlg.Version.ToString());
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_version(handle, dlg.Version.ToString());
 			}
-			Internal.GTK.Methods.gtk_about_dialog_set_copyright(handle, dlg.Copyright);
-			Internal.GTK.Methods.gtk_about_dialog_set_comments(handle, dlg.Comments);
+			Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_copyright(handle, dlg.Copyright);
+			Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_comments(handle, dlg.Comments);
 			if (dlg.LicenseText != null)
 			{
-				Internal.GTK.Methods.gtk_about_dialog_set_license(handle, dlg.LicenseText);
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license(handle, dlg.LicenseText);
 			}
 
 			if (dlg.Website != null)
 			{
-				Internal.GTK.Methods.gtk_about_dialog_set_website(handle, dlg.Website);
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_website(handle, dlg.Website);
 			}
 
-			if (Internal.GTK.Methods.LIBRARY_FILENAME == Internal.GTK.Methods.LIBRARY_FILENAME_V3)
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V3)
 			{
 				if (dlg.LicenseType != LicenseType.Unknown)
 				{
@@ -1408,47 +1407,47 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					{
 						case LicenseType.Artistic:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Artistic);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Artistic);
 								break;
 							}
 						case LicenseType.BSD:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.BSD);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.BSD);
 								break;
 							}
 						case LicenseType.Custom:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Custom);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Custom);
 								break;
 							}
 						case LicenseType.GPL20:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.GPL20);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.GPL20);
 								break;
 							}
 						case LicenseType.GPL30:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.GPL30);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.GPL30);
 								break;
 							}
 						case LicenseType.LGPL21:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.LGPL21);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.LGPL21);
 								break;
 							}
 						case LicenseType.LGPL30:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.LGPL30);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.LGPL30);
 								break;
 							}
 						case LicenseType.MITX11:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.MITX11);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.MITX11);
 								break;
 							}
 						case LicenseType.Unknown:
 							{
-								Internal.GTK.Methods.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Unknown);
+								Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_license_type(handle, Internal.GTK.Constants.GtkLicense.Unknown);
 								break;
 							}
 					}
@@ -1460,7 +1459,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		#region Print Dialog
 		private IntPtr PrintDialog_Create(PrintDialog dlg)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_print_operation_new();
+			IntPtr handle = Internal.GTK.Methods.GtkPrintOperation.gtk_print_operation_new();
 			return handle;
 		}
 		#endregion
@@ -1472,7 +1471,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			buttonHandle = GetHandleForControl(button);
 
-			// Internal.GTK.Methods.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);
+			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);
 
 			int nativeResponseValue = button.ResponseValue;
 			switch (button.ResponseValue)
@@ -1499,27 +1498,27 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				}
 			}
 
-			Internal.GTK.Methods.gtk_dialog_add_action_widget(handle, buttonHandle, nativeResponseValue);
-			Internal.GTK.Methods.gtk_widget_set_can_default(buttonHandle, true);
+			Internal.GTK.Methods.GtkDialog.gtk_dialog_add_action_widget(handle, buttonHandle, nativeResponseValue);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_default(buttonHandle, true);
 
 			// UpdateControlProperties(button, buttonHandle);
 			// above updatecontrolprops call must be called after buttonHandle is realized
 
-			Internal.GTK.Methods.gtk_widget_show_all(buttonHandle);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(buttonHandle);
 			return buttonHandle;
 		}
 		private IntPtr Dialog_Create(Dialog dlg, IntPtr hParent)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
-			// Internal.GTK.Methods.gtk_window_set_title(handle, dlg.Text);
+			IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
+			// Internal.GTK.Methods.Methods.gtk_window_set_title(handle, dlg.Text);
 
-			IntPtr hDialogContent = Internal.GTK.Methods.gtk_dialog_get_content_area(handle);
+			IntPtr hDialogContent = Internal.GTK.Methods.GtkDialog.gtk_dialog_get_content_area(handle);
 
 			NativeControl hContainer = (new Controls.ContainerImplementation(this, dlg)).CreateControl(dlg);
 			// NativeControl hContainer = CreateContainer (dlg);
 
-			Internal.GTK.Methods.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);
-			Internal.GTK.Methods.gtk_widget_show_all(hDialogContent);
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hDialogContent);
 
 			RegisterControlHandle(dlg, handle);
 			return handle;
@@ -1571,39 +1570,39 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (!String.IsNullOrEmpty(text))
 				{
-					// Internal.GTK.Methods.gtk_button_set_label(handle, text);
+					// Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, text);
 				}
 
 				if (button.StockType != ButtonStockType.None)
 				{
-					Internal.GTK.Methods.gtk_button_set_label(handle, StockTypeToString((StockType)button.StockType));
-					Internal.GTK.Methods.gtk_button_set_use_stock(handle, true);
+					Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, StockTypeToString((StockType)button.StockType));
+					Internal.GTK.Methods.GtkButton.gtk_button_set_use_stock(handle, true);
 				}
 
-				Internal.GTK.Methods.gtk_button_set_use_underline(handle, true);
-				Internal.GTK.Methods.gtk_button_set_focus_on_click(handle, true);
+				Internal.GTK.Methods.GtkButton.gtk_button_set_use_underline(handle, true);
+				Internal.GTK.Methods.GtkButton.gtk_button_set_focus_on_click(handle, true);
 
 				switch (button.BorderStyle)
 				{
 					case ButtonBorderStyle.None:
 					{
-						Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
 						break;
 					}
 					case ButtonBorderStyle.Half:
 					{
-						Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
 						break;
 					}
 					case ButtonBorderStyle.Normal:
 					{
-						Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
 						break;
 					}
 				}
 			}
-			Internal.GTK.Methods.gtk_widget_set_sensitive(handle, control.Enabled);
-			Internal.GTK.Methods.gtk_widget_set_size_request(handle, (int)control.Size.Width, (int)control.Size.Height);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, control.Enabled);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)control.Size.Width, (int)control.Size.Height);
 		}
 
 		private static IntPtr hDefaultAccelGroup = IntPtr.Zero;
@@ -1627,30 +1626,30 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					accelPath += "/" + cmiName;
 					if (cmi.Shortcut != null)
 					{
-						Internal.GTK.Methods.gtk_accel_map_add_entry(accelPath, GTKEngine.GetAccelKeyForKeyboardKey(cmi.Shortcut.Key), GTKEngine.KeyboardModifierKeyToGdkModifierType(cmi.Shortcut.ModifierKeys));
+						Internal.GTK.Methods.GtkAccelMap.gtk_accel_map_add_entry(accelPath, GTKEngine.GetAccelKeyForKeyboardKey(cmi.Shortcut.Key), GTKEngine.KeyboardModifierKeyToGdkModifierType(cmi.Shortcut.ModifierKeys));
 					}
 				}
 
-				IntPtr hMenuFile = Internal.GTK.Methods.gtk_menu_item_new();
-				Internal.GTK.Methods.gtk_menu_item_set_label(hMenuFile, cmi.Text);
-				Internal.GTK.Methods.gtk_menu_item_set_use_underline(hMenuFile, true);
+				IntPtr hMenuFile = Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_new();
+				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(hMenuFile, cmi.Text);
+				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
-					Internal.GTK.Methods.gtk_menu_item_set_right_justified(hMenuFile, true);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_right_justified(hMenuFile, true);
 				}
 
 				if (cmi.Items.Count > 0)
 				{
-					IntPtr hMenuFileMenu = Internal.GTK.Methods.gtk_menu_new();
+					IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
 
 					if (accelPath != null)
 					{
 						if (hDefaultAccelGroup == IntPtr.Zero)
 						{
-							hDefaultAccelGroup = Internal.GTK.Methods.gtk_accel_group_new();
+							hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
 						}
-						Internal.GTK.Methods.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
+						Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
 					}
 
 					foreach (MenuItem menuItem1 in cmi.Items)
@@ -1658,7 +1657,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
 					}
 
-					Internal.GTK.Methods.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
 				}
 
 				menuItemsByHandle[hMenuFile] = cmi;
@@ -1667,16 +1666,16 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (accelPath != null)
 				{
-					Internal.GTK.Methods.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
 				}
 
-				Internal.GTK.Methods.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
 			}
 			else if (menuItem is SeparatorMenuItem)
 			{
-				// IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
-				IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_menu_item_new();
-				Internal.GTK.Methods.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				// IntPtr hMenuFile = Internal.GTK.Methods.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
+				IntPtr hMenuFile = Internal.GTK.Methods.GtkSeparatorMenuItem.gtk_separator_menu_item_new();
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
 			}
 		}
 
@@ -1687,10 +1686,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				return;
 
 			IntPtr handle = GetHandleForControl(parent);
-			int pageCount = Internal.GTK.Methods.gtk_notebook_get_n_pages(handle);
+			int pageCount = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_n_pages(handle);
 			for (int i = 0; i < pageCount; i++)
 			{
-				Internal.GTK.Methods.gtk_notebook_remove_page(handle, i);
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_remove_page(handle, i);
 			}
 		}
 		protected override void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage)
@@ -1728,15 +1727,15 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (updateContextMenu)
 				{
-					IntPtr hMenu = Internal.GTK.Methods.gtk_menu_new();
+					IntPtr hMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
 
-					IntPtr hMenuTitle = Internal.GTK.Methods.gtk_menu_item_new();
-					Internal.GTK.Methods.gtk_widget_set_sensitive(hMenuTitle, false);
-					Internal.GTK.Methods.gtk_menu_shell_append(hMenu, hMenuTitle);
+					IntPtr hMenuTitle = Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_new();
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuTitle, false);
+					Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenu, hMenuTitle);
 					nii.hMenuItemTitle = hMenuTitle;
 
-					IntPtr hMenuSeparator = Internal.GTK.Methods.gtk_separator_menu_item_new();
-					Internal.GTK.Methods.gtk_menu_shell_append(hMenu, hMenuSeparator);
+					IntPtr hMenuSeparator = Internal.GTK.Methods.GtkSeparatorMenuItem.gtk_separator_menu_item_new();
+					Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenu, hMenuSeparator);
 
 					if (nid.ContextMenu != null)
 					{
@@ -1746,14 +1745,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						}
 					}
 
-					Internal.GTK.Methods.gtk_widget_show_all(hMenu);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenu);
 
 					Internal.AppIndicator.Methods.app_indicator_set_menu(nii.hIndicator, hMenu);
 				}
 
 				if (nii.hMenuItemTitle != IntPtr.Zero)
 				{
-					Internal.GTK.Methods.gtk_menu_item_set_label(nii.hMenuItemTitle, nid.Text);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(nii.hMenuItemTitle, nid.Text);
 				}
 
 				Internal.AppIndicator.Methods.app_indicator_set_attention_icon(nii.hIndicator, nid.IconNameAttention);
@@ -1798,14 +1797,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override void RepaintCustomControl(CustomControl control, int x, int y, int width, int height)
 		{
 			IntPtr handle = GetHandleForControl(control);
-			Internal.GTK.Methods.gtk_widget_queue_draw_area(handle, x, y, width, height);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 
 		protected override void DoEventsInternal()
 		{
-			while (Internal.GTK.Methods.gtk_events_pending())
+			while (Internal.GTK.Methods.Gtk.gtk_events_pending())
 			{
-				Internal.GTK.Methods.gtk_main_iteration();
+				Internal.GTK.Methods.Gtk.gtk_main_iteration();
 			}
 		}
 	}

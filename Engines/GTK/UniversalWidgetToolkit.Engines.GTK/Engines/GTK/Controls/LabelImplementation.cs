@@ -16,7 +16,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override string GetControlTextInternal(Control control)
 		{
 			IntPtr handle = Engine.GetHandleForControl(control);
-			IntPtr hLabelText = Internal.GTK.Methods.gtk_label_get_label(handle);
+			IntPtr hLabelText = Internal.GTK.Methods.GtkLabel.gtk_label_get_label(handle);
 			
 			string value = System.Runtime.InteropServices.Marshal.PtrToStringAuto(hLabelText);
 			return value;
@@ -37,14 +37,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			_ctlTextHandles[control] = System.Runtime.InteropServices.Marshal.StringToHGlobalAuto(text);
 			
-			Internal.GTK.Methods.gtk_label_set_label(handle, _ctlTextHandles[control]);
+			Internal.GTK.Methods.GtkLabel.gtk_label_set_label(handle, _ctlTextHandles[control]);
 		}
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control is Label);
 
 			Label ctl = (control as Label);
-			IntPtr handle = Internal.GTK.Methods.gtk_label_new_with_mnemonic(ctl.Text);
+			IntPtr handle = Internal.GTK.Methods.GtkLabel.gtk_label_new_with_mnemonic(ctl.Text);
 
 			IntPtr hAttrList = Internal.Pango.Methods.pango_attr_list_new();
 			if (ctl.Attributes.ContainsKey("scale"))
@@ -59,22 +59,22 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				case HorizontalAlignment.Default:
 				case HorizontalAlignment.Center:
 				{
-					Internal.GTK.Methods.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
 					break;
 				}
 				case HorizontalAlignment.Justify:
 				{
-					Internal.GTK.Methods.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Fill);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Fill);
 					break;
 				}
 				case HorizontalAlignment.Left:
 				{
-					Internal.GTK.Methods.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
 					break;
 				}
 				case HorizontalAlignment.Right:
 				{
-					Internal.GTK.Methods.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
 					break;
 				}
 			}
@@ -83,37 +83,37 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				case VerticalAlignment.Baseline:
 				{
-					Internal.GTK.Methods.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Baseline);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Baseline);
 					break;
 				}
 				case VerticalAlignment.Bottom:
 				{
-					Internal.GTK.Methods.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.End);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.End);
 					break;
 					}
 				case VerticalAlignment.Default:
 				case VerticalAlignment.Middle:
 				{
-					Internal.GTK.Methods.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Center);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Center);
 					break;
 				}
 				case VerticalAlignment.Top:
 				{
-					Internal.GTK.Methods.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Start);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Start);
 					break;
 				}
 			}
 
 			if (ctl.WordWrap == WordWrapMode.Always)
 			{
-				Internal.GTK.Methods.gtk_label_set_line_wrap(handle, true);
+				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, true);
 			}
 			else if (ctl.WordWrap == WordWrapMode.Never)
 			{
-				Internal.GTK.Methods.gtk_label_set_line_wrap(handle, false);
+				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, false);
 			}
 
-			Internal.GTK.Methods.gtk_label_set_attributes(handle, hAttrList);
+			Internal.GTK.Methods.GtkLabel.gtk_label_set_attributes(handle, hAttrList);
 			return new GTKNativeControl(handle);
 		}
 	}

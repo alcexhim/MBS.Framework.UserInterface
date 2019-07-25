@@ -25,12 +25,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr childWidget = (item.ChildControl.NativeImplementation.Handle as GTKNativeControl).Handle;
 			if (childWidget != IntPtr.Zero)
 			{
-				Internal.GTK.Methods.gtk_container_add(childHandle, childWidget);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, childWidget);
 			}
 			else
 			{
-				IntPtr chdhclm = Internal.GTK.Methods.gtk_label_new("Content not specified");
-				Internal.GTK.Methods.gtk_container_add(childHandle, chdhclm);
+				IntPtr chdhclm = Internal.GTK.Methods.GtkLabel.gtk_label_new("Content not specified");
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, chdhclm);
 			}
 			Internal.GDL.Methods.gdl_dock_add_item(handle, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
 		}
@@ -79,7 +79,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			DockingContainer dock = (control as DockingContainer);
-			IntPtr hBox = Internal.GTK.Methods.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal, 0);
+			IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal, 0);
 
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_new();
 
@@ -90,10 +90,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr hDockBar = Internal.GDL.Methods.gdl_dock_bar_new(handle);
 
-			Internal.GTK.Methods.gtk_box_pack_start(hBox, hDockBar, false, false, 0);
-			Internal.GTK.Methods.gtk_box_pack_end(hBox, handle, true, true, 0);
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hBox, hDockBar, false, false, 0);
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hBox, handle, true, true, 0);
 
-			Internal.GTK.Methods.gtk_widget_show(hBox);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hBox);
 
 			mvarDockHandle = handle;
 			mvarDockBarHandle = hDockBar;

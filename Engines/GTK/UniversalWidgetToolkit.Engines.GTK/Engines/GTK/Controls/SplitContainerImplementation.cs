@@ -32,20 +32,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					break;
 				}
 			}
-			IntPtr handle = Internal.GTK.Methods.gtk_paned_new(orientation);
+			IntPtr handle = Internal.GTK.Methods.GtkPaned.gtk_paned_new(orientation);
 
 			foreach (Control ctl1 in ctl.Panel1.Controls)
 			{
 				if (!Engine.IsControlCreated(ctl1)) Engine.CreateControl(ctl1);
 				if (!Engine.IsControlCreated(ctl1)) continue;
 
-				Internal.GTK.Methods.gtk_paned_pack1(handle, Engine.GetHandleForControl(ctl1), true, true);
+				Internal.GTK.Methods.GtkPaned.gtk_paned_pack1(handle, Engine.GetHandleForControl(ctl1), true, true);
 			}
 			foreach (Control ctl1 in ctl.Panel2.Controls)
 			{
 				if (!Engine.IsControlCreated(ctl1)) Engine.CreateControl(ctl1);
 				if (!Engine.IsControlCreated(ctl1)) continue;
-				Internal.GTK.Methods.gtk_paned_pack2(handle, Engine.GetHandleForControl(ctl1), true, true);
+				Internal.GTK.Methods.GtkPaned.gtk_paned_pack2(handle, Engine.GetHandleForControl(ctl1), true, true);
 			}
 			return new GTKNativeControl(handle);
 		}

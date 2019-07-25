@@ -38,7 +38,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			if (indexAfter == -1)
 			{
-				Internal.GTK.Methods.gtk_notebook_append_page(handle, container, hTabLabel);
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_append_page(handle, container, hTabLabel);
 			}
 			else
 			{
@@ -48,7 +48,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			TabContainer ctl = (control as TabContainer);
-			IntPtr handle = Internal.GTK.Methods.gtk_notebook_new();
+			IntPtr handle = Internal.GTK.Methods.GtkNotebook.gtk_notebook_new();
 
 			foreach (TabPage tabPage in ctl.TabPages)
 			{

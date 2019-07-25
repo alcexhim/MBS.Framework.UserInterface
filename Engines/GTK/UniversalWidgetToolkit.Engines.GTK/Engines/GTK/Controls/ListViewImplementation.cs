@@ -50,16 +50,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				case ImplementedAsType.TreeView:
 				{
-					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
+					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
 					if (hTreeSelection != IntPtr.Zero)
 					{
-						Internal.GTK.Methods.gtk_tree_selection_set_mode(hTreeSelection, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+						Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_mode(hTreeSelection, SelectionModeToGtkSelectionMode(tv.SelectionMode));
 					}
 					break;
 				}
 				case ImplementedAsType.IconView:
 				{
-					Internal.GTK.Methods.gtk_icon_view_set_selection_mode(handle, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_selection_mode(handle, SelectionModeToGtkSelectionMode(tv.SelectionMode));
 					break;
 				}
 			}
@@ -72,13 +72,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				case ImplementedAsType.TreeView:
 				{
-					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
-					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_tree_selection_get_mode(hTreeSelection);
+					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
+					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_get_mode(hTreeSelection);
 					return GtkSelectionModeToSelectionMode(mode);
 				}
 				case ImplementedAsType.IconView:
 				{
-					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.gtk_icon_view_get_selection_mode(handle);
+					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_selection_mode(handle);
 					return GtkSelectionModeToSelectionMode(mode);
 				}
 			}
@@ -129,12 +129,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			
 			TreeModelRow row = null;
 			TreeModelColumn column = null;
-			bool ret = Internal.GTK.Methods.gtk_tree_view_get_path_at_pos(handle, (int)x, (int)y, ref hPath, ref hColumn, ref cx, ref cy);
+			bool ret = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_path_at_pos(handle, (int)x, (int)y, ref hPath, ref hColumn, ref cx, ref cy);
 			if (ret)
 			{
 				Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
-				IntPtr hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(handle);
-				bool retIter = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
+				IntPtr hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(handle);
+				bool retIter = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 				if (retIter)
 				{
 					if (_TreeModelRowForGtkTreeIter.ContainsKey(iter))
@@ -206,14 +206,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private void BlockSelection()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
-			Internal.GTK.Methods.gtk_tree_selection_set_select_function(hTreeSelection, block_selection_func_handler, IntPtr.Zero, IntPtr.Zero);
+			IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
+			Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_select_function(hTreeSelection, block_selection_func_handler, IntPtr.Zero, IntPtr.Zero);
 		}
 		private void UnblockSelection()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(handle);
-			Internal.GTK.Methods.gtk_tree_selection_set_select_function(hTreeSelection, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+			IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
+			Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_select_function(hTreeSelection, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -222,7 +222,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr handle = IntPtr.Zero;
 
 			// TODO: fix GtkTreeView implementation
-			// Internal.GTK.Methods.gtk_tree_store_insert_with_valuesv(hTreeStore, ref hIterFirst, IntPtr.Zero, 0, ref columns, values, values.Length);
+			// Internal.GTK.Methods.Methods.gtk_tree_store_insert_with_valuesv(hTreeStore, ref hIterFirst, IntPtr.Zero, 0, ref columns, values, values.Length);
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
@@ -246,7 +246,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr[] columnTypes = listColumnTypes.ToArray();
 
-			IntPtr hTreeStore = Internal.GTK.Methods.gtk_tree_store_newv(columnTypes.Length, columnTypes);
+			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv(columnTypes.Length, columnTypes);
 			if (hTreeStore != IntPtr.Zero)
 			{
 				if (tv.Model != null)
@@ -268,10 +268,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				case ImplementedAsType.TreeView:
 				{
-					handle = Internal.GTK.Methods.gtk_tree_view_new();
+					handle = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new();
 
-					Internal.GTK.Methods.gtk_tree_view_set_headers_visible(handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
-					Internal.GTK.Methods.gtk_tree_view_set_headers_clickable(handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_visible(handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_clickable(handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
 
 					foreach (ListViewColumn tvc in tv.Columns)
 					{
@@ -280,36 +280,36 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 						if (tvc is ListViewColumnText)
 						{
-							renderer = Internal.GTK.Methods.gtk_cell_renderer_text_new();
+							renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
 						}
 						if (renderer == IntPtr.Zero) continue;
 						
 						if (tv.Model != null)
 						{
 							int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
-							Internal.GTK.Methods.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
+							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
 						}
 					}
 
-					Internal.GTK.Methods.gtk_tree_view_set_model(handle, hTreeStore);
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_model(handle, hTreeStore);
 					break;
 				}
 				case ImplementedAsType.IconView:
 				{
-					handle = Internal.GTK.Methods.gtk_icon_view_new();
-					Internal.GTK.Methods.gtk_icon_view_set_model(handle, hTreeStore);
+					handle = Internal.GTK.Methods.GtkIconView.gtk_icon_view_new();
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model(handle, hTreeStore);
 
-					Internal.GTK.Methods.gtk_icon_view_set_item_width(handle, 96);
-					Internal.GTK.Methods.gtk_icon_view_set_text_column(handle, 0);
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width(handle, 96);
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column(handle, 0);
 					break;
 				}
 			}
 
-			IntPtr hHAdjustment = Internal.GTK.Methods.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
-			IntPtr hVAdjustment = Internal.GTK.Methods.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
+			IntPtr hHAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
+			IntPtr hVAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
 
-			IntPtr hScrolledWindow = Internal.GTK.Methods.gtk_scrolled_window_new(hHAdjustment, hVAdjustment);
-			Internal.GTK.Methods.gtk_container_add(hScrolledWindow, handle);
+			IntPtr hScrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hHAdjustment, hVAdjustment);
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(hScrolledWindow, handle);
 
 			// connect the signals
 			switch (ImplementedAs(tv))
@@ -351,16 +351,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				int count = 0;
 				if (coll.Parent.Mode == ListViewMode.Detail)
 				{
-					hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(hTreeView);
+					hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(hTreeView);
 					
-					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(hTreeView);
-					count = Internal.GTK.Methods.gtk_tree_selection_count_selected_rows(hTreeSelection);
-					hListRows = Internal.GTK.Methods.gtk_tree_selection_get_selected_rows(hTreeSelection, ref hTreeModel);
+					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(hTreeView);
+					count = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_count_selected_rows(hTreeSelection);
+					hListRows = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_get_selected_rows(hTreeSelection, ref hTreeModel);
 				}
 				else if (coll.Parent.Mode == ListViewMode.LargeIcon)
 				{
-					hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
-					hListRows = Internal.GTK.Methods.gtk_icon_view_get_selected_items(hTreeView);
+					hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
+					hListRows = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_selected_items(hTreeView);
 					
 					if (hListRows != IntPtr.Zero)
 						count = (int)Internal.GLib.Methods.g_list_length(hListRows);
@@ -381,8 +381,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					{
 						case ImplementedAsType.TreeView:
 						{
-							IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(hTreeView);
-							Internal.GTK.Methods.gtk_tree_selection_select_iter(hTreeSelection, ref iter);
+							IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(hTreeView);
+							Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_select_iter(hTreeSelection, ref iter);
 							break;
 						}
 						case ImplementedAsType.IconView:
@@ -399,7 +399,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					{
 						IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)e.Index);
 						Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
-						bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
+						bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 						if (ret)
 						{
 							TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
@@ -414,7 +414,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						{
 							IntPtr hTreePath = Internal.GLib.Methods.g_list_nth_data(hListRows, (uint)i);
 							Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
-							bool ret = Internal.GTK.Methods.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
+							bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 							if (ret)
 							{
 								TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
@@ -442,8 +442,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				IntPtr hTreeView = GetHandleForControl(coll.Parent);
 				if (coll.Parent.Mode == ListViewMode.Detail)
 				{
-					IntPtr hTreeSelection = Internal.GTK.Methods.gtk_tree_view_get_selection(hTreeView);
-					Internal.GTK.Methods.gtk_tree_selection_unselect_all(hTreeSelection);
+					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(hTreeView);
+					Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_unselect_all(hTreeSelection);
 				}
 				else if (coll.Parent.Mode == ListViewMode.LargeIcon)
 				{
@@ -492,7 +492,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 
-			Internal.GTK.Methods.gtk_tree_model_get_iter(hModel, ref iter, path);
+			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hModel, ref iter, path);
 			TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
 
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
@@ -563,12 +563,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				case ImplementedAsType.IconView:
 				{
-					Internal.GTK.Methods.gtk_icon_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
 					break;
 				}
 				case ImplementedAsType.TreeView:
 				{
-					Internal.GTK.Methods.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_enable_model_drag_source(hTreeView, modifiers, targets, targets.Length, actions);
 					break;
 				}
 			}
@@ -589,11 +589,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hTreeModel = IntPtr.Zero;
 			if (ctl.Mode == ListViewMode.Detail)
 			{
-				hTreeModel = Internal.GTK.Methods.gtk_tree_view_get_model(hTreeView);
+				hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(hTreeView);
 			}
 			else if (ctl.Mode == ListViewMode.LargeIcon)
 			{
-				hTreeModel = Internal.GTK.Methods.gtk_icon_view_get_model(hTreeView);
+				hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
 			}
 			TreeModel tm = TreeModelFromHandle(hTreeModel);
 
@@ -608,7 +608,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						TreeModelRow row = e.Rows[i];
 					
 						// as written we currently cannot do this...
-						// int itemsCount = Internal.GTK.Methods.gtk_tree_store_
+						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
 						if (e.ParentRow != null && _GtkTreeIterForTreeModelRow.ContainsKey(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
@@ -624,7 +624,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 				case TreeModelChangedAction.Clear:
 				{
-					Internal.GTK.Methods.gtk_tree_store_clear(hTreeModel);
+					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_clear(hTreeModel);
 					break;
 				}
 			}
@@ -632,7 +632,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private IntPtr GetHTreeView(IntPtr hScrolledWindow)
 		{
-			IntPtr hList = Internal.GTK.Methods.gtk_container_get_children(hScrolledWindow);
+			IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
 			IntPtr hTreeView = Internal.GLib.Methods.g_list_nth_data(hList, 0);
 			return hTreeView;
 		}
@@ -648,9 +648,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
 			
 			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
-			IntPtr hRowPath = Internal.GTK.Methods.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
+			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
-			bool value = Internal.GTK.Methods.gtk_tree_view_row_expanded (hTreeView, hRowPath);
+			bool value = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_row_expanded (hTreeView, hRowPath);
 			return value;
 		}
 		public void SetRowExpanded(TreeModelRow row, bool expanded)
@@ -663,12 +663,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
 
 			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
-			IntPtr hRowPath = Internal.GTK.Methods.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
+			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
 			if (expanded) {
-				Internal.GTK.Methods.gtk_tree_view_expand_row (hTreeView, hRowPath, false);
+				Internal.GTK.Methods.GtkTreeView.gtk_tree_view_expand_row (hTreeView, hRowPath, false);
 			} else {
-				Internal.GTK.Methods.gtk_tree_view_collapse_row (hTreeView, hRowPath);
+				Internal.GTK.Methods.GtkTreeView.gtk_tree_view_collapse_row (hTreeView, hRowPath);
 			}
 		}
 
@@ -678,11 +678,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				if (append)
 				{
-					Internal.GTK.Methods.gtk_tree_store_append(hTreeStore, out hIter, IntPtr.Zero);
+					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, IntPtr.Zero);
 				}
 				else
 				{
-					Internal.GTK.Methods.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, position);
+					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, position);
 				}
 			}
 			else
@@ -690,11 +690,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Structures.GtkTreeIter hIterParent = parent.Value;
 				if (append)
 				{
-					Internal.GTK.Methods.gtk_tree_store_append(hTreeStore, out hIter, ref hIterParent);
+					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, ref hIterParent);
 				}
 				else
 				{
-					Internal.GTK.Methods.gtk_tree_store_insert(hTreeStore, out hIter, ref hIterParent, position);
+					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, ref hIterParent, position);
 				}
 			}
 
@@ -708,8 +708,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 				Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
 
-				// Internal.GTK.Methods.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, 0);
-				Internal.GTK.Methods.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
+				// Internal.GTK.Methods.Methods.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, 0);
+				Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 
 				// this can only be good, right...?
 				// val.Dispose();

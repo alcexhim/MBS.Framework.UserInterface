@@ -21,11 +21,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public string GetIconName()
 		{
-			return Internal.GTK.Methods.gtk_window_get_icon_name ((Handle as GTKNativeControl).Handle);
+			return Internal.GTK.Methods.GtkWindow.gtk_window_get_icon_name ((Handle as GTKNativeControl).Handle);
 		}
 		public void SetIconName(string value)
 		{
-			Internal.GTK.Methods.gtk_window_set_icon_name ((Handle as GTKNativeControl).Handle, value);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name ((Handle as GTKNativeControl).Handle, value);
 		}
 
 		private List<Window> _GetToplevelWindowsRetval = null;
@@ -38,7 +38,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 
 			_GetToplevelWindowsRetval = new List<Window>();
-			IntPtr hList = Internal.GTK.Methods.gtk_window_list_toplevels();
+			IntPtr hList = Internal.GTK.Methods.GtkWindow.gtk_window_list_toplevels();
 			Internal.GLib.Methods.g_list_foreach(hList, _AddToList, IntPtr.Zero);
 
 			Window[] retval = _GetToplevelWindowsRetval.ToArray();
@@ -127,30 +127,30 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					accelPath += "/" + cmiName;
 					if (cmi.Shortcut != null)
 					{
-						Internal.GTK.Methods.gtk_accel_map_add_entry(accelPath, GTKEngine.GetAccelKeyForKeyboardKey(cmi.Shortcut.Key), GTKEngine.KeyboardModifierKeyToGdkModifierType(cmi.Shortcut.ModifierKeys));
+						Internal.GTK.Methods.GtkAccelMap.gtk_accel_map_add_entry(accelPath, GTKEngine.GetAccelKeyForKeyboardKey(cmi.Shortcut.Key), GTKEngine.KeyboardModifierKeyToGdkModifierType(cmi.Shortcut.ModifierKeys));
 					}
 				}
 
-				IntPtr hMenuFile = Internal.GTK.Methods.gtk_menu_item_new();
-				Internal.GTK.Methods.gtk_menu_item_set_label(hMenuFile, cmi.Text);
-				Internal.GTK.Methods.gtk_menu_item_set_use_underline(hMenuFile, true);
+				IntPtr hMenuFile = Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_new();
+				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(hMenuFile, cmi.Text);
+				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
-					Internal.GTK.Methods.gtk_menu_item_set_right_justified(hMenuFile, true);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_right_justified(hMenuFile, true);
 				}
 
 				if (cmi.Items.Count > 0)
 				{
-					IntPtr hMenuFileMenu = Internal.GTK.Methods.gtk_menu_new();
+					IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
 
 					if (accelPath != null)
 					{
 						if (hDefaultAccelGroup == IntPtr.Zero)
 						{
-							hDefaultAccelGroup = Internal.GTK.Methods.gtk_accel_group_new();
+							hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
 						}
-						Internal.GTK.Methods.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
+						Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
 					}
 
 					foreach (MenuItem menuItem1 in cmi.Items)
@@ -158,7 +158,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
 					}
 
-					Internal.GTK.Methods.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
 				}
 
 				menuItemsByHandle[hMenuFile] = cmi;
@@ -166,28 +166,28 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 				if (accelPath != null)
 				{
-					Internal.GTK.Methods.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
+					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
 				}
 
-				Internal.GTK.Methods.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
 			}
 			else if (menuItem is SeparatorMenuItem)
 			{
-				// IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
-				IntPtr hMenuFile = Internal.GTK.Methods.gtk_separator_menu_item_new();
-				Internal.GTK.Methods.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				// IntPtr hMenuFile = Internal.GTK.Methods.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
+				IntPtr hMenuFile = Internal.GTK.Methods.GtkSeparatorMenuItem.gtk_separator_menu_item_new();
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
 			}
 		}
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr hTitle = Internal.GTK.Methods.gtk_window_get_title(Engine.GetHandleForControl(control));
+			IntPtr hTitle = Internal.GTK.Methods.GtkWindow.gtk_window_get_title(Engine.GetHandleForControl(control));
 			return Marshal.PtrToStringAuto (hTitle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
-			Internal.GTK.Methods.gtk_window_set_title(Engine.GetHandleForControl(control), hTitle);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(Engine.GetHandleForControl(control), hTitle);
 		}
 
 		[System.Diagnostics.DebuggerNonUserCode()]
@@ -196,72 +196,72 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Window window = (control as Window);
 			if (window == null) throw new InvalidOperationException();
 
-			IntPtr handle = Internal.GTK.Methods.gtk_window_new(Internal.GTK.Constants.GtkWindowType.TopLevel);
+			IntPtr handle = Internal.GTK.Methods.GtkWindow.gtk_window_new(Internal.GTK.Constants.GtkWindowType.TopLevel);
 			GTKNativeControl ncContainer = (base.CreateControlInternal(control) as GTKNativeControl);
 			IntPtr hContainer = ncContainer.Handle;
 
 			if (window.Bounds != Rectangle.Empty)
 			{
-				Internal.GTK.Methods.gtk_widget_set_size_request(handle, (int)window.Bounds.Width, (int)window.Bounds.Height);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)window.Bounds.Width, (int)window.Bounds.Height);
 			}
 
-			IntPtr hWindowContainer = Internal.GTK.Methods.gtk_vbox_new(false, 2);
+			IntPtr hWindowContainer = Internal.GTK.Methods.GtkBox.gtk_vbox_new(false, 2);
 
 			#region Menu Bar
 
 			if (hDefaultAccelGroup == IntPtr.Zero)
 			{
-				hDefaultAccelGroup = Internal.GTK.Methods.gtk_accel_group_new();
+				hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
 			}
-			Internal.GTK.Methods.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
+			Internal.GTK.Methods.GtkWindow.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
 
 			// create the menu bar
-			IntPtr hMenuBar = Internal.GTK.Methods.gtk_menu_bar_new();
+			IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
 
 			foreach (MenuItem menuItem in window.MenuBar.Items)
 			{
 				InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
 			}
 
-			Internal.GTK.Methods.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 
 			#endregion
 
 			if (hContainer != IntPtr.Zero)
 			{
-				Internal.GTK.Methods.gtk_box_pack_end(hWindowContainer, hContainer, true, true, 0);
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hContainer, true, true, 0);
 			}
 
-			Internal.GTK.Methods.gtk_container_add(handle, hWindowContainer);
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hWindowContainer);
 
 			Internal.GObject.Methods.g_signal_connect_after(handle, "show", gc_Window_Activate);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "destroy", gc_Window_Closing, new IntPtr(0xDEADBEEF));
 			Internal.GObject.Methods.g_signal_connect_after(handle, "destroy", gc_Window_Closed, new IntPtr(0xDEADBEEF));
 
-			Internal.GTK.Methods.gtk_window_set_default_size(handle, (int)window.Size.Width, (int)window.Size.Height);
-			Internal.GTK.Methods.gtk_window_set_decorated(handle, window.Decorated);
-			Internal.GTK.Methods.gtk_window_set_focus_on_map(handle, true);
-			Internal.GTK.Methods.gtk_window_set_icon_name(handle, window.IconName);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)window.Size.Width, (int)window.Size.Height);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, window.Decorated);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_focus_on_map(handle, true);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name(handle, window.IconName);
 			
 			if (window.Decorated)
 			{
-				IntPtr hHeaderBar = Internal.GTK.Methods.gtk_header_bar_new();
-				Internal.GTK.Methods.gtk_header_bar_set_title(hHeaderBar, window.Text);
-				Internal.GTK.Methods.gtk_window_set_titlebar(handle, hHeaderBar);
+				IntPtr hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
+				Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
+				Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 			}
 			switch (window.StartPosition)
 			{
 				case WindowStartPosition.Center:
 				{
-					Internal.GTK.Methods.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
+					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
 					break;
 				}
 			}
 
 			// HACK: required for Universal Editor splash screen to work
-			Internal.GTK.Methods.gtk_widget_show_now(handle);
-			Internal.GTK.Methods.gtk_widget_show_all(handle);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_now(handle);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
 			Application.DoEvents();
 
 			return new GTKNativeControl(handle);

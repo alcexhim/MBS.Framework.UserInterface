@@ -38,11 +38,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			if (ctl.UseMnemonic)
 			{
-				handle = Internal.GTK.Methods.gtk_check_button_new_with_mnemonic(ctl.Text);
+				handle = Internal.GTK.Methods.GtkCheckButton.gtk_check_button_new_with_mnemonic(ctl.Text);
 			}
 			else
 			{
-				handle = Internal.GTK.Methods.gtk_check_button_new_with_label(ctl.Text);
+				handle = Internal.GTK.Methods.GtkCheckButton.gtk_check_button_new_with_label(ctl.Text);
 			}
 			
 			return new GTKNativeControl(handle);

@@ -28,12 +28,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override string GetControlTextInternal(Control control)
 		{
 			IntPtr handle = Engine.GetHandleForControl(control);
-			return Internal.GTK.Methods.gtk_button_get_label(handle);
+			return Internal.GTK.Methods.GtkButton.gtk_button_get_label(handle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
 			IntPtr handle = Engine.GetHandleForControl(control);
-			Internal.GTK.Methods.gtk_button_set_label(handle, text);
+			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, text);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -41,29 +41,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Button ctl = (control as Button);
 			Contract.Assert(ctl != null);
 
-			IntPtr handle = Internal.GTK.Methods.gtk_button_new();
-			Internal.GTK.Methods.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
+			IntPtr handle = Internal.GTK.Methods.GtkButton.gtk_button_new();
+			Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
 			switch (ctl.BorderStyle)
 			{
 				case ButtonBorderStyle.None:
 				{ 
-					Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
+					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
 					break;
 				}
 				case ButtonBorderStyle.Half:
 				{ 
-					Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
+					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
 					break;
 				}
 				case ButtonBorderStyle.Normal:
 				{ 
-					Internal.GTK.Methods.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
+					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
 					break;
 				}
 			}
 
 			// DON'T SET THIS... only Dialog buttons should get this by default
-			// Internal.GTK.Methods.gtk_widget_set_can_default (handle, true);
+			// Internal.GTK.Methods.Methods.gtk_widget_set_can_default (handle, true);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "clicked", gc_Button_Clicked, new IntPtr(0xDEADBEEF));
 			return new GTKNativeControl(handle);

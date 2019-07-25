@@ -37,10 +37,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Image ctl = (control as Image);
-			IntPtr handle = Internal.GTK.Methods.gtk_image_new_from_icon_name(ctl.IconName);
+			IntPtr handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(ctl.IconName);
 
 			if (ctl.IconSize != Dimension2D.Empty)
-				Internal.GTK.Methods.gtk_image_set_pixel_size(handle, (int) ctl.IconSize.Width);
+				Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(handle, (int) ctl.IconSize.Width);
 			return new GTKNativeControl(handle);
 		}
 	}

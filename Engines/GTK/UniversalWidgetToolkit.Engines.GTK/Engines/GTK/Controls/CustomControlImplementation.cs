@@ -14,7 +14,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			IntPtr handle = Internal.GTK.Methods.gtk_drawing_area_new();
+			IntPtr handle = Internal.GTK.Methods.GtkDrawingArea.gtk_drawing_area_new();
 
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 

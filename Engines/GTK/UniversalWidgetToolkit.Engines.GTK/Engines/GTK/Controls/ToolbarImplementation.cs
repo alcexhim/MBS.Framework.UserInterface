@@ -65,8 +65,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			Toolbar ctl = (control as Toolbar);
 
-			IntPtr handle = Internal.GTK.Methods.gtk_toolbar_new();
-			Internal.GTK.Methods.gtk_toolbar_set_show_arrow(handle, false);
+			IntPtr handle = Internal.GTK.Methods.GtkToolbar.gtk_toolbar_new();
+			Internal.GTK.Methods.GtkToolbar.gtk_toolbar_set_show_arrow(handle, false);
 
 			foreach (ToolbarItem item in ctl.Items)
 			{
@@ -76,7 +76,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					ToolbarItemButton tsb = (item as ToolbarItemButton);
 					if (tsb.CheckOnClick)
 					{
-						hItem = Internal.GTK.Methods.gtk_toggle_tool_button_new();  // IntPtr.Zero, item.Title);
+						hItem = Internal.GTK.Methods.GtkToggleToolButton.gtk_toggle_tool_button_new();  // IntPtr.Zero, item.Title);
 					}
 					else
 					{
@@ -85,17 +85,17 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						if (tsb.StockType != StockType.None)
 						{
 							string stockTypeID = Engine.StockTypeToString(tsb.StockType);
-							iconWidget = Internal.GTK.Methods.gtk_image_new_from_icon_name(stockTypeID);
+							iconWidget = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(stockTypeID);
 
 							Internal.GTK.Structures.GtkStockItem stock = new Internal.GTK.Structures.GtkStockItem();
-							bool hasStock = Internal.GTK.Methods.gtk_stock_lookup(stockTypeID, ref stock);
+							bool hasStock = Internal.GTK.Methods.GtkStock.gtk_stock_lookup(stockTypeID, ref stock);
 							if (hasStock)
 							{
 								// fill info from GtkStockItem struct
 								title = Marshal.PtrToStringAuto(stock.label);
 							}
 						}
-						hItem = Internal.GTK.Methods.gtk_tool_button_new(iconWidget, title);
+						hItem = Internal.GTK.Methods.GtkToolButton.gtk_tool_button_new(iconWidget, title);
 						if (hItem != IntPtr.Zero)
 						{
 							Internal.GObject.Methods.g_signal_connect(hItem, "clicked", gc_clicked_handler);
@@ -104,17 +104,17 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					if (hItem != IntPtr.Zero)
 					{
 						RegisterToolbarItemHandle(item, hItem);
-						Internal.GTK.Methods.gtk_tool_button_set_label(hItem, item.Title);
+						Internal.GTK.Methods.GtkToolButton.gtk_tool_button_set_label(hItem, item.Title);
 					}
 				}
 				else if (item is ToolbarItemSeparator)
 				{
-					hItem = Internal.GTK.Methods.gtk_separator_tool_item_new();
+					hItem = Internal.GTK.Methods.GtkSeparatorToolItem.gtk_separator_tool_item_new();
 				}
 				if (hItem != IntPtr.Zero)
 				{
 					int index = ctl.Items.IndexOf(item);
-					Internal.GTK.Methods.gtk_toolbar_insert(handle, hItem, index);
+					Internal.GTK.Methods.GtkToolbar.gtk_toolbar_insert(handle, hItem, index);
 				}
 			}
 

@@ -23,8 +23,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (layout is Layouts.BoxLayout)
 			{
 				Layouts.BoxLayout box = (layout as Layouts.BoxLayout);
-				Internal.GTK.Methods.gtk_box_set_spacing(hContainer, box.Spacing);
-				Internal.GTK.Methods.gtk_box_set_homogeneous(hContainer, box.Homogeneous);
+				Internal.GTK.Methods.GtkBox.gtk_box_set_spacing(hContainer, box.Spacing);
+				Internal.GTK.Methods.GtkBox.gtk_box_set_homogeneous(hContainer, box.Homogeneous);
 
 				BoxLayout.Constraints c = (box.GetControlConstraints(ctl) as BoxLayout.Constraints);
 				if (c == null) c = new BoxLayout.Constraints();
@@ -35,12 +35,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				{
 					case BoxLayout.PackType.Start:
 					{
-						Internal.GTK.Methods.gtk_box_pack_start(hContainer, ctlHandle, c.Expand, c.Fill, padding);
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hContainer, ctlHandle, c.Expand, c.Fill, padding);
 						break;
 					}
 					case BoxLayout.PackType.End:
 					{
-						Internal.GTK.Methods.gtk_box_pack_end(hContainer, ctlHandle, c.Expand, c.Fill, padding);
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hContainer, ctlHandle, c.Expand, c.Fill, padding);
 						break;
 					}
 				}
@@ -49,7 +49,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				Layouts.AbsoluteLayout.Constraints constraints = (Layouts.AbsoluteLayout.Constraints)layout.GetControlConstraints(ctl);
 				if (constraints == null) constraints = new Layouts.AbsoluteLayout.Constraints(0, 0, 0, 0);
-				Internal.GTK.Methods.gtk_fixed_put(hContainer, ctlHandle, constraints.X, constraints.Y);
+				Internal.GTK.Methods.GtkFixed.gtk_fixed_put(hContainer, ctlHandle, constraints.X, constraints.Y);
 			}
 			else if (layout is Layouts.GridLayout)
 			{
@@ -57,22 +57,22 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				if (constraints != null)
 				{
 					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
-					Internal.GTK.Methods.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
-					// Internal.GTK.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
+					// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 
 					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
 					{
-						Internal.GTK.Methods.gtk_widget_set_hexpand(ctlHandle, true);
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, true);
 					}
 					if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal)
 					{
-						Internal.GTK.Methods.gtk_widget_set_vexpand(ctlHandle, true);
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, true);
 					}
 				}
 			}
 			else
 			{
-				Internal.GTK.Methods.gtk_container_add(hContainer, ctlHandle);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
 			}
 		}
 
@@ -102,21 +102,21 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						break;
 					}
 				}
-				hContainer = Internal.GTK.Methods.gtk_box_new(orientation, ((Layouts.BoxLayout)layout).Homogeneous, ((Layouts.BoxLayout)layout).Spacing);
+				hContainer = Internal.GTK.Methods.GtkBox.gtk_box_new(orientation, ((Layouts.BoxLayout)layout).Homogeneous, ((Layouts.BoxLayout)layout).Spacing);
 			}
 			else if (layout is Layouts.AbsoluteLayout)
 			{
 				Layouts.AbsoluteLayout abs = (layout as Layouts.AbsoluteLayout);
-				hContainer = Internal.GTK.Methods.gtk_fixed_new();
+				hContainer = Internal.GTK.Methods.GtkFixed.gtk_fixed_new();
 			}
 			else if (layout is Layouts.GridLayout)
 			{
 				Layouts.GridLayout grid = (layout as Layouts.GridLayout);
 				// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
-				hContainer = Internal.GTK.Methods.gtk_grid_new();
-				// hContainer = Internal.GTK.Methods.gtk_table_new();
-				Internal.GTK.Methods.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
-				Internal.GTK.Methods.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
+				hContainer = Internal.GTK.Methods.GtkGrid.gtk_grid_new();
+				// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
+				Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
+				Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
 			}
 
 			if (hContainer != IntPtr.Zero)

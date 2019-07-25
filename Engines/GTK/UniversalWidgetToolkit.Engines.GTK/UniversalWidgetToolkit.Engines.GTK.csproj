@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{62DC7CF9-C608-49E5-8C39-305B2E3E93F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>UniversalWidgetToolkit</RootNamespace>
@@ -56,7 +54,6 @@
     <Compile Include="Engines\GTK\Internal\AppIndicator\Constants.cs" />
     <Compile Include="Engines\GTK\Internal\Notify\Methods.cs" />
     <Compile Include="Engines\GTK\NotificationIconInfo.cs" />
-    <Compile Include="Engines\GTK\Internal\GTK\Methods.cs" />
     <Compile Include="Engines\GTK\Internal\GDL\Methods.cs" />
     <Compile Include="Engines\GTK\Internal\GDL\Constants.cs" />
     <Compile Include="Engines\GTK\Controls\WindowImplementation.cs" />
@@ -85,6 +82,65 @@
     <Compile Include="Engines\GTK\Controls\ImageImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GLib\Delegates.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Delegates.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkWidget.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\Gtk.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkWindow.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkContainer.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkIconView.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeSelection.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeView.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFixed.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeStore.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeModel.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkEntry.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreePath.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkImage.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAboutDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFontSelection.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFileChooserDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFileFilter.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFileChooser.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSelection.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPaned.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkNotebook.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkButton.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkLabel.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkMenuItem.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkBox.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkApplication.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTextView.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkHeaderBar.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkGrid.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkMenuShell.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkMenu.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkMenuBar.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAppChooserDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFontChooserDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAdjustment.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTable.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkGlArea.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPrintOperation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkToolbar.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkToolButton.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkToggleToolButton.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSeparatorToolItem.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkEditable.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTextTagTable.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTextBuffer.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCellRendererText.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSeparator.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSeparatorMenuItem.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkDragSource.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkDragDest.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStock.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkScrolledWindow.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkDrawingArea.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCheckButton.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkMessageDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAccelGroup.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAccelMap.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkColorDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -103,6 +159,7 @@
     <Folder Include="Engines\GTK\Controls\" />
     <Folder Include="Engines\GTK\Drawing\" />
     <Folder Include="Engines\GTK\Internal\Cairo\" />
+    <Folder Include="Engines\GTK\Internal\GTK\Methods\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">
@@ -131,7 +188,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy ResourceNamePolicy="FileFormatDefault" DirectoryNamespaceAssociation="PrefixedFlat" />
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
         </Policies>
       </Properties>
     </MonoDevelop>

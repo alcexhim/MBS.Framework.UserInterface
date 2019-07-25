@@ -250,6 +250,12 @@ namespace UniversalWidgetToolkit
 		{
 			MouseUp?.Invoke(this, e);
 		}
+
+		public event MouseEventHandler MouseDoubleClick;
+		protected internal virtual void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			MouseDoubleClick?.Invoke (this, e);
+		}
 		#endregion
 		#region Keyboard Events
 		public event KeyEventHandler KeyDown;

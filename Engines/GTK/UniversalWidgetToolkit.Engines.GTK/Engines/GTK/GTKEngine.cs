@@ -604,10 +604,15 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 
 		private MouseButtons _mousedown_buttons = MouseButtons.None;
+		private bool _mouse_double_click = false;
+
 		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GdkEventButtonToMouseEventArgs(e);
+			if (e.parent.type == UniversalWidgetToolkit.Engines.GTK.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
+				_mouse_double_click = true;
+			}
 			
 			Control ctl = GetControlByHandle(widget);
 			if (ctl != null)
@@ -650,8 +655,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				InvokeMethod(ctl.NativeImplementation, "OnMouseUp", ee);
 				
-				if (ee.Buttons == MouseButtons.Primary)
-					InvokeMethod(ctl.NativeImplementation, "OnClick", ee);
+				if (ee.Buttons == MouseButtons.Primary) {
+					if (_mouse_double_click) {
+						InvokeMethod (ctl.NativeImplementation, "OnMouseDoubleClick", ee);
+						_mouse_double_click = false;
+					} else {
+						InvokeMethod (ctl.NativeImplementation, "OnClick", ee);
+					}
+				}
 
 				if (ee.Handled) return true;
 			}

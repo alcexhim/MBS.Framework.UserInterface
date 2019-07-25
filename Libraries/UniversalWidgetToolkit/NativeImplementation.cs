@@ -135,6 +135,10 @@ namespace UniversalWidgetToolkit
 		{
 			Control.OnMouseUp(e);
 		}
+		protected internal virtual void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			Control.OnMouseDoubleClick(e);
+		}
 
 		protected internal virtual void OnRealize(EventArgs e)
 		{

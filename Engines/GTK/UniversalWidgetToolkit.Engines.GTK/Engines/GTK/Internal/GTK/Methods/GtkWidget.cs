@@ -94,6 +94,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_destroy(IntPtr widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_widget_get_style_context (IntPtr view);
 	}
 }
 

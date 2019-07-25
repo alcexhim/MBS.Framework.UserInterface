@@ -292,6 +292,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 		[DllImport(LIBRARY_FILENAME, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr g_strv_get_type();
 
+		[DllImport(LIBRARY_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void g_object_unref(IntPtr obj);
 	}
 }
 

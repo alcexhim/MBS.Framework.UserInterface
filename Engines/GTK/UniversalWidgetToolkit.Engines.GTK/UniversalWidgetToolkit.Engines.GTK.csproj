@@ -141,6 +141,12 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAccelGroup.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkAccelMap.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkColorDialog.cs" />
+    <Compile Include="Engines\GTK\Controls\SyntaxTextBoxImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSourceView.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSourceBuffer.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSourceLanguageManager.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCss.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStyleContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

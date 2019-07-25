@@ -393,6 +393,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			Shrink = 1 << 1,
 			Fill = 1 << 2
 		}
+		public enum GtkStyleProviderPriority
+		{
+			Fallback = 1,
+			Theme = 200,
+			Settings = 400,
+			Application = 600,
+			User = 800
+		}
 	}
 }
 

@@ -46,9 +46,13 @@ namespace UniversalWidgetToolkit.TestProject
 
 			tbsTabs.TabPages.Add (tabGeneral);
 			
-			TabPage tabAppearance = new TabPage ();
-			tabAppearance.Text = "Appearance";
-			tbsTabs.TabPages.Add (tabAppearance);
+			TabPage tabCodeEditor = new TabPage ();
+			tabCodeEditor.Layout = new BoxLayout (Orientation.Vertical);
+			tabCodeEditor.Text = "Code Editor";
+			SyntaxTextBox txtCodeEditor = new SyntaxTextBox ();
+			// txtCodeEditor.Multiline = true;
+			tabCodeEditor.Controls.Add (txtCodeEditor, new BoxLayout.Constraints(true, true));
+			tbsTabs.TabPages.Add (tabCodeEditor);
 
 			TabPage tabTreeView = new TabPage();
 			tabTreeView.Layout = new BoxLayout(Orientation.Horizontal);

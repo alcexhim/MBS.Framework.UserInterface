@@ -138,7 +138,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
 			TextBox ctl = Application.Engine.GetControlByHandle(handle) as TextBox;
-			Contract.Assert(ctl != null);
+			if (ctl == null)
+				return;
 
 			textboxChanged[handle] = true;
 			InvokeMethod(ctl, "OnChanged", EventArgs.Empty);

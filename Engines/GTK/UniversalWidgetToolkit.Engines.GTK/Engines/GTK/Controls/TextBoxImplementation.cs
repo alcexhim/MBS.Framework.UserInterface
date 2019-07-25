@@ -6,7 +6,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(TextBox))]
+	[ControlImplementation(typeof(TextBox))]
 	public class TextBoxImplementation : GTKNativeImplementation
 	{
 		public TextBoxImplementation(Engine engine, Control control) : base(engine, control)

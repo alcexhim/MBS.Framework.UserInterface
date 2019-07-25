@@ -4,7 +4,7 @@ using UniversalWidgetToolkit.Engines.GTK.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(CustomControl))]
+	[ControlImplementation(typeof(CustomControl))]
 	public class CustomControlImplementation : GTKNativeImplementation
 	{
 		public CustomControlImplementation(Engine engine, Control control) : base(engine, control)

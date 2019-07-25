@@ -11,7 +11,7 @@ using UniversalWidgetToolkit.Engines.GTK.Internal.GTK;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(ListView))]
+	[ControlImplementation(typeof(ListView))]
 	public class ListViewImplementation : GTKNativeImplementation, UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation, UniversalWidgetToolkit.Native.ITreeModelRowCollectionNativeImplementation
 	{
 		private enum ImplementedAsType

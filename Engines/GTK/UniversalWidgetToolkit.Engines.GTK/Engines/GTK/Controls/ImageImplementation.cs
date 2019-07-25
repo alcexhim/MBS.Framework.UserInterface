@@ -27,7 +27,7 @@ using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
-	[NativeImplementation(typeof(Image))]
+	[ControlImplementation(typeof(Image))]
 	public class ImageImplementation : GTKNativeImplementation
 	{
 		public ImageImplementation(Engine engine, Control control) : base(engine, control)

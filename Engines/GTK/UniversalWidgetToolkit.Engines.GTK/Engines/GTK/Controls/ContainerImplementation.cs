@@ -4,7 +4,7 @@ using UniversalWidgetToolkit.Layouts;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(Container))]
+	[ControlImplementation(typeof(Container))]
 	public class ContainerImplementation : GTKNativeImplementation
 	{
 		public ContainerImplementation(Engine engine, Container control)

@@ -5,7 +5,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(Button))]
+	[ControlImplementation(typeof(Button))]
 	public class ButtonImplementation : GTKNativeImplementation
 	{
 		private Internal.GObject.Delegates.GCallback gc_Button_Clicked = null;

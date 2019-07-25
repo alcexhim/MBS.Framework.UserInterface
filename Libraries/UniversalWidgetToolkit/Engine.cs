@@ -158,22 +158,22 @@ namespace UniversalWidgetToolkit
 			StopInternal(exitCode);
 		}
 
-		private NativeImplementation FindNativeImplementationForControl(Control control)
+		private ControlImplementation FindNativeImplementationForControl(Control control)
 		{
 			Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
 			foreach (Type t in ts)
 			{
-				if (t.IsSubclassOf(typeof(NativeImplementation)))
+				if (t.IsSubclassOf(typeof(ControlImplementation)))
 				{
-					object[] atts = t.GetCustomAttributes(typeof(NativeImplementationAttribute), false);
+					object[] atts = t.GetCustomAttributes(typeof(ControlImplementationAttribute), false);
 					if (atts.Length == 1)
 					{
-						NativeImplementationAttribute att = (atts[0] as NativeImplementationAttribute);
+						ControlImplementationAttribute att = (atts[0] as ControlImplementationAttribute);
 						if (att == null) continue;
 
 						if (control.GetType() == att.ControlType || (!att.Exact && control.GetType().IsSubclassOf(att.ControlType)))
 						{
-							return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as NativeImplementation);
+							return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as ControlImplementation);
 						}
 					}
 					else
@@ -200,7 +200,7 @@ namespace UniversalWidgetToolkit
 		{
 			NativeControl handle = null;
 
-			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+			ControlImplementation controlCreator = FindNativeImplementationForControl(control);
 
 			if (controlCreator != null)
 			{
@@ -336,7 +336,7 @@ namespace UniversalWidgetToolkit
 
 			string text = null;
 
-			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+			ControlImplementation controlCreator = FindNativeImplementationForControl(control);
 
 			if (controlCreator != null)
 			{
@@ -360,7 +360,7 @@ namespace UniversalWidgetToolkit
 				return;
 			}
 
-			NativeImplementation controlCreator = FindNativeImplementationForControl(control);
+			ControlImplementation controlCreator = FindNativeImplementationForControl(control);
 
 			if (controlCreator != null)
 			{

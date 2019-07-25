@@ -18,22 +18,22 @@ namespace UniversalWidgetToolkit.Controls.Docking
 
 			protected override void ClearItems()
 			{
-				(_parent.NativeImplementation as Native.IDockingContainerNativeImplementation).ClearDockingItems();
+				(_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).ClearDockingItems();
 				base.ClearItems();
 			}
 			protected override void InsertItem(int index, DockingItem item)
 			{
-				if (_parent.NativeImplementation != null) (_parent.NativeImplementation as Native.IDockingContainerNativeImplementation).InsertDockingItem(item, index);
+				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).InsertDockingItem(item, index);
 				base.InsertItem(index, item);
 			}
 			protected override void RemoveItem(int index)
 			{
-				if (_parent.NativeImplementation != null) (_parent.NativeImplementation as Native.IDockingContainerNativeImplementation).RemoveDockingItem(this[index]);
+				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).RemoveDockingItem(this[index]);
 				base.RemoveItem(index);
 			}
 			protected override void SetItem(int index, DockingItem item)
 			{
-				if (_parent.NativeImplementation != null) (_parent.NativeImplementation as Native.IDockingContainerNativeImplementation).SetDockingItem(index, item);
+				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).SetDockingItem(index, item);
 				base.SetItem(index, item);
 			}
 		}

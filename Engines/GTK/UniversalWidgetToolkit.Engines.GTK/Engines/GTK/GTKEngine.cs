@@ -452,7 +452,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 			
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			InvokeMethod(ctl.NativeImplementation, "OnKeyDown", ee);
+			InvokeMethod(ctl.ControlImplementation, "OnKeyDown", ee);
 			return ee.Cancel;
 		}
 		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -466,7 +466,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!ctl.IsCreated) return false;
 
 			KeyEventArgs ee = GdkEventKeyToKeyEventArgs(e);
-			InvokeMethod(ctl.NativeImplementation, "OnKeyUp", ee);
+			InvokeMethod(ctl.ControlImplementation, "OnKeyUp", ee);
 			return ee.Cancel;
 		}
 
@@ -618,7 +618,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (ctl != null)
 			{
 				_mousedown_buttons = ee.Buttons;
-				InvokeMethod(ctl.NativeImplementation, "OnMouseDown", ee);
+				InvokeMethod(ctl.ControlImplementation, "OnMouseDown", ee);
 				if (ee.Handled) return true;
 			}
 			return false;
@@ -632,7 +632,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			ee = new MouseEventArgs(ee.X, ee.Y, _mousedown_buttons, ee.ModifierKeys);
 			if (ctl != null)
 			{
-				InvokeMethod(ctl.NativeImplementation, "OnMouseMove", ee);
+				InvokeMethod(ctl.ControlImplementation, "OnMouseMove", ee);
 			}
 			else
 			{
@@ -653,14 +653,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Control ctl = GetControlByHandle(widget);
 			if (ctl != null)
 			{
-				InvokeMethod(ctl.NativeImplementation, "OnMouseUp", ee);
+				InvokeMethod(ctl.ControlImplementation, "OnMouseUp", ee);
 				
 				if (ee.Buttons == MouseButtons.Primary) {
 					if (_mouse_double_click) {
-						InvokeMethod (ctl.NativeImplementation, "OnMouseDoubleClick", ee);
+						InvokeMethod (ctl.ControlImplementation, "OnMouseDoubleClick", ee);
 						_mouse_double_click = false;
 					} else {
-						InvokeMethod (ctl.NativeImplementation, "OnClick", ee);
+						InvokeMethod (ctl.ControlImplementation, "OnClick", ee);
 					}
 				}
 
@@ -730,7 +730,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Console.Error.WriteLine("GetControlByHandle({0}) returned null", widget);
 				return;
 			}
-			InvokeMethod(ctl.NativeImplementation, "OnShown", EventArgs.Empty);
+			InvokeMethod(ctl.ControlImplementation, "OnShown", EventArgs.Empty);
 		}
 
 		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
@@ -743,7 +743,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			
 			DragEventArgs e = new DragEventArgs();
-			InvokeMethod(ctl.NativeImplementation, "OnDragBegin", e);
+			InvokeMethod(ctl.ControlImplementation, "OnDragBegin", e);
 		}
 		private void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
@@ -755,7 +755,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			
 			EventArgs e = new EventArgs();
-			InvokeMethod(ctl.NativeImplementation, "OnDragDataDelete", e);
+			InvokeMethod(ctl.ControlImplementation, "OnDragDataDelete", e);
 		}
 		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
@@ -767,7 +767,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
-			InvokeMethod(ctl.NativeImplementation, "OnDragDropDataRequest", e);
+			InvokeMethod(ctl.ControlImplementation, "OnDragDropDataRequest", e);
 			if (e.Cancel) return;
 			
 			if (e.Data is string)
@@ -788,28 +788,28 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
 			
-			InvokeMethod(ctl.NativeImplementation, "OnRealize", EventArgs.Empty);
+			InvokeMethod(ctl.ControlImplementation, "OnRealize", EventArgs.Empty);
 		}
 		private void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
 			
-			InvokeMethod(ctl.NativeImplementation, "OnUnrealize", EventArgs.Empty);
+			InvokeMethod(ctl.ControlImplementation, "OnUnrealize", EventArgs.Empty);
 		}
 		private void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
 			
-			InvokeMethod(ctl.NativeImplementation, "OnMapping", EventArgs.Empty);
+			InvokeMethod(ctl.ControlImplementation, "OnMapping", EventArgs.Empty);
 		}
 		private void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
 			if (ctl == null) return;
 			
-			InvokeMethod(ctl.NativeImplementation, "OnMapped", EventArgs.Empty);
+			InvokeMethod(ctl.ControlImplementation, "OnMapped", EventArgs.Empty);
 		}
 		
 		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)
@@ -853,28 +853,28 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			if (handle != null)
 			{
+				if (handle is CustomNativeControl) {
+					Control ctl = (handle as CustomNativeControl).Handle;
+					handle = CreateControlInternal (ctl);
+				}
+
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
-				SetupCommonEvents(FindRealHandle(nativeHandle, control));
+				SetupCommonEvents (FindRealHandle (nativeHandle, control));
 				
-				if (control.Parent != null && control.Parent.Layout != null)
-				{
-					Constraints constraints = control.Parent.Layout.GetControlConstraints(control);
-					if (constraints != null)
-					{
-						if (control.Parent.Layout is Layouts.BoxLayout)
-						{
+				if (control.Parent != null && control.Parent.Layout != null) {
+					Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
+					if (constraints != null) {
+						if (control.Parent.Layout is Layouts.BoxLayout) {
 							Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
-							if (cs != null)
-							{
+							if (cs != null) {
 								Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
-								switch (cs.PackType)
-								{
-									case Layouts.BoxLayout.PackType.Start:
+								switch (cs.PackType) {
+								case Layouts.BoxLayout.PackType.Start:
 									{
 										packType = Internal.GTK.Constants.GtkPackType.Start;
 										break;
 									}
-									case Layouts.BoxLayout.PackType.End:
+								case Layouts.BoxLayout.PackType.End:
 									{
 										packType = Internal.GTK.Constants.GtkPackType.End;
 										break;
@@ -882,29 +882,26 @@ namespace UniversalWidgetToolkit.Engines.GTK
 								}
 
 								IntPtr hLayout = IntPtr.Zero;
-								if (handlesByLayout.ContainsKey(control.Parent.Layout))
-								{
-									hLayout = handlesByLayout[control.Parent.Layout];
-								}
-								else
-								{
-									hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new(true, 0);
+								if (handlesByLayout.ContainsKey (control.Parent.Layout)) {
+									hLayout = handlesByLayout [control.Parent.Layout];
+								} else {
+									hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new (true, 0);
 								}
 								int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
-								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing(hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
+								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing (hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
 							}
 						}
 					}
 				}
 
-				RegisterControlHandle(control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
-				UpdateControlProperties(control);
+				RegisterControlHandle (control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
+				UpdateControlProperties (control);
 
 				if (control.MinimumSize != Dimension2D.Empty)
-					Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request ((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
 				
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all((handle as GTKNativeControl).Handle);
-				Application.DoEvents();
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
+				Application.DoEvents ();
 			}
 			return handle;
 		}

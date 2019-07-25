@@ -23,7 +23,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(CheckBox))]
+	[ControlImplementation(typeof(CheckBox))]
 	public class CheckBoxImplementation : GTKNativeImplementation
 	{
 		public CheckBoxImplementation(Engine engine, Control control)

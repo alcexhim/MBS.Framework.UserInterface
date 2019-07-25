@@ -68,13 +68,13 @@ namespace UniversalWidgetToolkit.Controls
 			get
 			{
 				if (this.IsCreated)
-					mvarSelectionMode = (NativeImplementation as Native.IListViewNativeImplementation).GetSelectionMode();
+					mvarSelectionMode = (ControlImplementation as Native.IListViewNativeImplementation).GetSelectionMode();
 				return mvarSelectionMode;
 			}
 			set
 			{
 				if (this.IsCreated)
-					(NativeImplementation as Native.IListViewNativeImplementation).SetSelectionMode(value);
+					(ControlImplementation as Native.IListViewNativeImplementation).SetSelectionMode(value);
 				mvarSelectionMode = value;
 			}
 		}
@@ -115,7 +115,7 @@ namespace UniversalWidgetToolkit.Controls
 				}
 			}
 
-			(NativeImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel(NativeImplementation.Handle, e);
+			(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel(ControlImplementation.Handle, e);
 		}
 
 		private ListViewColumn.ListViewColumnCollection mvarColumns = new ListViewColumn.ListViewColumnCollection();

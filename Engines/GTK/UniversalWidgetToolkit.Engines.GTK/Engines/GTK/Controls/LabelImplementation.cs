@@ -6,7 +6,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(Label))]
+	[ControlImplementation(typeof(Label))]
 	public class LabelImplementation : GTKNativeImplementation
 	{
 		public LabelImplementation(Engine engine, Control control) : base(engine, control)

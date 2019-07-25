@@ -5,7 +5,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(SplitContainer))]
+	[ControlImplementation(typeof(SplitContainer))]
 	public class SplitContainerImplementation : GTKNativeImplementation
 	{
 		public SplitContainerImplementation(Engine engine, Control control) : base(engine, control)

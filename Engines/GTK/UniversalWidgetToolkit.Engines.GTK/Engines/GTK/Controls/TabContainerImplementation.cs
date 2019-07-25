@@ -4,7 +4,7 @@ using UniversalWidgetToolkit.Layouts;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(TabContainer))]
+	[ControlImplementation(typeof(TabContainer))]
 	public class TabContainerImplementation : GTKNativeImplementation
 	{
 		public TabContainerImplementation(Engine engine, Control control) : base(engine, control)

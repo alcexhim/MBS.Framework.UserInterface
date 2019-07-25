@@ -3,7 +3,7 @@ using UniversalWidgetToolkit.Controls.Docking;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(DockingContainer))]
+	[ControlImplementation(typeof(DockingContainer))]
 	public class DockingContainerImplementation : GTKNativeImplementation, UniversalWidgetToolkit.Controls.Docking.Native.IDockingContainerNativeImplementation
 	{
 		public DockingContainerImplementation(Engine engine, DockingContainer control)
@@ -22,7 +22,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (!Engine.IsControlCreated(item.ChildControl))
 				Engine.CreateControl(item.ChildControl);
 
-			IntPtr childWidget = (item.ChildControl.NativeImplementation.Handle as GTKNativeControl).Handle;
+			IntPtr childWidget = (item.ChildControl.ControlImplementation.Handle as GTKNativeControl).Handle;
 			if (childWidget != IntPtr.Zero)
 			{
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, childWidget);

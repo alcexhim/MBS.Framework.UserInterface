@@ -9,7 +9,7 @@ using UniversalWidgetToolkit.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(OpenGLCanvas))]
+	[ControlImplementation(typeof(OpenGLCanvas))]
 	public class OpenGLCanvasImplementation : GTKNativeImplementation
 	{
 		public OpenGLCanvasImplementation(Engine engine, Control control) : base (engine, control)

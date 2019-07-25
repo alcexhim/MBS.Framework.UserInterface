@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(Window))]
+	[ControlImplementation(typeof(Window))]
 	public class WindowImplementation : ContainerImplementation, IWindowNativeImplementation
 	{
 		private Dictionary<IntPtr, MenuItem> menuItemsByHandle = new Dictionary<IntPtr, MenuItem>();

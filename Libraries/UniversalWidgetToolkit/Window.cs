@@ -29,7 +29,7 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				Native.IWindowNativeImplementation native = (NativeImplementation as Native.IWindowNativeImplementation);
+				Native.IWindowNativeImplementation native = (ControlImplementation as Native.IWindowNativeImplementation);
 				if (native != null)
 				{
 					return native.GetIconName();
@@ -38,7 +38,7 @@ namespace UniversalWidgetToolkit
 			}
 			set
 			{
-				Native.IWindowNativeImplementation native = (NativeImplementation as Native.IWindowNativeImplementation);
+				Native.IWindowNativeImplementation native = (ControlImplementation as Native.IWindowNativeImplementation);
 				if (native != null)
 				{
 					native.SetIconName(value);

@@ -177,6 +177,9 @@
     <Compile Include="SelectionMode.cs" />
     <Compile Include="WindowStartPosition.cs" />
     <Compile Include="Controls\SyntaxTextBox.cs" />
+    <Compile Include="CustomImplementation.cs" />
+    <Compile Include="ControlImplementation.cs" />
+    <Compile Include="CustomNativeControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

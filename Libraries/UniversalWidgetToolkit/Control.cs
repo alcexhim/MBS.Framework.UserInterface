@@ -96,8 +96,8 @@ namespace UniversalWidgetToolkit
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
 		public Dimension2D Size { get { return mvarSize; } set { mvarSize = value; } }
 
-		private NativeImplementation mvarNativeImplementation = null;
-		public NativeImplementation NativeImplementation { get { return mvarNativeImplementation; } internal set { mvarNativeImplementation = value; } }
+		private ControlImplementation mvarControlImplementation = null;
+		public ControlImplementation ControlImplementation { get { return mvarControlImplementation; } internal set { mvarControlImplementation = value; } }
 
 		public bool IsCreated { get { return Application.Engine.IsControlCreated(this); } }
 
@@ -225,11 +225,11 @@ namespace UniversalWidgetToolkit
 		
 		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
 		{
-			NativeImplementation.RegisterDragSource(this, targets, actions, buttons, modifierKeys);
+			ControlImplementation.RegisterDragSource(this, targets, actions, buttons, modifierKeys);
 		}
 		public void RegisterDropTarget(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
 		{
-			NativeImplementation.RegisterDropTarget(this, targets, actions, buttons, modifierKeys);
+			ControlImplementation.RegisterDropTarget(this, targets, actions, buttons, modifierKeys);
 		}
 
 

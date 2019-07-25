@@ -184,7 +184,7 @@ namespace UniversalWidgetToolkit
 					}
 					if (ParentControl != null)
 					{
-						(ParentControl.NativeImplementation as UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.NativeImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
+						(ParentControl.ControlImplementation as UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
 					}
 					break;
 				}
@@ -196,17 +196,17 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				mvarExpanded = ((ParentControl?.NativeImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(this)).GetValueOrDefault(false);
+				mvarExpanded = ((ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(this)).GetValueOrDefault(false);
 				return mvarExpanded;
 			}
 			set
 			{
 				if (ParentControl == null) {
 					Console.Error.WriteLine ("uwt: TreeModelRow: parent control is NULL");
-				} else if (ParentControl.NativeImplementation == null) {
+				} else if (ParentControl.ControlImplementation == null) {
 					Console.Error.WriteLine ("uwt: TreeModelRow: NativeImplementation is NULL");
 				}
-				(ParentControl?.NativeImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded (this, value);
+				(ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded (this, value);
 				mvarExpanded = value;
 			}
 		}

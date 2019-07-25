@@ -26,7 +26,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(UniversalWidgetToolkit.Controls.Toolbar))]
+	[ControlImplementation(typeof(UniversalWidgetToolkit.Controls.Toolbar))]
 	public class ToolbarImplementation : GTKNativeImplementation
 	{
 		private Internal.GObject.Delegates.GCallbackV1I gc_clicked_handler = null;

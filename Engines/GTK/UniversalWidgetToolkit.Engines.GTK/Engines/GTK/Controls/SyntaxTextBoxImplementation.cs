@@ -23,7 +23,7 @@ using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
-	[NativeImplementation(typeof(SyntaxTextBox))]
+	[ControlImplementation(typeof(SyntaxTextBox))]
 	public class SyntaxTextBoxImplementation : GTKNativeImplementation
 	{
 		public SyntaxTextBoxImplementation(Engine engine, Control control) : base(engine, control)

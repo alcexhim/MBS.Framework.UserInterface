@@ -490,6 +490,17 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			switch (keyval)
 			{
+				case 33: key = KeyboardKey.D1; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 64: key = KeyboardKey.D2; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 35: key = KeyboardKey.D3; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 36: key = KeyboardKey.D4; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 37: key = KeyboardKey.D5; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 94: key = KeyboardKey.D6; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 38: key = KeyboardKey.D7; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 42: key = KeyboardKey.D8; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 40: key = KeyboardKey.D9; modifierKeys |= KeyboardModifierKey.Shift; break;
+				case 41: key = KeyboardKey.D0; modifierKeys |= KeyboardModifierKey.Shift; break;
+
 				case 45: key = KeyboardKey.Minus; break;
 				case 95: key = KeyboardKey.Minus; modifierKeys |= KeyboardModifierKey.Shift; break;
 
@@ -764,7 +775,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private void gc_realize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			Control ctl = GetControlByHandle(widget);
-			Console.WriteLine("gc_realize for {0}", ctl);
 			if (ctl == null) return;
 			
 			InvokeMethod(ctl.NativeImplementation, "OnRealize", EventArgs.Empty);

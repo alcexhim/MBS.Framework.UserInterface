@@ -54,14 +54,14 @@ namespace UniversalWidgetToolkit
 		private string mvarDefaultCommandID = String.Empty;
 		public string DefaultCommandID { get { return mvarDefaultCommandID; } set { mvarDefaultCommandID = value; } }
 
-		private CommandShortcutKey mvarShortcutKey = new CommandShortcutKey();
-		public CommandShortcutKey ShortcutKey { get { return mvarShortcutKey; } set { mvarShortcutKey = value; } }
+		private Shortcut mvarShortcut = null;
+		public Shortcut Shortcut { get { return mvarShortcut; } set { mvarShortcut = value; } }
 		
-		private StockCommandType mvarStockCommandType = StockCommandType.None;
+		private StockType mvarStockType = StockType.None;
 		/// <summary>
-		/// A <see cref="StockCommandType"/> that represents a predefined, platform-themed command.
+		/// A <see cref="StockType"/> that represents a predefined, platform-themed command.
 		/// </summary>
-		public StockCommandType StockCommandType { get { return mvarStockCommandType; } set { mvarStockCommandType = value; } }
+		public StockType StockType { get { return mvarStockType; } set { mvarStockType = value; } }
 		
 		private string mvarImageFileName = String.Empty;
 		/// <summary>

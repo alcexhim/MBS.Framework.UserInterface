@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UniversalWidgetToolkit.Drawing;
+using UniversalWidgetToolkit.Controls.Ribbon;
 
 namespace UniversalWidgetToolkit
 {
@@ -19,8 +20,27 @@ namespace UniversalWidgetToolkit
 	}
 	public class Window : Container
 	{
+		private RibbonControl mvarRibbon = new RibbonControl ();
+		public RibbonControl Ribbon { get { return mvarRibbon; } }
+
+		internal protected override void OnCreating (EventArgs e)
+		{
+			switch (CommandDisplayMode) {
+				case CommandDisplayMode.Ribbon:
+				case CommandDisplayMode.Both:
+				{
+					this.Controls.Add (mvarRibbon);
+					break;
+				}
+			}
+
+			base.OnCreating (e);
+		}
+
 		private Menu mvarMenuBar = new Menu();
 		public Menu MenuBar { get { return mvarMenuBar; } }
+
+		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
 
 		public WindowStartPosition StartPosition { get; set; } = WindowStartPosition.Default;
 

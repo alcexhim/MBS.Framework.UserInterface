@@ -20,6 +20,27 @@ namespace UniversalWidgetToolkit
 
 		public static event EventHandler Startup;
 		public static event EventHandler Shutdown;
+
+		public static Command.CommandCollection Commands { get; } = new Command.CommandCollection();
+		public static bool AttachCommandEventHandler(string commandID, EventHandler handler)
+		{
+			Command cmd = Commands[commandID];
+			if (cmd != null)
+			{
+				cmd.Executed += handler;
+				return true;
+			}
+			Console.WriteLine("attempted to attach handler for unknown command '" + commandID + "'");
+			return false;
+		}
+		public static void ExecuteCommand(string id)
+		{
+			Command cmd = Commands [id];
+			if (cmd == null)
+				return;
+			
+			cmd.Execute ();
+		}
 		
 		private static string[] EnumerateDataPaths()
 		{

@@ -167,9 +167,7 @@
     <Compile Include="TreeModelRowItemRequestedEvent.cs" />
     <Compile Include="CommandItem.cs" />
     <Compile Include="Command.cs" />
-    <Compile Include="CommandShortcutKey.cs" />
     <Compile Include="CommandDisplayStyle.cs" />
-    <Compile Include="StockCommandType.cs" />
     <Compile Include="ResizeEvent.cs" />
     <Compile Include="OpenGLCanvasRenderEvent.cs" />
     <Compile Include="ListViewMode.cs" />
@@ -177,14 +175,19 @@
     <Compile Include="SelectionMode.cs" />
     <Compile Include="WindowStartPosition.cs" />
     <Compile Include="Controls\SyntaxTextBox.cs" />
+    <Compile Include="Controls\Ribbon\RibbonControl.cs" />
     <Compile Include="CustomImplementation.cs" />
     <Compile Include="ControlImplementation.cs" />
     <Compile Include="CustomNativeControl.cs" />
+    <Compile Include="Controls\Ribbon\RibbonTab.cs" />
+    <Compile Include="Controls\Ribbon\RibbonTabGroup.cs" />
     <Compile Include="ToolbarItemDisplayStyle.cs" />
     <Compile Include="ToolbarItemIconSize.cs" />
     <Compile Include="RelativePosition.cs" />
     <Compile Include="ControlStyle.cs" />
     <Compile Include="ControlStyleClass.cs" />
+    <Compile Include="CommandDisplayMode.cs" />
+    <Compile Include="Controls\Ribbon\RibbonCommandItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -217,5 +220,6 @@
     <Folder Include="DataFormats\Layout\" />
     <Folder Include="DataFormats\Layout\Glade\" />
     <Folder Include="ObjectModels\Layout\" />
+    <Folder Include="Controls\Ribbon\" />
   </ItemGroup>
 </Project>

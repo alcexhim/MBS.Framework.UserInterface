@@ -147,6 +147,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkSourceLanguageManager.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCss.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStyleContext.cs" />
+    <Compile Include="Engines\GTK\Controls\RibbonControlImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkBin.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTearoffMenuItem.cs" />
   </ItemGroup>

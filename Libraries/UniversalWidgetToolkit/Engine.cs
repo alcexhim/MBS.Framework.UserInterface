@@ -222,6 +222,8 @@ namespace UniversalWidgetToolkit
 
 		public bool CreateControl(Control control)
 		{
+			InvokeMethod(control, "OnCreating", EventArgs.Empty);
+
 			NativeControl result = CreateControlInternal(control);
 			if (result == null)
 				return false;

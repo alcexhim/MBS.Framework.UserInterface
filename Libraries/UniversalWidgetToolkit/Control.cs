@@ -145,6 +145,8 @@ namespace UniversalWidgetToolkit
 		private Container mvarParent = null;
 		public Container Parent { get { return mvarParent; } }
 
+		public bool FocusOnClick { get; set; } = true;
+
 		private string mvarText = null;
 		public string Text
 		{
@@ -401,11 +403,19 @@ namespace UniversalWidgetToolkit
 			
 			mvarIsDisposed = true;
 		}
+
+		public Control()
+		{
+			mvarStyle = new ControlStyle(this);
+		}
 		
 		~Control()
 		{
 			Dispose(false);
 		}
+
+		private ControlStyle mvarStyle = null;
+		public ControlStyle Style { get { return mvarStyle; } }
 
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
 		public T GetExtraData<T>(string key, T defaultValue = default(T))

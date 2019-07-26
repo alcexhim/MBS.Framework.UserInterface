@@ -401,6 +401,39 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			Application = 600,
 			User = 800
 		}
+
+		/// <summary>
+		/// Used to customize the appearance of a GtkToolbar. Note that setting the toolbar style overrides the user’s preferences for the
+		/// default toolbar style. Note that if the button has only a label set and GTK_TOOLBAR_ICONS is used, the label will be visible,
+		/// and vice versa.
+		/// </summary>
+		public enum GtkToolbarStyle
+		{
+			/// <summary>
+			/// Buttons display only icons in the toolbar.
+			/// </summary>
+			Icons,
+			/// <summary>
+			/// Buttons display only text labels in the toolbar.
+			/// </summary>
+			Text,
+			/// <summary>
+			/// Buttons display text and icons in the toolbar.
+			/// </summary>
+			Both,
+			/// <summary>
+			/// Buttons display icons and text alongside each other, rather than vertically stacked
+			/// </summary>
+			BothHorizontal
+		}
+
+		public enum GtkPositionType
+		{
+			Left,
+			Right,
+			Top,
+			Bottom
+		}
 	}
 }
 

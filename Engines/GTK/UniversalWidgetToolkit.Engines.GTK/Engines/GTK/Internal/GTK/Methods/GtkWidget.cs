@@ -83,7 +83,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_widget_grab_default(IntPtr widget);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern Constants.GtkAlign gtk_widget_set_halign(IntPtr widget);
+		public static extern Constants.GtkAlign gtk_widget_get_halign(IntPtr widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_halign(IntPtr widget, Constants.GtkAlign value);
 
@@ -94,6 +94,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_destroy(IntPtr widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_focus_on_click (IntPtr /*GtkWidget*/ widget, bool focusOnClick);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_widget_get_style_context (IntPtr view);

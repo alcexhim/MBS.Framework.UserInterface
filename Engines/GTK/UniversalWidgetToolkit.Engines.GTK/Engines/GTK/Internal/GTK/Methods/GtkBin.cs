@@ -1,5 +1,5 @@
 ﻿//
-//  GtkToolbar.cs
+//  GtkBin.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -23,17 +23,10 @@ using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 {
-	internal class GtkToolbar
+	internal class GtkBin
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_new();
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_set_show_arrow(IntPtr /*GtkToolbar*/ toolbar, bool show_arrow);
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_insert(IntPtr /*GtkToolbar*/ toolbar, IntPtr /*GtkToolItem*/ item, int pos);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_toolbar_set_style(IntPtr /*GtkToolbar*/ toolbar, Constants.GtkToolbarStyle /*GtkToolItem*/ style);
+		public static extern IntPtr /*GtkWidget*/ gtk_bin_get_child(IntPtr /*GtkBin*/ bin);
 	}
 }
 

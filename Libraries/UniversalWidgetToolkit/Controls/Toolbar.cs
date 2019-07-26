@@ -45,7 +45,9 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			Click?.Invoke(this, e);
 		}
-		
+
+		public ToolbarItemIconSize IconSize { get ; set; } = ToolbarItemIconSize.Default;
+		public ToolbarItemDisplayStyle DisplayStyle { get; set; } = ToolbarItemDisplayStyle.Default;
 		public bool CheckOnClick { get; set; } = false;
 	}
 	public abstract class ToolbarItem : ISupportsExtraData

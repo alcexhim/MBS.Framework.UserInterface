@@ -36,6 +36,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_button_set_always_show_image(IntPtr button, bool value);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_button_set_image(IntPtr /*GtkButton*/ button, IntPtr /*GtkWidget*/ image);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkWidget*/ gtk_button_get_image(IntPtr /*GtkButton*/ button);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_button_set_image_position (IntPtr /*GtkButton*/ button, Constants.GtkPositionType position);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern Constants.GtkPositionType gtk_button_get_image_position (IntPtr /*GtkButton*/ button);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_button_get_use_underline(IntPtr handle);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_button_set_use_underline(IntPtr handle, bool value);

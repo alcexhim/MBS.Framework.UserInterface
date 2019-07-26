@@ -899,6 +899,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (control.MinimumSize != Dimension2D.Empty)
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request ((handle as GTKNativeControl).Handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
+
+				try{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_focus_on_click ((handle as GTKNativeControl).Handle, control.FocusOnClick);
+				}
+				catch (EntryPointNotFoundException ex) {
+					// we must be using an old version of Gtk
+				}
 				
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
 				Application.DoEvents ();
@@ -1619,6 +1626,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					}
 				}
 			}
+
+			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (handle);
+			foreach (ControlStyleClass cls in control.Style.Classes) {
+				Console.WriteLine ("adding style class '{0}' to context {1}", cls.Value, hStyleContext);
+				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
+			}
+
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, control.Enabled);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)control.Size.Width, (int)control.Size.Height);
 		}
@@ -1824,6 +1838,28 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				Internal.GTK.Methods.Gtk.gtk_main_iteration();
 			}
+		}
+
+		internal Internal.GTK.Constants.GtkPositionType RelativePositionToGtkPositionType(RelativePosition value)
+		{
+			switch (value) {
+			case RelativePosition.Left: return Internal.GTK.Constants.GtkPositionType.Left;
+			case RelativePosition.Right: return Internal.GTK.Constants.GtkPositionType.Right;
+			case RelativePosition.Top: return Internal.GTK.Constants.GtkPositionType.Top;
+			case RelativePosition.Bottom: return Internal.GTK.Constants.GtkPositionType.Bottom;
+			}
+
+			return Internal.GTK.Constants.GtkPositionType.Left;
+		}
+		internal RelativePosition GtkPositionTypeToRelativePosition(Internal.GTK.Constants.GtkPositionType value)
+		{
+			switch (value) {
+			case Internal.GTK.Constants.GtkPositionType.Left: return RelativePosition.Left;
+			case Internal.GTK.Constants.GtkPositionType.Right: return RelativePosition.Right;
+			case Internal.GTK.Constants.GtkPositionType.Top: return RelativePosition.Top;
+			case Internal.GTK.Constants.GtkPositionType.Bottom: return RelativePosition.Bottom;
+			}
+			return RelativePosition.Default;
 		}
 	}
 }

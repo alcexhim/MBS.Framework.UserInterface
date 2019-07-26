@@ -1,5 +1,5 @@
 ﻿//
-//  GtkToolbar.cs
+//  ToolbarItemIconSize.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,21 +19,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.InteropServices;
 
-namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
+namespace UniversalWidgetToolkit
 {
-	internal class GtkToolbar
+	public enum ToolbarItemIconSize
 	{
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_new();
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_set_show_arrow(IntPtr /*GtkToolbar*/ toolbar, bool show_arrow);
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_toolbar_insert(IntPtr /*GtkToolbar*/ toolbar, IntPtr /*GtkToolItem*/ item, int pos);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_toolbar_set_style(IntPtr /*GtkToolbar*/ toolbar, Constants.GtkToolbarStyle /*GtkToolItem*/ style);
+		Default,
+		Large,
+		Small
 	}
 }
 

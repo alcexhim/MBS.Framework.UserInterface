@@ -28,9 +28,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tool_button_new(IntPtr /*GtkWidget*/ icon_widget, string label);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_tool_button_new(IntPtr /*GtkWidget*/ icon_widget, IntPtr label);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_tool_button_get_label(IntPtr /*GtkToolButton*/ button);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, string label);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, IntPtr label);
 	}
 }
 

@@ -27,6 +27,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_add_provider (IntPtr hStyleContext, IntPtr /*GtkStyleProvider*/ provider, Constants.GtkStyleProviderPriority priority);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_add_class(IntPtr /*GtkStyleContext*/ context, string value);
 	}
 }
 

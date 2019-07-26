@@ -180,6 +180,11 @@
     <Compile Include="CustomImplementation.cs" />
     <Compile Include="ControlImplementation.cs" />
     <Compile Include="CustomNativeControl.cs" />
+    <Compile Include="ToolbarItemDisplayStyle.cs" />
+    <Compile Include="ToolbarItemIconSize.cs" />
+    <Compile Include="RelativePosition.cs" />
+    <Compile Include="ControlStyle.cs" />
+    <Compile Include="ControlStyleClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

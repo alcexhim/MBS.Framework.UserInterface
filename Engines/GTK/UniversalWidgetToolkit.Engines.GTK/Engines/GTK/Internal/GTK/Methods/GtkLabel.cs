@@ -32,6 +32,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_label_set_line_wrap(IntPtr /*GtkLabel*/ label, bool wrap);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_label_set_xalign(IntPtr /*GtkLabel*/ label, double value);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*PangoAttrList*/ gtk_label_get_attributes(IntPtr /*GtkLabel*/ label);

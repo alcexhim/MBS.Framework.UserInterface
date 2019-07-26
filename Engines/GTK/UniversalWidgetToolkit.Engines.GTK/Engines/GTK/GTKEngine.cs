@@ -1675,6 +1675,19 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				{
 					IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
 
+					try
+					{
+						IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new ();
+						Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append (hMenuFileMenu, hMenuTearoff);
+					}
+					catch (EntryPointNotFoundException ex) {
+						Console.WriteLine ("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
+
+						// this functionality is deprecated, so just in case it finally gets removed...
+						// however, some people like it, so UWT will support it indefinitely ;)
+						// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
+					}
+
 					if (accelPath != null)
 					{
 						if (hDefaultAccelGroup == IntPtr.Zero)

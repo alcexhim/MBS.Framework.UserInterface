@@ -87,7 +87,10 @@ namespace UniversalWidgetToolkit
 			{
 				get
 				{
-					return _itemsByName[name];
+					if (_itemsByName.ContainsKey (name)) {
+						return _itemsByName [name];
+					}
+					return null;
 				}
 			}
 			public bool Contains(string name)

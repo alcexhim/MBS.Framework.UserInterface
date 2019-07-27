@@ -525,6 +525,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			if (e.Key == KeyboardKey.ArrowRight) {
 				lv.SelectedRows [0].Expanded = true;
+				e.Cancel = true;
 			}
 			else if (e.Key == KeyboardKey.ArrowLeft) {
 				if (!lv.SelectedRows [0].Expanded) {
@@ -537,6 +538,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				} else {
 					lv.SelectedRows [0].Expanded = false;
 				}
+				e.Cancel = true;
 			}
 		}
 

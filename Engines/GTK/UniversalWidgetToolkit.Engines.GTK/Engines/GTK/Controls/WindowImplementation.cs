@@ -221,32 +221,32 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hWindowContainer = Internal.GTK.Methods.GtkBox.gtk_vbox_new(false, 2);
 
 			#region Menu Bar
-
-			if (hDefaultAccelGroup == IntPtr.Zero)
+			if (window.MenuBar.Items.Count > 0)
 			{
-				hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
-			}
-			Internal.GTK.Methods.GtkWindow.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
-
-			// create the menu bar
-			switch (window.CommandDisplayMode)
-			{
-				case CommandDisplayMode.CommandBar:
-				case CommandDisplayMode.Both:
+				if (hDefaultAccelGroup == IntPtr.Zero)
 				{
-					IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
+					hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+				}
+				Internal.GTK.Methods.GtkWindow.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
 
-					foreach (MenuItem menuItem in window.MenuBar.Items)
+				// create the menu bar
+				switch (window.CommandDisplayMode)
+				{
+					case CommandDisplayMode.CommandBar:
+					case CommandDisplayMode.Both:
 					{
-						InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
-					}
+						IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
 
-					Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
-					break;
+						foreach (MenuItem menuItem in window.MenuBar.Items)
+						{
+							InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
+						}
+
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
+						break;
+					}
 				}
 			}
-
-
 			#endregion
 
 			if (hContainer != IntPtr.Zero)

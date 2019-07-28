@@ -180,7 +180,6 @@ namespace UniversalWidgetToolkit
 					List<TreeModelRow> list = new List<TreeModelRow>();
 					foreach (TreeModelRow row in e.NewItems)
 					{
-						Console.WriteLine("setting parent row");
 						row.ParentRow = this;
 						row.ParentControl = this.ParentControl;
 						list.Add(row);

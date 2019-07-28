@@ -1548,6 +1548,27 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return handle;
 		}
 
+		private void RecursiveShowChildControls(Container container)
+		{
+			if (handlesByLayout.ContainsKey(container.Layout)) {
+				IntPtr hLayout = handlesByLayout [container.Layout];
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show (hLayout);
+			}
+			foreach (Control ctl in container.Controls) {
+				if (ctl is Container) {
+					if (handlesByLayout.ContainsKey((ctl as Container).Layout)) {
+						IntPtr hLayout = handlesByLayout [(ctl as Container).Layout];
+						Internal.GTK.Methods.GtkWidget.gtk_widget_show (hLayout);
+					}
+					RecursiveShowChildControls (ctl as Container);
+				}
+				if (ctl.Visible) {
+					IntPtr hCtl = GetHandleForControl (ctl);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show (hCtl);
+				}
+			}
+		}
+
 		private IntPtr[] Dialog_AddButtons(IntPtr handle, List<Button> buttons)
 		{
 			List<IntPtr> list = new List<IntPtr>();

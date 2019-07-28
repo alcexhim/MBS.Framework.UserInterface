@@ -32,8 +32,9 @@ namespace UniversalWidgetToolkit
 				}
 			}
 
-			if (!foundContainerAttribute)
-				Console.Error.WriteLine("uwt: warning: ContainerLayout works better [{0}]", this.GetType().FullName);
+			if (!foundContainerAttribute) {
+				// Console.Error.WriteLine("uwt: warning: ContainerLayout works better [{0}]", this.GetType().FullName);
+			}
 		}
 
 		private void InitContainerLayout(ContainerLayoutAttribute wla)

@@ -181,6 +181,25 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			base.OnMouseDown(e);
 		}
+
+		protected override void OnMouseDoubleClick (MouseEventArgs e)
+		{
+			base.OnMouseDoubleClick (e);
+
+			// always do this in case the user decides to cancel the event
+			if (e.Cancel) return;
+
+			if (e.Buttons == MouseButtons.Primary && e.ModifierKeys == KeyboardModifierKey.None) {
+
+				ListView tv = Control as ListView;
+				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+				if (tv == null) return;
+
+				if (tv.SelectedRows.Count != 1) return;
+
+				tv.SelectedRows [0].Expanded = !tv.SelectedRows [0].Expanded;
+			}
+		}
 		private TreeModelRow prevSelectedRow = null;
 		protected override void OnMouseUp(MouseEventArgs e)
 		{

@@ -117,6 +117,58 @@ namespace UniversalWidgetToolkit
 
 			if (mvarEngine != null)
 				mvarEngine.Initialize ();
+
+			// after initialization, load option providers
+
+			List<OptionProvider> listOptionProviders = new List<OptionProvider>();
+			System.Collections.Specialized.StringCollection listOptionProviderTypeNames = new System.Collections.Specialized.StringCollection ();
+
+			// load the already-known list
+			foreach (OptionProvider provider in Application.OptionProviders) {
+				listOptionProviders.Add (provider);
+				listOptionProviderTypeNames.Add (provider.GetType ().FullName);
+			}
+
+
+			System.Reflection.Assembly[] asms = UniversalEditor.Common.Reflection.GetAvailableAssemblies();
+			foreach (System.Reflection.Assembly asm in asms) {
+				Type[] types = null;
+				try {
+					types = asm.GetTypes ();
+				} catch (System.Reflection.ReflectionTypeLoadException ex) {
+					Console.Error.WriteLine ("ReflectionTypeLoadException(" + ex.LoaderExceptions.Length.ToString () + "): " + asm.FullName);
+					Console.Error.WriteLine (ex.Message);
+
+					types = ex.Types;
+				}
+
+				foreach (Type type in types) {
+					if (type.IsSubclassOf (typeof(OptionProvider))) {
+						if (!listOptionProviderTypeNames.Contains (type.FullName)) {
+							try {
+								OptionProvider provider = (type.Assembly.CreateInstance (type.FullName) as OptionProvider);
+								if (provider == null) {
+									Console.Error.WriteLine ("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
+									continue;
+								}
+								listOptionProviderTypeNames.Add (type.FullName);
+								listOptionProviders.Add (provider);
+								Console.WriteLine ("loaded option provider \"{0}\"", type.FullName);
+							} catch (System.Reflection.TargetInvocationException ex) {
+								Console.WriteLine ("binding error: " + ex.InnerException.Message);
+							} catch (Exception ex) {
+								Console.WriteLine ("error while loading editor '" + type.FullName + "': " + ex.Message);
+							}
+						} else {
+							Console.WriteLine ("skipping already loaded OptionProvider '{0}'", type.FullName);
+						}
+					}
+				}
+			}
+
+			foreach (OptionProvider provider in listOptionProviders) {
+				Application.OptionProviders.Add (provider);
+			}
 		}
 
 		static Application()

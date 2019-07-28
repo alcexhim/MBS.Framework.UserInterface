@@ -104,7 +104,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 					ctImportants.Controls.Add (ctCutCopyDelete);
 
-					ct.Controls.Add (ctImportants);
+					ct.Controls.Add (ctImportants, new BoxLayout.Constraints(true, true));
 
 					Container ctLabelAndDialog = new Container ();
 					ctLabelAndDialog.Layout = new BoxLayout (Orientation.Horizontal);

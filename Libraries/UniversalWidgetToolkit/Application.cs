@@ -11,6 +11,9 @@ namespace UniversalWidgetToolkit
 		private static Engine mvarEngine = null;
 		public static Engine Engine { get { return mvarEngine; } }
 
+		public static DefaultOptionProvider DefaultOptionProvider { get; } = new DefaultOptionProvider();
+		public static OptionProvider.OptionProviderCollection OptionProviders { get; } = new OptionProvider.OptionProviderCollection();
+
 		private static int mvarExitCode = 0;
 		public static int ExitCode { get { return mvarExitCode; } }
 
@@ -131,6 +134,9 @@ namespace UniversalWidgetToolkit
 			// ID = Guid.NewGuid();
 			// sv = sv + ID.ToString().Replace("-", String.Empty);
 			UniqueName = sv;
+
+			// configure UWT-provided settings
+			Application.OptionProviders.Add(Application.DefaultOptionProvider);
 		}
 
 		// [DebuggerNonUserCode()]

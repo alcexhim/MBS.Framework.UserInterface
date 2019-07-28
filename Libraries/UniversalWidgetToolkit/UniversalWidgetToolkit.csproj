@@ -188,6 +188,10 @@
     <Compile Include="ControlStyleClass.cs" />
     <Compile Include="CommandDisplayMode.cs" />
     <Compile Include="Controls\Ribbon\RibbonCommandItem.cs" />
+    <Compile Include="Option.cs" />
+    <Compile Include="OptionGroup.cs" />
+    <Compile Include="OptionProvider.cs" />
+    <Compile Include="DefaultOptionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

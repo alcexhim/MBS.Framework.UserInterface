@@ -816,7 +816,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
 			IntPtr hTreeView = Internal.GLib.Methods.g_list_nth_data(hList, 0);
-			Console.WriteLine("returning {0} child handle for scrolled window {1}", hTreeView, hScrolledWindow);
 			return hTreeView;
 		}
 
@@ -1548,6 +1547,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			RegisterControlHandle(dlg, handle);
 			return handle;
 		}
+
 		private IntPtr[] Dialog_AddButtons(IntPtr handle, List<Button> buttons)
 		{
 			List<IntPtr> list = new List<IntPtr>();

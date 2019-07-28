@@ -64,6 +64,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_paned_pack1(IntPtr hPaned, IntPtr hChild, bool resize, bool shrink);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_paned_pack2(IntPtr hPaned, IntPtr hChild, bool resize, bool shrink);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_paned_get_position(IntPtr /*GtkPaned*/ handle);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_paned_set_position(IntPtr /*GtkPaned*/ handle, int value);
 	}
 }
 

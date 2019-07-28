@@ -2,6 +2,14 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
+	namespace Native
+	{
+		public interface ISplitContainerImplementation
+		{
+			int GetSplitterPosition();
+			void SetSplitterPosition(int value);
+		}
+	}
 	public class SplitContainer : SystemControl
 	{
 		private Container mvarPanel1 = new Container ();
@@ -19,6 +27,24 @@ namespace UniversalWidgetToolkit.Controls
 		/// </summary>
 		/// <value>The orientation of the splitter in this <see cref="SplitContainer" />.</value>
 		public Orientation Orientation { get { return mvarOrientation; } set { mvarOrientation = value; } }
+
+		private int mvarSplitterPosition = 0;
+		public int SplitterPosition
+		{
+			get
+			{
+				Native.ISplitContainerImplementation impl = (ControlImplementation as Native.ISplitContainerImplementation);
+				if (impl != null) {
+					mvarSplitterPosition = impl.GetSplitterPosition ();
+				}
+				return mvarSplitterPosition;
+			}
+			set
+			{
+				(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition (value);
+				mvarSplitterPosition = value;
+			}
+		}
 
 		public SplitContainer (Orientation orientation = Orientation.Horizontal)
 		{

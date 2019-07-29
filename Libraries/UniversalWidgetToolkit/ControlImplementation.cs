@@ -65,7 +65,7 @@ namespace UniversalWidgetToolkit
 		{
 			if (_controlText.ContainsKey(control))
 				return _controlText[control];
-			return String.Empty;
+			return null;
 		}
 		public string GetControlText(Control control)
 		{

@@ -204,7 +204,9 @@ namespace UniversalWidgetToolkit
 
 			if (controlCreator != null)
 			{
+				controlCreator.OnCreating (EventArgs.Empty);
 				handle = controlCreator.CreateControl(control);
+				controlCreator.OnCreated (EventArgs.Empty);
 			}
 			return handle;
 		}
@@ -228,13 +230,9 @@ namespace UniversalWidgetToolkit
 			if (result == null)
 				return false;
 
-			// set the text we've previously set before
-			if (_ControlTextForUncreatedControls.ContainsKey(control))
-			{
-				SetControlText(control, _ControlTextForUncreatedControls[control]);
-				_ControlTextForUncreatedControls.Remove(control);
-			}
-
+			// set the control text if it has not been set already
+			control.ControlImplementation?.SetControlText(control, control.Text);
+			
 			InvokeMethod(control, "OnCreated", EventArgs.Empty);
 			return true;
 		}
@@ -321,53 +319,6 @@ namespace UniversalWidgetToolkit
 		public void InvalidateControl(Control control, int x, int y, int width, int height)
 		{
 			InvalidateControlInternal(control, x, y, width, height);
-		}
-
-		private Dictionary<Control, string> _ControlTextForUncreatedControls = new Dictionary<Control, string>();
-
-		public string GetControlText(Control control)
-		{
-			if (!IsControlCreated(control))
-			{
-				if (_ControlTextForUncreatedControls.ContainsKey(control))
-				{
-					return _ControlTextForUncreatedControls[control];
-				}
-				return String.Empty;
-			}
-
-			string text = null;
-
-			ControlImplementation controlCreator = FindNativeImplementationForControl(control);
-
-			if (controlCreator != null)
-			{
-				text = controlCreator.GetControlText(control);
-			}
-
-
-			if (text != null)
-			{
-				System.Text.StringBuilder sb = new System.Text.StringBuilder();
-				sb.Append(text);
-				return sb.ToString();
-			}
-			return text;
-		}
-		public void SetControlText(Control control, string text)
-		{
-			if (!IsControlCreated(control))
-			{
-				_ControlTextForUncreatedControls[control] = text;
-				return;
-			}
-
-			ControlImplementation controlCreator = FindNativeImplementationForControl(control);
-
-			if (controlCreator != null)
-			{
-				controlCreator.SetControlText(control, text);
-			}
 		}
 
 		private bool inUpdateControlProperties = false;

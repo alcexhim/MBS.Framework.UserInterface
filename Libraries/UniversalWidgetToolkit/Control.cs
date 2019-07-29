@@ -152,14 +152,19 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				string text = Application.Engine.GetControlText(this);
-				if (text == null) return mvarText;
+				string text = mvarText;
+				if (ControlImplementation != null) {
+					text = ControlImplementation.GetControlText (this);
+					if (text == null) {
+						return mvarText;
+					}
+				}
 				return text;
 			}
 			set
 			{
 				mvarText = value;
-				Application.Engine.SetControlText(this, value);
+				ControlImplementation?.SetControlText(this, value);
 			}
 		}
 

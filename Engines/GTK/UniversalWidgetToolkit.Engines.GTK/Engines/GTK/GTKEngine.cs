@@ -1621,7 +1621,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (button.StockType != ButtonStockType.None)
 				{
-					Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, StockTypeToString((StockType)button.StockType));
+					control.ControlImplementation.SetControlText (control, StockTypeToString ((StockType)button.StockType));
 					Internal.GTK.Methods.GtkButton.gtk_button_set_use_stock(handle, true);
 				}
 
@@ -1646,12 +1646,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						break;
 					}
 				}
-			}
-
-			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (handle);
-			foreach (ControlStyleClass cls in control.Style.Classes) {
-				Console.WriteLine ("adding style class '{0}' to context {1}", cls.Value, hStyleContext);
-				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
 			}
 
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, control.Enabled);

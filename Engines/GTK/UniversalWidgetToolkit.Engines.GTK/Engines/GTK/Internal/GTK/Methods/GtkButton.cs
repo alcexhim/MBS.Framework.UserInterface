@@ -28,9 +28,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_button_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern string gtk_button_get_label(IntPtr button);
+		public static extern IntPtr gtk_button_get_label(IntPtr button);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_button_set_label(IntPtr button, string label);
+		public static extern void gtk_button_set_label(IntPtr button, IntPtr label);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_button_get_always_show_image(IntPtr button);
 		[DllImport(Gtk.LIBRARY_FILENAME)]

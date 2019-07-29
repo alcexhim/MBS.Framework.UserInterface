@@ -101,6 +101,13 @@ namespace UniversalWidgetToolkit
 
 		}
 
+		protected internal virtual void OnCreating(EventArgs e)
+		{
+		}
+		protected internal virtual void OnCreated(EventArgs e)
+		{
+		}
+
 		protected abstract void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
 		public void RegisterDragSource(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{

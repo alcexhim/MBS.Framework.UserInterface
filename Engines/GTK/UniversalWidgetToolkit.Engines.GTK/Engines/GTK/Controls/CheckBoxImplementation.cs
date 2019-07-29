@@ -24,7 +24,7 @@ using UniversalWidgetToolkit.Controls;
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(CheckBox))]
-	public class CheckBoxImplementation : GTKNativeImplementation
+	public class CheckBoxImplementation : ButtonImplementation
 	{
 		public CheckBoxImplementation(Engine engine, Control control)
 			: base(engine, control)

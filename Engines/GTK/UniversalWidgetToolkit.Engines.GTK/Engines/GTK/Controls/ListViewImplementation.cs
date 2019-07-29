@@ -751,5 +751,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			_GtkTreeIterForTreeModelRow[row] = hIter;
 			_TreeModelRowForGtkTreeIter[hIter] = row;
 		}
+
+		protected override void OnCreated (EventArgs e)
+		{
+			base.OnCreated (e);
+
+			IntPtr hCtrl = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (hCtrl);
+			foreach (ControlStyleClass cls in Control.Style.Classes) {
+				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
+			}
+		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using UniversalWidgetToolkit;
 using UniversalWidgetToolkit.Controls;
 using UniversalWidgetToolkit.Controls.Native;
+using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
@@ -11,7 +12,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 	public class ButtonImplementation : GTKNativeImplementation, IButtonControlImplementation
 	{
 		private Internal.GObject.Delegates.GCallback gc_Button_Clicked = null;
-		public ButtonImplementation(Engine engine, Button control) : base(engine, control)
+		public ButtonImplementation(Engine engine, Control control) : base(engine, control)
 		{
 			gc_Button_Clicked = new Internal.GObject.Delegates.GCallback(Button_Clicked);
 		}
@@ -30,12 +31,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override string GetControlTextInternal(Control control)
 		{
 			IntPtr handle = Engine.GetHandleForControl(control);
-			return Internal.GTK.Methods.GtkButton.gtk_button_get_label(handle);
+			IntPtr hTitle = Internal.GTK.Methods.GtkButton.gtk_button_get_label (handle);
+			return Marshal.PtrToStringAuto (hTitle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
 			IntPtr handle = Engine.GetHandleForControl(control);
-			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, text);
+			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
+			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, hTitle);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

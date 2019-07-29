@@ -193,6 +193,7 @@
     <Compile Include="SettingsGroup.cs" />
     <Compile Include="Setting.cs" />
     <Compile Include="DefaultSettingsProvider.cs" />
+    <Compile Include="ApplicationSettingsProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

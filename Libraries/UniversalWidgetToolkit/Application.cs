@@ -167,7 +167,9 @@ namespace UniversalWidgetToolkit
 			}
 
 			foreach (SettingsProvider provider in listOptionProviders) {
-				Application.SettingsProviders.Add (provider);
+				if (provider is ApplicationSettingsProvider) {
+					Application.SettingsProviders.Add (provider);
+				}
 			}
 		}
 

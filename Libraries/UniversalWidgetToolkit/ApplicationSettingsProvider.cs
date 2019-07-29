@@ -1,5 +1,5 @@
 ﻿//
-//  DefaultOptionProvider.cs
+//  ApplicationSettingsProvider.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -22,23 +22,11 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class DefaultSettingsProvider : ApplicationSettingsProvider
+	/// <summary>
+	/// Represents a <see cref="SettingsProvider" /> that controls settings for the entire <see cref="Application" /> (i.e., is added to <see cref="Application.SettingsProviders"/> collection).
+	/// </summary>
+	public class ApplicationSettingsProvider : SettingsProvider
 	{
-		public DefaultSettingsProvider ()
-		{
-			SettingsGroups.Add("Application:Language", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Application:Keyboard", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Application:Theme", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Plugins:Security", new Setting[]
-			{
-			});
-		}
 	}
 }
 

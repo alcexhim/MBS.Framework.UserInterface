@@ -22,12 +22,12 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class OptionGroup : IComparable<OptionGroup>
+	public class SettingsGroup : IComparable<SettingsGroup>
 	{
-		public class OptionGroupCollection
-			: System.Collections.ObjectModel.Collection<OptionGroup>
+		public class SettingsGroupCollection
+			: System.Collections.ObjectModel.Collection<SettingsGroup>
 		{
-			public OptionGroup Add(string path, Option[] options)
+			public SettingsGroup Add(string path, Setting[] options)
 			{
 				string[] paths = new string[0];
 				if (!String.IsNullOrEmpty (path)) {
@@ -35,12 +35,12 @@ namespace UniversalWidgetToolkit
 				}
 				return Add (paths, options);
 			}
-			public OptionGroup Add(string[] path, Option[] options)
+			public SettingsGroup Add(string[] path, Setting[] options)
 			{
-				OptionGroup grp = new OptionGroup();
+				SettingsGroup grp = new SettingsGroup();
 				grp.Path = path;
 				if (options != null) {
-					foreach (Option option in options) {
+					foreach (Setting option in options) {
 						grp.Options.Add (option);
 					}
 				}
@@ -49,31 +49,31 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
-		public OptionGroup()
+		public SettingsGroup()
 		{
 		}
-		public OptionGroup(string path, Option[] options)
+		public SettingsGroup(string path, Setting[] options)
 		{
 			string[] paths = new string[0];
 			if (!String.IsNullOrEmpty (path)) {
 				paths = path.Split (new char[] { ':' });
 			}
 			Path = paths;
-			foreach (Option option in options)
+			foreach (Setting option in options)
 			{
 				Options.Add (option);
 			}
 		}
-		public OptionGroup(string[] paths, Option[] options)
+		public SettingsGroup(string[] paths, Setting[] options)
 		{
 			Path = paths;
-			foreach (Option option in options)
+			foreach (Setting option in options)
 			{
 				Options.Add (option);
 			}
 		}
 
-		public int CompareTo(OptionGroup other)
+		public int CompareTo(SettingsGroup other)
 		{
 			string xpath = String.Join (":", this.GetPath ());
 			string ypath = String.Join (":", other.GetPath ());
@@ -95,7 +95,7 @@ namespace UniversalWidgetToolkit
 				return null;
 			}
 		}
-		public Option.OptionCollection Options { get; } = new Option.OptionCollection();
+		public Setting.SettingCollection Options { get; } = new Setting.SettingCollection();
 
 		public override string ToString ()
 		{

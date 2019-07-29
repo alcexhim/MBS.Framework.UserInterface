@@ -10,7 +10,7 @@ namespace UniversalWidgetToolkit.Dialogs
 	/// A dialog for configuring Universal Widget Toolkit <see cref="Option" />s.
 	/// Option groups defined in <see cref="OptionProvider"/>s added to the <see cref="OptionProviders" /> collection will appear in this dialog for configuration.
 	/// </summary>
-	public class OptionsDialog : Dialog
+	public class SettingsDialog : Dialog
 	{
 		private DefaultTreeModel tmOptionGroups = null;
 		private ListView tv = null;
@@ -18,7 +18,7 @@ namespace UniversalWidgetToolkit.Dialogs
 
 		private StackSidebar sidebar = null;
 
-		public OptionsDialog()
+		public SettingsDialog()
 		{
 			tmOptionGroups = new DefaultTreeModel (new Type[] { typeof(string) });
 
@@ -32,8 +32,8 @@ namespace UniversalWidgetToolkit.Dialogs
 			this.Text = "Options";
 			this.Size = new Dimension2D(600, 400);
 
-			foreach (OptionProvider provider in Application.OptionProviders) {
-				this.OptionProviders.Add (provider);
+			foreach (SettingsProvider provider in Application.SettingsProviders) {
+				this.SettingsProviders.Add (provider);
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace UniversalWidgetToolkit.Dialogs
 		/// Contains the <see cref="OptionProvider" />s used to display options in this <see cref="OptionsDialog" />.
 		/// </summary>
 		/// <value>The collection of <see cref="OptionProvider" />s used to display options in this <see cref="OptionsDialog" />.</value>
-		public OptionProvider.OptionProviderCollection OptionProviders { get; } = new OptionProvider.OptionProviderCollection();
+		public SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
 		Container ctDefault = new Container ();
 		internal protected override void OnCreating (EventArgs e)
@@ -89,15 +89,15 @@ namespace UniversalWidgetToolkit.Dialogs
 			} else {
 			}
 
-			System.Collections.Generic.List<OptionGroup> grps = new System.Collections.Generic.List<OptionGroup> ();
-			foreach (OptionProvider provider in OptionProviders) {
-				foreach (OptionGroup grp in provider.OptionGroups) {
+			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup> ();
+			foreach (SettingsProvider provider in SettingsProviders) {
+				foreach (SettingsGroup grp in provider.SettingsGroups) {
 					grps.Add (grp);
 
 					Container ct = new Container ();
 					ct.Layout = new GridLayout ();
 					int iRow = 0;
-					foreach (Option opt in grp.Options) {
+					foreach (Setting opt in grp.Options) {
 						LoadOptionIntoGroup(opt, ct, iRow);
 						iRow++;
 					}
@@ -117,17 +117,17 @@ namespace UniversalWidgetToolkit.Dialogs
 				}
 			}
 			grps.Sort ();
-			foreach (OptionGroup grp in grps) {
+			foreach (SettingsGroup grp in grps) {
 				AddOptionGroupPathPart (grp, grp.Path, 0);
 			}
 		}
 
-		private System.Collections.Generic.Dictionary<OptionGroup, Container> optionGroupContainers = new System.Collections.Generic.Dictionary<OptionGroup, Container>();
+		private System.Collections.Generic.Dictionary<SettingsGroup, Container> optionGroupContainers = new System.Collections.Generic.Dictionary<SettingsGroup, Container>();
 
-		private void LoadOptionIntoGroup(Option opt, Container ct, int iRow)
+		private void LoadOptionIntoGroup(Setting opt, Container ct, int iRow)
 		{
-			if (opt is TextOption) {
-				TextOption o = (opt as TextOption);
+			if (opt is TextSetting) {
+				TextSetting o = (opt as TextSetting);
 
 				Label lbl = new Label ();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
@@ -135,13 +135,13 @@ namespace UniversalWidgetToolkit.Dialogs
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();
 				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
-			} else if (opt is BooleanOption) {
-				BooleanOption o = (opt as BooleanOption);
+			} else if (opt is BooleanSetting) {
+				BooleanSetting o = (opt as BooleanSetting);
 				CheckBox chk = new CheckBox ();
 				chk.Text = o.Title;
 				ct.Controls.Add (chk, new GridLayout.Constraints (iRow, 0, 1, 2));
-			} else if (opt is ChoiceOption) {
-				ChoiceOption o = (opt as ChoiceOption);
+			} else if (opt is ChoiceSetting) {
+				ChoiceSetting o = (opt as ChoiceSetting);
 
 				Label lbl = new Label ();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
@@ -149,13 +149,13 @@ namespace UniversalWidgetToolkit.Dialogs
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();
 				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
-			} else if (opt is GroupOption) {
-				GroupOption o = (opt as GroupOption);
+			} else if (opt is GroupSetting) {
+				GroupSetting o = (opt as GroupSetting);
 
 			}
 		}
 
-		private void AddOptionGroupPathPart(OptionGroup grp, string[] path, int index, TreeModelRow parent = null)
+		private void AddOptionGroupPathPart(SettingsGroup grp, string[] path, int index, TreeModelRow parent = null)
 		{
 			if (index > path.Length - 1)
 				return;
@@ -181,7 +181,7 @@ namespace UniversalWidgetToolkit.Dialogs
 			}
 
 			if (index + 1 > path.Length - 1) {
-				row.SetExtraData<OptionGroup> ("group", grp);
+				row.SetExtraData<SettingsGroup> ("group", grp);
 			}
 
 			AddOptionGroupPathPart (grp, path, index + 1, row);
@@ -194,7 +194,7 @@ namespace UniversalWidgetToolkit.Dialogs
 				ctl.Visible = false;
 			}
 
-			OptionGroup thegrp = tv.SelectedRows [0].GetExtraData<OptionGroup> ("group");
+			SettingsGroup thegrp = tv.SelectedRows [0].GetExtraData<SettingsGroup> ("group");
 			if (thegrp == null) {
 				ctDefault.Visible = true;
 				return;

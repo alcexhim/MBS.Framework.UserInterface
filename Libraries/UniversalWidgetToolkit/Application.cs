@@ -11,8 +11,8 @@ namespace UniversalWidgetToolkit
 		private static Engine mvarEngine = null;
 		public static Engine Engine { get { return mvarEngine; } }
 
-		public static DefaultOptionProvider DefaultOptionProvider { get; } = new DefaultOptionProvider();
-		public static OptionProvider.OptionProviderCollection OptionProviders { get; } = new OptionProvider.OptionProviderCollection();
+		public static DefaultSettingsProvider DefaultSettingsProvider { get; } = new DefaultSettingsProvider();
+		public static SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
 		private static int mvarExitCode = 0;
 		public static int ExitCode { get { return mvarExitCode; } }
@@ -120,11 +120,11 @@ namespace UniversalWidgetToolkit
 
 			// after initialization, load option providers
 
-			List<OptionProvider> listOptionProviders = new List<OptionProvider>();
+			List<SettingsProvider> listOptionProviders = new List<SettingsProvider>();
 			System.Collections.Specialized.StringCollection listOptionProviderTypeNames = new System.Collections.Specialized.StringCollection ();
 
 			// load the already-known list
-			foreach (OptionProvider provider in Application.OptionProviders) {
+			foreach (SettingsProvider provider in Application.SettingsProviders) {
 				listOptionProviders.Add (provider);
 				listOptionProviderTypeNames.Add (provider.GetType ().FullName);
 			}
@@ -143,10 +143,10 @@ namespace UniversalWidgetToolkit
 				}
 
 				foreach (Type type in types) {
-					if (type.IsSubclassOf (typeof(OptionProvider))) {
+					if (type.IsSubclassOf (typeof(SettingsProvider))) {
 						if (!listOptionProviderTypeNames.Contains (type.FullName)) {
 							try {
-								OptionProvider provider = (type.Assembly.CreateInstance (type.FullName) as OptionProvider);
+								SettingsProvider provider = (type.Assembly.CreateInstance (type.FullName) as SettingsProvider);
 								if (provider == null) {
 									Console.Error.WriteLine ("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
 									continue;
@@ -166,8 +166,8 @@ namespace UniversalWidgetToolkit
 				}
 			}
 
-			foreach (OptionProvider provider in listOptionProviders) {
-				Application.OptionProviders.Add (provider);
+			foreach (SettingsProvider provider in listOptionProviders) {
+				Application.SettingsProviders.Add (provider);
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace UniversalWidgetToolkit
 			UniqueName = sv;
 
 			// configure UWT-provided settings
-			Application.OptionProviders.Add(Application.DefaultOptionProvider);
+			Application.SettingsProviders.Add(Application.DefaultSettingsProvider);
 		}
 
 		// [DebuggerNonUserCode()]

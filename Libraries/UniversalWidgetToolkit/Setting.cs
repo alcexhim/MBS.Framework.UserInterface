@@ -22,48 +22,48 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class RangeOption : Option<double>
+	public class RangeSetting : Setting<double>
 	{
 		public double MinimumValue { get; set; } = 0.0;
 		public double MaximumValue { get; set; } = 0.0;
 
-		public RangeOption(string title, double defaultValue = 0.0, double minimumValue = 0.0, double maximumValue = 0.0) : base(title, defaultValue) {
+		public RangeSetting(string title, double defaultValue = 0.0, double minimumValue = 0.0, double maximumValue = 0.0) : base(title, defaultValue) {
 			MinimumValue = minimumValue;
 			MaximumValue = maximumValue;
 		}
 	}
-	public class GroupOption : Option
+	public class GroupSetting : Setting
 	{
-		public Option.OptionCollection Options { get; } = new Option.OptionCollection();
+		public Setting.SettingCollection Options { get; } = new Setting.SettingCollection();
 
-		public GroupOption(string title, Option[] options = null)
+		public GroupSetting(string title, Setting[] options = null)
 		{
 			Title = title;
 			if (options != null) {
-				foreach (Option option in options) {
+				foreach (Setting option in options) {
 					Options.Add (option);
 				}
 			}
 		}
 	}
-	public class BooleanOption : Option<bool>
+	public class BooleanSetting : Setting<bool>
 	{
-		public BooleanOption(string title, bool defaultValue = false) : base(title, defaultValue)
+		public BooleanSetting(string title, bool defaultValue = false) : base(title, defaultValue)
 		{
 		}
 	}
-	public abstract class ChoiceOption : TextOption
+	public abstract class ChoiceSetting : TextSetting
 	{
-		protected ChoiceOption(string title, string defaultValue) : base(title, defaultValue)
+		protected ChoiceSetting(string title, string defaultValue) : base(title, defaultValue)
 		{
 		}
 	}
-	public class ChoiceOption<T> : ChoiceOption
+	public class ChoiceSetting<T> : ChoiceSetting
 	{
-		public ChoiceOption(string title, ChoiceOptionValue defaultValue = null, ChoiceOptionValue[] values = null) : base (title, null)
+		public ChoiceSetting(string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base (title, null)
 		{
 			if (values == null) {
-				values = new ChoiceOptionValue[0];
+				values = new ChoiceSettingValue[0];
 			}
 			if (defaultValue != null) {
 				if (defaultValue.Value != null) {
@@ -73,40 +73,40 @@ namespace UniversalWidgetToolkit
 				}
 			}
 			
-			foreach (ChoiceOptionValue value in values) {
+			foreach (ChoiceSettingValue value in values) {
 				ValidValues.Add (value);
 			}
 		}
 
-		public class ChoiceOptionValue
+		public class ChoiceSettingValue
 		{
-			public class ChoiceOptionValueCollection
-				: System.Collections.ObjectModel.Collection<ChoiceOptionValue>
+			public class ChoiceSettingValueCollection
+				: System.Collections.ObjectModel.Collection<ChoiceSettingValue>
 			{
 			}
 
 			public string Title { get; set; } = String.Empty;
 			public T Value { get; set; } = default(T);
 
-			public ChoiceOptionValue(string title, T value) 
+			public ChoiceSettingValue(string title, T value) 
 			{
 				Title = title;
 				Value = value;
 			}
 		}
 
-		public ChoiceOptionValue.ChoiceOptionValueCollection ValidValues { get; } = new ChoiceOptionValue.ChoiceOptionValueCollection();
-		public ChoiceOptionValue SelectedValue { get; set; } = null;
+		public ChoiceSettingValue.ChoiceSettingValueCollection ValidValues { get; } = new ChoiceSettingValue.ChoiceSettingValueCollection();
+		public ChoiceSettingValue SelectedValue { get; set; } = null;
 
 		public bool RequireSelectionFromList { get; set; } = true;
 	}
-	public class TextOption : Option<string>
+	public class TextSetting : Setting<string>
 	{
-		public TextOption(string title, string defaultValue = "") : base(title, defaultValue)
+		public TextSetting(string title, string defaultValue = "") : base(title, defaultValue)
 		{
 		}
 	}
-	public abstract class Option<T> : Option
+	public abstract class Setting<T> : Setting
 	{
 		public T DefaultValue { get; set; } = default(T);
 		public T Value { get; set; } = default(T);
@@ -116,22 +116,22 @@ namespace UniversalWidgetToolkit
 			Value = DefaultValue;
 		}
 
-		public Option(string title, T defaultValue = default(T))
+		public Setting(string title, T defaultValue = default(T))
 		{
 			Title = title;
 			DefaultValue = defaultValue;
 		}
 	}
-	public class Option
+	public class Setting
 	{
 		public string Title { get; set; } = String.Empty;
 
-		public class OptionCollection
-			: System.Collections.ObjectModel.Collection<Option>
+		public class SettingCollection
+			: System.Collections.ObjectModel.Collection<Setting>
 		{
 		}
 
-		protected Option()
+		protected Setting()
 		{
 		}
 	}

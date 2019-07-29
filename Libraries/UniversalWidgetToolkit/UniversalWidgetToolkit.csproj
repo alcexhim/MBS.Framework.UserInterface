@@ -132,7 +132,6 @@
     <Compile Include="NativeImplementation.cs" />
     <Compile Include="Controls\Docking\DockingItemPlacement.cs" />
     <Compile Include="Controls\Docking\DockingItemBehavior.cs" />
-    <Compile Include="Dialogs\OptionsDialog.cs" />
     <Compile Include="Dialogs\PrintDialog.cs" />
     <Compile Include="NativeControl.cs" />
     <Compile Include="SystemControl.cs" />
@@ -188,11 +187,12 @@
     <Compile Include="ControlStyleClass.cs" />
     <Compile Include="CommandDisplayMode.cs" />
     <Compile Include="Controls\Ribbon\RibbonCommandItem.cs" />
-    <Compile Include="Option.cs" />
-    <Compile Include="OptionGroup.cs" />
-    <Compile Include="OptionProvider.cs" />
-    <Compile Include="DefaultOptionProvider.cs" />
     <Compile Include="Controls\StackSidebar.cs" />
+    <Compile Include="Dialogs\SettingsDialog.cs" />
+    <Compile Include="SettingsProvider.cs" />
+    <Compile Include="SettingsGroup.cs" />
+    <Compile Include="Setting.cs" />
+    <Compile Include="DefaultSettingsProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

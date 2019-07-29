@@ -1,5 +1,5 @@
 ﻿//
-//  DefaultOptionProvider.cs
+//  OptionProvider.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -22,23 +22,14 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class DefaultOptionProvider : OptionProvider
+	public class SettingsProvider
 	{
-		public DefaultOptionProvider ()
+		public class SettingsProviderCollection
+			: System.Collections.ObjectModel.Collection<SettingsProvider>
 		{
-			OptionGroups.Add("Application:Language", new Option[]
-			{
-			});
-			OptionGroups.Add("Application:Keyboard", new Option[]
-			{
-			});
-			OptionGroups.Add("Application:Theme", new Option[]
-			{
-			});
-			OptionGroups.Add("Plugins:Security", new Option[]
-			{
-			});
 		}
+
+		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
 	}
 }
 

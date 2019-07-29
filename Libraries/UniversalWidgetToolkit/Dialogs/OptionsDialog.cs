@@ -16,6 +16,8 @@ namespace UniversalWidgetToolkit.Dialogs
 		private ListView tv = null;
 		private SplitContainer vpaned = null;
 
+		private StackSidebar sidebar = null;
+
 		public OptionsDialog()
 		{
 			tmOptionGroups = new DefaultTreeModel (new Type[] { typeof(string) });
@@ -27,9 +29,23 @@ namespace UniversalWidgetToolkit.Dialogs
 
 			this.DefaultButton = this.Buttons[0];
 
+			this.Text = "Options";
+			this.Size = new Dimension2D(600, 400);
+
+			foreach (OptionProvider provider in Application.OptionProviders) {
+				this.OptionProviders.Add (provider);
+			}
+		}
+
+		private void CreateVSLayout()
+		{
 			vpaned = new SplitContainer(Orientation.Vertical);
 			vpaned.Panel1.Layout = new Layouts.BoxLayout(Orientation.Horizontal);
 			vpaned.Panel2.Layout = new Layouts.BoxLayout(Orientation.Horizontal);
+
+			vpaned.SplitterPosition = 240;
+
+			this.Controls.Add(vpaned, new BoxLayout.Constraints(true, true, 0, BoxLayout.PackType.Start));
 
 			tv = new ListView();
 			tv.Model = tmOptionGroups;
@@ -38,17 +54,15 @@ namespace UniversalWidgetToolkit.Dialogs
 			tv.SelectionChanged += tv_SelectionChanged;
 
 			vpaned.Panel1.Controls.Add(tv, new BoxLayout.Constraints(true, true));
-			vpaned.SplitterPosition = 240;
-
-			foreach (OptionProvider provider in Application.OptionProviders) {
-				this.OptionProviders.Add (provider);
-			}
-
-			this.Controls.Add(vpaned, new BoxLayout.Constraints(true, true, 0, BoxLayout.PackType.Start));
-
-			this.Text = "Options";
-			this.Size = new Dimension2D(600, 400);
 		}
+		private void CreateGNOMELayout()
+		{
+			sidebar = new StackSidebar ();
+			sidebar.Style.Classes.Add ("view");
+
+			Controls.Add (sidebar, new BoxLayout.Constraints (true, true));
+		}
+
 		/// <summary>
 		/// Contains the <see cref="OptionProvider" />s used to display options in this <see cref="OptionsDialog" />.
 		/// </summary>
@@ -60,6 +74,9 @@ namespace UniversalWidgetToolkit.Dialogs
 		{
 			base.OnCreating (e);
 
+			CreateVSLayout ();
+			// CreateGNOMELayout();
+
 			ctDefault.Visible = false;
 			
 			Label lblNoOptions = new Label ("The selected group has no options available to configure");
@@ -67,7 +84,10 @@ namespace UniversalWidgetToolkit.Dialogs
 			lblNoOptions.VerticalAlignment = VerticalAlignment.Middle;
 			ctDefault.Controls.Add(lblNoOptions, new BoxLayout.Constraints(true, true));
 
-			vpaned.Panel2.Controls.Add (ctDefault, new BoxLayout.Constraints(true, true));
+			if (sidebar == null) {
+				vpaned.Panel2.Controls.Add (ctDefault, new BoxLayout.Constraints (true, true));
+			} else {
+			}
 
 			System.Collections.Generic.List<OptionGroup> grps = new System.Collections.Generic.List<OptionGroup> ();
 			foreach (OptionProvider provider in OptionProviders) {
@@ -82,7 +102,16 @@ namespace UniversalWidgetToolkit.Dialogs
 						iRow++;
 					}
 					ct.Visible = false;
-					vpaned.Panel2.Controls.Add (ct, new BoxLayout.Constraints(true, true));
+
+					if (sidebar == null) {
+						vpaned.Panel2.Controls.Add (ct, new BoxLayout.Constraints (true, true));
+					} else {
+						if (grp.Path != null && grp.Path.Length > 0) {
+							ct.Name = String.Join (":", grp.Path);
+							ct.Text = grp.Path [grp.Path.Length - 1];
+							sidebar.Controls.Add (ct);
+						}
+					}
 
 					optionGroupContainers [grp] = ct;
 				}
@@ -101,7 +130,8 @@ namespace UniversalWidgetToolkit.Dialogs
 				TextOption o = (opt as TextOption);
 
 				Label lbl = new Label ();
-				lbl.Text = o.Title;
+				lbl.HorizontalAlignment = HorizontalAlignment.Left;
+				lbl.Text = o.Title + ": ";
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();
 				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
@@ -114,6 +144,7 @@ namespace UniversalWidgetToolkit.Dialogs
 				ChoiceOption o = (opt as ChoiceOption);
 
 				Label lbl = new Label ();
+				lbl.HorizontalAlignment = HorizontalAlignment.Left;
 				lbl.Text = o.Title;
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();

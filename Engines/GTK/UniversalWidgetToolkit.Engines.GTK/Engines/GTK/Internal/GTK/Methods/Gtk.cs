@@ -45,6 +45,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_events_pending();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_main_iteration();
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern uint gtk_get_major_version();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern uint gtk_get_minor_version();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern uint gtk_get_micro_version();
 	}
 }
 

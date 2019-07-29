@@ -21,6 +21,21 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private int _exitCode = 0;
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
 
+		private static Version _Version = null;
+		public static Version Version
+		{
+			get
+			{
+				if (_Version == null) {
+					uint major = Internal.GTK.Methods.Gtk.gtk_get_major_version ();
+					uint minor = Internal.GTK.Methods.Gtk.gtk_get_minor_version ();
+					uint micro = Internal.GTK.Methods.Gtk.gtk_get_micro_version ();
+					_Version = new Version ((int)major, (int)minor, (int)micro);
+				}
+				return _Version;
+			}
+		}
+
 		protected override bool WindowHasFocusInternal(Window window)
 		{
 			IntPtr hWindow = GetHandleForControl(window);

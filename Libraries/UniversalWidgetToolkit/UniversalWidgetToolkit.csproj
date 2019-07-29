@@ -192,6 +192,7 @@
     <Compile Include="OptionGroup.cs" />
     <Compile Include="OptionProvider.cs" />
     <Compile Include="DefaultOptionProvider.cs" />
+    <Compile Include="Controls\StackSidebar.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

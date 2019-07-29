@@ -150,6 +150,9 @@
     <Compile Include="Engines\GTK\Controls\RibbonControlImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkBin.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTearoffMenuItem.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStackSidebar.cs" />
+    <Compile Include="Engines\GTK\Controls\StackSidebarImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStack.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -20,15 +20,31 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Controls.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(CheckBox))]
-	public class CheckBoxImplementation : ButtonImplementation
+	public class CheckBoxImplementation : ButtonImplementation, ICheckBoxImplementation
 	{
 		public CheckBoxImplementation(Engine engine, Control control)
 			: base(engine, control)
 		{
+		}
+
+		public bool GetChecked()
+		{
+			CheckBox ctl = (Control as CheckBox);
+			IntPtr handle = Engine.GetHandleForControl(ctl);
+
+			return Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_get_active (handle);
+		}
+		public void SetChecked(bool value)
+		{
+			CheckBox ctl = (Control as CheckBox);
+			IntPtr handle = Engine.GetHandleForControl(ctl);
+
+			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active (handle, value);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -44,6 +60,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				handle = Internal.GTK.Methods.GtkCheckButton.gtk_check_button_new_with_label(ctl.Text);
 			}
+			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active (handle, ctl.Checked);
 			
 			return new GTKNativeControl(handle);
 		}

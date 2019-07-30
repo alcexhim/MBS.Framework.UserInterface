@@ -153,6 +153,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStackSidebar.cs" />
     <Compile Include="Engines\GTK\Controls\StackSidebarImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStack.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkToggleButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

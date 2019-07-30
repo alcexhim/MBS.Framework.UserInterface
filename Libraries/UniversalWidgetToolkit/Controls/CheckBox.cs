@@ -21,10 +21,31 @@
 using System;
 namespace UniversalWidgetToolkit.Controls
 {
+	namespace Native
+	{
+		public interface ICheckBoxImplementation
+		{
+			bool GetChecked();
+			void SetChecked(bool value);
+		}
+	}
 	public class CheckBox : SystemControl
 	{
 		public CheckBox()
 		{
+		}
+
+		private bool mvarChecked = false;
+		public bool Checked
+		{
+			get
+			{
+				Native.ICheckBoxImplementation impl = (ControlImplementation as Native.ICheckBoxImplementation);
+				if (impl != null)
+					mvarChecked = impl.GetChecked ();
+				return mvarChecked;
+			}
+			set { (ControlImplementation as Native.ICheckBoxImplementation)?.SetChecked (value); mvarChecked = value; }
 		}
 
 		public bool UseMnemonic { get; set; } = true;

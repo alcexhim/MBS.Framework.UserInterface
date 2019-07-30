@@ -101,6 +101,10 @@ namespace UniversalWidgetToolkit
 
 		private static void OnApplicationExited(EventArgs e)
 		{
+			foreach (SettingsProvider provider in Application.SettingsProviders) {
+				provider.SaveSettings ();
+			}
+
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
@@ -143,7 +147,7 @@ namespace UniversalWidgetToolkit
 				}
 
 				foreach (Type type in types) {
-					if (type.IsSubclassOf (typeof(SettingsProvider))) {
+					if (type.IsSubclassOf (typeof(SettingsProvider)) && !type.IsAbstract) {
 						if (!listOptionProviderTypeNames.Contains (type.FullName)) {
 							try {
 								SettingsProvider provider = (type.Assembly.CreateInstance (type.FullName) as SettingsProvider);
@@ -169,6 +173,7 @@ namespace UniversalWidgetToolkit
 			foreach (SettingsProvider provider in listOptionProviders) {
 				if (provider is ApplicationSettingsProvider) {
 					Application.SettingsProviders.Add (provider);
+					provider.LoadSettings ();
 				}
 			}
 		}
@@ -228,6 +233,72 @@ namespace UniversalWidgetToolkit
 		public static void DoEvents()
 		{
 			mvarEngine?.DoEvents();
+		}
+
+		public static T GetSetting<T>(string name, T defaultValue = default(T))
+		{
+			try 
+			{
+				object value = GetSetting(name);
+				if (value == null) {
+					return defaultValue;
+				}
+				return (T)value;
+			}
+			catch {
+				return defaultValue;
+			}
+		}
+		public static void SetSetting<T>(string name, T value)
+		{
+			SetSetting (name, (object)value);
+		}
+
+		public static SettingsGroup FindSettingGroup(string name, out string realName, out string groupPath)
+		{
+			string[] namePath = name.Split (new char[] { ':' });
+			realName = namePath [namePath.Length - 1];
+			groupPath = String.Join (":", namePath, 0, namePath.Length - 1);
+
+			foreach (SettingsProvider provider in SettingsProviders) {
+				foreach (SettingsGroup group in provider.SettingsGroups) {
+					string path = String.Join (":", group.Path);
+					path = path.Replace (' ', '_');
+					if (path.Equals (groupPath)) {
+						return group;
+					}
+				}
+			}
+
+			realName = null;
+			groupPath = null;
+			return null;
+		}
+
+		public static object GetSetting(string name)
+		{
+			string realName = null;
+			string groupPath = null;
+
+			SettingsGroup group = FindSettingGroup (name, out realName, out groupPath);
+			if (group == null)
+				return null;
+			if (group.Settings [realName] != null) {
+				return group.Settings [realName].GetValue ();
+			}
+			return null;
+		}
+		public static void SetSetting(string name, object value)
+		{
+			string realName = null;
+			string groupPath = null;
+
+			SettingsGroup group = FindSettingGroup (name, out realName, out groupPath);
+			if (group == null)
+				return;
+			if (group.Settings [realName] != null) {
+				group.Settings [realName].SetValue (value);
+			}
 		}
     }
 }

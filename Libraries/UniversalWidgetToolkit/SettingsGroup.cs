@@ -41,7 +41,7 @@ namespace UniversalWidgetToolkit
 				grp.Path = path;
 				if (options != null) {
 					foreach (Setting option in options) {
-						grp.Options.Add (option);
+						grp.Settings.Add (option);
 					}
 				}
 				Add (grp);
@@ -61,7 +61,7 @@ namespace UniversalWidgetToolkit
 			Path = paths;
 			foreach (Setting option in options)
 			{
-				Options.Add (option);
+				Settings.Add (option);
 			}
 		}
 		public SettingsGroup(string[] paths, Setting[] options)
@@ -69,7 +69,7 @@ namespace UniversalWidgetToolkit
 			Path = paths;
 			foreach (Setting option in options)
 			{
-				Options.Add (option);
+				Settings.Add (option);
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace UniversalWidgetToolkit
 				return null;
 			}
 		}
-		public Setting.SettingCollection Options { get; } = new Setting.SettingCollection();
+		public Setting.SettingCollection Settings { get; } = new Setting.SettingCollection();
 
 		public override string ToString ()
 		{

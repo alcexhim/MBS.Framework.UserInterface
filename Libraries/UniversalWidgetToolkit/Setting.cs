@@ -22,7 +22,7 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class RangeSetting : Setting<double>
+	public class RangeSetting : Setting
 	{
 		public double MinimumValue { get; set; } = 0.0;
 		public double MaximumValue { get; set; } = 0.0;
@@ -46,19 +46,22 @@ namespace UniversalWidgetToolkit
 			}
 		}
 	}
-	public class BooleanSetting : Setting<bool>
+	public class BooleanSetting : Setting
 	{
 		public BooleanSetting(string title, bool defaultValue = false) : base(title, defaultValue)
 		{
 		}
-	}
-	public abstract class ChoiceSetting : TextSetting
-	{
-		protected ChoiceSetting(string title, string defaultValue) : base(title, defaultValue)
+
+		public override void SetValue (object value)
 		{
+			bool val = false;
+			if (value != null) {
+				val = (value.ToString ().ToLower ().Equals ("true"));
+			}
+			base.SetValue (val);
 		}
 	}
-	public class ChoiceSetting<T> : ChoiceSetting
+	public class ChoiceSetting : Setting
 	{
 		public ChoiceSetting(string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base (title, null)
 		{
@@ -86,9 +89,9 @@ namespace UniversalWidgetToolkit
 			}
 
 			public string Title { get; set; } = String.Empty;
-			public T Value { get; set; } = default(T);
+			public object Value { get; set; } = null;
 
-			public ChoiceSettingValue(string title, T value) 
+			public ChoiceSettingValue(string title, object value) 
 			{
 				Title = title;
 				Value = value;
@@ -100,39 +103,63 @@ namespace UniversalWidgetToolkit
 
 		public bool RequireSelectionFromList { get; set; } = true;
 	}
-	public class TextSetting : Setting<string>
+	public class TextSetting : Setting
 	{
 		public TextSetting(string title, string defaultValue = "") : base(title, defaultValue)
 		{
 		}
 	}
-	public abstract class Setting<T> : Setting
+	public abstract class Setting
 	{
-		public T DefaultValue { get; set; } = default(T);
-		public T Value { get; set; } = default(T);
-
-		public void Reset()
-		{
-			Value = DefaultValue;
-		}
-
-		public Setting(string title, T defaultValue = default(T))
-		{
+		public Setting(string title, object defaultValue = null) {
 			Title = title;
 			DefaultValue = defaultValue;
+			mvarValue = defaultValue;
 		}
-	}
-	public class Setting
-	{
 		public string Title { get; set; } = String.Empty;
 
 		public class SettingCollection
 			: System.Collections.ObjectModel.Collection<Setting>
 		{
+
+			public Setting this[string name]
+			{
+				get
+				{
+					foreach (Setting item in this) {
+						if (item.Title.Replace("_", String.Empty).Replace (' ', '_').Equals (name)) { 
+							return item;
+						}
+					}
+					return null;
+				}
+			}
 		}
 
 		protected Setting()
 		{
+		}
+
+		public object DefaultValue { get; set; } = null;
+
+		private object mvarValue = null;
+
+		public virtual object GetValue() {
+			return mvarValue;
+		}
+		public virtual void SetValue(object value) {
+			mvarValue = value;
+		}
+		public T GetValue<T>(T defaultValue = default(T)) {
+			try {
+				return (T)GetValue();
+			}
+			catch {
+				return defaultValue;
+			}
+		}
+		public void SetValue<T>(T value) {
+			mvarValue = value;
 		}
 	}
 }

@@ -27,6 +27,8 @@ namespace UniversalWidgetToolkit.Dialogs
 			this.Buttons.Add(new Button(ButtonStockType.OK, DialogResult.OK));
 			this.Buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
 
+			this.Buttons[0].Click += cmdOK_Click;
+
 			this.DefaultButton = this.Buttons[0];
 
 			this.Text = "Options";
@@ -34,6 +36,29 @@ namespace UniversalWidgetToolkit.Dialogs
 
 			foreach (SettingsProvider provider in Application.SettingsProviders) {
 				this.SettingsProviders.Add (provider);
+			}
+		}
+
+		private void cmdOK_Click (object sender, EventArgs e)
+		{
+			if (sidebar == null) {
+				foreach (Container ct in vpaned.Panel2.Controls) {
+					foreach (Control ctl in ct.Controls) {
+						if (ctl is Label)
+							continue;
+						
+						Setting setting = ctl.GetExtraData<Setting> ("setting");
+						if (setting == null)
+							continue;
+
+						if (ctl is CheckBox) {
+							setting.SetValue ((ctl as CheckBox).Checked);
+						}
+						else if (ctl is TextBox) {
+							setting.SetValue ((ctl as TextBox).Text);
+						}
+					}
+				}
 			}
 		}
 
@@ -97,7 +122,7 @@ namespace UniversalWidgetToolkit.Dialogs
 					Container ct = new Container ();
 					ct.Layout = new GridLayout ();
 					int iRow = 0;
-					foreach (Setting opt in grp.Options) {
+					foreach (Setting opt in grp.Settings) {
 						LoadOptionIntoGroup(opt, ct, iRow);
 						iRow++;
 					}
@@ -134,11 +159,15 @@ namespace UniversalWidgetToolkit.Dialogs
 				lbl.Text = o.Title + ": ";
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();
+				txt.Text = o.GetValue<string> ();
+				txt.SetExtraData<Setting> ("setting", o);
 				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
 			} else if (opt is BooleanSetting) {
 				BooleanSetting o = (opt as BooleanSetting);
 				CheckBox chk = new CheckBox ();
 				chk.Text = o.Title;
+				chk.Checked = o.GetValue<bool>();
+				chk.SetExtraData<Setting> ("setting", o);
 				ct.Controls.Add (chk, new GridLayout.Constraints (iRow, 0, 1, 2));
 			} else if (opt is ChoiceSetting) {
 				ChoiceSetting o = (opt as ChoiceSetting);
@@ -148,6 +177,8 @@ namespace UniversalWidgetToolkit.Dialogs
 				lbl.Text = o.Title;
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
 				TextBox txt = new TextBox ();
+				txt.Text = o.GetValue<string> ();
+				txt.SetExtraData<Setting> ("setting", o);
 				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
 			} else if (opt is GroupSetting) {
 				GroupSetting o = (opt as GroupSetting);

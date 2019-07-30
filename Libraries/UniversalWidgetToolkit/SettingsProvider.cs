@@ -22,7 +22,7 @@ using System;
 
 namespace UniversalWidgetToolkit
 {
-	public class SettingsProvider
+	public abstract class SettingsProvider
 	{
 		public class SettingsProviderCollection
 			: System.Collections.ObjectModel.Collection<SettingsProvider>
@@ -30,6 +30,22 @@ namespace UniversalWidgetToolkit
 		}
 
 		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
+
+		protected virtual void LoadSettingsInternal()
+		{
+		}
+		public void LoadSettings()
+		{
+			LoadSettingsInternal ();
+		}
+
+		protected virtual void SaveSettingsInternal()
+		{
+		}
+		public void SaveSettings()
+		{
+			SaveSettingsInternal ();
+		}
 	}
 }
 

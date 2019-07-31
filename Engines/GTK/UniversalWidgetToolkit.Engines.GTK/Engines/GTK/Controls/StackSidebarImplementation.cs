@@ -41,7 +41,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hStack = Internal.GTK.Methods.GtkStack.gtk_stack_new ();
 			Internal.GTK.Methods.GtkStackSidebar.gtk_stack_sidebar_set_stack (hSidebar, hStack);
 
-			foreach (Control child in ctl.Controls) {
+			foreach (StackSidebarPanel panel in ctl.Items)
+			{
+				Control child = panel.Control;
+				if (child == null)
+					continue;
+				
 				bool created = Engine.CreateControl (child);
 				if (created) {
 					IntPtr hChild = Engine.GetHandleForControl (child);

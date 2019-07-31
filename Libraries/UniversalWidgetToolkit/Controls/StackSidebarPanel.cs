@@ -1,5 +1,5 @@
 ﻿//
-//  StackSidebar.cs
+//  StackSidebarPanel.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -22,9 +22,14 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
-	public class StackSidebar : Control
+	public class StackSidebarPanel
 	{
-		public StackSidebarPanel.StackSidebarPanelCollection Items { get; } = new StackSidebarPanel.StackSidebarPanelCollection();
+		public class StackSidebarPanelCollection
+			: System.Collections.ObjectModel.Collection<StackSidebarPanel>
+		{
+		}
+
+		public Control Control { get; set; } = null;
 	}
 }
 

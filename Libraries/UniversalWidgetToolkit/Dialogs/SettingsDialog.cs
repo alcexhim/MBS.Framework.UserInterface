@@ -44,21 +44,35 @@ namespace UniversalWidgetToolkit.Dialogs
 			if (sidebar == null) {
 				foreach (Container ct in vpaned.Panel2.Controls) {
 					foreach (Control ctl in ct.Controls) {
-						if (ctl is Label)
-							continue;
-						
-						Setting setting = ctl.GetExtraData<Setting> ("setting");
-						if (setting == null)
-							continue;
-
-						if (ctl is CheckBox) {
-							setting.SetValue ((ctl as CheckBox).Checked);
-						}
-						else if (ctl is TextBox) {
-							setting.SetValue ((ctl as TextBox).Text);
-						}
+						SaveSettingForControl (ctl);
 					}
 				}
+			} else {
+				foreach (StackSidebarPanel panel in sidebar.Items) {
+					Container ct = (panel.Control as Container);
+					if (ct == null)
+						continue;
+					
+					foreach (Control ctl in ct.Controls) {
+						SaveSettingForControl (ctl);
+					}
+				}
+			}
+		}
+
+		private void SaveSettingForControl(Control ctl)
+		{
+			if (ctl is Label)
+				return;
+
+			Setting setting = ctl.GetExtraData<Setting> ("setting");
+			if (setting == null)
+				return;
+
+			if (ctl is CheckBox) {
+				setting.SetValue ((ctl as CheckBox).Checked);
+			} else if (ctl is TextBox) {
+				setting.SetValue ((ctl as TextBox).Text);
 			}
 		}
 
@@ -99,8 +113,8 @@ namespace UniversalWidgetToolkit.Dialogs
 		{
 			base.OnCreating (e);
 
-			CreateVSLayout ();
-			// CreateGNOMELayout();
+			// CreateVSLayout ();
+			CreateGNOMELayout();
 
 			ctDefault.Visible = false;
 			
@@ -117,10 +131,14 @@ namespace UniversalWidgetToolkit.Dialogs
 			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup> ();
 			foreach (SettingsProvider provider in SettingsProviders) {
 				foreach (SettingsGroup grp in provider.SettingsGroups) {
+					if (grps.Contains (grp))
+						continue;
+					
 					grps.Add (grp);
 
 					Container ct = new Container ();
 					ct.Layout = new GridLayout ();
+					ct.Padding = new Padding (8);
 					int iRow = 0;
 					foreach (Setting opt in grp.Settings) {
 						LoadOptionIntoGroup(opt, ct, iRow);
@@ -132,9 +150,11 @@ namespace UniversalWidgetToolkit.Dialogs
 						vpaned.Panel2.Controls.Add (ct, new BoxLayout.Constraints (true, true));
 					} else {
 						if (grp.Path != null && grp.Path.Length > 0) {
+							StackSidebarPanel ctp = new StackSidebarPanel ();
 							ct.Name = String.Join (":", grp.Path);
 							ct.Text = grp.Path [grp.Path.Length - 1];
-							sidebar.Controls.Add (ct);
+							ctp.Control = ct;
+							sidebar.Items.Add (ctp);
 						}
 					}
 

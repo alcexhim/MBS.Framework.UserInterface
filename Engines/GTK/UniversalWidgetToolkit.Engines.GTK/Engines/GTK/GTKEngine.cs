@@ -13,6 +13,7 @@ using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.Input.Mouse;
 
 using MBS.Framework.Drawing;
+using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -901,6 +902,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 								} else {
 									hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new (true, 0);
 								}
+
 								int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
 								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing (hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
 							}
@@ -1124,6 +1126,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
 			}
 
+			// if (dialog.AutoUpgradeEnabled) {
+			Internal.GLib.Structures.Value val = new UniversalWidgetToolkit.Engines.GTK.Internal.GLib.Structures.Value(1);
+			// }
+
 			DialogResult result = DialogResult.None;
 
 			InvokeMethod(dialog, "OnCreated", EventArgs.Empty);
@@ -1205,13 +1211,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 						break;
 					}
 				}
-				Console.WriteLine("dialog has " + hButtons.Length.ToString() + " buttons");
 				for (int i = 0; i < hButtons.Length; i++)
 				{
-					Console.WriteLine("uwt: gtk: destroying dialog button at handle " + hButtons[i].ToString());
 					Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hButtons[i]);
 				}
-				Console.WriteLine("uwt: gtk: gtk_widget_destroy");
 				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 			}
 			return result;
@@ -1326,6 +1329,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				case PlatformID.Unix:
 				{
 					// buttons go cancel, then accept
+					// gnome3 : no longer display explicitcancel button in UI
 					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
 					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
 					break;
@@ -1505,10 +1509,20 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		#region Generic Dialog
 		private IntPtr Dialog_AddButton(IntPtr handle, Button button)
 		{
+			/*
+			if (button.ResponseValue == (int)DialogResult.Cancel)
+				return IntPtr.Zero;
+			*/
+
 			IntPtr buttonHandle = IntPtr.Zero;
 			if (!IsControlCreated(button)) CreateControl(button);
 
 			buttonHandle = GetHandleForControl(button);
+
+			if (button.ResponseValue == (int)DialogResult.OK) {
+				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (buttonHandle);
+				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleCtx, "suggested-action");
+			}
 
 			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);
 
@@ -1548,8 +1562,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 		private IntPtr Dialog_Create(Dialog dlg, IntPtr hParent)
 		{
-			IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
-			// Internal.GTK.Methods.Methods.gtk_window_set_title(handle, dlg.Text);
+			IntPtr handle = Internal.GObject.Methods.g_object_new (Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type (), "transient-for", hParent, "use-header-bar", 1, IntPtr.Zero);
+			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
+
+			IntPtr hText = Marshal.StringToHGlobalAuto (dlg.Text);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(handle, hText);
 
 			IntPtr hDialogContent = Internal.GTK.Methods.GtkDialog.gtk_dialog_get_content_area(handle);
 
@@ -1595,6 +1612,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					for (int i = buttons.Count - 1; i > -1; i--)
 					{
 						IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
+						if (hButton == IntPtr.Zero)
+							continue;
 						list.Add(hButton);
 					}
 					break;

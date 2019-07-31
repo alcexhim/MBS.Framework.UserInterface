@@ -25,6 +25,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 {
 	internal class GtkDialog
 	{
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_dialog_get_type();
 		[DllImport(Gtk.LIBRARY_FILENAME), Obsolete("Use gtk_dialog_new_with_buttons to properly set parent window")]
 		public static extern IntPtr gtk_dialog_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]

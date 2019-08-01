@@ -14,6 +14,7 @@ using UniversalWidgetToolkit.Input.Mouse;
 
 using MBS.Framework.Drawing;
 using System.Runtime.InteropServices;
+using UniversalWidgetToolkit.Controls.FileBrowser;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -1351,7 +1352,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return handle;
 		}
 
-		private IntPtr CreateGTKFileChooserFilter(FileDialogFileNameFilter filter)
+		internal static IntPtr CreateGTKFileChooserFilter(FileDialogFileNameFilter filter)
 		{
 			IntPtr hFileFilter = Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_new();
 			Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_set_name(hFileFilter, filter.Title);
@@ -1900,6 +1901,29 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				Internal.GTK.Methods.Gtk.gtk_main_iteration();
 			}
+		}
+
+		internal Internal.GTK.Constants.GtkFileChooserAction FileBrowserModeToGtkFileChooserAction(FileBrowserMode value)
+		{
+			switch (value) {
+				case FileBrowserMode.Open:
+				{
+					return Internal.GTK.Constants.GtkFileChooserAction.Open;
+				}
+				case FileBrowserMode.Save:
+				{
+					return Internal.GTK.Constants.GtkFileChooserAction.Save;
+				}
+				case FileBrowserMode.CreateFolder:
+				{
+					return Internal.GTK.Constants.GtkFileChooserAction.CreateFolder;
+				}
+				case FileBrowserMode.SelectFolder:
+				{
+					return Internal.GTK.Constants.GtkFileChooserAction.SelectFolder;
+				}
+			}
+			throw new ArgumentException ();
 		}
 
 		internal Internal.GTK.Constants.GtkPositionType RelativePositionToGtkPositionType(RelativePosition value)

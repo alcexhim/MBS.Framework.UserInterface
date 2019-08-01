@@ -195,6 +195,10 @@
     <Compile Include="DefaultSettingsProvider.cs" />
     <Compile Include="ApplicationSettingsProvider.cs" />
     <Compile Include="Controls\StackSidebarPanel.cs" />
+    <Compile Include="Controls\FileBrowser\FileBrowserControl.cs" />
+    <Compile Include="Controls\FileBrowser\FileBrowserMode.cs" />
+    <Compile Include="Controls\ComboBox.cs" />
+    <Compile Include="Controls\DropDownButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -228,5 +232,6 @@
     <Folder Include="DataFormats\Layout\Glade\" />
     <Folder Include="ObjectModels\Layout\" />
     <Folder Include="Controls\Ribbon\" />
+    <Folder Include="Controls\FileBrowser\" />
   </ItemGroup>
 </Project>

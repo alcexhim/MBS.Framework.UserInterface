@@ -154,6 +154,13 @@
     <Compile Include="Engines\GTK\Controls\StackSidebarImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStack.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkToggleButton.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFileChooserWidget.cs" />
+    <Compile Include="Engines\GTK\Controls\FileBrowserControlImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GDL\Delegates.cs" />
+    <Compile Include="Engines\GTK\Controls\ComboBoxImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkComboBox.cs" />
+    <Compile Include="Engines\GTK\Controls\DropDownButtonImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPopover.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

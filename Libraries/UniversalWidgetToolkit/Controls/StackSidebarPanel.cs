@@ -22,7 +22,7 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
-	public class StackSidebarPanel
+	public class StackSidebarPanel : ISupportsExtraData
 	{
 		public class StackSidebarPanelCollection
 			: System.Collections.ObjectModel.Collection<StackSidebarPanel>
@@ -30,6 +30,37 @@ namespace UniversalWidgetToolkit.Controls
 		}
 
 		public Control Control { get; set; } = null;
+
+		#region ISupportsExtraData members
+		private System.Collections.Generic.Dictionary<string, object> _ExtraData = new System.Collections.Generic.Dictionary<string, object>();
+		public T GetExtraData<T>(string key, T defaultValue = default(T))
+		{
+			if (_ExtraData.ContainsKey (key)) {
+				try {
+					return (T)_ExtraData [key];
+				} catch {
+					return defaultValue;
+				}
+			}
+			return defaultValue;
+		}
+		public void SetExtraData<T>(string key, T value)
+		{
+			_ExtraData [key] = value;
+		}
+		public object GetExtraData(string key, object defaultValue = null)
+		{
+			if (_ExtraData.ContainsKey (key)) {
+				return _ExtraData [key];
+			} else {
+				return defaultValue;
+			}
+		}
+		public void SetExtraData(string key, object value)
+		{
+			_ExtraData [key] = value;
+		}
+		#endregion
 	}
 }
 

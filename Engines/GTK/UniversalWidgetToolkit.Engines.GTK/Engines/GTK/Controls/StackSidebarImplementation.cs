@@ -22,11 +22,12 @@ using System;
 using UniversalWidgetToolkit.Controls;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UniversalWidgetToolkit.Controls.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(StackSidebar))]
-	public class StackSidebarImplementation : GTKNativeImplementation
+	public class StackSidebarImplementation : GTKNativeImplementation, IStackSidebarNativeImplementation
 	{
 		public StackSidebarImplementation(Engine engine, Control control) : base(engine, control)
 		{
@@ -41,6 +42,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hStack = Internal.GTK.Methods.GtkStack.gtk_stack_new ();
 			Internal.GTK.Methods.GtkStackSidebar.gtk_stack_sidebar_set_stack (hSidebar, hStack);
 
+			IntPtr hFirstChild = IntPtr.Zero;
+
 			foreach (StackSidebarPanel panel in ctl.Items)
 			{
 				Control child = panel.Control;
@@ -53,8 +56,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					// IntPtr hName = Marshal.StringToHGlobalAuto (child.Name);
 					// IntPtr hTitle = Marshal.StringToHGlobalAuto (child.Text);
 					Internal.GTK.Methods.GtkStack.gtk_stack_add_titled (hStack, hChild, child.Name, child.Text);
+
+					if (hFirstChild == IntPtr.Zero)
+						hFirstChild = hChild;
 				}
 			}
+
+			Internal.GTK.Methods.GtkStack.gtk_stack_set_visible_child (hStack, hFirstChild);
 
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start (handle, hSidebar, false, false, 0);
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start (handle, hStack, true, true, 0);
@@ -64,6 +72,36 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				new KeyValuePair<string, IntPtr>("Sidebar", hSidebar),
 				new KeyValuePair<string, IntPtr>("Stack", hStack)
 			});
+		}
+
+		public StackSidebarPanel GetSelectedPanel()
+		{
+			StackSidebar ctl = (Control as StackSidebar);
+			if (ctl == null)
+				return null;
+			
+			IntPtr hStack = (Handle as GTKNativeControl).GetNamedHandle ("Stack");
+			IntPtr hChild = Internal.GTK.Methods.GtkStack.gtk_stack_get_visible_child (hStack);
+
+			Control c = Engine.GetControlByHandle (hChild);
+			foreach (StackSidebarPanel pnl in ctl.Items) {
+				if (pnl.Control == c)
+					return pnl;
+			}
+			return null;
+		}
+		public void SetSelectedPanel(StackSidebarPanel panel)
+		{
+			StackSidebar ctl = (Control as StackSidebar);
+			if (ctl == null)
+				return;
+
+			if (!ctl.Items.Contains (panel))
+				return;
+
+			IntPtr hStack = (Handle as GTKNativeControl).GetNamedHandle ("Stack");
+			IntPtr hChild = Engine.GetHandleForControl (panel.Control);
+			Internal.GTK.Methods.GtkStack.gtk_stack_set_visible_child (hStack, hChild);
 		}
 
 		protected override void OnCreated (EventArgs e)

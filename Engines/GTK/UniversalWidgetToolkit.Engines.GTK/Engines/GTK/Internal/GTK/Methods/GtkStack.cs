@@ -29,6 +29,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_stack_new ();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_stack_add_titled (IntPtr /*GtkStack*/ stack, IntPtr /*GtkWidget*/ child, string name, string title);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkWidget*/ gtk_stack_get_visible_child(IntPtr /*GtkStack*/ stack);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_stack_set_visible_child(IntPtr /*GtkStack*/ stack, IntPtr /*GtkWidget*/ child);
 	}
 }
 

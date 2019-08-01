@@ -22,9 +22,34 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
+	namespace Native
+	{
+		public interface IStackSidebarNativeImplementation
+		{
+			StackSidebarPanel GetSelectedPanel();
+			void SetSelectedPanel(StackSidebarPanel panel);
+		}
+	}
 	public class StackSidebar : Control
 	{
 		public StackSidebarPanel.StackSidebarPanelCollection Items { get; } = new StackSidebarPanel.StackSidebarPanelCollection();
+
+		private StackSidebarPanel mvarSelectedPanel = null;
+		public StackSidebarPanel SelectedPanel
+		{
+			get {
+				Native.IStackSidebarNativeImplementation impl = (ControlImplementation as Native.IStackSidebarNativeImplementation);
+				if (impl != null)
+					mvarSelectedPanel = impl.GetSelectedPanel ();
+				return mvarSelectedPanel;
+			}
+			set {
+				Native.IStackSidebarNativeImplementation impl = (ControlImplementation as Native.IStackSidebarNativeImplementation);
+				if (impl != null)
+					impl.SetSelectedPanel (value);
+				mvarSelectedPanel = value;
+			}
+		}
 	}
 }
 

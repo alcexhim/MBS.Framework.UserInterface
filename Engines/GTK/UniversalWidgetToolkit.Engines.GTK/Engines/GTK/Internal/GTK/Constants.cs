@@ -434,6 +434,37 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			Top,
 			Bottom
 		}
+
+		/// <summary>
+		/// Focus movement types.
+		/// </summary>
+		public enum GtkDirectionType
+		{
+			/// <summary>
+			/// Move forward.
+			/// </summary>
+			TabForward,
+			/// <summary>
+			/// Move backward.
+			/// </summary>
+			TabBackward,
+			/// <summary>
+			/// Move up.
+			/// </summary>
+			Up,
+			/// <summary>
+			/// Move down.
+			/// </summary>
+			Down,
+			/// <summary>
+			/// Move left.
+			/// </summary>
+			Left,
+			/// <summary>
+			/// Move right.
+			/// </summary>
+			Right
+		}
 	}
 }
 

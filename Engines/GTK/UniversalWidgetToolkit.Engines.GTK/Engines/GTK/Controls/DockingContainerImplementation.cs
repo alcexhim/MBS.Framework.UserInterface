@@ -1,5 +1,6 @@
 ﻿using System;
 using UniversalWidgetToolkit.Controls.Docking;
+using System.Collections.Generic;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
@@ -9,6 +10,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		public DockingContainerImplementation(Engine engine, DockingContainer control)
 			: base(engine, control)
 		{
+			DockingItem_Selected_Handler = new Internal.GObject.Delegates.GCallback (DockingItem_Selected);
+			DockingItem_MoveFocusChild_Handler = new Internal.GDL.Delegates.GdlMoveFocusChildCallback (DockingItem_MoveFocusChild);
 		}
 
 		public void ClearDockingItems()
@@ -33,7 +36,25 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, chdhclm);
 			}
 			Internal.GDL.Methods.gdl_dock_add_item(handle, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
+
+			RegisterDockingItemHandle (item, childHandle);
 		}
+
+
+		private Dictionary<IntPtr, DockingItem> _DockingItemsForHandle = new Dictionary<IntPtr, DockingItem>();
+		private Dictionary<DockingItem, IntPtr> _HandlesForDockingItem = new Dictionary<DockingItem, IntPtr>();
+		private void RegisterDockingItemHandle (DockingItem item, IntPtr handle)
+		{
+			_DockingItemsForHandle [handle] = item;
+			_HandlesForDockingItem [item] = handle;
+		}
+		private DockingItem DockingItemForHandle(IntPtr handle) {
+			if (_DockingItemsForHandle.ContainsKey (handle)) {
+				return _DockingItemsForHandle [handle];
+			}
+			return null;
+		}
+
 		public void InsertDockingItem(DockingItem item, int index)
 		{
 			InsertDockingItem2(mvarDockHandle, item, index);
@@ -41,7 +62,22 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		public void RemoveDockingItem(DockingItem item)
 		{
 		}
+
+		private DockingItem mvarCurrentItem = null;
+
 		public void SetDockingItem(int index, DockingItem item)
+		{
+		}
+
+		public DockingItem GetCurrentItem()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			if (handle == IntPtr.Zero)
+				return null;
+			
+			return mvarCurrentItem;
+		}
+		public void SetCurrentItem(DockingItem item)
 		{
 		}
 
@@ -73,7 +109,23 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private IntPtr CreateDockingItem(DockingItem item)
 		{
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_item_new(item.Title, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
+			Internal.GObject.Methods.g_signal_connect (handle, "selected", DockingItem_Selected_Handler);
+			Internal.GObject.Methods.g_signal_connect (handle, "move-focus-child", DockingItem_MoveFocusChild_Handler);
 			return handle;
+		}
+
+		private Internal.GObject.Delegates.GCallback DockingItem_Selected_Handler = null;
+		private Internal.GDL.Delegates.GdlMoveFocusChildCallback DockingItem_MoveFocusChild_Handler = null;
+		private void DockingItem_Selected(IntPtr hDockItem, IntPtr user_data)
+		{
+			DockingItem item = DockingItemForHandle (hDockItem);
+			// HACK HACK HACK !!!
+			mvarCurrentItem = item;
+
+			InvokeMethod (Control, "OnSelectionChanged", EventArgs.Empty);
+		}
+		private void DockingItem_MoveFocusChild(IntPtr hDockItem, Internal.GTK.Constants.GtkDirectionType dir, IntPtr user_data)
+		{
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

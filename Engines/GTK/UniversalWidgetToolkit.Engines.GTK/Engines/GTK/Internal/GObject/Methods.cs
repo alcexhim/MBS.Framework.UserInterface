@@ -166,6 +166,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 		}
 #endregion
 
+		#region GdlMoveFocusChildCallback
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, GDL.Delegates.GdlMoveFocusChildCallback c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, GDL.Delegates.GdlMoveFocusChildCallback c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
+		}
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, GDL.Delegates.GdlMoveFocusChildCallback c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
+		}
+		#endregion
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
 		[DllImport(LIBRARY_FILENAME)]

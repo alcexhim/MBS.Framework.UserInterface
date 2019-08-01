@@ -161,6 +161,7 @@ namespace UniversalWidgetToolkit
 		private ControlImplementation FindNativeImplementationForControl(Control control)
 		{
 			Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
+			List<Type> possibleHandlers = new List<Type> ();
 			foreach (Type t in ts)
 			{
 				if (t.IsSubclassOf(typeof(ControlImplementation)))
@@ -173,7 +174,7 @@ namespace UniversalWidgetToolkit
 
 						if (control.GetType() == att.ControlType || (!att.Exact && control.GetType().IsSubclassOf(att.ControlType)))
 						{
-							return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as ControlImplementation);
+							possibleHandlers.Add(t);
 						}
 					}
 					else
@@ -182,7 +183,29 @@ namespace UniversalWidgetToolkit
 					}
 				}
 			}
+
+			if (possibleHandlers.Count > 0) {
+				if (possibleHandlers.Count > 1) {
+					// holy shit this actually works
+					possibleHandlers.Sort (runtimeTypeComparer);
+				}
+				Type t = possibleHandlers [0];
+				return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as ControlImplementation);
+			}
 			return null;
+		}
+
+		private _runtimeTypeComparer runtimeTypeComparer = new _runtimeTypeComparer();
+		private class _runtimeTypeComparer : IComparer<Type>
+		{
+			public int Compare(Type left, Type right)
+			{
+				if (left.IsSubclassOf (right))
+					return -1;
+				if (right.IsSubclassOf (left))
+					return 1;
+				return 0;
+			}
 		}
 
 		protected abstract Vector2D ClientToScreenCoordinatesInternal(Vector2D point);

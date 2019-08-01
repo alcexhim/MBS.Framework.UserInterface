@@ -172,7 +172,7 @@ namespace UniversalWidgetToolkit
 						ControlImplementationAttribute att = (atts[0] as ControlImplementationAttribute);
 						if (att == null) continue;
 
-						if (control.GetType() == att.ControlType || (!att.Exact && control.GetType().IsSubclassOf(att.ControlType)))
+						if (control.GetType() == att.ControlType || control.GetType().IsSubclassOf(att.ControlType))
 						{
 							possibleHandlers.Add(t);
 						}
@@ -182,7 +182,7 @@ namespace UniversalWidgetToolkit
 						continue;
 					}
 				}
-			}
+ 			}
 
 			if (possibleHandlers.Count > 0) {
 				if (possibleHandlers.Count > 1) {

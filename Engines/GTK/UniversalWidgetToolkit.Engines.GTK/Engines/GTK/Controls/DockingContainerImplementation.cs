@@ -37,6 +37,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			Internal.GDL.Methods.gdl_dock_add_item(handle, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
 
+			// HACK: until we can figure out how to properly detect when a doc tab is switched
+			mvarCurrentItem = item;
+
 			RegisterDockingItemHandle (item, childHandle);
 		}
 

@@ -60,13 +60,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
 					// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 
-					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, true);
+					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal) {
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand (ctlHandle, true);
+					} else {
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand (ctlHandle, false);
 					}
-					if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal)
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, true);
+					if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal) {
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand (ctlHandle, true);
+					} else {
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, false);
 					}
 				}
 			}

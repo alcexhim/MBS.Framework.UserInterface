@@ -33,6 +33,12 @@ namespace UniversalWidgetToolkit.Controls
 
 	public class DropDownButton : Button
 	{
+		public event EventHandler DropDownClosed;
+		protected virtual void OnDropDownClosed(EventArgs e)
+		{
+			DropDownClosed?.Invoke (this, e);
+		}
+
 		public Container Container { get; set; } = null;
 
 		public void OpenDropDown()

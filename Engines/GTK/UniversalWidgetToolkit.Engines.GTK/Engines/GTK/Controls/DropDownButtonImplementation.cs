@@ -44,6 +44,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkPopover.gtk_popover_popdown (hPopOver);
 		}
 
+		protected internal virtual void OnDropDownClosed(EventArgs e)
+		{
+			InvokeMethod(Control, "OnDropDownClosed", e);
+		}
+
 		protected override void OnClick (EventArgs e)
 		{
 			base.OnClick (e);
@@ -73,7 +78,18 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 			}
 
+			Internal.GObject.Methods.g_signal_connect (handle, "closed", new Internal.GObject.Delegates.GCallbackV1I (ctl_Closed));
+
 			Console.WriteLine ("gtk_popover_set_relative_to({0}, {1})", hPopOver, (Handle as GTKNativeControl).Handle);
+		}
+
+		private void ctl_Closed(IntPtr handle)
+		{
+			DropDownButton ctl = (Engine.GetControlByHandle (handle) as DropDownButton);
+			if (ctl == null)
+				return;
+
+			InvokeMethod (ctl.ControlImplementation, "OnDropDownClosed", EventArgs.Empty);
 		}
 	}
 }

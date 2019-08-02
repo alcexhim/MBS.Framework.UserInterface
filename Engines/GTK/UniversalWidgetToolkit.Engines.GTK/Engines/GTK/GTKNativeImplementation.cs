@@ -68,5 +68,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
 			}
 		}
+
+		protected override void SetFocusInternal ()
+		{
+			IntPtr hCtrl = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_grab_focus (hCtrl);
+		}
 	}
 }

@@ -152,6 +152,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 			}
 		}
+
+		protected override void SetFocusInternal ()
+		{
+			tbs.Focus ();
+		}
 	}
 }
 

@@ -193,6 +193,12 @@ namespace UniversalWidgetToolkit
 		{
 			Control.OnLostFocus (e);
 		}
+
+		protected abstract void SetFocusInternal();
+		public void SetFocus ()
+		{
+			SetFocusInternal ();
+		}
 	}
 	public class ControlImplementationAttribute : Attribute
 	{

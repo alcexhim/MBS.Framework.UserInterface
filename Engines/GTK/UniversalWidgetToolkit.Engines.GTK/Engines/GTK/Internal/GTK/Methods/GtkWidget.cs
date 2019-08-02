@@ -100,6 +100,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_widget_get_style_context (IntPtr view);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_grab_focus(IntPtr /*GtkWidget*/ widget);
 	}
 }
 

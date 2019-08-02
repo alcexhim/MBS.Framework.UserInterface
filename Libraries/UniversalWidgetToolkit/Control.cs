@@ -201,6 +201,10 @@ namespace UniversalWidgetToolkit
 			Application.Engine.DestroyControl(this);
 		}
 
+		public void Focus()
+		{
+			ControlImplementation?.SetFocus ();
+		}
 
 
 		#region Drag-n-Drop

@@ -87,11 +87,12 @@ namespace UniversalWidgetToolkit
 
 		public NativeControl CreateControl(Control control)
 		{
+			control.ControlImplementation = this;
+
 			NativeControl handle = CreateControlInternal(control);
 			if (handle == null) throw new InvalidOperationException();
 
 			mvarHandle = handle;
-			control.ControlImplementation = this;
 			AfterCreateControl();
 			return handle;
 		}

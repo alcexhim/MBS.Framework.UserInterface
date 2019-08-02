@@ -458,6 +458,26 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 		}
 
+		private bool gc_focus_in_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		{
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null) return false;
+			if (!ctl.IsCreated) return false;
+
+			InvokeMethod (ctl.ControlImplementation, "OnGotFocus", EventArgs.Empty);
+			return false;
+		}
+
+		private bool gc_focus_out_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		{
+			Control ctl = GetControlByHandle(widget);
+			if (ctl == null) return false;
+			if (!ctl.IsCreated) return false;
+
+			InvokeMethod (ctl.ControlImplementation, "OnLostFocus", EventArgs.Empty);
+			return false;
+		}
+
 		private bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
 			// we cannot pass this param explicitly
@@ -695,6 +715,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_press_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_release_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
+		private Internal.GTK.Delegates.GtkWidgetEvent gc_focus_in_event_handler = null;
+		private Internal.GTK.Delegates.GtkWidgetEvent gc_focus_out_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_press_event_handler = null;
 		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_release_event_handler = null;
 
@@ -711,6 +733,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			gc_button_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_press_event);
 			gc_button_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_release_event);
 			gc_motion_notify_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_motion_notify_event);
+			gc_focus_in_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_in_event);
+			gc_focus_out_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_out_event);
 			gc_key_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_press_event);
 			gc_key_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_release_event);
 			gc_drag_begin_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_begin);
@@ -726,6 +750,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "motion_notify_event", gc_motion_notify_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_press_event", gc_button_press_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_release_event", gc_button_release_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "focus_in_event", gc_focus_in_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "focus_out_event", gc_focus_out_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_press_event", gc_key_press_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_release_event", gc_key_release_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "realize", gc_realize_handler);

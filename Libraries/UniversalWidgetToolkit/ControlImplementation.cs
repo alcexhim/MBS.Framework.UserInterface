@@ -184,6 +184,15 @@ namespace UniversalWidgetToolkit
 		{
 			Control.OnShown(e);
 		}
+
+		protected internal virtual void OnGotFocus(EventArgs e)
+		{
+			Control.OnGotFocus (e);
+		}
+		protected internal virtual void OnLostFocus(EventArgs e)
+		{
+			Control.OnLostFocus (e);
+		}
 	}
 	public class ControlImplementationAttribute : Attribute
 	{

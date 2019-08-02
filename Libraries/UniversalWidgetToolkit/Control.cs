@@ -332,6 +332,17 @@ namespace UniversalWidgetToolkit
 			Shown?.Invoke(this, e);
 		}
 
+		public event EventHandler GotFocus;
+		protected internal virtual void OnGotFocus(EventArgs e)
+		{
+			GotFocus?.Invoke(this, e);
+		}
+		public event EventHandler LostFocus;
+		protected internal virtual void OnLostFocus(EventArgs e)
+		{
+			LostFocus?.Invoke(this, e);
+		}
+
 		public event ResizeEventHandler Resizing;
 		protected internal virtual void OnResizing(ResizeEventArgs e)
 		{

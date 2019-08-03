@@ -676,23 +676,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			return (handle as GTKNativeControl);
 		}
-		protected override void SetControlVisibilityInternal(Control control, bool visible)
-		{
-			if (IsControlDisposed(control)) CreateControl(control);
-			if (IsControlDisposed(control))
-				throw new ObjectDisposedException(control.GetType().FullName);
-
-			IntPtr handle = GetHandleForControl(control);
-
-			if (visible)
-			{
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(handle);
-			}
-			else
-			{
-				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(handle);
-			}
-		}
 
 		protected override bool IsControlDisposedInternal(Control control)
 		{

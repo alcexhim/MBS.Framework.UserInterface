@@ -271,13 +271,6 @@ namespace UniversalWidgetToolkit
 			return true;
 		}
 
-		protected abstract void SetControlVisibilityInternal(Control control, bool visible);
-		internal void SetControlVisibility(Control control, bool visible)
-		{
-			SetControlVisibilityInternal(control, visible);
-		}
-
-
 		protected abstract void DestroyControlInternal(Control control);
 		/// <summary>
 		/// Destroys the handle associated with the specified <see cref="Control" />.

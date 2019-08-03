@@ -28,180 +28,182 @@ namespace UniversalWidgetToolkit
 {
 	public abstract class ControlImplementation
 	{
-		protected void InvokeMethod(object obj, string meth, params object[] parms)
+		protected void InvokeMethod (object obj, string meth, params object [] parms)
 		{
-			if (obj == null)
-			{
-				Console.WriteLine("NativeImplementation::InvokeMethod: obj is null");
+			if (obj == null) {
+				Console.WriteLine ("NativeImplementation::InvokeMethod: obj is null");
 				return;
 			}
 
-			Type t = obj.GetType();
-			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-			if (mi != null)
-			{
-				mi.Invoke(obj, parms);
-			}
-			else
-			{
-				Console.WriteLine("NativeImplementation::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
+			Type t = obj.GetType ();
+			System.Reflection.MethodInfo mi = t.GetMethod (meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			if (mi != null) {
+				mi.Invoke (obj, parms);
+			} else {
+				Console.WriteLine ("NativeImplementation::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
 			}
 		}
 
 		private Control mvarControl = null;
-		public Control Control {  get { return mvarControl; } }
+		public Control Control { get { return mvarControl; } }
 
 		private Engine mvarEngine = null;
-		public Engine Engine {  get { return mvarEngine; } }
+		public Engine Engine { get { return mvarEngine; } }
 
-		public ControlImplementation(Engine engine, Control control)
+		public ControlImplementation (Engine engine, Control control)
 		{
 			mvarEngine = engine;
 			mvarControl = control;
 		}
 
-		private Dictionary<Control, string> _controlText = new Dictionary<Control, string>();
-		protected virtual string GetControlTextInternal(Control control)
+		private Dictionary<Control, string> _controlText = new Dictionary<Control, string> ();
+		protected virtual string GetControlTextInternal (Control control)
 		{
-			if (_controlText.ContainsKey(control))
-				return _controlText[control];
+			if (_controlText.ContainsKey (control))
+				return _controlText [control];
 			return null;
 		}
-		public string GetControlText(Control control)
+		public string GetControlText (Control control)
 		{
-			return GetControlTextInternal(control);
+			return GetControlTextInternal (control);
 		}
-		protected virtual void SetControlTextInternal(Control control, string text)
+		protected virtual void SetControlTextInternal (Control control, string text)
 		{
-			_controlText[control] = text;
+			_controlText [control] = text;
 		}
-		public void SetControlText(Control control, string text)
+		public void SetControlText (Control control, string text)
 		{
-			SetControlTextInternal(control, text);
+			SetControlTextInternal (control, text);
 		}
 
-		protected abstract NativeControl CreateControlInternal(Control control);
+		protected abstract NativeControl CreateControlInternal (Control control);
 
 		private NativeControl mvarHandle = null;
-		public NativeControl Handle {  get { return mvarHandle; } }
+		public NativeControl Handle { get { return mvarHandle; } }
 
-		public NativeControl CreateControl(Control control)
+		public NativeControl CreateControl (Control control)
 		{
-			NativeControl handle = CreateControlInternal(control);
-			if (handle == null) throw new InvalidOperationException();
+			NativeControl handle = CreateControlInternal (control);
+			if (handle == null) throw new InvalidOperationException ();
 
 			control.ControlImplementation = this;
 
 			mvarHandle = handle;
-			AfterCreateControl();
+			AfterCreateControl ();
 			return handle;
 		}
 
-		protected virtual void AfterCreateControl()
+		protected virtual void AfterCreateControl ()
 		{
 
 		}
 
-		protected internal virtual void OnCreating(EventArgs e)
+		protected internal virtual void OnCreating (EventArgs e)
 		{
 		}
-		protected internal virtual void OnCreated(EventArgs e)
+		protected internal virtual void OnCreated (EventArgs e)
 		{
 		}
 
-		protected abstract void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
-		public void RegisterDragSource(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		public void SetControlVisibility (bool visible)
 		{
-			RegisterDragSourceInternal(control, targets, actions, buttons, modifierKeys);
+			SetControlVisibilityInternal (visible);
+		}
+		protected abstract void SetControlVisibilityInternal (bool visible);
+
+		protected abstract void RegisterDragSourceInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
+		public void RegisterDragSource (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		{
+			RegisterDragSourceInternal (control, targets, actions, buttons, modifierKeys);
 		}
 
-		protected abstract void RegisterDropTargetInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
-		public void RegisterDropTarget(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		protected abstract void RegisterDropTargetInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
+		public void RegisterDropTarget (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			RegisterDropTargetInternal(control, targets, actions, buttons, modifierKeys);
+			RegisterDropTargetInternal (control, targets, actions, buttons, modifierKeys);
 		}
 
-		protected internal virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
+		protected internal virtual void OnDragDropDataRequest (DragDropDataRequestEventArgs e)
 		{
-			Control.OnDragDropDataRequest(e);
+			Control.OnDragDropDataRequest (e);
 		}
-		protected internal virtual void OnDragBegin(DragEventArgs e)
+		protected internal virtual void OnDragBegin (DragEventArgs e)
 		{
-			Control.OnDragBegin(e);
+			Control.OnDragBegin (e);
 		}
-		protected internal virtual void OnDragDataDelete(EventArgs e)
+		protected internal virtual void OnDragDataDelete (EventArgs e)
 		{
-			Control.OnDragDataDelete(e);
-		}
-
-		protected internal virtual void OnKeyDown(KeyEventArgs e)
-		{
-			Control.OnKeyDown(e);
-		}
-		protected internal virtual void OnKeyUp(KeyEventArgs e)
-		{
-			Control.OnKeyUp(e);
+			Control.OnDragDataDelete (e);
 		}
 
-		protected internal virtual void OnClick(EventArgs e)
+		protected internal virtual void OnKeyDown (KeyEventArgs e)
 		{
-			Control.OnClick(e);
+			Control.OnKeyDown (e);
 		}
-		protected internal virtual void OnMouseDown(MouseEventArgs e)
+		protected internal virtual void OnKeyUp (KeyEventArgs e)
 		{
-			Control.OnMouseDown(e);
-		}
-		protected internal virtual void OnMouseMove(MouseEventArgs e)
-		{
-			Control.OnMouseMove(e);
-		}
-		protected internal virtual void OnMouseUp(MouseEventArgs e)
-		{
-			Control.OnMouseUp(e);
-		}
-		protected internal virtual void OnMouseDoubleClick(MouseEventArgs e)
-		{
-			Control.OnMouseDoubleClick(e);
+			Control.OnKeyUp (e);
 		}
 
-		protected internal virtual void OnRealize(EventArgs e)
+		protected internal virtual void OnClick (EventArgs e)
 		{
-			Control.OnRealize(e);
+			Control.OnClick (e);
 		}
-		protected internal virtual void OnUnrealize(EventArgs e)
+		protected internal virtual void OnMouseDown (MouseEventArgs e)
 		{
-			Control.OnUnrealize(e);
+			Control.OnMouseDown (e);
+		}
+		protected internal virtual void OnMouseMove (MouseEventArgs e)
+		{
+			Control.OnMouseMove (e);
+		}
+		protected internal virtual void OnMouseUp (MouseEventArgs e)
+		{
+			Control.OnMouseUp (e);
+		}
+		protected internal virtual void OnMouseDoubleClick (MouseEventArgs e)
+		{
+			Control.OnMouseDoubleClick (e);
 		}
 
-		protected internal virtual void OnMapping(EventArgs e)
+		protected internal virtual void OnRealize (EventArgs e)
 		{
-			Control.OnMapping(e);
+			Control.OnRealize (e);
 		}
-		protected internal virtual void OnMapped(EventArgs e)
+		protected internal virtual void OnUnrealize (EventArgs e)
 		{
-			Control.OnMapped(e);
-		}
-		protected internal virtual void OnShown(EventArgs e)
-		{
-			Control.OnShown(e);
+			Control.OnUnrealize (e);
 		}
 
-		protected internal virtual void OnGotFocus(EventArgs e)
+		protected internal virtual void OnMapping (EventArgs e)
+		{
+			Control.OnMapping (e);
+		}
+		protected internal virtual void OnMapped (EventArgs e)
+		{
+			Control.OnMapped (e);
+		}
+		protected internal virtual void OnShown (EventArgs e)
+		{
+			Control.OnShown (e);
+		}
+
+		protected internal virtual void OnGotFocus (EventArgs e)
 		{
 			Control.OnGotFocus (e);
 		}
-		protected internal virtual void OnLostFocus(EventArgs e)
+		protected internal virtual void OnLostFocus (EventArgs e)
 		{
 			Control.OnLostFocus (e);
 		}
 
-		protected abstract void SetFocusInternal();
+		protected abstract void SetFocusInternal ();
 		public void SetFocus ()
 		{
 			SetFocusInternal ();
 		}
 
-		protected virtual void UpdateControlLayout()
+		protected virtual void UpdateControlLayout ()
 		{
 		}
 	}
@@ -215,10 +217,10 @@ namespace UniversalWidgetToolkit
 		/// <value><c>true</c> if exact match required; otherwise, <c>false</c>.</value>
 		public bool Exact { get; set; } = false;
 
-		public ControlImplementationAttribute(Type controlType, bool exact = false)
+		public ControlImplementationAttribute (Type controlType, bool exact = false)
 		{
-			if (!controlType.IsSubclassOf(typeof(Control)))
-				throw new InvalidOperationException();
+			if (!controlType.IsSubclassOf (typeof (Control)))
+				throw new InvalidOperationException ();
 
 			ControlType = controlType;
 			Exact = exact;

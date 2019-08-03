@@ -97,7 +97,19 @@ namespace UniversalWidgetToolkit
 		public Dimension2D Size { get { return mvarSize; } set { mvarSize = value; } }
 
 		private ControlImplementation mvarControlImplementation = null;
-		public ControlImplementation ControlImplementation { get { return mvarControlImplementation; } internal set { mvarControlImplementation = value; } }
+		public ControlImplementation ControlImplementation
+		{
+			get
+			{
+				/*
+				if (!IsCreated && !Application.Engine.IsControlCreating (this)) {
+					Application.Engine.CreateControl (this);
+				}
+				*/
+				return mvarControlImplementation;
+			}
+			internal set { mvarControlImplementation = value; }
+		}
 
 		public bool IsCreated { get { return Application.Engine.IsControlCreated(this); } }
 
@@ -180,7 +192,8 @@ namespace UniversalWidgetToolkit
 			get { return mvarVisible; }
 			set
 			{
-				Application.Engine.SetControlVisibility(this, value);
+				mvarVisible = value;
+				(this.ControlImplementation)?.SetControlVisibility (value);
 			}
 		}
 

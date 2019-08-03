@@ -203,7 +203,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(Engine.GetHandleForControl(control), hTitle);
 		}
 
-		[System.Diagnostics.DebuggerNonUserCode()]
+		protected internal virtual void OnClosed(EventArgs e)
+		{
+			InvokeMethod((Control as Window), "OnClosed", e);
+		}
+
+		// [System.Diagnostics.DebuggerNonUserCode()]
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Window window = (control as Window);

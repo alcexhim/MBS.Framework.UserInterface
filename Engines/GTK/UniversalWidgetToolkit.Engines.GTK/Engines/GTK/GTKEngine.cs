@@ -590,6 +590,52 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return ee;
 		}
 
+		protected override void UpdateControlLayoutInternal (Control control)
+		{
+			IntPtr hCtrl = GetHandleForControl (control);
+			if (control.Parent != null) {
+				Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
+				if (constraints != null) {
+					if (control.Parent.Layout is Layouts.BoxLayout) {
+						Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
+						if (cs != null) {
+							Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
+							switch (cs.PackType) {
+							case Layouts.BoxLayout.PackType.Start: {
+									packType = Internal.GTK.Constants.GtkPackType.Start;
+									break;
+								}
+							case Layouts.BoxLayout.PackType.End: {
+									packType = Internal.GTK.Constants.GtkPackType.End;
+									break;
+								}
+							}
+
+							IntPtr hLayout = IntPtr.Zero;
+							if (handlesByLayout.ContainsKey (control.Parent.Layout)) {
+								hLayout = handlesByLayout [control.Parent.Layout];
+							} else {
+								hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new (true, 0);
+							}
+
+							int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
+							Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing (hLayout, hCtrl, cs.Expand, cs.Fill, padding, packType);
+						}
+					}
+				}
+			}
+
+			if (control.MinimumSize != Dimension2D.Empty) {
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request (hCtrl, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
+			}
+
+			try {
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_focus_on_click (hCtrl, control.FocusOnClick);
+			} catch (EntryPointNotFoundException ex) {
+				// we must be using an old version of Gtk
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control != null);
@@ -619,44 +665,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
 
-				if (control.Parent != null && control.Parent.Layout != null) {
-					Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
-					if (constraints != null) {
-						if (control.Parent.Layout is Layouts.BoxLayout) {
-							Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
-							if (cs != null) {
-								Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
-								switch (cs.PackType) {
-								case Layouts.BoxLayout.PackType.Start:
-									{
-										packType = Internal.GTK.Constants.GtkPackType.Start;
-										break;
-									}
-								case Layouts.BoxLayout.PackType.End:
-									{
-										packType = Internal.GTK.Constants.GtkPackType.End;
-										break;
-									}
-								}
-
-								IntPtr hLayout = IntPtr.Zero;
-								if (handlesByLayout.ContainsKey (control.Parent.Layout)) {
-									hLayout = handlesByLayout [control.Parent.Layout];
-								} else {
-									hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new (true, 0);
-								}
-
-								int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
-								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing (hLayout, (handle as GTKNativeControl).Handle, cs.Expand, cs.Fill, padding, packType);
-							}
-						}
-					}
-				}
+				UpdateControlLayout (control);
 
 				RegisterControlHandle (control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
 				UpdateControlProperties (control);
 
-				InvokeMethod (control.ControlImplementation, "UpdateControlLayout");
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
+				Application.DoEvents ();
 			}
 
 			return (handle as GTKNativeControl);

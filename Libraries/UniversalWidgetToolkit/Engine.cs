@@ -356,6 +356,15 @@ namespace UniversalWidgetToolkit
 			InvalidateControlInternal(control, x, y, width, height);
 		}
 
+		protected abstract void UpdateControlLayoutInternal (Control control);
+		public void UpdateControlLayout (Control control)
+		{
+			if (!IsControlCreated (control))
+				return;
+
+			UpdateControlLayoutInternal (control);
+		}
+
 		private bool inUpdateControlProperties = false;
 
 		protected abstract void UpdateControlPropertiesInternal(Control control, IntPtr handle);

@@ -20,9 +20,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			IntPtr ctlHandle = Engine.GetHandleForControl(ctl);
 
-			if (layout is Layouts.BoxLayout)
+			if (layout is BoxLayout)
 			{
-				Layouts.BoxLayout box = (layout as Layouts.BoxLayout);
+				BoxLayout box = (layout as BoxLayout);
 				Internal.GTK.Methods.GtkBox.gtk_box_set_spacing(hContainer, box.Spacing);
 				Internal.GTK.Methods.GtkBox.gtk_box_set_homogeneous(hContainer, box.Homogeneous);
 

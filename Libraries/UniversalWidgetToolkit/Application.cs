@@ -108,7 +108,7 @@ namespace UniversalWidgetToolkit
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
-        [DebuggerNonUserCode()]
+        // [DebuggerNonUserCode()]
 		public static void Initialize()
 		{
 			if (mvarEngine == null)

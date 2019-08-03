@@ -26,7 +26,7 @@ namespace UniversalWidgetToolkit
 			{
 				foreach (Control ctl in this)
 				{
-					ctl.mvarParent = null;
+					ctl.Parent = null;
 				}
 				base.ClearItems();
 				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
@@ -34,20 +34,20 @@ namespace UniversalWidgetToolkit
 			protected override void InsertItem(int index, Control item)
 			{
 				base.InsertItem(index, item);
-				item.mvarParent = _parent;
+				item.Parent = _parent;
 				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
 			protected override void RemoveItem(int index)
 			{
-				this[index].mvarParent = null;
+				this[index].Parent = null;
 				base.RemoveItem(index);
 				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
 			protected override void SetItem(int index, Control item)
 			{
-				this[index].mvarParent = null;
+				this[index].Parent = null;
 				base.SetItem(index, item);
-				item.mvarParent = _parent;
+				item.Parent = _parent;
 				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
 
@@ -71,11 +71,11 @@ namespace UniversalWidgetToolkit
 				{
 					return (this as Window).Bounds;
 				}
-				else if (mvarParent == null)
+				else if (Parent == null)
 				{
 					return Rectangle.Empty;
 				}
-				return mvarParent.Layout.GetControlBounds(this);
+				return Parent.Layout.GetControlBounds(this);
 			}
 		}
 		
@@ -143,7 +143,13 @@ namespace UniversalWidgetToolkit
 		public System.Collections.Generic.Dictionary<string, object> Attributes { get; } = new Dictionary<string, object>();
 
 		private Container mvarParent = null;
-		public Container Parent { get { return mvarParent; } }
+		public Container Parent {
+			get { return mvarParent; }
+			private set {
+				mvarParent = value;
+				Application.Engine.UpdateControlLayout (this);
+			}
+		}
 
 		public bool FocusOnClick { get; set; } = true;
 
@@ -357,7 +363,7 @@ namespace UniversalWidgetToolkit
 		{
 			get
 			{
-				Control ctl = mvarParent;
+				Control ctl = Parent;
 				while (ctl.Parent != null)
 				{
 					ctl = ctl.Parent;

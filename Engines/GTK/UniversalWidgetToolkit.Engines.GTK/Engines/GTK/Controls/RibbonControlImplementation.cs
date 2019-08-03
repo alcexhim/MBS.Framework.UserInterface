@@ -45,6 +45,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			throw new NotImplementedException ();
 		}
 
+		protected override void SetControlVisibilityInternal (bool visible)
+		{
+			if (tbs == null)
+				return;
+			tbs.Visible = visible;
+		}
+
 		private TabContainer tbs = null;
 		protected override NativeControl CreateControlInternal (Control control)
 		{

@@ -34,6 +34,16 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			InitializeEventHandlers();
 		}
 
+		protected override void SetControlVisibilityInternal (bool visible)
+		{
+			IntPtr handle = Engine.GetHandleForControl(Control);
+			if (visible) {
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle); // should 'all' be here?
+			} else {
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide (handle);
+			}
+		}
+
 		internal virtual void RegisterDragSourceGTK(IntPtr handle, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
 		{
 			Internal.GTK.Methods.GtkDragSource.gtk_drag_source_set(handle, modifiers, targets, targets.Length, actions);
@@ -267,9 +277,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			catch (EntryPointNotFoundException ex) {
 				// we must be using an old version of Gtk
 			}
-
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);
-			Application.DoEvents ();
 		}
 
 

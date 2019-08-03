@@ -245,11 +245,22 @@ namespace UniversalWidgetToolkit
 			SetControlEnabledInternal(control, value);
 		}
 
+		private Dictionary<Control, bool> _control_creating = new Dictionary<Control, bool>();
+		public bool IsControlCreating(Control control) {
+			if (_control_creating.ContainsKey (control)) {
+				return _control_creating [control];
+			}
+			return false;
+		}
+
 		public bool CreateControl(Control control)
 		{
 			InvokeMethod(control, "OnCreating", EventArgs.Empty);
 
+			_control_creating [control] = true;
 			NativeControl result = CreateControlInternal(control);
+			_control_creating [control] = false;
+
 			if (result == null)
 				return false;
 
@@ -265,6 +276,7 @@ namespace UniversalWidgetToolkit
 		{
 			SetControlVisibilityInternal(control, visible);
 		}
+
 
 		protected abstract void DestroyControlInternal(Control control);
 		/// <summary>

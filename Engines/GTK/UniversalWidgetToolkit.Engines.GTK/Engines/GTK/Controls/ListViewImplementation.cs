@@ -392,7 +392,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 
 				
-				if (e.Index == -1 && e.Count == 1)
+				if (e.Index == -1 && e.Count == 1 && e.Item != null)
 				{
 					// we are adding a new row to the selected collection
 					Internal.GTK.Structures.GtkTreeIter iter = _GtkTreeIterForTreeModelRow[e.Item];

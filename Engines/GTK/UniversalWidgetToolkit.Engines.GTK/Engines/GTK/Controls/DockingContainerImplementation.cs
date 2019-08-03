@@ -134,7 +134,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			DockingContainer dock = (control as DockingContainer);
-			IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal, 0);
+			IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new (Internal.GTK.Constants.GtkOrientation.Horizontal, false, 0);
 
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_new();
 

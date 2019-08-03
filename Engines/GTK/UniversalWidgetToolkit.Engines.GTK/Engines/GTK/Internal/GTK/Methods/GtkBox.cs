@@ -33,10 +33,6 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME_V3, EntryPoint = "gtk_box_new")]
 		private static extern IntPtr gtk_box_new_v3(Constants.GtkOrientation orientation, int spacing);
 
-		public static IntPtr gtk_box_new(Constants.GtkOrientation orientation, int spacing = 0)
-		{
-			return gtk_box_new(orientation, true, spacing);
-		}
 		public static IntPtr gtk_box_new(Constants.GtkOrientation orientation, bool homogenous = true, int spacing = 0, bool useGtk2API = false)
 		{
 			if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V2 || useGtk2API)

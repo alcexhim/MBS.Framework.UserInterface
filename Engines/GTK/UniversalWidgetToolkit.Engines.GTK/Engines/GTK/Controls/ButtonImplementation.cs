@@ -110,12 +110,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public RelativePosition GetImagePosition()
 		{
+			if (Handle == null) return RelativePosition.Default;
+
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Constants.GtkPositionType value = Internal.GTK.Methods.GtkButton.gtk_button_get_image_position (handle);
 			return (Engine as GTKEngine).GtkPositionTypeToRelativePosition(value);
 		}
 		public void SetImagePosition(RelativePosition value)
 		{
+			if (Handle == null) return;
+
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Constants.GtkPositionType value2 = (Engine as GTKEngine).RelativePositionToGtkPositionType(value);
 			Internal.GTK.Methods.GtkButton.gtk_button_set_image_position (handle, value2);

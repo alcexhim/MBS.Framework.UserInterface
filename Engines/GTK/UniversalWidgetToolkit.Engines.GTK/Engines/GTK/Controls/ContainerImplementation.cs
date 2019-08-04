@@ -47,13 +47,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			else if (layout is Layouts.AbsoluteLayout)
 			{
-				Layouts.AbsoluteLayout.Constraints constraints = (Layouts.AbsoluteLayout.Constraints)layout.GetControlConstraints(ctl);
+				Layouts.AbsoluteLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.AbsoluteLayout.Constraints);
 				if (constraints == null) constraints = new Layouts.AbsoluteLayout.Constraints(0, 0, 0, 0);
 				Internal.GTK.Methods.GtkFixed.gtk_fixed_put(hContainer, ctlHandle, constraints.X, constraints.Y);
 			}
 			else if (layout is Layouts.GridLayout)
 			{
-				Layouts.GridLayout.Constraints constraints = (Layouts.GridLayout.Constraints)layout.GetControlConstraints(ctl);
+				Layouts.GridLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.GridLayout.Constraints);
 				if (constraints != null)
 				{
 					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.

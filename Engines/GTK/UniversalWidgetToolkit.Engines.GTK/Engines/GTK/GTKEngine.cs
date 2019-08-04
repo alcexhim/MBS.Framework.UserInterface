@@ -661,6 +661,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				UpdateControlLayout (control);
 				UpdateControlProperties (control);
+
+				if (control.Visible) {
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
+				}
 			}
 
 			return (handle as GTKNativeControl);

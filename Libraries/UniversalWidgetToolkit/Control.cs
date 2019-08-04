@@ -196,6 +196,7 @@ namespace UniversalWidgetToolkit
 			set
 			{
 				mvarVisible = value;
+				if (!IsCreated) Application.Engine.CreateControl (this);
 				(this.ControlImplementation)?.SetControlVisibility (value);
 			}
 		}

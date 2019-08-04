@@ -53,43 +53,26 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			base.OnClick (e);
 
-			IntPtr hPopOver = (Handle as GTKNativeControl).GetNamedHandle ("popover");
-			Internal.GTK.Methods.GtkPopover.gtk_popover_popup (hPopOver);
+			if (popup != null)
+				popup.Show ();
 		}
 
-		protected override void OnCreated (EventArgs e)
+		private PopupWindow popup = null;
+
+		protected override void AfterCreateControl ()
 		{
-			base.OnCreated (e);
+			base.AfterCreateControl ();
+
+			popup = new PopupWindow ();
 
 			DropDownButton ctl = (Control as DropDownButton);
 			if (ctl == null)
 				return;
 
-			GTKNativeControl nc = (Handle as GTKNativeControl);
-			IntPtr handle = nc.Handle;
+			popup.Owner = ctl;
+			Engine.CreateControl (popup);
 
-			IntPtr hPopOver = Internal.GTK.Methods.GtkPopover.gtk_popover_new (handle);
-			nc.SetNamedHandle ("popover", hPopOver);
-
-			if (ctl.Container != null) {
-				if (Engine.CreateControl (ctl.Container)) {
-					IntPtr hContainer = Engine.GetHandleForControl (ctl.Container);
-					Internal.GTK.Methods.GtkContainer.gtk_container_add (hPopOver, hContainer);
-				}
-			}
-
-			Internal.GObject.Methods.g_signal_connect (handle, "closed", new Internal.GObject.Delegates.GCallbackV1I (ctl_Closed));
-
-			Console.WriteLine ("gtk_popover_set_relative_to({0}, {1})", hPopOver, (Handle as GTKNativeControl).Handle);
-		}
-
-		private void ctl_Closed(IntPtr handle)
-		{
-			DropDownButton ctl = (Engine.GetControlByHandle (handle) as DropDownButton);
-			if (ctl == null)
-				return;
-
-			InvokeMethod (ctl.ControlImplementation, "OnDropDownClosed", EventArgs.Empty);
+			popup.Controls.Add (ctl.Container);
 		}
 	}
 }

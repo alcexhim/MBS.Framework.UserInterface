@@ -91,7 +91,6 @@ namespace UniversalWidgetToolkit
 			if (handle == null) throw new InvalidOperationException ();
 
 			mvarHandle = handle;
-			AfterCreateControl ();
 			return handle;
 		}
 

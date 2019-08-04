@@ -33,6 +33,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			SyntaxTextBox ctl = (control as SyntaxTextBox);
+			IntPtr handle = IntPtr.Zero;
 
 			IntPtr hLanguageManager = Internal.GTK.Methods.GtkSourceLanguageManager.gtk_source_language_manager_get_default ();
 
@@ -40,21 +41,35 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr hBuffer = Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_new (IntPtr.Zero);
 			Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_set_language (hBuffer, hLanguage);
-			IntPtr handle = Internal.GTK.Methods.GtkSourceView.gtk_source_view_new_with_buffer (hBuffer);
+			handle = Internal.GTK.Methods.GtkSourceView.gtk_source_view_new_with_buffer (hBuffer);
 
 			// setup monospace
 			IntPtr hError = IntPtr.Zero;
 			IntPtr /*GtkCssProvider*/ provider = Internal.GTK.Methods.GtkCss.gtk_css_provider_new ();
-			string data = "textview { font-family: Monospace; font-size: 26pt; }";
+			string data = "textview { font-family: Monospace; }";
 			Internal.GTK.Methods.GtkCss.gtk_css_provider_load_from_data (provider, data, data.Length, ref hError);
 
 			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (handle);
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_provider (hStyleContext, provider, Internal.GTK.Constants.GtkStyleProviderPriority.Application);
 			Internal.GObject.Methods.g_object_unref (provider);
-
+			
 			Console.WriteLine ("provider {0}, hStyleContext {1}", provider, hStyleContext);
 
+			popup = new PopupWindow ();
+			Engine.CreateControl (popup);
+
 			return new GTKNativeControl (handle);
+		}
+
+		private PopupWindow popup = null;
+
+		protected override void OnKeyDown (UniversalWidgetToolkit.Input.Keyboard.KeyEventArgs e)
+		{
+			base.OnKeyDown (e);
+
+			if (!popup.Visible) {
+				popup.Show ();
+			}
 		}
 	}
 }

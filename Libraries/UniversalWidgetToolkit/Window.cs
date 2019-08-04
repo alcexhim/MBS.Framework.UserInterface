@@ -23,6 +23,8 @@ namespace UniversalWidgetToolkit
 		private RibbonControl mvarRibbon = new RibbonControl ();
 		public RibbonControl Ribbon { get { return mvarRibbon; } }
 
+		public bool Modal { get; set; } = false;
+
 		internal protected override void OnCreating (EventArgs e)
 		{
 			switch (CommandDisplayMode) {

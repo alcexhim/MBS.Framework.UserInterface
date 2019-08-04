@@ -199,6 +199,7 @@
     <Compile Include="Controls\FileBrowser\FileBrowserMode.cs" />
     <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\DropDownButton.cs" />
+    <Compile Include="PopupWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

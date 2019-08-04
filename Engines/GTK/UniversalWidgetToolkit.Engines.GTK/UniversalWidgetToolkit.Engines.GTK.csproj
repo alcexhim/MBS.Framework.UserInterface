@@ -161,6 +161,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkComboBox.cs" />
     <Compile Include="Engines\GTK\Controls\DropDownButtonImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPopover.cs" />
+    <Compile Include="Engines\GTK\Controls\PopupWindowImplementation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

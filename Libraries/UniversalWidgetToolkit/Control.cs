@@ -177,6 +177,9 @@ namespace UniversalWidgetToolkit
 						return mvarText;
 					}
 				}
+
+				if (text == null)
+					text = String.Empty;
 				return text;
 			}
 			set

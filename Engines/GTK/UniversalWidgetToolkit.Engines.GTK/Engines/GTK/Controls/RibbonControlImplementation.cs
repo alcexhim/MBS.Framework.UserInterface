@@ -96,6 +96,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 							btn.FocusOnClick = false;
 							btn.AlwaysShowImage = true; // .DisplayStyle = ButtonDisplayStyle.ImageAndText;
 							btn.BorderStyle = ButtonBorderStyle.None;
+							btn.Click += btn_Click;
+							btn.SetExtraData<RibbonCommandItemButton> ("rcib", tsb);
 
 							if (tsb.IsImportant) {
 								btn.ImagePosition = RelativePosition.Top;
@@ -133,6 +135,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			return new CustomNativeControl(tbs);
 		}
+
+		void btn_Click (object sender, EventArgs e)
+		{
+			Button btn = (sender as Button);
+			RibbonCommandItemButton rcib = btn.GetExtraData<RibbonCommandItemButton> ("rcib");
+			if (rcib == null) return;
+
+			Application.ExecuteCommand (rcib.CommandID);
+		}
+
 
 		private bool mvarExpanded = true;
 		public bool GetExpanded()

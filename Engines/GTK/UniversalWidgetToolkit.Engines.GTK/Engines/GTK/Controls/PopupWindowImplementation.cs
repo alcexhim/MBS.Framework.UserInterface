@@ -60,8 +60,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				if (!ctl1.IsCreated) continue;
 
 				IntPtr hCtrl1 = Engine.GetHandleForControl (ctl1);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hCtrl1);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
 			}
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_modal (handle, ctl.Modal);
@@ -75,8 +75,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			PopupWindow ctl = (Control as PopupWindow);
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 
-			IntPtr hCtrlParent = Engine.GetHandleForControl (ctl.Owner);
-			Internal.GTK.Methods.GtkPopover.gtk_popover_set_relative_to (handle, hCtrlParent);
+			if (ctl.Owner != null) {
+				IntPtr hCtrlParent = Engine.GetHandleForControl (ctl.Owner);
+				Internal.GTK.Methods.GtkPopover.gtk_popover_set_relative_to (handle, hCtrlParent);
+			}
 
 			if (visible) {
 				Internal.GTK.Methods.GtkPopover.gtk_popover_popup (handle);

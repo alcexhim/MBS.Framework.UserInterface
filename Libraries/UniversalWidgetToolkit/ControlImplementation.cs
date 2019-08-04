@@ -65,6 +65,8 @@ namespace UniversalWidgetToolkit
 		}
 		public string GetControlText (Control control)
 		{
+			if (!Application.Engine.IsControlCreated (control))
+				return null;
 			return GetControlTextInternal (control);
 		}
 		protected virtual void SetControlTextInternal (Control control, string text)
@@ -83,10 +85,10 @@ namespace UniversalWidgetToolkit
 
 		public NativeControl CreateControl (Control control)
 		{
+			control.ControlImplementation = this;
+
 			NativeControl handle = CreateControlInternal (control);
 			if (handle == null) throw new InvalidOperationException ();
-
-			control.ControlImplementation = this;
 
 			mvarHandle = handle;
 			AfterCreateControl ();

@@ -21,10 +21,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public string GetIconName()
 		{
+			if (Handle == null) return String.Empty;
 			return Internal.GTK.Methods.GtkWindow.gtk_window_get_icon_name ((Handle as GTKNativeControl).Handle);
 		}
 		public void SetIconName(string value)
 		{
+			if (Handle == null) return;
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name ((Handle as GTKNativeControl).Handle, value);
 		}
 

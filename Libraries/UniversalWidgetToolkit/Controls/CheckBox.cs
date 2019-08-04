@@ -40,12 +40,22 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			get
 			{
+				if (!Application.Engine.IsControlCreated (this)) {
+					return mvarChecked;
+				}
+
 				Native.ICheckBoxImplementation impl = (ControlImplementation as Native.ICheckBoxImplementation);
 				if (impl != null)
 					mvarChecked = impl.GetChecked ();
 				return mvarChecked;
 			}
-			set { (ControlImplementation as Native.ICheckBoxImplementation)?.SetChecked (value); mvarChecked = value; }
+			set
+			{
+				if (IsCreated) {
+					(ControlImplementation as Native.ICheckBoxImplementation)?.SetChecked (value);
+				}
+				mvarChecked = value;
+			}
 		}
 
 		public bool UseMnemonic { get; set; } = true;

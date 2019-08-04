@@ -59,10 +59,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private PopupWindow popup = null;
 
-		protected override void AfterCreateControl ()
+		protected override void OnCreated (EventArgs e)
 		{
-			base.AfterCreateControl ();
-
+			base.OnCreated (e);
 			popup = new PopupWindow ();
 
 			DropDownButton ctl = (Control as DropDownButton);

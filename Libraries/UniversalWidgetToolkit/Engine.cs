@@ -227,9 +227,9 @@ namespace UniversalWidgetToolkit
 
 			if (controlCreator != null)
 			{
-				controlCreator.OnCreating (EventArgs.Empty);
+				// controlCreator.OnCreating (EventArgs.Empty);
 				handle = controlCreator.CreateControl(control);
-				controlCreator.OnCreated (EventArgs.Empty);
+				// controlCreator.OnCreated (EventArgs.Empty);
 			}
 			return handle;
 		}

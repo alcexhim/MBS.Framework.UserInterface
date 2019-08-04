@@ -625,15 +625,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				}
 			}
 
-			if (control.MinimumSize != Dimension2D.Empty) {
-				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request (hCtrl, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
-			}
-
-			try {
-				Internal.GTK.Methods.GtkWidget.gtk_widget_set_focus_on_click (hCtrl, control.FocusOnClick);
-			} catch (EntryPointNotFoundException ex) {
-				// we must be using an old version of Gtk
-			}
+			control.ControlImplementation?.UpdateControlLayout ();
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -669,9 +661,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				UpdateControlLayout (control);
 				UpdateControlProperties (control);
-
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
-				Application.DoEvents ();
 			}
 
 			return (handle as GTKNativeControl);

@@ -38,7 +38,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			IntPtr handle = Engine.GetHandleForControl(Control);
 			if (visible) {
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle); // should 'all' be here?
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show (handle); // should 'all' be here? guess it doesn't matter
 			} else {
 				Internal.GTK.Methods.GtkWidget.gtk_widget_hide (handle);
 			}
@@ -263,7 +263,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return ee.Cancel;
 		}
 
-		protected override void UpdateControlLayout()
+		protected override void UpdateControlLayoutInternal()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 

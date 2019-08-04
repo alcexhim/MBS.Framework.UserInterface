@@ -45,7 +45,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr hCtrlParent = IntPtr.Zero;
 			if (ctl.Owner != null) {
-				hCtrlParent = Engine.GetHandleForControl (ctl.Owner);
+				if (ctl.Owner.ControlImplementation.Handle is GTKNativeControl) {
+					hCtrlParent = (ctl.Owner.ControlImplementation.Handle as GTKNativeControl).Handle;
+				} else {
+				}
 			}
 			IntPtr handle = Internal.GTK.Methods.GtkPopover.gtk_popover_new (hCtrlParent);
 
@@ -58,6 +61,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 				IntPtr hCtrl1 = Engine.GetHandleForControl (ctl1);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hCtrl1);
 			}
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_modal (handle, ctl.Modal);

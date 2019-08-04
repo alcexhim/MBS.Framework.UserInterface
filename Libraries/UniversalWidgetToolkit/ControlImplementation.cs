@@ -86,11 +86,13 @@ namespace UniversalWidgetToolkit
 		public NativeControl CreateControl (Control control)
 		{
 			control.ControlImplementation = this;
+			OnCreating (EventArgs.Empty);
 
 			NativeControl handle = CreateControlInternal (control);
 			if (handle == null) throw new InvalidOperationException ();
 
 			mvarHandle = handle;
+			OnCreated (EventArgs.Empty);
 			return handle;
 		}
 
@@ -204,7 +206,11 @@ namespace UniversalWidgetToolkit
 			SetFocusInternal ();
 		}
 
-		protected virtual void UpdateControlLayout ()
+		public void UpdateControlLayout ()
+		{
+			UpdateControlLayoutInternal ();
+		}
+		protected virtual void UpdateControlLayoutInternal ()
 		{
 		}
 	}

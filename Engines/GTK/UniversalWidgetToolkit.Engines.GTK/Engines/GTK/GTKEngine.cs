@@ -593,7 +593,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override void UpdateControlLayoutInternal (Control control)
 		{
 			IntPtr hCtrl = GetHandleForControl (control);
-			if (control.Parent != null) {
+			if (control.Parent != null && control.Parent.Layout != null) {
 				Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
 				if (constraints != null) {
 					if (control.Parent.Layout is Layouts.BoxLayout) {
@@ -665,9 +665,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
 
-				UpdateControlLayout (control);
-
 				RegisterControlHandle (control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
+
+				UpdateControlLayout (control);
 				UpdateControlProperties (control);
 
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);

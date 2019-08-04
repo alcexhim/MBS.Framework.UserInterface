@@ -29,6 +29,12 @@ namespace UniversalWidgetToolkit
 		/// </summary>
 		/// <value>The owner.</value>
 		public Control Owner { get; set; } = null;
+
+		public PopupWindow ()
+		{
+			// PopupWindow starts out invisible by default
+			Visible = false;
+		}
 	}
 }
 

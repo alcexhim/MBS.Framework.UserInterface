@@ -39,6 +39,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			if (indexAfter == -1)
 			{
 				Internal.GTK.Methods.GtkNotebook.gtk_notebook_append_page(handle, container, hTabLabel);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hTabLabel);
 			}
 			else
 			{
@@ -54,6 +55,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			{
 				NotebookAppendPage(Engine, ctl, handle, tabPage);
 			}
+
 			return new GTKNativeControl(handle);
 		}
 	}

@@ -15,7 +15,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			IntPtr hLabelText = Internal.GTK.Methods.GtkLabel.gtk_label_get_label(handle);
 			
 			string value = System.Runtime.InteropServices.Marshal.PtrToStringAuto(hLabelText);
@@ -24,7 +24,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private Dictionary<Control, IntPtr> _ctlTextHandles = new Dictionary<Control, IntPtr>();
 		protected override void SetControlTextInternal(Control control, string text)
 		{
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 
 			// GTK fucks this up by passing a pointer directly to the guts of the GtkLabel
 			// so, we cannot simply implicitly pass strings to and from GTK

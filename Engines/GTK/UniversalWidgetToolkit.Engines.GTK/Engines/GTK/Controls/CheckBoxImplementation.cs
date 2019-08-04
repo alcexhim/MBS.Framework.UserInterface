@@ -35,14 +35,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		public bool GetChecked()
 		{
 			CheckBox ctl = (Control as CheckBox);
-			IntPtr handle = Engine.GetHandleForControl(ctl);
+			IntPtr handle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
 
 			return Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_get_active (handle);
 		}
 		public void SetChecked(bool value)
 		{
 			CheckBox ctl = (Control as CheckBox);
-			IntPtr handle = Engine.GetHandleForControl(ctl);
+			IntPtr handle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
 
 			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active (handle, value);
 		}

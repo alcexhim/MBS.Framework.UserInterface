@@ -36,7 +36,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		protected override void SetControlVisibilityInternal (bool visible)
 		{
-			IntPtr handle = Engine.GetHandleForControl(Control);
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
 			if (visible) {
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show (handle); // should 'all' be here? guess it doesn't matter
 			} else {
@@ -56,7 +56,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
 			
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (handle == IntPtr.Zero) return;
 			
 			RegisterDropTargetGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
@@ -65,7 +65,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
 			
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (handle == IntPtr.Zero) return;
 			
 			RegisterDragSourceGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));

@@ -32,7 +32,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private Internal.GObject.Delegates.GCallbackV1I popover_closed_handler = null;
 		private void popover_closed(IntPtr handle)
 		{
-			PopupWindow ctl = (Engine.GetControlByHandle (handle) as PopupWindow);
+			PopupWindow ctl = ((Engine as GTKEngine).GetControlByHandle (handle) as PopupWindow);
 			if (ctl == null)
 				return;
 
@@ -59,7 +59,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				if (!ctl1.IsCreated) Engine.CreateControl (ctl1);
 				if (!ctl1.IsCreated) continue;
 
-				IntPtr hCtrl1 = Engine.GetHandleForControl (ctl1);
+				IntPtr hCtrl1 = (Engine.GetHandleForControl(ctl1) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hCtrl1);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
 			}
@@ -76,7 +76,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 
 			if (ctl.Owner != null) {
-				IntPtr hCtrlParent = Engine.GetHandleForControl (ctl.Owner);
+				IntPtr hCtrlParent = (Engine.GetHandleForControl(ctl.Owner) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkPopover.gtk_popover_set_relative_to (handle, hCtrlParent);
 			}
 

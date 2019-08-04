@@ -18,7 +18,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private void ApplyLayout(IntPtr hContainer, Control ctl, Layout layout)
 		{
-			IntPtr ctlHandle = Engine.GetHandleForControl(ctl);
+			IntPtr ctlHandle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
 
 			if (layout is BoxLayout)
 			{

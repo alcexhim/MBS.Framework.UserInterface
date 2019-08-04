@@ -52,7 +52,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				
 				bool created = Engine.CreateControl (child);
 				if (created) {
-					IntPtr hChild = Engine.GetHandleForControl (child);
+					IntPtr hChild = (Engine.GetHandleForControl (child) as GTKNativeControl).Handle;
 					// IntPtr hName = Marshal.StringToHGlobalAuto (child.Name);
 					// IntPtr hTitle = Marshal.StringToHGlobalAuto (child.Text);
 					Internal.GTK.Methods.GtkStack.gtk_stack_add_titled (hStack, hChild, child.Name, child.Text);
@@ -83,7 +83,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hStack = (Handle as GTKNativeControl).GetNamedHandle ("Stack");
 			IntPtr hChild = Internal.GTK.Methods.GtkStack.gtk_stack_get_visible_child (hStack);
 
-			Control c = Engine.GetControlByHandle (hChild);
+			Control c = (Engine as GTKEngine).GetControlByHandle (hChild);
 			foreach (StackSidebarPanel pnl in ctl.Items) {
 				if (pnl.Control == c)
 					return pnl;
@@ -100,7 +100,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				return;
 
 			IntPtr hStack = (Handle as GTKNativeControl).GetNamedHandle ("Stack");
-			IntPtr hChild = Engine.GetHandleForControl (panel.Control);
+			IntPtr hChild = (Engine.GetHandleForControl (panel.Control) as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkStack.gtk_stack_set_visible_child (hStack, hChild);
 		}
 

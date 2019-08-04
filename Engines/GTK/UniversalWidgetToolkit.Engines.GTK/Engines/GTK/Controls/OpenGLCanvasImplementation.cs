@@ -35,7 +35,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private static bool Canvas_Render(IntPtr handle, IntPtr context)
 		{
 			Internal.GTK.Methods.GtkGlArea.gtk_gl_area_make_current(handle);
-			OpenGLCanvas ctl = (Application.Engine.GetControlByHandle(handle) as OpenGLCanvas);
+			OpenGLCanvas ctl = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as OpenGLCanvas);
 			if (ctl == null)
 				return true;
 

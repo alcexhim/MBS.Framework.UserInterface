@@ -19,7 +19,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private void Button_Clicked(IntPtr handle, IntPtr data)
 		{
-			Button button = (Application.Engine.GetControlByHandle(handle) as Button);
+			Button button = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Button);
 			// maybe it's the button not the tabpage?
 			if (button != null)
 			{
@@ -30,13 +30,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			IntPtr hTitle = Internal.GTK.Methods.GtkButton.gtk_button_get_label (handle);
 			return Marshal.PtrToStringAuto (hTitle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
 			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, hTitle);
 		}
@@ -72,7 +72,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				image.IconName = Engine.StockTypeToString ((StockType)ctl.StockType);
 				image.IconSize = ctl.ImageSize;
 				if (Engine.CreateControl (image)) {
-					IntPtr hImage = Engine.GetHandleForControl (image);
+					IntPtr hImage = (Engine.GetHandleForControl(image) as GTKNativeControl).Handle;
 					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImage);
 				}
 			}

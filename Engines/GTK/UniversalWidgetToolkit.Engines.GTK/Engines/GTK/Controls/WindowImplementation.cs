@@ -81,7 +81,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		
 		private void Window_Activate(IntPtr handle, IntPtr data)
 		{
-			Window window = (Application.Engine.GetControlByHandle(handle) as Window);
+			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
 			if (window == null)
 				return;
 
@@ -90,7 +90,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private void Window_Closing(IntPtr handle, IntPtr data)
 		{
-			Window window = (Application.Engine.GetControlByHandle(handle) as Window);
+			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
 			if (window != null)
 			{
 				CancelEventArgs e = new CancelEventArgs();
@@ -100,7 +100,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private void Window_Closed(IntPtr handle, IntPtr data)
 		{
-			Window window = (Application.Engine.GetControlByHandle(handle) as Window);
+			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
 			if (window != null)
 			{
 				InvokeMethod(window, "OnClosed", EventArgs.Empty);
@@ -196,13 +196,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr hTitle = Internal.GTK.Methods.GtkWindow.gtk_window_get_title(Engine.GetHandleForControl(control));
+			IntPtr hTitle = Internal.GTK.Methods.GtkWindow.gtk_window_get_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle);
 			return Marshal.PtrToStringAuto (hTitle);
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(Engine.GetHandleForControl(control), hTitle);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle, hTitle);
 		}
 
 		protected internal virtual void OnClosed(EventArgs e)

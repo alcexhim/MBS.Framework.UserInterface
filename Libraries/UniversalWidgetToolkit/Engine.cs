@@ -10,17 +10,17 @@ namespace UniversalWidgetToolkit
 {
 	public abstract class Engine
 	{
-		private static Dictionary<IntPtr, Control> controlsByHandle = new Dictionary<IntPtr, Control>();
-		private static Dictionary<Control, IntPtr> handlesByControl = new Dictionary<Control, IntPtr>();
+		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
+		protected static Dictionary<Control, NativeControl> handlesByControl = new Dictionary<Control, NativeControl>();
 
-		public Control GetControlByHandle(IntPtr handle)
+		public Control GetControlByHandle(NativeControl handle)
 		{
 			if (controlsByHandle.ContainsKey(handle))
 				return controlsByHandle[handle];
 			return null;
 		}
 		[DebuggerNonUserCode()]
-		public IntPtr GetHandleForControl(Control control)
+		public NativeControl GetHandleForControl(Control control)
 		{
 			return handlesByControl[control];
 		}
@@ -66,19 +66,9 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
-		protected void RegisterControlHandle(Control control, IntPtr handle, params IntPtr[] additionalHandles)
+		protected void RegisterControlHandle(Control control, NativeControl handle)
 		{
 			controlsByHandle[handle] = control;
-			
-			// BEGIN: 2019-07-19 12:13 by beckermj - support for additional handles used by control
-			// (e.g. for scrolled window container, etc.)
-			foreach (IntPtr ptr in additionalHandles)
-			{
-				controlsByHandle[ptr] = control;
-			}
-			// we can only store the primary handle for the control in our dictionary, though...
-			// END: 2019-07-19 12:13 by beckermj - support for additional handles used by control
-			
 			handlesByControl[control] = handle;
 		}
 
@@ -360,8 +350,8 @@ namespace UniversalWidgetToolkit
 
 		private bool inUpdateControlProperties = false;
 
-		protected abstract void UpdateControlPropertiesInternal(Control control, IntPtr handle);
-		public void UpdateControlProperties(Control control, IntPtr handle)
+		protected abstract void UpdateControlPropertiesInternal(Control control, NativeControl handle);
+		public void UpdateControlProperties(Control control, NativeControl handle)
 		{
 			if (inUpdateControlProperties) return;
 			inUpdateControlProperties = true;
@@ -371,7 +361,7 @@ namespace UniversalWidgetToolkit
 		public void UpdateControlProperties(Control control)
 		{
 			if (!IsControlCreated(control)) return;
-			IntPtr handle = GetHandleForControl(control);
+			NativeControl handle = GetHandleForControl(control);
 			
 			UpdateControlProperties(control, handle);
 		}

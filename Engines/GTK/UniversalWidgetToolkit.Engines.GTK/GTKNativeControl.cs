@@ -39,6 +39,13 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 		}
 
+		public bool ContainsHandle(IntPtr handle)
+		{
+			if (Handle == handle) return true;
+			if (_NamedHandles.ContainsValue(handle)) return true;
+			return false;
+		}
+
 		public override string ToString()
 		{
 			return Handle.ToString();

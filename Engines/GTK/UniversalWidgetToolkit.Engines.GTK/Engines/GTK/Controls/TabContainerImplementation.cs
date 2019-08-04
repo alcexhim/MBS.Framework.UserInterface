@@ -30,7 +30,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 
 			engine.CreateControl(tabControlContainer);
-			IntPtr hTabLabel = engine.GetHandleForControl(tabControlContainer);
+			IntPtr hTabLabel = (engine.GetHandleForControl(tabControlContainer) as GTKNativeControl).Handle;
 
 			ContainerImplementation cimpl = new ContainerImplementation(engine, page);
 			cimpl.CreateControl(page);

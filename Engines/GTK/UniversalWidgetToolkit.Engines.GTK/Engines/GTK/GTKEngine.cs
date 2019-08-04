@@ -40,7 +40,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		protected override bool WindowHasFocusInternal(Window window)
 		{
-			IntPtr hWindow = GetHandleForControl(window);
+			IntPtr hWindow = (GetHandleForControl(window) as GTKNativeControl).Handle;
 			return Internal.GTK.Methods.GtkWindow.gtk_window_has_toplevel_focus(hWindow);
 		}
 
@@ -51,12 +51,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		protected override bool IsControlEnabledInternal(Control control)
 		{
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			return Internal.GTK.Methods.GtkWidget.gtk_widget_is_sensitive(handle);
 		}
 		protected override void SetControlEnabledInternal(Control control, bool value)
 		{
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, value);
 		}
 
@@ -92,7 +92,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (window == null)
 			{
 				window = new Window();
-				RegisterControlHandle(window, data);
+				RegisterControlHandle(window, new GTKNativeControl(data));
 			}
 
 			_GetToplevelWindowsRetval.Add(window);
@@ -446,7 +446,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		protected override void DestroyControlInternal(Control control)
 		{
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (control is Dialog)
 			{
 				// this way is recommended per GTK3.0 docs:
@@ -590,9 +590,21 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return ee;
 		}
 
+		public Control GetControlByHandle(IntPtr handle)
+		{
+			foreach (KeyValuePair<NativeControl, Control> kvp in controlsByHandle) {
+				if (kvp.Key is GTKNativeControl) {
+					if ((kvp.Key as GTKNativeControl).ContainsHandle(handle)) {
+						return kvp.Value;
+					}
+				}
+			}
+			return null;
+		}
+
 		protected override void UpdateControlLayoutInternal (Control control)
 		{
-			IntPtr hCtrl = GetHandleForControl (control);
+			IntPtr hCtrl = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (control.Parent != null && control.Parent.Layout != null) {
 				Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
 				if (constraints != null) {
@@ -657,7 +669,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
 
-				RegisterControlHandle (control, (handle as GTKNativeControl).Handle, (handle as GTKNativeControl).AdditionalHandles);
+				RegisterControlHandle (control, handle as GTKNativeControl);
 
 				UpdateControlLayout (control);
 				UpdateControlProperties (control);
@@ -675,7 +687,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!IsControlCreated(control))
 				return true;
 
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 
 			bool isgood = Internal.GObject.Methods.g_type_check_instance_is_a(handle, Internal.GTK.Methods.GtkWidget.gtk_widget_get_type());
 			return !isgood;
@@ -700,12 +712,12 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				if (dialog.Parent != null)
 				{
-					parentHandle = GetHandleForControl(dialog.Parent);
+					parentHandle = (GetHandleForControl(dialog.Parent) as GTKNativeControl).Handle;
 				}
 			}
 			else
 			{
-				parentHandle = GetHandleForControl(parent);
+				parentHandle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
 			}
 
 			IntPtr handle = IntPtr.Zero;
@@ -846,7 +858,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 			if (dialog.DefaultButton != null)
 			{
-				IntPtr hButtonDefault = GetHandleForControl(dialog.DefaultButton);
+				IntPtr hButtonDefault = (GetHandleForControl(dialog.DefaultButton) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
 			}
 
@@ -968,7 +980,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!IsControlCreated(control))
 				throw new NullReferenceException("Control handle not found");
 
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 
@@ -977,7 +989,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			if (dlg.Parent != null && IsControlCreated(dlg.Parent))
 			{
-				return GetHandleForControl(dlg.Parent);
+				return (GetHandleForControl(dlg.Parent) as GTKNativeControl).Handle;
 			}
 			return IntPtr.Zero;
 		}
@@ -1241,7 +1253,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			IntPtr buttonHandle = IntPtr.Zero;
 			if (!IsControlCreated(button)) CreateControl(button);
 
-			buttonHandle = GetHandleForControl(button);
+			buttonHandle = (GetHandleForControl(button) as GTKNativeControl).Handle;
 
 			if (button.ResponseValue == (int)DialogResult.OK) {
 				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (buttonHandle);
@@ -1300,7 +1312,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hDialogContent);
 
-			RegisterControlHandle(dlg, handle);
+			RegisterControlHandle(dlg, new GTKNativeControl(handle));
 			return handle;
 		}
 
@@ -1319,7 +1331,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 					RecursiveShowChildControls (ctl as Container);
 				}
 				if (ctl.Visible) {
-					IntPtr hCtl = GetHandleForControl (ctl);
+					IntPtr hCtl = (GetHandleForControl(ctl) as GTKNativeControl).Handle;
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show (hCtl);
 				}
 			}
@@ -1360,8 +1372,9 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 		#endregion
 
-		protected override void UpdateControlPropertiesInternal(Control control, IntPtr handle)
+		protected override void UpdateControlPropertiesInternal(Control control, NativeControl native)
 		{
+			IntPtr handle = (native as GTKNativeControl).Handle;
 			if (control is Button)
 			{
 				Button button = (control as Button);
@@ -1503,7 +1516,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!IsControlCreated(parent))
 				return;
 
-			IntPtr handle = GetHandleForControl(parent);
+			IntPtr handle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
 			int pageCount = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_n_pages(handle);
 			for (int i = 0; i < pageCount; i++)
 			{
@@ -1515,7 +1528,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			if (!IsControlCreated(parent))
 				return;
 
-			IntPtr handle = GetHandleForControl(parent);
+			IntPtr handle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
 			Controls.TabContainerImplementation.NotebookAppendPage(this, parent, handle, tabPage, index);
 		}
 		protected override void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage)
@@ -1614,7 +1627,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		protected override void RepaintCustomControl(CustomControl control, int x, int y, int width, int height)
 		{
-			IntPtr handle = GetHandleForControl(control);
+			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 

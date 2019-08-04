@@ -16,7 +16,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr handle = Engine.GetHandleForControl(control);
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 
 			GType typeEntry = Internal.GTK.Methods.GtkEntry.gtk_entry_get_type();
 			bool isTextBox = Internal.GObject.Methods.G_TYPE_CHECK_INSTANCE_TYPE(handle, typeEntry);
@@ -61,7 +61,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			TextBox ctl = (control as TextBox);
 			if (ctl.Multiline)
 			{
-				IntPtr hScrolledWindow = Engine.GetHandleForControl(control);
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
 				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
 
@@ -71,7 +71,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			else
 			{
 				// this isn't working.. why not?
-				IntPtr hTextBox = Engine.GetHandleForControl(control);
+				IntPtr hTextBox = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(hTextBox, text);
 			}
 		}
@@ -137,7 +137,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;
 		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
-			TextBox ctl = Application.Engine.GetControlByHandle(handle) as TextBox;
+			TextBox ctl = (Application.Engine as GTKEngine).GetControlByHandle(handle) as TextBox;
 			if (ctl == null)
 				return;
 

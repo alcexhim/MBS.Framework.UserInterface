@@ -35,7 +35,7 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 		{
 			throw new NotImplementedException ();
 		}
-		protected override void UpdateControlPropertiesInternal (Control control, IntPtr handle)
+		protected override void UpdateControlPropertiesInternal (Control control, NativeControl handle)
 		{
 			throw new NotImplementedException ();
 		}
@@ -68,6 +68,7 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 		{
 			WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl (waitForClose) as WindowsFormsNativeControl);
 			System.Windows.Forms.Application.Run (ncWaitForClose.Handle as System.Windows.Forms.Form);
+			return 0;
 		}
 		protected override void StopInternal (int exitCode)
 		{

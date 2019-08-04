@@ -31,7 +31,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		/// <returns>TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.</returns>
 		private bool DrawHandler(IntPtr /*GtkWidget*/ widget, IntPtr /*CairoContext*/ cr, IntPtr user_data)
 		{
-			CustomControl ctl = Engine.GetControlByHandle(widget) as CustomControl;
+			CustomControl ctl = (Engine as GTKEngine).GetControlByHandle(widget) as CustomControl;
 			Contract.Assert(ctl != null);
 
 			GTKGraphics graphics = new GTKGraphics(cr);

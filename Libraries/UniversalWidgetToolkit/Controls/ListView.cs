@@ -6,6 +6,7 @@ namespace UniversalWidgetToolkit.Controls
 	{
 		public interface IListViewNativeImplementation
 		{
+			void UpdateTreeModel ();
 			void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e);
 			
 			SelectionMode GetSelectionMode();
@@ -79,8 +80,20 @@ namespace UniversalWidgetToolkit.Controls
 			}
 		}
 
+		private void RecursiveSetControlParent (TreeModelRow row)
+		{
+			row.ParentControl = this;
+			foreach (TreeModelRow row2 in row.Rows) {
+				RecursiveSetControlParent (row2);
+			}
+		}
+
 		private DefaultTreeModel mvarModel = null;
-		public DefaultTreeModel Model { get { return mvarModel; } set { mvarModel = value; mvarModel.TreeModelChanged += MvarModel_TreeModelChanged; } }
+		public DefaultTreeModel Model { get { return mvarModel; } set { mvarModel = value; mvarModel.TreeModelChanged += MvarModel_TreeModelChanged;
+				foreach (TreeModelRow row in mvarModel.Rows) {
+					RecursiveSetControlParent (row);
+				}
+		(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel (); } }
 
 		public event TreeModelChangedEventHandler TreeModelChanged;
 		public void OnTreeModelChanged(object sender, TreeModelChangedEventArgs e)

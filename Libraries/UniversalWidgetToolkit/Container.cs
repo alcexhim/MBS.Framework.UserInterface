@@ -356,16 +356,16 @@ namespace UniversalWidgetToolkit
 				{
 					container.Controls.Add(control);
 
-					LayoutItemProperty propPadding = item.PackingProperties["padding"];
+					LayoutItemProperty propPadding = item2.PackingProperties["padding"];
 					if (propPadding != null)
 					{
 						control.Padding = new Padding(Int32.Parse(propPadding.Value));
 					}
 					if (container.Layout is BoxLayout)
 					{
-						LayoutItemProperty propExpand = item.PackingProperties["expand"];
+						LayoutItemProperty propExpand = item2.PackingProperties["expand"];
 						bool expand = (propExpand != null && propExpand.Value == "True");
-						LayoutItemProperty propFill = item.PackingProperties["fill"];
+						LayoutItemProperty propFill = item2.PackingProperties["fill"];
 						bool fill = (propFill != null && propFill.Value == "True");
 
 						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(expand, fill));
@@ -404,10 +404,15 @@ namespace UniversalWidgetToolkit
 			{
 				foreach (Control ctl in this.Controls)
 				{
-					if (ctl is Container)
-					{
-						Control ctl2 = (ctl as Container).GetControlByID(ID, recurse);
+					if (ctl is Container) {
+						Control ctl2 = (ctl as Container).GetControlByID (ID, recurse);
 						if (ctl2 != null) return ctl2;
+					} else if (ctl is TabContainer) {
+						TabContainer tbs = (ctl as TabContainer);
+						foreach (TabPage page in tbs.TabPages) {
+							Control ctl2 = (page as Container).GetControlByID (ID, recurse);
+							if (ctl2 != null) return ctl2;
+						}
 					}
 				}
 			}

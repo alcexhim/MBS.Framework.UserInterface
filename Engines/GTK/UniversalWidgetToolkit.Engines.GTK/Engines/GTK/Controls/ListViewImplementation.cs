@@ -235,6 +235,83 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_select_function(hTreeSelection, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		}
 
+		public void UpdateTreeModel ()
+		{
+			UpdateTreeModel ((Handle as GTKNativeControl).Handle);
+		}
+
+		protected void UpdateTreeModel (IntPtr handle)
+		{
+			ListView tv = (Control as ListView);
+
+			List<IntPtr> listColumnTypes = new List<IntPtr> ();
+			if (tv.Model != null) {
+				foreach (TreeModelColumn c in tv.Model.Columns) {
+					IntPtr ptr = Internal.GLib.Constants.GType.FromType (c.DataType);
+					if (ptr == IntPtr.Zero) continue;
+
+					listColumnTypes.Add (ptr);
+				}
+			}
+
+			if (listColumnTypes.Count <= 0) {
+				Console.WriteLine ("uwt ERROR: you did not specify any columns for the ListView!!!");
+				listColumnTypes.Add (Internal.GLib.Constants.GType.FromType (typeof (string)));
+			}
+
+			IntPtr [] columnTypes = listColumnTypes.ToArray ();
+
+			// reset the handles?
+			_TreeModelForHandle.Clear ();
+			_HandleForTreeModel.Clear ();
+
+			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv (columnTypes.Length, columnTypes);
+			if (hTreeStore != IntPtr.Zero) {
+				if (tv.Model != null)
+					RegisterTreeModel (tv.Model, hTreeStore);
+			}
+
+			Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter ();
+
+			if (tv.Model is DefaultTreeModel) {
+				DefaultTreeModel tm = (tv.Model as DefaultTreeModel);
+				foreach (TreeModelRow row in tm.Rows) {
+					RecursiveTreeStoreInsertRow (tm, row, hTreeStore, out hIter, null, tm.Rows.Count - 1);
+				}
+			}
+
+
+			switch (ImplementedAs (tv)) {
+			case ImplementedAsType.TreeView: {
+					foreach (ListViewColumn tvc in tv.Columns) {
+						TreeModelColumn c = tvc.Column;
+						IntPtr renderer = IntPtr.Zero;
+
+						if (tvc is ListViewColumnText) {
+							renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new ();
+						}
+						if (renderer == IntPtr.Zero) continue;
+
+						if (tv.Model != null) {
+							int columnIndex = tv.Model.Columns.IndexOf (tvc.Column);
+							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes (handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
+						}
+					}
+
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_model (handle, hTreeStore);
+					break;
+				}
+			case ImplementedAsType.IconView: {
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model (handle, hTreeStore);
+
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width (handle, 96);
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column (handle, 0);
+					break;
+				}
+			}
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			ListView tv = (control as ListView);
@@ -245,84 +322,21 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
-			List<IntPtr> listColumnTypes = new List<IntPtr>();
-			if (tv.Model != null)
-			{
-				foreach (TreeModelColumn c in tv.Model.Columns)
-				{
-					IntPtr ptr = Internal.GLib.Constants.GType.FromType(c.DataType);
-					if (ptr == IntPtr.Zero) continue;
+			switch (ImplementedAs (tv)) {
+			case ImplementedAsType.TreeView: {
+					handle = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new ();
 
-					listColumnTypes.Add(ptr);
-				}
-			}
-
-			if (listColumnTypes.Count <= 0)
-			{
-				Console.WriteLine("uwt ERROR: you did not specify any columns for the ListView!!!");
-				listColumnTypes.Add(Internal.GLib.Constants.GType.FromType(typeof(string)));
-			}
-
-			IntPtr[] columnTypes = listColumnTypes.ToArray();
-
-			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv(columnTypes.Length, columnTypes);
-			if (hTreeStore != IntPtr.Zero)
-			{
-				if (tv.Model != null)
-					RegisterTreeModel(tv.Model, hTreeStore);
-			}
-
-			Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter();
-
-			if (tv.Model is DefaultTreeModel)
-			{
-				DefaultTreeModel tm = (tv.Model as DefaultTreeModel);
-				foreach (TreeModelRow row in tm.Rows)
-				{
-					RecursiveTreeStoreInsertRow(tm, row, hTreeStore, out hIter, null, tm.Rows.Count - 1);
-				}
-			}
-
-			switch (ImplementedAs(tv))
-			{
-				case ImplementedAsType.TreeView:
-				{
-					handle = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new();
-
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_visible(handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_clickable(handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
-
-					foreach (ListViewColumn tvc in tv.Columns)
-					{
-						TreeModelColumn c = tvc.Column;
-						IntPtr renderer = IntPtr.Zero;
-
-						if (tvc is ListViewColumnText)
-						{
-							renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
-						}
-						if (renderer == IntPtr.Zero) continue;
-						
-						if (tv.Model != null)
-						{
-							int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
-							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
-						}
-					}
-
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_model(handle, hTreeStore);
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_visible (handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_clickable (handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
 					break;
 				}
-				case ImplementedAsType.IconView:
-				{
-					handle = Internal.GTK.Methods.GtkIconView.gtk_icon_view_new();
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model(handle, hTreeStore);
-
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width(handle, 96);
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column(handle, 0);
+			case ImplementedAsType.IconView: {
+					handle = Internal.GTK.Methods.GtkIconView.gtk_icon_view_new ();
 					break;
 				}
 			}
+
+			UpdateTreeModel (handle);
 
 			IntPtr hHAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
 			IntPtr hVAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);

@@ -95,6 +95,11 @@ namespace UniversalWidgetToolkit
 			}
 			public bool Contains(string name)
 			{
+				if (String.IsNullOrEmpty (name)) {
+					Console.Error.WriteLine ("uwt: warning: 'name' for TreeModelRow is empty");
+					return false;
+				}
+
 				return _itemsByName.ContainsKey(name);
 			}
 

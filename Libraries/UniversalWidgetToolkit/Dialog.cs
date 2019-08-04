@@ -15,10 +15,15 @@ namespace UniversalWidgetToolkit
 		private Button mvarDefaultButton = null;
 		public Button DefaultButton { get { return mvarDefaultButton; } set { mvarDefaultButton = value; } }
 
+		public DialogResult DialogResult { get; set; } = DialogResult.None;
+
 		[DebuggerNonUserCode()]
 		public DialogResult ShowDialog(Window parent = null)
 		{
-			return Application.Engine.ShowDialog(this, parent);
+			DialogResult result = Application.Engine.ShowDialog(this, parent);
+			if (result == DialogResult.None)
+				return DialogResult;
+			return result;
 		}
 	}
 }

@@ -261,9 +261,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr [] columnTypes = listColumnTypes.ToArray ();
 
-			// reset the handles?
-			_TreeModelForHandle.Clear ();
-			_HandleForTreeModel.Clear ();
+			// reset the handles? NOPE, this breaks things
+			// _TreeModelForHandle.Clear ();
+			// _HandleForTreeModel.Clear ();
 
 			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv (columnTypes.Length, columnTypes);
 			if (hTreeStore != IntPtr.Zero) {

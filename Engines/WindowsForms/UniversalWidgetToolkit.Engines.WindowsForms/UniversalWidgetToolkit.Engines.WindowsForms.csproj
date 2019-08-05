@@ -39,12 +39,19 @@
     <Compile Include="WindowsFormsEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsFormsNativeControl.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\WindowImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\WindowsFormsNativeImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">
       <Project>{29e1c1bb-3ea5-4062-b62f-85eec703fe07}</Project>
       <Name>UniversalWidgetToolkit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engines\" />
+    <Folder Include="Engines\WindowsForms\" />
+    <Folder Include="Engines\WindowsForms\Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

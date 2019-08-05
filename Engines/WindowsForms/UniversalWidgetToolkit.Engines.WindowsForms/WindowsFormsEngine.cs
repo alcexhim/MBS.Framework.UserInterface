@@ -66,8 +66,12 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 
 		protected override int StartInternal (Window waitForClose = null)
 		{
-			WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl (waitForClose) as WindowsFormsNativeControl);
-			System.Windows.Forms.Application.Run (ncWaitForClose.Handle as System.Windows.Forms.Form);
+			if (waitForClose != null) {
+				WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl (waitForClose) as WindowsFormsNativeControl);
+				System.Windows.Forms.Application.Run (ncWaitForClose.Handle as System.Windows.Forms.Form);
+			} else {
+				System.Windows.Forms.Application.Run ();
+			}
 			return 0;
 		}
 		protected override void StopInternal (int exitCode)
@@ -116,11 +120,12 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 
 		protected override bool IsControlDisposedInternal (Control ctl)
 		{
-			throw new NotImplementedException ();
+			if (!IsControlCreated (ctl)) return true;
+			return (GetHandleForControl (ctl) as WindowsFormsNativeControl).Handle.IsDisposed;
 		}
 		protected override bool IsControlEnabledInternal (Control control)
 		{
-			throw new NotImplementedException ();
+			return (GetHandleForControl (control) as WindowsFormsNativeControl).Handle.Enabled;
 		}
 
 		protected override bool InitializeInternal ()

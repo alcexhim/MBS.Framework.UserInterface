@@ -1,9 +1,9 @@
 ﻿using System;
-namespace UniversalWidgetToolkit.Engines.WindowsForms.Engines.WindowsForms
+namespace UniversalWidgetToolkit.Engines.WindowsForms
 {
-	public class WindowsFormsNativeImplementation
+	public abstract class WindowsFormsNativeImplementation : NativeImplementation
 	{
-		public WindowsFormsNativeImplementation ()
+		public WindowsFormsNativeImplementation (Engine engine, Control control) : base(engine, control)
 		{
 		}
 	}

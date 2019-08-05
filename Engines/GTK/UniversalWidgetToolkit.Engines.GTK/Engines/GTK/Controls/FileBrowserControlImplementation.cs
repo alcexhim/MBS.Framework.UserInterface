@@ -20,15 +20,26 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using UniversalWidgetToolkit.Controls.FileBrowser;
+using UniversalWidgetToolkit.Controls.FileBrowser.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(FileBrowserControl))]
-	public class FileBrowserControlImplementation : GTKNativeImplementation
+	public class FileBrowserControlImplementation : GTKNativeImplementation, IFileBrowserControlImplementation
 	{
 		public FileBrowserControlImplementation(Engine engine, Control control)
 			: base (engine, control)
 		{
+			file_activated_handler = new Internal.GObject.Delegates.GCallback (file_activated);
+		}
+
+		private Internal.GObject.Delegates.GCallback file_activated_handler = null;
+		private void file_activated (IntPtr /*GtkFileChooser*/ chooser, IntPtr user_data)
+		{
+			FileBrowserControl ctl = ((Engine as GTKEngine).GetControlByHandle (chooser) as FileBrowserControl);
+			if (ctl == null) return;
+
+			InvokeMethod (ctl, "OnItemActivated", EventArgs.Empty);
 		}
 
 		protected override NativeControl CreateControlInternal (Control control)
@@ -42,7 +53,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(handle, GTKEngine.CreateGTKFileChooserFilter(filter));
 			}
 
+			Internal.GObject.Methods.g_signal_connect (handle, "file_activated", file_activated_handler);
+
 			return new GTKNativeControl (handle);
+		}
+
+		public void UpdateSelectedFileNames (System.Collections.Generic.List<string> coll)
+		{
+			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
+			FileBrowserControl ctl = (Control as FileBrowserControl);
+
+			string[] fileNames = Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_get_filenames_managed (hFileBrowser);
+			foreach (string fileName in fileNames) {
+				coll.Add (fileName);
+			}
 		}
 	}
 }

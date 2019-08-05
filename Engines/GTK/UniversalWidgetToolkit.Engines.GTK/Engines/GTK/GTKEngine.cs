@@ -1101,27 +1101,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		private void FileDialog_Accept(FileDialog dlg, IntPtr handle)
 		{
-			IntPtr gslist = Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_get_filenames(handle);
-
-			uint length = Internal.GLib.Methods.g_slist_length(gslist);
-			dlg.SelectedFileNames.Clear();
-			for (uint i = 0; i < length; i++)
-			{
-				// WE MUST DO THIS IN ORDER TO MANUALLY FREE THE MEMORY AT THE END
-				IntPtr hFileNameStr = Internal.GLib.Methods.g_slist_nth_data(gslist, i);
-				
-				// This is now a managed pointer to a managed string. We're all good, so...
-				string fileName = System.Runtime.InteropServices.Marshal.PtrToStringAuto(hFileNameStr);
-				dlg.SelectedFileNames.Add(fileName);
-				
-				// DESTROY THE UNMANAGED POINTER NOW THAT WE'RE DONE!!!
-				Internal.GLib.Methods.g_free(hFileNameStr);
-
-				// this fixes a bug in Universal Editor where the FileDialog could only be opened a few times before crashing the application...
-				// but DOES NOT fix the bug in Concertroid :(
+			string[] fileNames = Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_get_filenames_managed (handle);
+			foreach (string fileName in fileNames) {
+				dlg.SelectedFileNames.Add (fileName);
 			}
-
-			Internal.GLib.Methods.g_slist_free(gslist);
 		}
 		#endregion
 		#region Color Dialog

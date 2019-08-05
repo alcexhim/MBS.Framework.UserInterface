@@ -22,10 +22,34 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls.FileBrowser
 {
+	namespace Native
+	{
+		public interface IFileBrowserControlImplementation
+		{
+			void UpdateSelectedFileNames (System.Collections.Generic.List<string> coll);
+		}
+	}
 	public class FileBrowserControl : Control
 	{
+		public event EventHandler ItemActivated;
+		protected virtual void OnItemActivated (EventArgs e)
+		{
+			ItemActivated?.Invoke (this, e);
+		}
+
 		public Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection FileNameFilters { get; } = new Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection ();
 		public FileBrowserMode Mode { get; set; }
+
+		public System.Collections.ObjectModel.ReadOnlyCollection<string> SelectedFileNames {
+			get {
+				System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string> ();
+				Native.IFileBrowserControlImplementation impl = (ControlImplementation as Native.IFileBrowserControlImplementation);
+				if (impl != null) {
+					impl.UpdateSelectedFileNames (list);
+				}
+				return new System.Collections.ObjectModel.ReadOnlyCollection<string>(list);
+			}
+		}
 	}
 }
 

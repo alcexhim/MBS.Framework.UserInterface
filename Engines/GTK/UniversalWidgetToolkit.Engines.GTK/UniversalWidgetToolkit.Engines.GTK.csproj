@@ -168,6 +168,9 @@
     <Compile Include="Engines\GTK\Printing\GTKPrinter.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPrintSettings.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPageSetup.cs" />
+    <Compile Include="Engines\GTK\GTKNativeTreeModel.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCellAreaBox.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCellArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

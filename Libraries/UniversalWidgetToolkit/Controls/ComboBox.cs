@@ -22,8 +22,82 @@ using System;
 
 namespace UniversalWidgetToolkit.Controls
 {
+	namespace Native
+	{
+		public interface IComboBoxNativeImplementation
+		{
+			bool GetReadOnly();
+			void SetReadOnly(bool value);
+
+			TreeModel GetModel();
+			void SetModel(TreeModel value);
+
+			TreeModelRow GetSelectedItem();
+			void SetSelectedItem(TreeModelRow value);
+		}
+	}
 	public class ComboBox : Control
 	{
+		private bool mvarReadOnly = false;
+		/// <summary>
+		/// Determines if the current value in this <see cref="ComboBox" /> can be edited in a text box.
+		/// </summary>
+		/// <value><c>true</c> if values must be chosen from a list; <c>false</c> to enable user to type in custom values.</value>
+		public bool ReadOnly
+		{
+			get
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				if (impl != null)
+					mvarReadOnly = impl.GetReadOnly();
+
+				return mvarReadOnly;
+			}
+			set
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				impl?.SetReadOnly(value);
+				mvarReadOnly = value;
+			}
+		}
+
+		private TreeModel mvarModel = null;
+		public TreeModel Model
+		{
+			get
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				if (impl != null)
+					mvarModel = impl.GetModel();
+
+				return mvarModel;
+			}
+			set
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				impl?.SetModel(value);
+				mvarModel = value;
+			}
+		}
+
+		private TreeModelRow mvarSelectedItem = null;
+		public TreeModelRow SelectedItem
+		{
+			get
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				if (impl != null)
+					mvarSelectedItem = impl.GetSelectedItem();
+
+				return mvarSelectedItem;
+			}
+			set
+			{
+				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+				impl?.SetSelectedItem(value);
+				mvarSelectedItem = value;
+			}
+		}
 	}
 }
 

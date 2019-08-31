@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using UniversalWidgetToolkit.Controls;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
@@ -33,9 +34,34 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override NativeControl CreateControlInternal (Control control)
 		{
-			IntPtr handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new ();
+			IntPtr handle = IntPtr.Zero;
 
-			return new GTKNativeControl (handle);
+			ComboBox ctl = (control as ComboBox);
+			if (ctl.ReadOnly)
+			{
+				IntPtr area = Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_new();
+				IntPtr renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+
+				Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_pack_start(area, renderer, true, true, false);
+				handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_area(area);
+
+				Internal.GTK.Methods.GtkCellArea.gtk_cell_area_attribute_connect(area, renderer, "text", 0);
+			}
+			else
+			{
+				handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_entry();
+			}
+
+
+			GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(ctl.Model) as GTKNativeTreeModel);
+			IntPtr hTreeModel = ncTreeModel.Handle;
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
+
+			return new GTKNativeControl (handle, new KeyValuePair<string, IntPtr>[]
+			{
+				new KeyValuePair<string, IntPtr>("TreeModel", hTreeModel)
+			});
 		}
 	}
 }

@@ -205,6 +205,7 @@
     <Compile Include="Printing\PrintEvent.cs" />
     <Compile Include="Printing\Printer.cs" />
     <Compile Include="Printing\PrintJob.cs" />
+    <Compile Include="NativeTreeModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

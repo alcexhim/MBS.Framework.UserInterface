@@ -1,5 +1,5 @@
 ﻿//
-//  GtkComboBox.cs
+//  GtkCellAreaBox.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -23,24 +23,11 @@ using System.Runtime.InteropServices;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 {
-	internal class GtkComboBox
+	internal static class GtkCellAreaBox
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkComboBox*/ gtk_combo_box_new();
+		public static extern IntPtr gtk_cell_area_box_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkComboBox*/ gtk_combo_box_new_with_area(IntPtr /*GtkCellArea*/ area);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkComboBox*/ gtk_combo_box_new_with_entry();
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_combo_box_set_model(IntPtr /*GtkComboBox*/ combo_box, IntPtr /*GtkTreeModel*/ model);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkTreeModel*/ gtk_combo_box_get_model(IntPtr /*GtkComboBox*/ combo_box);
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_combo_box_set_entry_text_column(IntPtr /*GtkComboBox*/ combo_box, int value);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern int gtk_combo_box_get_entry_text_column(IntPtr /*GtkComboBox*/ combo_box);
+		public static extern void gtk_cell_area_box_pack_start(IntPtr /*GtkCellAreaBox*/ box, IntPtr /*GtkCellRenderer*/ renderer, bool expand, bool align, bool _fixed);
 	}
 }
-

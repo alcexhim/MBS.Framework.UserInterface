@@ -165,5 +165,10 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 		{
 		}
 
+		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
+		{
+			return new WindowsFormsNativeTreeModel();
+		}
+
 	}
 }

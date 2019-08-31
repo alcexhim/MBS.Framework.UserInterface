@@ -74,6 +74,10 @@
       <Project>{23ACD09E-E096-4B05-A6CE-6853EDDC589A}</Project>
       <Name>MBS.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Engines\GTK\UniversalWidgetToolkit.Engines.GTK\UniversalWidgetToolkit.Engines.GTK.csproj">
+      <Project>{62DC7CF9-C608-49E5-8C39-305B2E3E93F6}</Project>
+      <Name>UniversalWidgetToolkit.Engines.GTK</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

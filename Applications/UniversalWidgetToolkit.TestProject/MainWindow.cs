@@ -37,6 +37,19 @@ namespace UniversalWidgetToolkit.TestProject
 			tabGeneral.Layout = new BoxLayout(Orientation.Vertical);
 			tabGeneral.Controls.Add(new Label("Test"), new BoxLayout.Constraints(true, true));
 
+			ComboBox cbo = new ComboBox();
+			cbo.ReadOnly = true;
+			cbo.Model = new DefaultTreeModel(new Type[] { typeof(string) });
+			(cbo.Model as DefaultTreeModel).Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(cbo.Model.Columns[0], "Hello, world")
+			}));
+			(cbo.Model as DefaultTreeModel).Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+			{
+				new TreeModelRowColumn(cbo.Model.Columns[0], "Wow this is amazing")
+			}));
+			tabGeneral.Controls.Add(cbo);
+
 			Button btn1 = new Button(ButtonStockType.OK, DialogResult.None);
 			btn1.Click += (sender, e) =>
 			{

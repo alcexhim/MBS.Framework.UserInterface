@@ -244,42 +244,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			ListView tv = (Control as ListView);
 
-			List<IntPtr> listColumnTypes = new List<IntPtr> ();
-			if (tv.Model != null) {
-				foreach (TreeModelColumn c in tv.Model.Columns) {
-					IntPtr ptr = Internal.GLib.Constants.GType.FromType (c.DataType);
-					if (ptr == IntPtr.Zero) continue;
-
-					listColumnTypes.Add (ptr);
-				}
-			}
-
-			if (listColumnTypes.Count <= 0) {
-				Console.WriteLine ("uwt ERROR: you did not specify any columns for the ListView!!!");
-				listColumnTypes.Add (Internal.GLib.Constants.GType.FromType (typeof (string)));
-			}
-
-			IntPtr [] columnTypes = listColumnTypes.ToArray ();
-
-			// reset the handles? NOPE, this breaks things
-			// _TreeModelForHandle.Clear ();
-			// _HandleForTreeModel.Clear ();
-
-			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv (columnTypes.Length, columnTypes);
-			if (hTreeStore != IntPtr.Zero) {
-				if (tv.Model != null)
-					RegisterTreeModel (tv.Model, hTreeStore);
-			}
-
-			Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter ();
-
-			if (tv.Model is DefaultTreeModel) {
-				DefaultTreeModel tm = (tv.Model as DefaultTreeModel);
-				foreach (TreeModelRow row in tm.Rows) {
-					RecursiveTreeStoreInsertRow (tm, row, hTreeStore, out hIter, null, tm.Rows.Count - 1);
-				}
-			}
-
+			GTKNativeTreeModel ntm = Engine.CreateTreeModel(tv.Model) as GTKNativeTreeModel;
+			IntPtr hTreeStore = ntm.Handle;
 
 			switch (ImplementedAs (tv)) {
 			case ImplementedAsType.TreeView: {
@@ -521,7 +487,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			ListView lv = (GetControlByHandle(handle) as ListView);
 			if (lv == null) return;
 
-			IntPtr hModel = GetHandleForTreeModel(lv.Model);
+			IntPtr hModel = (lv.ControlImplementation.Engine.GetHandleForTreeModel(lv.Model) as GTKNativeTreeModel).Handle;
 
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 
@@ -533,18 +499,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private static Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
 		private static Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
-
-		private static Dictionary<IntPtr, TreeModel> _TreeModelForHandle = new Dictionary<IntPtr, TreeModel>();
-		private static Dictionary<TreeModel, IntPtr> _HandleForTreeModel = new Dictionary<TreeModel, IntPtr>();
-		private static TreeModel TreeModelFromHandle(IntPtr handle)
+		private static void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
 		{
-			if (_TreeModelForHandle.ContainsKey(handle)) return _TreeModelForHandle[handle];
-			return null;
-		}
-		private static IntPtr GetHandleForTreeModel(TreeModel tm)
-		{
-			if (_HandleForTreeModel.ContainsKey(tm)) return _HandleForTreeModel[tm];
-			return IntPtr.Zero;
+			_GtkTreeIterForTreeModelRow[row] = hIter;
+			_TreeModelRowForGtkTreeIter[hIter] = row;
 		}
 
 		protected override void OnKeyDown (KeyEventArgs e)
@@ -575,10 +533,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 		}
 
-		private static void RegisterTreeModel(TreeModel tm, IntPtr handle)
+		private TreeModel TreeModelFromHandle(IntPtr handle)
 		{
-			_TreeModelForHandle[handle] = tm;
-			_HandleForTreeModel[tm] = handle;
+			return Engine.TreeModelFromHandle(new GTKNativeTreeModel(handle));
+		}
+		private IntPtr GetHandleForTreeModel(TreeModel tm)
+		{
+			return (Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel).Handle;
 		}
 		
 		/// <summary>
@@ -758,12 +719,6 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				Internal.GTK.Structures.GtkTreeIter hIter2 = new Internal.GTK.Structures.GtkTreeIter();
 				RecursiveTreeStoreInsertRow(tm, row2, hTreeStore, out hIter2, hIter, row.Rows.Count - 1);
 			}
-		}
-
-		private static void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
-		{
-			_GtkTreeIterForTreeModelRow[row] = hIter;
-			_TreeModelRowForGtkTreeIter[hIter] = row;
 		}
 
 		protected override void OnCreated (EventArgs e)

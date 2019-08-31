@@ -50,6 +50,7 @@ namespace UniversalWidgetToolkit
 				Console.WriteLine("Engine::InvokeStaticMethod: not found '" + meth + "' on '" + typ.FullName + "'");
 			}
 		}
+
 		protected void InvokeMethod(object obj, string meth, params object[] parms)
 		{
 			if (obj == null)
@@ -431,5 +432,41 @@ namespace UniversalWidgetToolkit
 			PrintInternal(job);
 		}
 		#endregion
+
+
+		private Dictionary<NativeTreeModel, TreeModel> _TreeModelForHandle = new Dictionary<NativeTreeModel, TreeModel>();
+		private Dictionary<TreeModel, NativeTreeModel> _HandleForTreeModel = new Dictionary<TreeModel, NativeTreeModel>();
+		public TreeModel TreeModelFromHandle(NativeTreeModel handle)
+		{
+			if (_TreeModelForHandle.ContainsKey(handle)) return _TreeModelForHandle[handle];
+			return null;
+		}
+		public NativeTreeModel GetHandleForTreeModel(TreeModel tm)
+		{
+			if (_HandleForTreeModel.ContainsKey(tm)) return _HandleForTreeModel[tm];
+			return null;
+		}
+
+		private void RegisterTreeModel(TreeModel tm, NativeTreeModel handle)
+		{
+			_TreeModelForHandle[handle] = tm;
+			_HandleForTreeModel[tm] = handle;
+		}
+
+		protected abstract NativeTreeModel CreateTreeModelInternal(TreeModel model);
+		public NativeTreeModel CreateTreeModel(TreeModel model)
+		{
+			if (IsTreeModelCreated(model))
+				return _HandleForTreeModel[model];
+
+			NativeTreeModel handle = CreateTreeModelInternal(model);
+			RegisterTreeModel(model, handle);
+			return handle;
+		}
+
+		public bool IsTreeModelCreated(TreeModel model)
+		{
+			return _HandleForTreeModel.ContainsKey(model);
+		}
 	}
 }

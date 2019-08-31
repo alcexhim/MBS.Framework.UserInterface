@@ -21,15 +21,56 @@
 using System;
 using System.Collections.Generic;
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Controls.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(ComboBox))]
-	public class ComboBoxImplementation : GTKNativeImplementation
+	public class ComboBoxImplementation : GTKNativeImplementation, IComboBoxNativeImplementation
 	{
 		public ComboBoxImplementation (Engine engine, Control control)
 			: base(engine, control)
 		{
+		}
+
+		public TreeModel GetModel()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			IntPtr hTreeModel = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_model(handle);
+
+			TreeModel tm = Engine.TreeModelFromHandle(new GTKNativeTreeModel(hTreeModel));
+			return tm;
+		}
+
+		public void SetModel(TreeModel value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+
+			GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(value) as GTKNativeTreeModel);
+			IntPtr hTreeModel = ncTreeModel.Handle;
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
+		}
+
+		private bool mvarReadOnly = false;
+		public bool GetReadOnly()
+		{
+			return mvarReadOnly;
+		}
+
+		public void SetReadOnly(bool value)
+		{
+			mvarReadOnly = value;
+		}
+
+		public TreeModelRow GetSelectedItem()
+		{
+			return null;
+		}
+
+		public void SetSelectedItem(TreeModelRow value)
+		{
+
 		}
 
 		protected override NativeControl CreateControlInternal (Control control)
@@ -52,11 +93,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_entry();
 			}
 
-
-			GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(ctl.Model) as GTKNativeTreeModel);
-			IntPtr hTreeModel = ncTreeModel.Handle;
-			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
-			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
+			IntPtr hTreeModel = IntPtr.Zero;
+			if (ctl.Model != null)
+			{
+				GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(ctl.Model) as GTKNativeTreeModel);
+				hTreeModel = ncTreeModel.Handle;
+				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
+				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
+			}
 
 			return new GTKNativeControl (handle, new KeyValuePair<string, IntPtr>[]
 			{

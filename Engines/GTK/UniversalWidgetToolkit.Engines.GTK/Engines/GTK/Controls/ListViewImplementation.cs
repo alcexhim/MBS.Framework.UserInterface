@@ -244,35 +244,44 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			ListView tv = (Control as ListView);
 
-			GTKNativeTreeModel ntm = Engine.CreateTreeModel(tv.Model) as GTKNativeTreeModel;
-			IntPtr hTreeStore = ntm.Handle;
+			if (tv.Model != null)
+			{
+				GTKNativeTreeModel ntm = Engine.CreateTreeModel(tv.Model) as GTKNativeTreeModel;
+				IntPtr hTreeStore = ntm.Handle;
 
-			switch (ImplementedAs (tv)) {
-			case ImplementedAsType.TreeView: {
-					foreach (ListViewColumn tvc in tv.Columns) {
-						TreeModelColumn c = tvc.Column;
-						IntPtr renderer = IntPtr.Zero;
+				switch (ImplementedAs(tv))
+				{
+					case ImplementedAsType.TreeView:
+					{
+						foreach (ListViewColumn tvc in tv.Columns)
+						{
+							TreeModelColumn c = tvc.Column;
+							IntPtr renderer = IntPtr.Zero;
 
-						if (tvc is ListViewColumnText) {
-							renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new ();
+							if (tvc is ListViewColumnText)
+							{
+								renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+							}
+							if (renderer == IntPtr.Zero) continue;
+
+							if (tv.Model != null)
+							{
+								int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
+								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
+							}
 						}
-						if (renderer == IntPtr.Zero) continue;
 
-						if (tv.Model != null) {
-							int columnIndex = tv.Model.Columns.IndexOf (tvc.Column);
-							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes (handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
-						}
+						Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_model(handle, hTreeStore);
+						break;
 					}
+					case ImplementedAsType.IconView:
+					{
+						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model(handle, hTreeStore);
 
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_model (handle, hTreeStore);
-					break;
-				}
-			case ImplementedAsType.IconView: {
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model (handle, hTreeStore);
-
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width (handle, 96);
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column (handle, 0);
-					break;
+						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width(handle, 96);
+						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column(handle, 0);
+						break;
+					}
 				}
 			}
 			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);

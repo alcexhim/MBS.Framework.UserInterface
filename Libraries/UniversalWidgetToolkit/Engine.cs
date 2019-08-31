@@ -456,6 +456,9 @@ namespace UniversalWidgetToolkit
 		protected abstract NativeTreeModel CreateTreeModelInternal(TreeModel model);
 		public NativeTreeModel CreateTreeModel(TreeModel model)
 		{
+			Contract.Requires(model != null);
+			Contract.Ensures(Contract.Result<NativeTreeModel>() != null);
+
 			if (IsTreeModelCreated(model))
 				return _HandleForTreeModel[model];
 
@@ -464,6 +467,7 @@ namespace UniversalWidgetToolkit
 			return handle;
 		}
 
+		[DebuggerNonUserCode]
 		public bool IsTreeModelCreated(TreeModel model)
 		{
 			return _HandleForTreeModel.ContainsKey(model);

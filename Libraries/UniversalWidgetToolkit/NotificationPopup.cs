@@ -18,6 +18,14 @@ namespace UniversalWidgetToolkit
 			Application.Engine.ShowNotificationPopup (this);
 		}
 
+		public static void Show(string summary, string content = "", string iconName = "")
+		{
+			NotificationPopup popup = new NotificationPopup();
+			popup.Summary = summary;
+			popup.Content = content;
+			popup.IconName = iconName;
+			popup.Show();
+		}
 	}
 }
 

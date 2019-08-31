@@ -235,6 +235,11 @@ namespace UniversalWidgetToolkit.TestProject
 					new CommandMenuItem("_Toolbars"),
 					new CommandMenuItem("Status _Bar"),
 					new SeparatorMenuItem(),
+					new CommandMenuItem("Show me a _notification", null, delegate (object sender, EventArgs e)
+					{
+						NotificationPopup.Show("ALYX has found new information", "Scraping a Wikipedia article I have added a new word to my dictionary!");
+					}),
+					new SeparatorMenuItem(),
 					new CommandMenuItem("_Refresh")
 				}),
 				new CommandMenuItem("_Tools", new MenuItem[]

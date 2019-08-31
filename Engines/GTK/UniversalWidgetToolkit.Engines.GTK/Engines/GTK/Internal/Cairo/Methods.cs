@@ -7,6 +7,24 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 	{
 		const string LIBRARY_FILENAME = "cairo";
 
+		/// <summary>
+		///  Creates a new cairo_t with all graphics state parameters set to default values and with target as a target surface. The target surface should be constructed with a backend-specific function such as cairo_image_surface_create() (or any other cairo_backend_surface_create() variant).
+		/// </summary>
+		/// <returns>
+		/// a newly allocated cairo_t with a reference count of 1. The initial reference count should be released with <see cref="cairo_destroy"/> when you are done using the cairo_t. This function never returns NULL. If memory cannot be allocated, a special cairo_t object will be returned on which <see cref="cairo_status"/> returns CAIRO_STATUS_NO_MEMORY. You can use this object normally, but no drawing will be done.
+		/// </returns>
+		/// <param name="target">target surface for the context</param>
+		/// <remarks>This function references target, so you can immediately call cairo_surface_destroy() on it if you don't need to maintain a separate reference to it.</remarks>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*cairo_t*/ cairo_create(IntPtr /*cairo_surface_t*/ target);
+
+		/// <summary>
+		/// Decreases the reference count on cr by one. If the result is zero, then cr and all associated resources are freed. See <see cref="cairo_reference"/>. 
+		/// </summary>
+		/// <param name="cr">Cr.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_destroy(IntPtr /*cairo_t*/ cr);
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_rectangle(IntPtr /*cairo_t*/ cc, double x, double y, double width, double height);
 
@@ -15,6 +33,18 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_stroke(IntPtr /*cairo_t*/ cc);
+
+		/// <summary>
+		/// A drawing operator that strokes the current path according to the current line width, line join, line cap, and dash settings. Unlike <see cref="cairo_stroke"/>, <see cref="cairo_stroke_preserve"/> preserves the path within the cairo context.
+		/// </summary>
+		/// <param name="cr">a cairo context</param>
+		/// <seealso cref="cairo_set_line_width" />
+		/// <seealso cref="cairo_set_line_join" />
+		/// <seealso cref="cairo_set_line_cap" />
+		/// <seealso cref="cairo_set_dash" />
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_stroke_preserve(IntPtr /*cairo_t*/ cr);
+
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern Constants.CairoStatus cairo_status(IntPtr /*cairo_t*/ cc);
@@ -27,6 +57,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_show_page(IntPtr /*cairo_t*/ cr);
+
+		#region Line
+		/// <summary>
+		/// Sets the current line width within the cairo context. The line width value specifies the diameter of a pen that is circular in user space, (though device-space pen may be an ellipse in general due to scaling/shear/rotation of the CTM).
+		/// Note: When the description above refers to user space and CTM it refers to the user space and CTM in effect at the time of the stroking operation, not the user space and CTM in effect at the time of the call to cairo_set_line_width(). The simplest usage makes both of these spaces identical.That is, if there is no change to the CTM between a call to cairo_set_line_width() and the stroking operation, then one can just pass user-space values to cairo_set_line_width() and ignore this note.
+		/// As with the other stroke parameters, the current line width is examined by cairo_stroke(), cairo_stroke_extents(), and cairo_stroke_to_path(), but does not have any effect during path construction.
+		/// The default line width value is 2.0. 
+		/// </summary>
+		/// <param name="cr">Cr.</param>
+		/// <param name="width">Width.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_set_line_width(IntPtr /*cairo_t*/ cr, double width);
+		#endregion
 
 		#region Pattern
 		[DllImport(LIBRARY_FILENAME)]
@@ -78,5 +121,21 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_show_text(IntPtr /*cairo_t*/ cr, string value);
 
+		#region Surface
+		/// <summary>
+		/// This function finishes the surface and drops all references to external resources. For example, for the Xlib backend it means that cairo will no longer access the drawable, which can be freed. After calling <see cref="cairo_surface_finish" /> the only valid operations on a surface are getting and setting user, referencing and destroying, and flushing and finishing it. Further drawing to the surface will not affect the surface but will instead trigger a CAIRO_STATUS_SURFACE_FINISHED error.
+		/// When the last call to <see cref="cairo_surface_destroy" /> decreases the reference count to zero, cairo will call <see cref="cairo_surface_finish" /> if it hasn't been called already, before freeing the resources associated with the surface. 
+		/// </summary>
+		/// <param name="surface">Surface.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_surface_finish(IntPtr /*cairo_surface_t*/ surface);
+
+		/// <summary>
+		/// Decreases the reference count on surface by one. If the result is zero, then surface and all associated resources are freed. See <see cref="cairo_surface_reference"/>.
+		/// </summary>
+		/// <param name="surface">a cairo_surface_t.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_surface_destroy(IntPtr /*cairo_surface_t*/ surface);
+		#endregion
 	}
 }

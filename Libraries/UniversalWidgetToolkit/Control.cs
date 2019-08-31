@@ -381,6 +381,9 @@ namespace UniversalWidgetToolkit
 			get
 			{
 				Control ctl = Parent;
+				if (ctl == null)
+					return null;
+
 				while (ctl.Parent != null)
 				{
 					ctl = ctl.Parent;

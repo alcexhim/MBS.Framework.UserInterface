@@ -21,6 +21,7 @@
 using System;
 using UniversalWidgetToolkit.Controls.FileBrowser;
 using UniversalWidgetToolkit.Controls.FileBrowser.Native;
+using UniversalWidgetToolkit.Dialogs;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
@@ -48,7 +49,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr handle = Internal.GTK.Methods.GtkFileChooserWidget.gtk_file_chooser_widget_new ((Engine as GTKEngine).FileBrowserModeToGtkFileChooserAction (ctl.Mode));
 
 			// set up the file filters
-			foreach (Dialogs.FileDialogFileNameFilter filter in ctl.FileNameFilters)
+			foreach (FileDialogFileNameFilter filter in ctl.FileNameFilters)
 			{
 				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(handle, GTKEngine.CreateGTKFileChooserFilter(filter));
 			}

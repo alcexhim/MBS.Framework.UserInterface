@@ -41,6 +41,7 @@
     <Compile Include="WindowsFormsNativeControl.cs" />
     <Compile Include="Engines\WindowsForms\Controls\WindowImplementation.cs" />
     <Compile Include="Engines\WindowsForms\WindowsFormsNativeImplementation.cs" />
+    <Compile Include="Printing\WindowsFormsPrinter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">
@@ -52,6 +53,7 @@
     <Folder Include="Engines\" />
     <Folder Include="Engines\WindowsForms\" />
     <Folder Include="Engines\WindowsForms\Controls\" />
+    <Folder Include="Printing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

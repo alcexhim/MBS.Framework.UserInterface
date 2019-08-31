@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using UniversalWidgetToolkit.Controls;
 using UniversalWidgetToolkit.Drawing;
+using UniversalWidgetToolkit.Engines.WindowsForms.Printing;
+using UniversalWidgetToolkit.Printing;
 
 namespace UniversalWidgetToolkit.Engines.WindowsForms
 {
@@ -134,5 +137,33 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault (false);
 			return true;
 		}
+
+		protected override Printer[] GetPrintersInternal()
+		{
+			List<Printer> list = new List<Printer>();
+			foreach (string p in PrinterSettings.InstalledPrinters)
+			{
+				list.Add(new WindowsFormsPrinter(p));
+			}
+			return list.ToArray();
+		}
+
+		protected override void PrintInternal(PrintJob job)
+		{
+			PrintDocument doc = new PrintDocument();
+			doc.BeginPrint += Doc_BeginPrint;
+			doc.PrintPage += Doc_PrintPage;
+			doc.Print();
+		}
+
+		void Doc_PrintPage(object sender, PrintPageEventArgs e)
+		{
+		}
+
+
+		void Doc_BeginPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+		{
+		}
+
 	}
 }

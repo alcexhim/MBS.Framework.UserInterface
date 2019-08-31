@@ -162,6 +162,12 @@
     <Compile Include="Engines\GTK\Controls\DropDownButtonImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPopover.cs" />
     <Compile Include="Engines\GTK\Controls\PopupWindowImplementation.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPrintUnixDialog.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPrintJob.cs" />
+    <Compile Include="Engines\GTK\Dialogs\PrintDialogImplementation.cs" />
+    <Compile Include="Engines\GTK\Printing\GTKPrinter.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPrintSettings.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkPageSetup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -181,6 +187,8 @@
     <Folder Include="Engines\GTK\Drawing\" />
     <Folder Include="Engines\GTK\Internal\Cairo\" />
     <Folder Include="Engines\GTK\Internal\GTK\Methods\" />
+    <Folder Include="Engines\GTK\Dialogs\" />
+    <Folder Include="Engines\GTK\Printing\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\UniversalWidgetToolkit\UniversalWidgetToolkit.csproj">

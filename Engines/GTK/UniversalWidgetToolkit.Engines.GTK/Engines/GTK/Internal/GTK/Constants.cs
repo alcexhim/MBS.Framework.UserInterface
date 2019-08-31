@@ -465,6 +465,49 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			/// </summary>
 			Right
 		}
+
+		/// <summary>
+		/// The status gives a rough indication of the completion of a running print operation.
+		/// </summary>
+		public enum GtkPrintStatus
+		{
+			/// <summary>
+			/// The printing has not started yet; this status is set initially, and while the print dialog is shown.
+			/// </summary>
+			Initial,
+			/// <summary>
+			/// This status is set while the begin-print signal is emitted and during pagination.
+			/// </summary>
+			Preparing,
+			/// <summary>
+			/// This status is set while the pages are being rendered.
+			/// </summary>
+			GeneratingData,
+			/// <summary>
+			/// The print job is being sent off to the printer.
+			/// </summary>
+			SendingData,
+			/// <summary>
+			/// The print job has been sent to the printer, but is not printed for some reason, e.g. the printer may be stopped.
+			/// </summary>
+			Pending,
+			/// <summary>
+			/// Some problem has occurred during printing, e.g. a paper jam.
+			/// </summary>
+			PendingIssue,
+			/// <summary>
+			/// The printer is processing the print job.
+			/// </summary>
+			Printing,
+			/// <summary>
+			/// The printing has been completed successfully.
+			/// </summary>
+			Finished,
+			/// <summary>
+			/// The printing has been aborted.
+			/// </summary>
+			Aborted
+		}
 	}
 }
 

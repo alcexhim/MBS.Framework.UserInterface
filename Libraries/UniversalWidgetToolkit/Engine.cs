@@ -5,6 +5,8 @@ using UniversalWidgetToolkit.Controls;
 using UniversalWidgetToolkit.Drawing;
 
 using MBS.Framework.Collections.Generic;
+using UniversalWidgetToolkit.Printing;
+using System.Diagnostics.Contracts;
 
 namespace UniversalWidgetToolkit
 {
@@ -22,6 +24,8 @@ namespace UniversalWidgetToolkit
 		[DebuggerNonUserCode()]
 		public NativeControl GetHandleForControl(Control control)
 		{
+			if (control == null)
+				return null;
 			return handlesByControl[control];
 		}
 		public bool IsControlCreated(Control control)
@@ -292,6 +296,10 @@ namespace UniversalWidgetToolkit
 		[DebuggerNonUserCode()]
 		public DialogResult ShowDialog(Dialog dialog, Window parent)
 		{
+			/*
+			if (!IsControlCreated(dialog))
+				CreateControl(dialog);
+			*/
 			if (parent == null)
 			{
 				// find the appropriate parent window
@@ -407,5 +415,21 @@ namespace UniversalWidgetToolkit
 		{
 			DoEventsInternal();
 		}
+
+		#region Printing
+		protected abstract Printer[] GetPrintersInternal();
+		public Printer[] GetPrinters()
+		{
+			return GetPrintersInternal();
+		}
+
+		protected abstract void PrintInternal(PrintJob job);
+		public void Print(PrintJob job)
+		{
+			Contract.Requires(job != null);
+
+			PrintInternal(job);
+		}
+		#endregion
 	}
 }

@@ -15,6 +15,9 @@ using UniversalWidgetToolkit.Input.Mouse;
 using MBS.Framework.Drawing;
 using System.Runtime.InteropServices;
 using UniversalWidgetToolkit.Controls.FileBrowser;
+using UniversalWidgetToolkit.Printing;
+using UniversalWidgetToolkit.Engines.GTK.Printing;
+using UniversalWidgetToolkit.Engines.GTK.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -29,10 +32,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			get
 			{
 				if (_Version == null) {
-					uint major = Internal.GTK.Methods.Gtk.gtk_get_major_version ();
-					uint minor = Internal.GTK.Methods.Gtk.gtk_get_minor_version ();
-					uint micro = Internal.GTK.Methods.Gtk.gtk_get_micro_version ();
-					_Version = new Version ((int)major, (int)minor, (int)micro);
+					uint major = Internal.GTK.Methods.Gtk.gtk_get_major_version();
+					uint minor = Internal.GTK.Methods.Gtk.gtk_get_minor_version();
+					uint micro = Internal.GTK.Methods.Gtk.gtk_get_micro_version();
+					_Version = new Version((int)major, (int)minor, (int)micro);
 				}
 				return _Version;
 			}
@@ -103,32 +106,32 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			switch (key)
 			{
-				case KeyboardKey.A: return (uint)'A';
-				case KeyboardKey.B: return (uint)'B';
-				case KeyboardKey.C: return (uint)'C';
-				case KeyboardKey.D: return (uint)'D';
-				case KeyboardKey.E: return (uint)'E';
-				case KeyboardKey.F: return (uint)'F';
-				case KeyboardKey.G: return (uint)'G';
-				case KeyboardKey.H: return (uint)'H';
-				case KeyboardKey.I: return (uint)'I';
-				case KeyboardKey.J: return (uint)'J';
-				case KeyboardKey.K: return (uint)'K';
-				case KeyboardKey.L: return (uint)'L';
-				case KeyboardKey.M: return (uint)'M';
-				case KeyboardKey.N: return (uint)'N';
-				case KeyboardKey.O: return (uint)'O';
-				case KeyboardKey.P: return (uint)'P';
-				case KeyboardKey.Q: return (uint)'Q';
-				case KeyboardKey.R: return (uint)'R';
-				case KeyboardKey.S: return (uint)'S';
-				case KeyboardKey.T: return (uint)'T';
-				case KeyboardKey.U: return (uint)'U';
-				case KeyboardKey.V: return (uint)'V';
-				case KeyboardKey.W: return (uint)'W';
-				case KeyboardKey.X: return (uint)'X';
-				case KeyboardKey.Y: return (uint)'Y';
-				case KeyboardKey.Z: return (uint)'Z';
+			case KeyboardKey.A: return (uint)'A';
+			case KeyboardKey.B: return (uint)'B';
+			case KeyboardKey.C: return (uint)'C';
+			case KeyboardKey.D: return (uint)'D';
+			case KeyboardKey.E: return (uint)'E';
+			case KeyboardKey.F: return (uint)'F';
+			case KeyboardKey.G: return (uint)'G';
+			case KeyboardKey.H: return (uint)'H';
+			case KeyboardKey.I: return (uint)'I';
+			case KeyboardKey.J: return (uint)'J';
+			case KeyboardKey.K: return (uint)'K';
+			case KeyboardKey.L: return (uint)'L';
+			case KeyboardKey.M: return (uint)'M';
+			case KeyboardKey.N: return (uint)'N';
+			case KeyboardKey.O: return (uint)'O';
+			case KeyboardKey.P: return (uint)'P';
+			case KeyboardKey.Q: return (uint)'Q';
+			case KeyboardKey.R: return (uint)'R';
+			case KeyboardKey.S: return (uint)'S';
+			case KeyboardKey.T: return (uint)'T';
+			case KeyboardKey.U: return (uint)'U';
+			case KeyboardKey.V: return (uint)'V';
+			case KeyboardKey.W: return (uint)'W';
+			case KeyboardKey.X: return (uint)'X';
+			case KeyboardKey.Y: return (uint)'Y';
+			case KeyboardKey.Z: return (uint)'Z';
 			}
 			return 0;
 		}
@@ -205,6 +208,63 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return button;
 		}
 
+		internal static DialogResult GtkResponseTypeToDialogResult(Internal.GTK.Constants.GtkResponseType value)
+		{
+			DialogResult result = DialogResult.None;
+			switch (value)
+			{
+				case Internal.GTK.Constants.GtkResponseType.OK:
+				case Internal.GTK.Constants.GtkResponseType.Accept:
+				{
+					result = DialogResult.OK;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Apply:
+				{
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Cancel:
+				{
+					result = DialogResult.Cancel;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Close:
+				{
+					result = DialogResult.Cancel;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.DeleteEvent:
+				{
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Help:
+				{
+					result = DialogResult.Help;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.No:
+				{
+					result = DialogResult.No;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.None:
+				{
+					result = DialogResult.None;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Reject:
+				{
+					result = DialogResult.Cancel;
+					break;
+				}
+				case Internal.GTK.Constants.GtkResponseType.Yes:
+				{
+					result = DialogResult.Yes;
+					break;
+				}
+			}
+			return result;
+		}
 
 		protected override bool InitializeInternal()
 		{
@@ -333,6 +393,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		public GTKEngine()
 		{
 			InitializeStockIDs();
+
+			GtkPrintJob_status_changed_handler = new Internal.GObject.Delegates.GCallbackV1I(GtkPrintJob_status_changed);
 		}
 
 		private void InitializeStockIDs()
@@ -830,7 +892,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			else if (dialog is PrintDialog)
 			{
-				handle = PrintDialog_Create(dialog as PrintDialog);
+				GTKNativeControl nc = ((new Dialogs.PrintDialogImplementation(this, dialog).CreateControl(dialog)) as GTKNativeControl);
+				handle = nc.Handle;
 
 				DialogResult result1 = PrintDialog_Run(parentHandle, handle);
 				return result1;
@@ -960,13 +1023,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			IntPtr handle = Internal.GTK.Methods.GtkAppChooserDialog.gtk_app_chooser_dialog_new_for_content_type(CommonDialog_GetParentHandle(dialog), Internal.GTK.Constants.GtkDialogFlags.Modal, dialog.ContentType);
 			return handle;
-		}
-
-		private DialogResult PrintDialog_Run(IntPtr parent, IntPtr handle)
-		{
-			IntPtr error = IntPtr.Zero;
-			Internal.GTK.Constants.GtkPrintOperationResult gtkResult = Internal.GTK.Methods.GtkPrintOperation.gtk_print_operation_run(handle, Internal.GTK.Constants.GtkPrintOperationAction.PrintDialog, parent, error);
-			return GtkPrintOperationResultToDialogResult(gtkResult);
 		}
 
 		private DialogResult GtkPrintOperationResultToDialogResult(Internal.GTK.Constants.GtkPrintOperationResult value)
@@ -1219,11 +1275,135 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		}
 		#endregion
 		#region Print Dialog
-		private IntPtr PrintDialog_Create(PrintDialog dlg)
+
+		private DialogResult PrintDialog_Run(IntPtr parent, IntPtr handle)
 		{
-			IntPtr handle = Internal.GTK.Methods.GtkPrintOperation.gtk_print_operation_new();
-			return handle;
+			IntPtr error = IntPtr.Zero;
+			Internal.GTK.Constants.GtkResponseType gtkResult = (Internal.GTK.Constants.GtkResponseType) Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
+			return GtkResponseTypeToDialogResult(gtkResult);
 		}
+
+		private Dictionary<Printer, IntPtr> _PrinterToHandle = new Dictionary<Printer, IntPtr>();
+		private Dictionary<IntPtr, Printer> _HandleToPrinter = new Dictionary<IntPtr, Printer>();
+		private IntPtr PrinterToHandle(Printer printer)
+		{
+			if (_PrinterToHandle.ContainsKey(printer))
+				return _PrinterToHandle[printer];
+			return (printer as GTKPrinter).Handle;
+		}
+		private Printer HandleToPrinter(IntPtr handle)
+		{
+			if (_HandleToPrinter.ContainsKey(handle))
+				return _HandleToPrinter[handle];
+			return null;
+		}
+		private void RegisterPrinter(Printer printer, IntPtr handle)
+		{
+			_PrinterToHandle[printer] = handle;
+			_HandleToPrinter[handle] = printer;
+		}
+
+		List<Printer> listPrinters = null;
+		protected override Printer[] GetPrintersInternal()
+		{
+			if (listPrinters != null)
+				throw new InvalidOperationException("still enumerating printers from the last call to GetPrinters");
+
+			listPrinters = new List<Printer>();
+			Internal.GTK.Methods.Gtk.gtk_enumerate_printers(_GetPrintersInternal, IntPtr.Zero, new Action<IntPtr>(p_DestroyNotify), true);
+			return listPrinters.ToArray();
+		}
+		private void p_DestroyNotify(IntPtr data)
+		{
+		}
+
+		/// <summary>
+		/// The type of function passed to gtk_enumerate_printers().
+		/// </summary>
+		/// <returns><c>true</c> to stop the enumeration, <c>false</c> otherwise.</returns>
+		/// <param name="printer">Note that you need to ref @printer, if you want to keep a reference to it after the function has returned.</param>
+		/// <param name="data">user data passed to gtk_enumerate_printers</param>
+		private bool _GetPrintersInternal(IntPtr /*GtkPrinter*/ handle, IntPtr data)
+		{
+			GTKPrinter printer = new GTKPrinter(handle);
+			listPrinters.Add(printer);
+			return false;
+		}
+
+		protected override void PrintInternal(PrintJob job)
+		{
+			Contract.Requires(job != null);
+
+			IntPtr hPrinter = PrinterToHandle(job.Printer);
+			IntPtr hSettings = Internal.GTK.Methods.GtkPrintSettings.gtk_print_settings_new();
+			IntPtr hPageSetup = Internal.GTK.Methods.GtkPageSetup.gtk_page_setup_new();
+
+			IntPtr hJob = Internal.GTK.Methods.GtkPrintJob.gtk_print_job_new(job.Title, hPrinter, hSettings, hPageSetup);
+			Internal.GObject.Methods.g_signal_connect(hJob, "status_changed", GtkPrintJob_status_changed_handler);
+
+
+			Internal.GTK.Delegates.GtkPrintJobCompleteFunc hCallbackComplete = new Internal.GTK.Delegates.GtkPrintJobCompleteFunc(GtkPrintJob_Complete);
+
+			IntPtr hError = IntPtr.Zero;
+			IntPtr hCairoSurface = Internal.GTK.Methods.GtkPrintJob.gtk_print_job_get_surface(hJob, ref hError);
+
+			IntPtr cr = Internal.Cairo.Methods.cairo_create(hCairoSurface);
+			GTKGraphics graphics = new GTKGraphics(cr);
+
+			InvokeMethod(job, "OnDrawPage", new PrintEventArgs(graphics));
+
+			Internal.Cairo.Methods.cairo_show_page(cr);
+
+			// automatically called by cairo_destroy
+			Internal.Cairo.Methods.cairo_surface_finish(hCairoSurface);
+
+			Internal.GTK.Methods.GtkPrintJob.gtk_print_job_send(hJob, hCallbackComplete, IntPtr.Zero, new Internal.GObject.Delegates.GDestroyNotify(GtkPrintJob_Destroy));
+
+			printing = true;
+			while (printing)
+			{
+				System.Threading.Thread.Sleep(500);
+				Application.DoEvents();
+			}
+
+			Internal.Cairo.Methods.cairo_destroy(cr);
+			Internal.Cairo.Methods.cairo_surface_destroy(hCairoSurface);
+
+			// clean up
+			// Internal.GLib.Methods.g_main_loop_unref(loop);
+			Internal.GObject.Methods.g_object_unref(hSettings);
+			Internal.GObject.Methods.g_object_unref(hPageSetup);
+			Internal.GObject.Methods.g_object_unref(hPrinter);
+		}
+
+		private bool printing = false;
+
+
+		private Internal.GObject.Delegates.GCallbackV1I GtkPrintJob_status_changed_handler;
+		/// <summary>
+		/// Emitted after the user has finished changing print settings in the dialog, before the actual rendering starts.
+		/// A typical use for ::begin-print is to use the parameters from the GtkPrintContext and paginate the document
+		/// accordingly, and then set the number of pages with gtk_print_operation_set_n_pages().
+		/// </summary>
+		/// <param name="operation">Operation.</param>
+		private void GtkPrintJob_status_changed(IntPtr /*GtkPrintOperation*/ handle)
+		{
+			Internal.GTK.Constants.GtkPrintStatus status = Internal.GTK.Methods.GtkPrintJob.gtk_print_job_get_status(handle);
+			printing = true;
+			if (status == Internal.GTK.Constants.GtkPrintStatus.Aborted || status == Internal.GTK.Constants.GtkPrintStatus.Finished)
+			{
+				printing = false;
+			}
+		}
+		private void GtkPrintJob_Complete(IntPtr print_job, IntPtr user_data, ref Internal.GLib.Structures.GError error)
+		{
+		}
+		private void GtkPrintJob_Destroy(IntPtr data)
+		{
+		}
+
+
 		#endregion
 		#region Generic Dialog
 		private IntPtr Dialog_AddButton(IntPtr handle, Button button)

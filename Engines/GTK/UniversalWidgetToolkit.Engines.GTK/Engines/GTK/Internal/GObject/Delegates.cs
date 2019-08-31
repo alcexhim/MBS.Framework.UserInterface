@@ -14,6 +14,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GObject
 
 		public delegate void ListViewRowActivatedFunc(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path, IntPtr /*GtkTreeViewColumn*/ column);
 
+		public delegate void GDestroyNotify(IntPtr data);
 		public delegate void GClosureNotify(IntPtr data, IntPtr closure);
 
 		/// <summary>

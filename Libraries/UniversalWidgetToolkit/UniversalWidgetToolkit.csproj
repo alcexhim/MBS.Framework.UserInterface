@@ -200,6 +200,11 @@
     <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\DropDownButton.cs" />
     <Compile Include="PopupWindow.cs" />
+    <Compile Include="Printing\PrintOperationResult.cs" />
+    <Compile Include="Printing\PrintSettings.cs" />
+    <Compile Include="Printing\PrintEvent.cs" />
+    <Compile Include="Printing\Printer.cs" />
+    <Compile Include="Printing\PrintJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -234,5 +239,6 @@
     <Folder Include="ObjectModels\Layout\" />
     <Folder Include="Controls\Ribbon\" />
     <Folder Include="Controls\FileBrowser\" />
+    <Folder Include="Printing\" />
   </ItemGroup>
 </Project>

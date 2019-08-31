@@ -52,6 +52,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern uint gtk_get_minor_version();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern uint gtk_get_micro_version();
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gtk_enumerate_printers(Func<IntPtr, IntPtr, bool> func, IntPtr data, Action<IntPtr> destroyNotify, bool wait);
 	}
 }
 

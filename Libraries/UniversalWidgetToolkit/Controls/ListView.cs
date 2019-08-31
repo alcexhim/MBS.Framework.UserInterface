@@ -68,8 +68,14 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			get
 			{
-				if (this.IsCreated)
-					mvarSelectionMode = (ControlImplementation as Native.IListViewNativeImplementation).GetSelectionMode();
+				try
+				{
+					if (this.IsCreated)
+						mvarSelectionMode = (ControlImplementation as Native.IListViewNativeImplementation).GetSelectionMode();
+				}
+				catch (Exception)
+				{
+				}
 				return mvarSelectionMode;
 			}
 			set

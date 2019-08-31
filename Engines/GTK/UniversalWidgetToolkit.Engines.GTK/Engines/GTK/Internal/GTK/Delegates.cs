@@ -32,5 +32,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 		public delegate void GtkDragEvent(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data);
 		public delegate void GtkDragDataGetEvent(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data);
 		public delegate bool GtkTreeSelectionFunc(IntPtr /*GtkTreeSelection*/ selection, IntPtr /*GtkTreeModel*/ model, IntPtr /*GtkTreePath*/ path, bool path_currently_selected, IntPtr data);
+
+		public delegate void GtkPrintJobCompleteFunc(IntPtr /*GtkPrintJob*/ print_job, IntPtr user_data, ref GLib.Structures.GError error);
 	}
 }

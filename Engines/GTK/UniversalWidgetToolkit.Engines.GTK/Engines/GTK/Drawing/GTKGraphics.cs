@@ -19,17 +19,6 @@ namespace UniversalWidgetToolkit.Engines.GTK.Drawing
 			throw new NotImplementedException();
 		}
 
-		protected override void DrawRectangleInternal(Pen pen, double x, double y, double width, double height)
-		{
-			SelectPen(pen);
-
-			Internal.Cairo.Methods.cairo_rectangle(mvarCairoContext, x, y, width, height);
-			CheckStatus();
-
-			Internal.Cairo.Methods.cairo_stroke(mvarCairoContext);
-			CheckStatus();
-		}
-
 		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
 			SelectBrush(brush);
@@ -80,7 +69,19 @@ namespace UniversalWidgetToolkit.Engines.GTK.Drawing
 		{
 			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgb(pen.Color.R, pen.Color.G, pen.Color.B);
 			Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
+			Internal.Cairo.Methods.cairo_set_line_width(mvarCairoContext, pen.Width.ConvertTo(MeasurementUnit.Pixel).Value);
 
+			CheckStatus();
+		}
+
+		protected override void DrawRectangleInternal(Pen pen, double x, double y, double width, double height)
+		{
+			SelectPen(pen);
+
+			Internal.Cairo.Methods.cairo_rectangle(mvarCairoContext, x, y, width, height);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_stroke(mvarCairoContext);
 			CheckStatus();
 		}
 

@@ -21,12 +21,54 @@
 using System;
 namespace UniversalWidgetToolkit.Engines.GTK
 {
-	public class GTKNativeTreeModel : NativeTreeModel
+	public class GTKNativeTreeModel : NativeTreeModel, IComparable<GTKNativeTreeModel>, IEquatable<GTKNativeTreeModel>
 	{
 		public IntPtr Handle { get; private set; } = IntPtr.Zero;
 		public GTKNativeTreeModel(IntPtr handle)
 		{
 			Handle = handle;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+				return false;
+			if (obj is GTKNativeTreeModel)
+				return Equals(obj as GTKNativeTreeModel);
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Handle.GetHashCode();
+		}
+
+		public int CompareTo(GTKNativeTreeModel other)
+		{
+			return this.Handle.ToInt64().CompareTo(other.Handle.ToInt64());
+		}
+
+		public bool Equals(GTKNativeTreeModel other)
+		{
+			return Handle.Equals(other.Handle);
+		}
+
+		public static bool operator ==(GTKNativeTreeModel left, GTKNativeTreeModel right)
+		{
+			if (left == null || right == null)
+				return object.Equals(left, right);
+
+			return left.Equals(right);
+		}
+		public static bool operator !=(GTKNativeTreeModel left, GTKNativeTreeModel right)
+		{
+			return !left.Equals(right);
+		}
+
+		public override string ToString()
+		{
+			return Handle.ToString();
 		}
 	}
 }

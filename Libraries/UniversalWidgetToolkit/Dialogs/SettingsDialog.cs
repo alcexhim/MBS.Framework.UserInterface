@@ -196,10 +196,20 @@ namespace UniversalWidgetToolkit.Dialogs
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
 				lbl.Text = o.Title;
 				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
-				TextBox txt = new TextBox ();
-				txt.Text = o.GetValue<string> ();
-				txt.SetExtraData<Setting> ("setting", o);
-				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
+				ComboBox cbo = new ComboBox ();
+				cbo.ReadOnly = true; // o.RequireSelectionFromList;
+				DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(string) });
+				foreach (ChoiceSetting.ChoiceSettingValue value in o.ValidValues)
+				{
+					tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+					{
+						new TreeModelRowColumn(tm.Columns[0], value.Title)
+					}));
+				}
+				cbo.Model = tm;
+				cbo.Text = o.GetValue<string> ();
+				cbo.SetExtraData<Setting> ("setting", o);
+				ct.Controls.Add (cbo, new GridLayout.Constraints (iRow, 1));
 			} else if (opt is GroupSetting) {
 				GroupSetting o = (opt as GroupSetting);
 

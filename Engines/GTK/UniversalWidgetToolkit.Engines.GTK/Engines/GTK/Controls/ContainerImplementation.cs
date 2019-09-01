@@ -57,18 +57,31 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				if (constraints != null)
 				{
 					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
-					Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
-					// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
-
-					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal) {
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand (ctlHandle, true);
-					} else {
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand (ctlHandle, false);
+					if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+					{
+						Internal.GTK.Methods.GtkTable.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 					}
-					if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal) {
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand (ctlHandle, true);
-					} else {
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, false);
+					else
+					{
+						Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
+						// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
+
+						if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
+						{
+							Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, true);
+						}
+						else
+						{
+							Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, false);
+						}
+						if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal)
+						{
+							Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, true);
+						}
+						else
+						{
+							Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, false);
+						}
 					}
 				}
 			}
@@ -113,12 +126,24 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 			else if (layout is Layouts.GridLayout)
 			{
-				Layouts.GridLayout grid = (layout as Layouts.GridLayout);
-				// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
-				hContainer = Internal.GTK.Methods.GtkGrid.gtk_grid_new();
-				// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
-				Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
-				Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
+				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+				{
+					Layouts.GridLayout grid = (layout as Layouts.GridLayout);
+					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
+					hContainer = Internal.GTK.Methods.GtkTable.gtk_table_new();
+					// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
+					Internal.GTK.Methods.GtkTable.gtk_table_set_row_spacings(hContainer, (uint)grid.RowSpacing);
+					Internal.GTK.Methods.GtkTable.gtk_table_set_col_spacings(hContainer, (uint)grid.ColumnSpacing);
+				}
+				else
+				{
+					Layouts.GridLayout grid = (layout as Layouts.GridLayout);
+					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
+					hContainer = Internal.GTK.Methods.GtkGrid.gtk_grid_new();
+					// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
+				}
 			}
 
 			if (hContainer != IntPtr.Zero)

@@ -726,10 +726,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			base.OnCreated (e);
 
-			IntPtr hCtrl = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (hCtrl);
-			foreach (ControlStyleClass cls in Control.Style.Classes) {
-				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+			{
+			}
+			else
+			{
+				IntPtr hCtrl = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+				IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (hCtrl);
+				foreach (ControlStyleClass cls in Control.Style.Classes) {
+					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
+				}
 			}
 		}
 	}

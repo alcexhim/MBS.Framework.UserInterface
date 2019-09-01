@@ -47,7 +47,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Contract.Assert(ctl != null);
 
 			IntPtr handle = Internal.GTK.Methods.GtkButton.gtk_button_new();
-			Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+			{
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
+			}
 			switch (ctl.BorderStyle)
 			{
 				case ButtonBorderStyle.None:
@@ -84,21 +90,25 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			Internal.GTK.Methods.GtkButton.gtk_button_set_image_position (handle, (Engine as GTKEngine).RelativePositionToGtkPositionType(ctl.ImagePosition));
 
-			switch (ctl.HorizontalAlignment) {
-			case HorizontalAlignment.Left:
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V3)
+			{
+				switch (ctl.HorizontalAlignment)
 				{
-					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign (handle, Internal.GTK.Constants.GtkAlign.Start);
-					break;
-				}
-			case HorizontalAlignment.Center:
-				{
-					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign (handle, Internal.GTK.Constants.GtkAlign.Center);
-					break;
-				}
-			case HorizontalAlignment.Right:
-				{
-					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign (handle, Internal.GTK.Constants.GtkAlign.End);
-					break;
+					case HorizontalAlignment.Left:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
+						break;
+					}
+					case HorizontalAlignment.Center:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
+						break;
+					}
+					case HorizontalAlignment.Right:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
+						break;
+					}
 				}
 			}
 

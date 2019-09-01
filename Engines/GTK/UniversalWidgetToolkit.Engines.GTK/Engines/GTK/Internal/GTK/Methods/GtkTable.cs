@@ -30,6 +30,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkTable*/ gtk_table_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_table_attach(IntPtr /*GtkTable*/ table, IntPtr /*GtkWidget*/ child, uint left_attach, uint right_attach, uint top_attach, uint bottom_attach, Constants.GtkAttachOptions xoptions, Constants.GtkAttachOptions yoptions, uint xpadding, uint ypadding);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_table_set_row_spacings(IntPtr /*GtkTable*/ table, uint spacing);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_table_set_col_spacings(IntPtr /*GtkTable*/ table, uint spacing);
 	}
 }
 

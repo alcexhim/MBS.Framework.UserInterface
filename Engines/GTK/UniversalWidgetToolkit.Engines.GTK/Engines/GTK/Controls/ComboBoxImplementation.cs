@@ -80,13 +80,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			ComboBox ctl = (control as ComboBox);
 			if (ctl.ReadOnly)
 			{
-				IntPtr area = Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_new();
-				IntPtr renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+				{
+					handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new();
+				}
+				else
+				{
+					IntPtr area = Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_new();
+					IntPtr renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
 
-				Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_pack_start(area, renderer, true, true, false);
-				handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_area(area);
+					Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_pack_start(area, renderer, true, true, false);
+					handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_area(area);
 
-				Internal.GTK.Methods.GtkCellArea.gtk_cell_area_attribute_connect(area, renderer, "text", 0);
+					Internal.GTK.Methods.GtkCellArea.gtk_cell_area_attribute_connect(area, renderer, "text", 0);
+				}
 			}
 			else
 			{

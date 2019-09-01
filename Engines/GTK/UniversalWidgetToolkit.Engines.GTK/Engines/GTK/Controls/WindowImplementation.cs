@@ -275,9 +275,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			
 			if (window.Decorated)
 			{
-				IntPtr hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
-				Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
-				Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
+				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+				{
+				}
+				else
+				{
+					IntPtr hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
+					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
+					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
+				}
 			}
 			switch (window.StartPosition)
 			{

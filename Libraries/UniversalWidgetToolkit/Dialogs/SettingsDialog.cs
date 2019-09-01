@@ -113,7 +113,7 @@ namespace UniversalWidgetToolkit.Dialogs
 		{
 			base.OnCreating (e);
 
-			// CreateVSLayout ();
+			// CreateVSLayout();
 			CreateGNOMELayout();
 
 			ctDefault.Visible = false;

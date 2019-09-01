@@ -1419,8 +1419,14 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			buttonHandle = (GetHandleForControl(button) as GTKNativeControl).Handle;
 
 			if (button.ResponseValue == (int)DialogResult.OK) {
-				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context (buttonHandle);
-				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleCtx, "suggested-action");
+				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+				{
+				}
+				else
+				{
+					IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(buttonHandle);
+					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleCtx, "suggested-action");
+				}
 			}
 
 			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);

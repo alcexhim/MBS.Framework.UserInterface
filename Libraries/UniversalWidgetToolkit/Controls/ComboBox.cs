@@ -47,10 +47,6 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			get
 			{
-				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
-				if (impl != null)
-					mvarReadOnly = impl.GetReadOnly();
-
 				return mvarReadOnly;
 			}
 			set
@@ -66,16 +62,22 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			get
 			{
-				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
-				if (impl != null)
-					mvarModel = impl.GetModel();
+				if (IsCreated)
+				{
+					Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+					if (impl != null)
+						mvarModel = impl.GetModel();
+				}
 
 				return mvarModel;
 			}
 			set
 			{
-				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
-				impl?.SetModel(value);
+				if (IsCreated)
+				{
+					Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+					impl?.SetModel(value);
+				}
 				mvarModel = value;
 			}
 		}

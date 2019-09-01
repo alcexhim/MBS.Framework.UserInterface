@@ -35,7 +35,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public TreeModel GetModel()
 		{
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
 			IntPtr hTreeModel = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_model(handle);
 
 			TreeModel tm = Engine.TreeModelFromHandle(new GTKNativeTreeModel(hTreeModel));
@@ -44,7 +44,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public void SetModel(TreeModel value)
 		{
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
 
 			GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(value) as GTKNativeTreeModel);
 			IntPtr hTreeModel = ncTreeModel.Handle;

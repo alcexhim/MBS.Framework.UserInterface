@@ -137,10 +137,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				bool retIter = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 				if (retIter)
 				{
-					if (_TreeModelRowForGtkTreeIter.ContainsKey(iter))
-					{
-						row = _TreeModelRowForGtkTreeIter[iter];
-					}
+					row = (Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(iter);
 				}
 			}
 			return new ListViewHitTestInfo(row, column);
@@ -351,6 +348,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		private static void SelectedRows_ItemRequested(object sender, TreeModelRowItemRequestedEventArgs e)
 		{
 			TreeModelRow.TreeModelSelectedRowCollection coll = (sender as TreeModelRow.TreeModelSelectedRowCollection);
+			ControlImplementation impl = coll.Parent.ControlImplementation;
+			GTKEngine engine = (impl.Engine as GTKEngine);
+
 			if (coll.Parent != null)
 			{
 				IntPtr hTreeView = GetHandleForControl(coll.Parent);
@@ -384,7 +384,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				if (e.Index == -1 && e.Count == 1 && e.Item != null)
 				{
 					// we are adding a new row to the selected collection
-					Internal.GTK.Structures.GtkTreeIter iter = _GtkTreeIterForTreeModelRow[e.Item];
+					Internal.GTK.Structures.GtkTreeIter iter = engine.GetGtkTreeIterForTreeModelRow(e.Item);
 					switch (ImplementedAs(coll.Parent))
 					{
 						case ImplementedAsType.TreeView:
@@ -410,7 +410,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 						bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 						if (ret)
 						{
-							TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+							TreeModelRow row = engine.GetTreeModelRowForGtkTreeIter(iter);
 							e.Item = row;
 						}
 					}
@@ -425,7 +425,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 							bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 							if (ret)
 							{
-								TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+								TreeModelRow row = engine.GetTreeModelRowForGtkTreeIter(iter);
 								if (row == e.Item)
 								{
 									found = true;
@@ -501,17 +501,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 
 			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hModel, ref iter, path);
-			TreeModelRow row = _TreeModelRowForGtkTreeIter[iter];
+			TreeModelRow row = (lv.ControlImplementation.Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(iter);
 
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
-		}
-
-		private static Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
-		private static Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
-		private static void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
-		{
-			_GtkTreeIterForTreeModelRow[row] = hIter;
-			_TreeModelRowForGtkTreeIter[hIter] = row;
 		}
 
 		protected override void OnKeyDown (KeyEventArgs e)
@@ -614,10 +606,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					
 						// as written we currently cannot do this...
 						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
-						if (e.ParentRow != null && _GtkTreeIterForTreeModelRow.ContainsKey(e.ParentRow))
+						if (e.ParentRow != null && (Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = _GtkTreeIterForTreeModelRow[e.ParentRow];
+							Internal.GTK.Structures.GtkTreeIter iterParent = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(e.ParentRow);
 							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
 						}
 						else
@@ -651,8 +643,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			IntPtr hTreeView = GetHandleForControl (lv);
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
-			
-			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
+
+			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
 			bool value = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_row_expanded (hTreeView, hRowPath);
@@ -667,7 +659,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			IntPtr hTreeView = GetHandleForControl (lv);
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
 
-			Internal.GTK.Structures.GtkTreeIter hIterRow = _GtkTreeIterForTreeModelRow [row];
+			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
 			if (expanded) {
@@ -703,7 +695,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				}
 			}
 
-			RegisterGtkTreeIter(row, hIter);
+			(Engine as GTKEngine).RegisterGtkTreeIter(row, hIter);
 
 			foreach (TreeModelRowColumn rc in row.RowColumns)
 			{

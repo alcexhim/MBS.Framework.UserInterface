@@ -1883,12 +1883,26 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			return new GTKNativeTreeModel(hTreeStore);
 		}
 
-		private static Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
-		private static Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
-		private static void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
+		private Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
+		private Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
+		internal void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
 		{
 			_GtkTreeIterForTreeModelRow[row] = hIter;
 			_TreeModelRowForGtkTreeIter[hIter] = row;
+		}
+		internal TreeModelRow GetTreeModelRowForGtkTreeIter(Internal.GTK.Structures.GtkTreeIter hIter)
+		{
+			if (_TreeModelRowForGtkTreeIter.ContainsKey(hIter))
+				return _TreeModelRowForGtkTreeIter[hIter];
+			return null;
+		}
+		internal Internal.GTK.Structures.GtkTreeIter GetGtkTreeIterForTreeModelRow(TreeModelRow row)
+		{
+			return _GtkTreeIterForTreeModelRow[row];
+		}
+		internal bool IsTreeModelRowRegistered(TreeModelRow row)
+		{
+			return _GtkTreeIterForTreeModelRow.ContainsKey(row);
 		}
 
 		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, IntPtr hTreeStore, out Internal.GTK.Structures.GtkTreeIter hIter, Internal.GTK.Structures.GtkTreeIter? parent, int position, bool append = false)

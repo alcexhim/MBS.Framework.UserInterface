@@ -12,6 +12,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		public TextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
 			TextBox_Changed_Handler = new Internal.GObject.Delegates.GCallback(TextBox_Changed);
+			TextBuffer_Changed_Handler = new Internal.GObject.Delegates.GCallbackV1I(TextBuffer_Changed);
 		}
 
 		protected override string GetControlTextInternal(Control control)
@@ -37,7 +38,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				// handle points to the ScrolledWindow
 				IntPtr hTextBox = Internal.GTK.Methods.GtkContainer.gtk_container_get_focus_child(handle);
 				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
-				// return Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_text(hBuffer, 0, 0, false);
+
+				Internal.GTK.Structures.GtkTextIter hStartIter = new Internal.GTK.Structures.GtkTextIter();
+				Internal.GTK.Structures.GtkTextIter hEndIter = new Internal.GTK.Structures.GtkTextIter();
+
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_start_iter(hBuffer, ref hStartIter);
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_end_iter(hBuffer, ref hEndIter);
+
+				value = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_text(hBuffer, ref hStartIter, ref hEndIter, true);
 			}
 			else
 			{
@@ -89,8 +97,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			else
 			{
 				handle = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
+				Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
 			}
-			Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
 
 			string ctlText = ctl.Text;
 			if (ctlText != null)
@@ -101,8 +109,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					IntPtr hBuffer = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_new(hTextTagTable);
 					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctlText, ctlText.Length);
 					Internal.GTK.Methods.GtkTextView.gtk_text_view_set_buffer(handle, hBuffer);
+
+					_TextBoxForBuffer[hBuffer] = ctl;
+					Internal.GObject.Methods.g_signal_connect(hBuffer, "changed", TextBuffer_Changed_Handler);
 				}
-				Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(handle, ctlText);
+				else
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(handle, ctlText);
+				}
 			}
 
 			if (ctl.MaxLength > -1)
@@ -135,6 +149,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		private Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
 		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;
+		private Internal.GObject.Delegates.GCallbackV1I TextBuffer_Changed_Handler;
 		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
 			TextBox ctl = (Application.Engine as GTKEngine).GetControlByHandle(handle) as TextBox;
@@ -143,6 +158,20 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 			textboxChanged[handle] = true;
 			InvokeMethod(ctl, "OnChanged", EventArgs.Empty);
+		}
+
+		private Dictionary<IntPtr, TextBox> _TextBoxForBuffer = new Dictionary<IntPtr, TextBox>();
+		private void TextBuffer_Changed(IntPtr handle)
+		{
+			if (_TextBoxForBuffer.ContainsKey(handle))
+			{
+				TextBox ctl = _TextBoxForBuffer[handle];
+				if (ctl == null)
+					return;
+
+				textboxChanged[handle] = true;
+				InvokeMethod(ctl, "OnChanged", EventArgs.Empty);
+			}
 		}
 	}
 }

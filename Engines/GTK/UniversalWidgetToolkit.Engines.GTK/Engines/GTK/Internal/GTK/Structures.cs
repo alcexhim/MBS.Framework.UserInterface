@@ -35,5 +35,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK
 			public uint keyval;
 			public /*string*/ IntPtr translation_domain;
 		}
+
+		public struct GtkTextIter
+		{
+			/* GtkTextIter is an opaque datatype; ignore all these fields.
+ * Initialize the iter with gtk_text_buffer_get_iter_*
+ * functions
+ */
+			/*< private >*/
+			IntPtr dummy1;
+			IntPtr dummy2;
+			int dummy3;
+			int dummy4;
+			int dummy5;
+			int dummy6;
+			int dummy7;
+			int dummy8;
+			IntPtr dummy9;
+			IntPtr dummy10;
+			int dummy11;
+			int dummy12;
+			/* padding */
+			int dummy13;
+			IntPtr dummy14;
+		}
 	}
 }

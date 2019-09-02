@@ -27,8 +27,24 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_text_buffer_new(IntPtr /*GtkTextTagTable*/ table);
+
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_text_buffer_get_text")]
+		private static extern IntPtr gtk_text_buffer_get_text_impl(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter /*GtkTextIter*/ start, ref Structures.GtkTextIter /*GtkTextIter*/ end, bool include_hidden_chars);
+		public static string gtk_text_buffer_get_text(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter /*GtkTextIter*/ start, ref Structures.GtkTextIter /*GtkTextIter*/ end, bool include_hidden_chars)
+		{
+			IntPtr ptr = gtk_text_buffer_get_text_impl(buffer, ref start, ref end, include_hidden_chars);
+			string val = Marshal.PtrToStringAuto(ptr);
+			return val;
+		}
+
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_text_buffer_set_text(IntPtr /*GtkTextBuffer*/ buffer, string text, int len);
+		public static extern void gtk_text_buffer_set_text(IntPtr /*GtkTextBuffer*/ buffer, string text, int len);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_get_start_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_get_end_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
 	}
 }
 

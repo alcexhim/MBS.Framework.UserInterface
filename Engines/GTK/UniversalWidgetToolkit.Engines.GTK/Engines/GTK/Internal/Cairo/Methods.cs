@@ -18,6 +18,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*cairo_t*/ cairo_create(IntPtr /*cairo_surface_t*/ target);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_move_to(IntPtr /*cairo_t*/ cr, double x, double y);
+
 		/// <summary>
 		/// Decreases the reference count on cr by one. If the result is zero, then cr and all associated resources are freed. See <see cref="cairo_reference"/>. 
 		/// </summary>

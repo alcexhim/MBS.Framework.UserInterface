@@ -23,20 +23,29 @@ namespace UniversalWidgetToolkit.Engines.GTK.Drawing
 		{
 			SelectBrush(brush);
 
+			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, rectangle.X, rectangle.Y);
+			CheckStatus();
+
 			Internal.Cairo.Methods.cairo_select_font_face(mvarCairoContext, font.FamilyName, (font.Italic ? Internal.Cairo.Constants.CairoFontSlant.Italic : Internal.Cairo.Constants.CairoFontSlant.Normal), (font.Weight == 800 ? Internal.Cairo.Constants.CairoFontWeight.Bold : Internal.Cairo.Constants.CairoFontWeight.Normal));
 			CheckStatus();
 
 			Internal.Cairo.Methods.cairo_set_font_size(mvarCairoContext, font.Size);
 			CheckStatus();
 
+			// this is for RENDERING text - textually
 			Internal.Cairo.Methods.cairo_show_text(mvarCairoContext, value);
 			CheckStatus();
 
+			/*
+			 // this is for DRAWING text - graphically
 			Internal.Cairo.Methods.cairo_text_path(mvarCairoContext, value);
 			CheckStatus();
 
 			Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
 			CheckStatus();
+			*/
+
+			// there IS a difference - textually-rendered text is selectable when rendering PDFs; graphically-drawn text is not
 		}
 
 		[DebuggerNonUserCode()]

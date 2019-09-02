@@ -171,6 +171,9 @@
     <Compile Include="Engines\GTK\GTKNativeTreeModel.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCellAreaBox.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkCellArea.cs" />
+    <Compile Include="Engines\GTK\GTKClipboard.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkClipboard.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTextIter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

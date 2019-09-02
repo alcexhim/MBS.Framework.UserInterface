@@ -33,6 +33,12 @@ namespace UniversalWidgetToolkit
 			return handlesByControl.ContainsKey(control);
 		}
 
+		protected abstract Clipboard GetDefaultClipboardInternal();
+		public Clipboard GetDefaultClipboard()
+		{
+			return GetDefaultClipboardInternal();
+		}
+
 		protected void InvokeStaticMethod(Type typ, string meth, params object[] parms)
 		{
 			if (typ == null)

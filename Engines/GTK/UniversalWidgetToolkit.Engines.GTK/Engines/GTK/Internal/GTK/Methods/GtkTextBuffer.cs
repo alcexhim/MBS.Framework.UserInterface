@@ -45,6 +45,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_text_buffer_get_start_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_buffer_get_end_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_insert(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter, string text, int len);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_insert_at_cursor(IntPtr /*GtkTextBuffer*/ buffer, string text, int len);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_delete(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_text_buffer_get_selection_bounds(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
 	}
 }
 

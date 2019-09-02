@@ -1963,6 +1963,18 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				RecursiveTreeStoreInsertRow(tm, row2, hTreeStore, out hIter2, hIter, row.Rows.Count - 1);
 			}
 		}
+
+		private Clipboard _DefaultClipboard = null;
+		protected override Clipboard GetDefaultClipboardInternal()
+		{
+			if (_DefaultClipboard == null)
+			{
+				IntPtr hDisplay = Internal.GDK.Methods.gdk_display_get_default();
+				IntPtr hClipboard = Internal.GTK.Methods.GtkClipboard.gtk_clipboard_get_default(hDisplay);
+				_DefaultClipboard = new GTKClipboard(hClipboard);
+			}
+			return _DefaultClipboard;
+		}
 	}
 }
 

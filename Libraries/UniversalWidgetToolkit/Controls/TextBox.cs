@@ -1,9 +1,24 @@
 using System;
-
+using UniversalWidgetToolkit.Controls.Native;
 using UniversalWidgetToolkit.Input.Keyboard;
 
 namespace UniversalWidgetToolkit.Controls
 {
+	namespace Native
+	{
+		public interface ITextBoxImplementation
+		{
+			void InsertText(string content);
+
+			int GetSelectionStart();
+			void SetSelectionStart(int pos);
+			int GetSelectionLength();
+			void SetSelectionLength(int len);
+
+			string GetSelectedText();
+			void SetSelectedText(string text);
+		}
+	}
 	public class TextBox : SystemControl
 	{
 		private int mvarMaxLength = -1;
@@ -26,6 +41,12 @@ namespace UniversalWidgetToolkit.Controls
 		public VerticalAlignment VerticalAlignment {  get { return mvarVerticalAlignment;  } set { mvarVerticalAlignment = value; } }
 
 		private bool mvarUseSystemPasswordChar = false;
+
+		public void Insert(string content)
+		{
+			(ControlImplementation as Native.ITextBoxImplementation).InsertText(content);
+		}
+
 		public bool UseSystemPasswordChar { get { return mvarUseSystemPasswordChar; } set { mvarUseSystemPasswordChar = value; } }
 
 		private bool mvarEditable = true;
@@ -54,6 +75,56 @@ namespace UniversalWidgetToolkit.Controls
 		{
 			if (Changed != null)
 				Changed (this, e);
+		}
+
+		private string mvarSelectedText = null;
+		public string SelectedText
+		{
+			get
+			{
+				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
+				if (impl != null)
+					mvarSelectedText = impl.GetSelectedText();
+
+				return mvarSelectedText;
+			}
+			set
+			{
+				(ControlImplementation as ITextBoxImplementation)?.SetSelectedText(value);
+			}
+		}
+
+		private int mvarSelectionStart = 0;
+		public int SelectionStart
+		{
+			get
+			{
+				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
+				if (impl != null)
+					mvarSelectionStart = impl.GetSelectionStart();
+
+				return mvarSelectionStart;
+			}
+			set
+			{
+				(ControlImplementation as ITextBoxImplementation)?.SetSelectionStart(value);
+			}
+		}
+		private int mvarSelectionLength = 0;
+		public int SelectionLength
+		{
+			get
+			{
+				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
+				if (impl != null)
+					mvarSelectionLength = impl.GetSelectionLength();
+
+				return mvarSelectionLength;
+			}
+			set
+			{
+				(ControlImplementation as ITextBoxImplementation)?.SetSelectionLength(value);
+			}
 		}
 	}
 }

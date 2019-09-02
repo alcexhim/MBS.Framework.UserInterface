@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using UniversalWidgetToolkit.Controls;
+using UniversalWidgetToolkit.Controls.Native;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(TextBox))]
-	public class TextBoxImplementation : GTKNativeImplementation
+	public class TextBoxImplementation : GTKNativeImplementation, ITextBoxImplementation
 	{
 		public TextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
 			TextBox_Changed_Handler = new Internal.GObject.Delegates.GCallback(TextBox_Changed);
 			TextBuffer_Changed_Handler = new Internal.GObject.Delegates.GCallbackV1I(TextBuffer_Changed);
+		}
+
+		public void InsertText(string content)
+		{
+			TextBox ctl = (Control as TextBox);
+			if (ctl.Multiline)
+			{
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
+				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_insert_at_cursor(hBuffer, content, content.Length);
+			}
 		}
 
 		protected override string GetControlTextInternal(Control control)
@@ -171,6 +186,102 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 				textboxChanged[handle] = true;
 				InvokeMethod(ctl, "OnChanged", EventArgs.Empty);
+			}
+		}
+
+		public int GetSelectionStart()
+		{
+			TextBox ctl = (Control as TextBox);
+			if (ctl.Multiline)
+			{
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
+				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+				Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
+				Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
+				bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(hBuffer, ref iterStart, ref iterEnd);
+				if (success)
+				{
+					return Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iterStart);
+				}
+				return 0;
+			}
+			return -1;
+		}
+		public void SetSelectionStart(int pos)
+		{
+			throw new NotImplementedException();
+		}
+		public int GetSelectionLength()
+		{
+			TextBox ctl = (Control as TextBox);
+			if (ctl.Multiline)
+			{
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
+				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+				Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
+				Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
+				bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(hBuffer, ref iterStart, ref iterEnd);
+				if (success)
+				{
+					int start = Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iterStart);
+					int end = Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iterEnd);
+					return end - start;
+				}
+			}
+			return 0;
+		}
+		public void SetSelectionLength(int len)
+		{
+			throw new NotImplementedException();
+		}
+
+		public string GetSelectedText()
+		{
+			TextBox ctl = (Control as TextBox);
+			if (ctl.Multiline)
+			{
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
+				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+				Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
+				Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
+				bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(hBuffer, ref iterStart, ref iterEnd);
+				if (success)
+				{
+					string value = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_text(hBuffer, ref iterStart, ref iterEnd, true);
+					return value;
+				}
+			}
+			return null;
+		}
+
+		public void SetSelectedText(string text)
+		{
+			TextBox ctl = (Control as TextBox);
+			if (ctl.Multiline)
+			{
+				IntPtr hScrolledWindow = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
+				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
+
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+				Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
+				Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
+				bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(hBuffer, ref iterStart, ref iterEnd);
+
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_delete(hBuffer, ref iterStart, ref iterEnd);
+				if (!String.IsNullOrEmpty(text))
+				{
+					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_insert(hBuffer, ref iterStart, text, text.Length);
+				}
 			}
 		}
 	}

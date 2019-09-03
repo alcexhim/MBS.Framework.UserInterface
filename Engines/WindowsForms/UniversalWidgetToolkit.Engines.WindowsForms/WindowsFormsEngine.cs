@@ -170,5 +170,15 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 			return new WindowsFormsNativeTreeModel();
 		}
 
+		private static WindowsFormsClipboard _Clipboard = null;
+		protected override Clipboard GetDefaultClipboardInternal()
+		{
+			if (_Clipboard == null)
+			{
+				_Clipboard = new WindowsFormsClipboard();
+			}
+			return _Clipboard;
+		}
+
 	}
 }

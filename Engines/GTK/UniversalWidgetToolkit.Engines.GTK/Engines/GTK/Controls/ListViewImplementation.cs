@@ -619,6 +619,16 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 					}
 					break;
 				}
+				case TreeModelChangedAction.Remove:
+				{
+					foreach (TreeModelRow row in e.Rows)
+					{
+						Internal.GTK.Structures.GtkTreeIter iter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
+						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
+						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
+					}
+					break;
+				}
 				case TreeModelChangedAction.Clear:
 				{
 					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_clear(hTreeModel);

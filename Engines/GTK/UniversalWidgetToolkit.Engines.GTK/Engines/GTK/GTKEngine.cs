@@ -18,6 +18,7 @@ using UniversalWidgetToolkit.Controls.FileBrowser;
 using UniversalWidgetToolkit.Printing;
 using UniversalWidgetToolkit.Engines.GTK.Printing;
 using UniversalWidgetToolkit.Engines.GTK.Drawing;
+using UniversalWidgetToolkit.Engines.GTK.Internal.GTK;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
@@ -1895,6 +1896,18 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			_GtkTreeIterForTreeModelRow[row] = hIter;
 			_TreeModelRowForGtkTreeIter[hIter] = row;
+		}
+		internal void UnregisterGtkTreeIter(Structures.GtkTreeIter iter)
+		{
+			if (_TreeModelRowForGtkTreeIter.ContainsKey(iter))
+			{
+				_GtkTreeIterForTreeModelRow.Remove(_TreeModelRowForGtkTreeIter[iter]);
+			}
+			else
+			{
+				Console.WriteLine("attempted to unregister invalid GtkTreeIter for TreeModel");
+			}
+			_TreeModelRowForGtkTreeIter.Remove(iter);
 		}
 		internal TreeModelRow GetTreeModelRowForGtkTreeIter(Internal.GTK.Structures.GtkTreeIter hIter)
 		{

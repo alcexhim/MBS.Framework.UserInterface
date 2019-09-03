@@ -39,6 +39,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tree_store_append(IntPtr hTreeStore, out Structures.GtkTreeIter hIter, IntPtr hIterParent);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_store_append(IntPtr hTreeStore, out Structures.GtkTreeIter hIter, ref Structures.GtkTreeIter iterParent);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_store_remove(IntPtr /*GtkTreeStore*/ tree_store, ref Structures.GtkTreeIter iter);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_store_set_value(IntPtr hTreeStore, ref Structures.GtkTreeIter hIter, int columnIndex, ref GLib.Structures.Value val);

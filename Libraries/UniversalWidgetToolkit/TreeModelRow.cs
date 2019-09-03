@@ -195,6 +195,21 @@ namespace UniversalWidgetToolkit
 					}
 					break;
 				}
+				case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+				{
+					List<TreeModelRow> list = new List<TreeModelRow>();
+					foreach (TreeModelRow row in e.NewItems)
+					{
+						row.ParentRow = this;
+						row.ParentControl = this.ParentControl;
+						list.Add(row);
+					}
+					if (ParentControl != null)
+					{
+						(ParentControl.ControlImplementation as UniversalWidgetToolkit.Controls.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, list.ToArray(), this));
+					}
+					break;
+				}
 			}
 		}
 

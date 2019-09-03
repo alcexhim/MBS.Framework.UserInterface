@@ -40,6 +40,11 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		{
 			Internal.GTK.Methods.GtkClipboard.gtk_clipboard_clear(Handle);
 		}
+
+		protected override bool ContainsTextInternal()
+		{
+			return Internal.GTK.Methods.GtkClipboard.gtk_clipboard_wait_is_text_available(Handle);
+		}
 		protected override string GetTextInternal()
 		{
 			string text = Internal.GTK.Methods.GtkClipboard.gtk_clipboard_wait_for_text(Handle);
@@ -48,6 +53,23 @@ namespace UniversalWidgetToolkit.Engines.GTK
 		protected override void SetTextInternal(string value)
 		{
 			Internal.GTK.Methods.GtkClipboard.gtk_clipboard_set_text(Handle, value, value.Length);
+		}
+
+		protected override CrossThreadData GetContentInternal()
+		{
+			IntPtr targets = IntPtr.Zero;
+			int n_targets = 0;
+			bool retval = Internal.GTK.Methods.GtkClipboard.gtk_clipboard_wait_for_targets(Handle, ref targets, ref n_targets);
+
+			if (!retval)
+				return null;
+
+			CrossThreadData data = new CrossThreadData();
+			return data;
+		}
+		protected override object GetDataInternal(string format)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

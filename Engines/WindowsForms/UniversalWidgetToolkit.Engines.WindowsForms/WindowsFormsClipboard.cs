@@ -27,6 +27,10 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 		{
 			System.Windows.Forms.Clipboard.Clear();
 		}
+		protected override bool ContainsTextInternal()
+		{
+			return System.Windows.Forms.Clipboard.ContainsText();
+		}
 		protected override string GetTextInternal()
 		{
 			return System.Windows.Forms.Clipboard.GetText();
@@ -34,6 +38,23 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 		protected override void SetTextInternal(string value)
 		{
 			System.Windows.Forms.Clipboard.SetText(value);
+		}
+		protected override object GetDataInternal(string format)
+		{
+			return System.Windows.Forms.Clipboard.GetData(format);
+		}
+
+		protected override CrossThreadData GetContentInternal()
+		{
+			System.Windows.Forms.IDataObject ido = System.Windows.Forms.Clipboard.GetDataObject();
+			string[] formats = ido.GetFormats();
+
+			CrossThreadData data = new CrossThreadData();
+			foreach (string format in formats)
+			{
+				data.SetData(format, ido.GetData(format));
+			}
+			return data;
 		}
 	}
 }

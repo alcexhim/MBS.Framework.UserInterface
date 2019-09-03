@@ -37,6 +37,23 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_clipboard_set_text(IntPtr /*GtkClipboard*/ clipboard, string text, int len);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_clipboard_wait_is_text_available(IntPtr /*GtkClipboard*/ handle);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_clipboard_wait_is_image_available(IntPtr /*GtkClipboard*/ handle);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_clipboard_wait_is_uris_available(IntPtr /*GtkClipboard*/ handle);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_clipboard_wait_for_text(IntPtr /*GtkClipboard*/ handle);
+		/// <summary>
+		/// Returns a list of targets that are present on the clipboard, or NULL if there aren’t any targets available. The returned list must be freed with
+		/// g_free(). This function waits for the data to be received using the main loop, so events, timeouts, etc, may be dispatched during the wait.
+		/// </summary>
+		/// <returns><c>true</c> if any targets are present on the clipboard; otherwise, <c>false</c>.</returns>
+		/// <param name="clipboard">a GtkClipboard</param>
+		/// <param name="targets">location to store an array of targets. The result stored here must be freed with g_free(). </param>
+		/// <param name="n_targets">location to store number of items in targets . </param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_clipboard_wait_for_targets(IntPtr /*GtkClipboard*/ clipboard, ref IntPtr /*GdkAtom*/ targets, ref int n_targets);
 	}
 }

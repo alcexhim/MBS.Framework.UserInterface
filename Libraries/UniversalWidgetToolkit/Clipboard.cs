@@ -44,6 +44,12 @@ namespace UniversalWidgetToolkit
 			ClearInternal();
 		}
 
+		protected abstract bool ContainsTextInternal();
+		public bool ContainsText()
+		{
+			return ContainsTextInternal();
+		}
+
 		protected abstract void SetTextInternal(string value);
 		public void SetText(string value)
 		{
@@ -54,6 +60,18 @@ namespace UniversalWidgetToolkit
 		public string GetText()
 		{
 			return GetTextInternal();
+		}
+
+		protected abstract object GetDataInternal(string format);
+		public object GetData(string format)
+		{
+			return GetDataInternal(format);
+		}
+
+		protected abstract CrossThreadData GetContentInternal();
+		public CrossThreadData GetContent()
+		{
+			return GetContentInternal();
 		}
 	}
 }

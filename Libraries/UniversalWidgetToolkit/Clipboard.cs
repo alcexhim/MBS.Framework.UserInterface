@@ -38,6 +38,12 @@ namespace UniversalWidgetToolkit
 			}
 		}
 
+		protected abstract void ClearInternal();
+		public void Clear()
+		{
+			ClearInternal();
+		}
+
 		protected abstract void SetTextInternal(string value);
 		public void SetText(string value)
 		{

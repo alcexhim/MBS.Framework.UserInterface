@@ -36,6 +36,10 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 		}
 
+		protected override void ClearInternal()
+		{
+			Internal.GTK.Methods.GtkClipboard.gtk_clipboard_clear(Handle);
+		}
 		protected override string GetTextInternal()
 		{
 			string text = Internal.GTK.Methods.GtkClipboard.gtk_clipboard_wait_for_text(Handle);

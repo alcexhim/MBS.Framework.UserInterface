@@ -1629,36 +1629,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 				if (cmi.Items.Count > 0)
 				{
-					IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
-
-					try
-					{
-						IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new ();
-						Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append (hMenuFileMenu, hMenuTearoff);
-					}
-					catch (EntryPointNotFoundException ex) {
-						Console.WriteLine ("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
-
-						// this functionality is deprecated, so just in case it finally gets removed...
-						// however, some people like it, so UWT will support it indefinitely ;)
-						// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
-					}
-
-					if (accelPath != null)
-					{
-						if (hDefaultAccelGroup == IntPtr.Zero)
-						{
-							hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
-						}
-						Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
-					}
-
-					foreach (MenuItem menuItem1 in cmi.Items)
-					{
-						InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
-					}
-
-					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
+					IntPtr hMenuFileMenu = BuildMenu(cmi, hMenuFile, accelPath);
 				}
 
 				menuItemsByHandle[hMenuFile] = cmi;
@@ -1680,6 +1651,72 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 		}
 
+		public IntPtr BuildMenu(Menu menu, string accelPath = null)
+		{
+			IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
+			try
+			{
+				IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new();
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuTearoff);
+			}
+			catch (EntryPointNotFoundException ex)
+			{
+				Console.WriteLine("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
+
+				// this functionality is deprecated, so just in case it finally gets removed...
+				// however, some people like it, so UWT will support it indefinitely ;)
+				// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
+			}
+
+			if (accelPath != null)
+			{
+				if (hDefaultAccelGroup == IntPtr.Zero)
+				{
+					hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+				}
+				Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
+			}
+
+			foreach (MenuItem menuItem1 in menu.Items)
+			{
+				InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
+			}
+			return hMenuFileMenu;
+		}
+		public IntPtr BuildMenu(CommandMenuItem cmi, IntPtr hMenuFile, string accelPath = null)
+		{
+			IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
+			try
+			{
+				IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new();
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuTearoff);
+			}
+			catch (EntryPointNotFoundException ex)
+			{
+				Console.WriteLine("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
+
+				// this functionality is deprecated, so just in case it finally gets removed...
+				// however, some people like it, so UWT will support it indefinitely ;)
+				// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
+			}
+
+			if (accelPath != null)
+			{
+				if (hDefaultAccelGroup == IntPtr.Zero)
+				{
+					hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+				}
+				Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
+			}
+
+			foreach (MenuItem menuItem1 in cmi.Items)
+			{
+				InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
+			}
+
+			Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
+			return hMenuFileMenu;
+		}
 
 		protected override void TabContainer_ClearTabPagesInternal(TabContainer parent)
 		{

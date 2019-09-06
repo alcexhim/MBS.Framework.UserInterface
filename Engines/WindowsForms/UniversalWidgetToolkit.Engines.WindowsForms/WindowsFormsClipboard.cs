@@ -52,7 +52,7 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 			CrossThreadData data = new CrossThreadData();
 			foreach (string format in formats)
 			{
-				data.SetData(format, ido.GetData(format));
+				// data.SetData(format, ido.GetData(format));
 			}
 			return data;
 		}

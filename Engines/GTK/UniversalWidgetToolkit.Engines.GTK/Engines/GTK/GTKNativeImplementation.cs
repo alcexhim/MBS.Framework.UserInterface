@@ -285,7 +285,6 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 		}
 
-
 		private MouseButtons _mousedown_buttons = MouseButtons.None;
 		private bool _mouse_double_click = false;
 		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -299,6 +298,20 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			_mousedown_buttons = ee.Buttons;
 			OnMouseDown(ee);
 			if (ee.Handled) return true;
+
+			if (ee.Buttons == MouseButtons.Secondary)
+			{
+				// default implementation - display a context menu if we have one set
+				OnBeforeContextMenu(ee);
+				if (Control.ContextMenu != null)
+				{
+					IntPtr hMenu = (Engine as GTKEngine).BuildMenu(Control.ContextMenu);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenu);
+					Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_pointer(hMenu, IntPtr.Zero);
+				}
+				OnAfterContextMenu(ee);
+			}
+
 			return false;
 		}
 		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)

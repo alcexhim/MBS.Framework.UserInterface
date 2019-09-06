@@ -342,6 +342,18 @@ namespace UniversalWidgetToolkit
 			Unrealize?.Invoke(this, e);
 		}
 
+		public event EventHandler BeforeContextMenu;
+		protected internal virtual void OnBeforeContextMenu(EventArgs e)
+		{
+			BeforeContextMenu?.Invoke(this, e);
+		}
+
+		public event EventHandler AfterContextMenu;
+		protected internal virtual void OnAfterContextMenu(EventArgs e)
+		{
+			AfterContextMenu?.Invoke(this, e);
+		}
+
 		public event EventHandler Mapping;
 		protected internal virtual void OnMapping(EventArgs e)
 		{
@@ -375,6 +387,8 @@ namespace UniversalWidgetToolkit
 		{
 			Resizing?.Invoke(this, e);
 		}
+
+		public Menu ContextMenu { get; set; } = null;
 
 		public Window ParentWindow
 		{

@@ -121,7 +121,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			return GetSelectionModeInternal(handle, tv);
 		}
 
-		private ListViewHitTestInfo HitTest(IntPtr handle, double x, double y)
+		public ListViewHitTestInfo HitTest(double x, double y)
+		{
+			IntPtr hTreeView = GetHandleForControl(Control as ListView);
+			return HitTestInternal(hTreeView, x, y);
+		}
+		private ListViewHitTestInfo HitTestInternal(IntPtr handle, double x, double y)
 		{
 			IntPtr hPath = IntPtr.Zero;
 			IntPtr hColumn = IntPtr.Zero;
@@ -164,7 +169,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 				// if it is, we should cancel the selection because we might
 				// be dragging
 				// if it isn't, we're safe to allow the selection
-				TreeModelRow row = HitTest(handle, e.X, e.Y).Row;
+				TreeModelRow row = HitTestInternal(handle, e.X, e.Y).Row;
 				if (tv.SelectedRows.Contains(row))
 				{
 					BlockSelection();

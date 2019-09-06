@@ -11,6 +11,8 @@ namespace UniversalWidgetToolkit.Controls
 			
 			SelectionMode GetSelectionMode();
 			void SetSelectionMode(SelectionMode value);
+
+			ListViewHitTestInfo HitTest(double x, double y);
 		}
 	}
 
@@ -144,6 +146,14 @@ namespace UniversalWidgetToolkit.Controls
 		public TreeModelRow.TreeModelSelectedRowCollection SelectedRows { get; private set; } = null;
 
 		public ListViewMode Mode { get; set; } = ListViewMode.Detail;
+
+		public ListViewHitTestInfo HitTest(double x, double y)
+		{
+			Native.IListViewNativeImplementation impl = (ControlImplementation as Native.IListViewNativeImplementation);
+			if (impl != null)
+				return impl.HitTest(x, y);
+			return null;
+		}
 
 		/// <summary>
 		/// Selects the specified <see cref="TreeModelRow"/>.

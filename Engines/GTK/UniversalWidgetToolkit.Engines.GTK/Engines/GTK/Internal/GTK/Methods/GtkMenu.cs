@@ -39,6 +39,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern string gtk_menu_get_accel_path(IntPtr menu);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_menu_set_accel_path(IntPtr menu, string accel_path);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_menu_popup_at_pointer(IntPtr /*GtkMenu*/ menu, IntPtr /*GdkEvent*/ trigger_event);
 	}
 }
 

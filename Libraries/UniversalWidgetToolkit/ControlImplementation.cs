@@ -178,6 +178,17 @@ namespace UniversalWidgetToolkit
 			Control.OnUnrealize (e);
 		}
 
+
+		protected virtual void OnBeforeContextMenu(EventArgs e)
+		{
+			Control.OnBeforeContextMenu(e);
+		}
+
+		protected virtual void OnAfterContextMenu(EventArgs e)
+		{
+			Control.OnAfterContextMenu(e);
+		}
+
 		protected internal virtual void OnMapping (EventArgs e)
 		{
 			Control.OnMapping (e);

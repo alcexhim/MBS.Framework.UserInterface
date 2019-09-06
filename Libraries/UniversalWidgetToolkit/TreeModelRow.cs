@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniversalEditor;
 using UniversalWidgetToolkit.Controls;
@@ -15,8 +16,36 @@ namespace UniversalWidgetToolkit
 	}
 	public class TreeModelRow
 	{
-		public class TreeModelSelectedRowCollection
+		public class TreeModelSelectedRowCollection : IEnumerable<TreeModelRow>
 		{
+			public class TreeModelSelectedRowCollectionEnumerator : IEnumerator<TreeModelRow>
+			{
+				private int _index = -1;
+				private TreeModelSelectedRowCollection _parent = null;
+				internal TreeModelSelectedRowCollectionEnumerator(TreeModelSelectedRowCollection parent)
+				{
+					_parent = parent;
+				}
+
+				public TreeModelRow Current => _parent[_index];
+				object IEnumerator.Current => _parent[_index];
+
+				public void Dispose()
+				{
+				}
+
+				public bool MoveNext()
+				{
+					_index++;
+					return _index < _parent.Count;
+				}
+
+				public void Reset()
+				{
+					_index = -1;
+				}
+			}
+
 			public ListView Parent { get; private set; }
 			public TreeModelSelectedRowCollection(ListView parent)
 			{
@@ -76,6 +105,16 @@ namespace UniversalWidgetToolkit
 			public void Clear()
 			{
 				OnCleared(EventArgs.Empty);
+			}
+
+			public IEnumerator<TreeModelRow> GetEnumerator()
+			{
+				return new TreeModelSelectedRowCollectionEnumerator(this);
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return new TreeModelSelectedRowCollectionEnumerator(this);
 			}
 		}
 

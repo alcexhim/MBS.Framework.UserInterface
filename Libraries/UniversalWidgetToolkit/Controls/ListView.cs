@@ -147,6 +147,12 @@ namespace UniversalWidgetToolkit.Controls
 
 		public ListViewMode Mode { get; set; } = ListViewMode.Detail;
 
+		/// <summary>
+		/// Hits the test.
+		/// </summary>
+		/// <returns>A <see cref="ListViewHitTestInfo" /> indicating the results of the hit test. For <see cref="ListView" /> instances with a <see cref="ControlImplementation" />, this method SHOULD NEVER return null.</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
 		public ListViewHitTestInfo HitTest(double x, double y)
 		{
 			Native.IListViewNativeImplementation impl = (ControlImplementation as Native.IListViewNativeImplementation);

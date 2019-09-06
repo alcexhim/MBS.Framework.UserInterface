@@ -46,6 +46,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GFile*/ gtk_file_chooser_get_preview_file(IntPtr /*GtkFileChooser*/ chooser);
 
+		/// <summary>
+		/// Sets whether a file chooser in GTK_FILE_CHOOSER_ACTION_SAVE mode will present a confirmation dialog if the user types a file name that already exists. This is FALSE by default. If set to TRUE, the chooser will emit the “confirm-overwrite” signal when appropriate. If all you need is the stock confirmation dialog, set this property to TRUE.You can override the way confirmation is done by actually handling the “confirm-overwrite” signal; please refer to its documentation for the details.
+		/// </summary>
+		/// <returns>The file chooser set do overwrite confirmation.</returns>
+		/// <param name="chooser">a GtkFileChooser</param>
+		/// <param name="do_overwrite_confirmation">whether to confirm overwriting in save mode</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_file_chooser_set_do_overwrite_confirmation(IntPtr /*GtkFileChooser*/ chooser, bool do_overwrite_confirmation);
+
 		// Extra widget
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_file_chooser_set_extra_widget(IntPtr /*GtkFileChooser*/ chooser, IntPtr /*GtkWidget*/ extra_widget);
@@ -66,12 +75,21 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkFileFilter*/ gtk_file_chooser_get_filter(IntPtr /*GtkFileChooser*/ chooser);
 
+		/// <summary>
+		/// This doesn't do what you'd think it would do. Use <see cref="gtk_file_chooser_set_current_name(IntPtr, string)"/> instead.
+		/// </summary>
+		/// <param name="chooser">Chooser.</param>
+		/// <param name="filename">Filename.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_file_chooser_set_filename(IntPtr /*GtkFileChooser*/ chooser, string filename);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_file_chooser_get_filenames(IntPtr chooser);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_file_chooser_get_select_multiple(IntPtr chooser);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_file_chooser_set_select_multiple(IntPtr chooser, bool value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_file_chooser_set_current_name(IntPtr /*GtkFileChooser*/ chooser, string filename);
 
 		/// <summary>
 		/// Retrieves the file names from the GtkFileChooser with the specified handle, in a managed string[] array.

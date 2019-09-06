@@ -44,6 +44,13 @@ namespace UniversalWidgetToolkit.Dialogs
 		private System.Collections.Generic.List<string> mvarSelectedFileNames = new System.Collections.Generic.List<string> ();
 		public System.Collections.Generic.List<string> SelectedFileNames { get { return mvarSelectedFileNames; } }
 
+		/// <summary>
+		/// Determines whether existing filenames should automatically be selected in the file dialog, if the underlying platform supports this.
+		/// </summary>
+		/// <value><c>true</c> if highlight existing file; otherwise, <c>false</c>.</value>
+		public bool HighlightExistingFile { get; set; } = true;
+
+		public bool ConfirmOverwrite { get; set; } = true;
 	}
 }
 

@@ -1141,6 +1141,18 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 
 			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_select_multiple(handle, dlg.MultiSelect);
+			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_do_overwrite_confirmation(handle, dlg.ConfirmOverwrite);
+			if (dlg.SelectedFileNames.Count > 0)
+			{
+				if (System.IO.File.Exists(dlg.SelectedFileNames[0]) && dlg.HighlightExistingFile)
+				{
+					Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_filename(handle, dlg.SelectedFileNames[0]);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_current_name(handle, dlg.SelectedFileNames[0]);
+				}
+			}
 			return handle;
 		}
 

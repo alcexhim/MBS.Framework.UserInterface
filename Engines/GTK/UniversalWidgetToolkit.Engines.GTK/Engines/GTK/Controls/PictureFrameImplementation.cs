@@ -27,16 +27,16 @@ using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK
 {
-	[ControlImplementation(typeof(Image))]
-	public class ImageImplementation : GTKNativeImplementation
+	[ControlImplementation(typeof(PictureFrame))]
+	public class PictureFrameImplementation : GTKNativeImplementation
 	{
-		public ImageImplementation(Engine engine, Control control) : base(engine, control)
+		public PictureFrameImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			Image ctl = (control as Image);
+			PictureFrame ctl = (control as PictureFrame);
 			IntPtr handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(ctl.IconName);
 
 			if (ctl.IconSize != Dimension2D.Empty)

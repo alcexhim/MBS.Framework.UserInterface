@@ -79,7 +79,7 @@
     <Compile Include="Engines\GTK\Internal\GLib\Structures.cs" />
     <Compile Include="Marshaller.cs" />
     <Compile Include="Engines\GTK\GTKNativeImplementation.cs" />
-    <Compile Include="Engines\GTK\Controls\ImageImplementation.cs" />
+    <Compile Include="Engines\GTK\Controls\PictureFrameImplementation.cs" />
     <Compile Include="Engines\GTK\Internal\GLib\Delegates.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Delegates.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkWidget.cs" />

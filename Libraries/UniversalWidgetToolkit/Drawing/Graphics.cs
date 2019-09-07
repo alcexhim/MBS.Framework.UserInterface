@@ -11,6 +11,16 @@ namespace UniversalWidgetToolkit.Drawing
 {
 	public abstract class Graphics
 	{
+		protected abstract void DrawImageInternal(Image image, double x, double y, double width, double height);
+		public void DrawImage(Image image, double x, double y)
+		{
+			DrawImage(image, x, y, image.Width, image.Height);
+		}
+		public void DrawImage(Image image, double x, double y, double width, double height)
+		{
+			DrawImageInternal(image, x, y, width, height);
+		}
+
 		protected abstract void DrawLineInternal(Pen pen, double x1, double y1, double x2, double y2);
 		public void DrawLine(Pen pen, double x1, double y1, double x2, double y2)
 		{

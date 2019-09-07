@@ -48,6 +48,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_stroke_preserve(IntPtr /*cairo_t*/ cr);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_line_to(IntPtr /*cairo_t*/ cr, double x, double y);
+
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern Constants.CairoStatus cairo_status(IntPtr /*cairo_t*/ cc);

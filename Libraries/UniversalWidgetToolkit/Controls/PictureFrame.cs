@@ -23,7 +23,7 @@ using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Controls
 {
-	public class Image : SystemControl
+	public class PictureFrame : SystemControl
 	{
 		public string IconName { get; set; }
 		public Dimension2D IconSize { get; set; } = Dimension2D.Empty;

@@ -208,15 +208,15 @@ namespace UniversalWidgetToolkit
 				}
 				case "GtkImage":
 				{
-					ctl = new Image();
+					ctl = new Controls.PictureFrame();
 					if (item.Properties["icon_name"] != null)
 					{
-						(ctl as Image).IconName = item.Properties["icon_name"].Value;
+						(ctl as Controls.PictureFrame).IconName = item.Properties["icon_name"].Value;
 					}
 					if (item.Properties["pixel_size"] != null)
 					{
 						int size = Int32.Parse(item.Properties["pixel_size"].Value);
-						(ctl as Image).IconSize = new Dimension2D(size, size);
+						(ctl as Controls.PictureFrame).IconSize = new Dimension2D(size, size);
 					}
 					break;
 				}

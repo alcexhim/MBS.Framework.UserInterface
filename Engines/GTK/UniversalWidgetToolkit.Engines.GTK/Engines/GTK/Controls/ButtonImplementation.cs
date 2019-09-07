@@ -74,7 +74,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			}
 
 			if (ctl.StockType != ButtonStockType.None) {
-				Image image = new Image ();
+				PictureFrame image = new PictureFrame ();
 				image.IconName = Engine.StockTypeToString ((StockType)ctl.StockType);
 				image.IconSize = ctl.ImageSize;
 				if (Engine.CreateControl (image)) {

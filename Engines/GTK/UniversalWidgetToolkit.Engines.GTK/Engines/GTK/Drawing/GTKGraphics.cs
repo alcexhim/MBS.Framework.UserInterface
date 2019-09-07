@@ -14,9 +14,23 @@ namespace UniversalWidgetToolkit.Engines.GTK.Drawing
 			mvarCairoContext = cairoContext;
 		}
 
+		protected override void DrawImageInternal(Image image, double x, double y, double width, double height)
+		{
+
+		}
+
 		protected override void DrawLineInternal(Pen pen, double x1, double y1, double x2, double y2)
 		{
-			throw new NotImplementedException();
+			SelectPen(pen);
+
+			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, x1, y1);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_line_to(mvarCairoContext, x2, y2);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_stroke(mvarCairoContext);
+			CheckStatus();
 		}
 
 		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)

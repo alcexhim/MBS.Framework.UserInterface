@@ -2043,6 +2043,24 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			}
 			return _DefaultClipboard;
 		}
+
+
+
+		public static IntPtr DragUriListFromArray(string[] uris)
+		{
+			IntPtr /*GList*/ uri_list = IntPtr.Zero;
+
+			if (uris == null)
+				return uri_list;
+
+			for (int i = 0; i < uris.Length; i++)
+			{
+				IntPtr hStr = Marshal.StringToHGlobalUni(uris[i]);
+				uri_list = Internal.GLib.Methods.g_list_prepend(uri_list, hStr);
+			}
+
+			return Internal.GLib.Methods.g_list_reverse(uri_list);
+		}
 	}
 }
 

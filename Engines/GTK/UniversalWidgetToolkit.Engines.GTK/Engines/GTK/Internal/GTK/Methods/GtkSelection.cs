@@ -48,6 +48,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		/// <returns>if the selection data contained a recognized text type and it could be converted to UTF-8, a newly allocated string containing the converted text, otherwise NULL. If the result is non-NULL it must be freed with g_free().</returns>
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_selection_data_get_text (IntPtr /*GtkSelectionData*/ selection_data);
+
+		/// <summary>
+		/// Gtks the selection data set uris.
+		/// </summary>
+		/// <returns><c>true</c>, if selection data set uris was gtked, <c>false</c> otherwise.</returns>
+		/// <param name="selection_data">Selection data.</param>
+		/// <param name="uris">Uris.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_selection_data_set_uris(IntPtr /*GtkSelectionData*/ selection_data, string[] uris);
 	}
 }
 

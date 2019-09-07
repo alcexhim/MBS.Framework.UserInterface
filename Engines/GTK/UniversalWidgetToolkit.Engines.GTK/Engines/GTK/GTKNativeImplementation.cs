@@ -214,6 +214,17 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			{
 				Internal.GTK.Methods.GtkSelection.gtk_selection_data_set(data, IntPtr.Zero, 8, ((byte[])e.Data), ((byte[])e.Data).Length);
 			}
+			else if (e.Data is string[])
+			{
+				string[] array = (string[])e.Data;
+				if (array.Length > 0)
+				{
+					if (array[0].Contains("://"))
+					{
+						Internal.GTK.Methods.GtkSelection.gtk_selection_data_set_uris(data, array);
+					}
+				}
+			}
 			else if (e.Data == null)
 			{
 			}

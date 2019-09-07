@@ -18,6 +18,10 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GLib
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_list_length(IntPtr /*GList*/ list);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GList*/ g_list_prepend(IntPtr /*GList*/ list, IntPtr data);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GList*/ g_list_reverse(IntPtr /*GList*/ list);
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_list_free(IntPtr /*GList*/ list);
 
 		[DllImport(LIBRARY_FILENAME)]

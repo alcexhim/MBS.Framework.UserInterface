@@ -261,8 +261,17 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				}
 				case KeyboardKey.Home:
 				{
-					mvarSelectionStart = 0;
-					selectedNybble = 0;
+					// let's try something different
+					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
+					{
+						mvarSelectionStart = 0;
+						selectedNybble = 0;
+					}
+					else
+					{
+						mvarSelectionStart = (int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth;
+						selectedNybble = 0;
+					}
 
 					SelectionStart = SelectionStart; // to fire events
 					Refresh();
@@ -271,8 +280,17 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				}
 				case KeyboardKey.End:
 				{
-					mvarSelectionStart = Data.Length - 1;
-					selectedNybble = 1;
+					// let's try something different
+					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
+					{
+						mvarSelectionStart = Data.Length - 1;
+						selectedNybble = 1;
+					}
+					else
+					{
+						mvarSelectionStart = (((int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth) + mvarMaxDisplayWidth) - 1;
+						selectedNybble = 1;
+					}
 
 					SelectionStart = SelectionStart; // to fire events
 					Refresh();

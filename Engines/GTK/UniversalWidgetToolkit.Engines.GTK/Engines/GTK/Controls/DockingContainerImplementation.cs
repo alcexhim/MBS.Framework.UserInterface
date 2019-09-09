@@ -64,6 +64,8 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		}
 		public void RemoveDockingItem(DockingItem item)
 		{
+			IntPtr handle = _HandlesForDockingItem[item];
+			Internal.GDL.Methods.gdl_dock_item_unbind(handle);
 		}
 
 		private DockingItem mvarCurrentItem = null;

@@ -38,5 +38,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDL
 		/// <param name="dock">The GdlDock widget to bind it to. Note that this widget must be a type of GdlDock.</param>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_item_bind(IntPtr item, IntPtr dock);
+		/// <summary>
+		/// Binds this dock item to a new dock master.
+		/// </summary>
+		/// <param name="item">The item to bind.</param>
+		/// <param name="dock">The GdlDock widget to bind it to. Note that this widget must be a type of GdlDock.</param>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_item_unbind(IntPtr item);
 	}
 }

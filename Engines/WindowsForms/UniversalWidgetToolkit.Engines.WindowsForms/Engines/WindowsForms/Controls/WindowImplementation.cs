@@ -1,4 +1,5 @@
 ﻿using System;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.DragDrop;
 using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.Input.Mouse;
@@ -36,6 +37,11 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms.Controls
 		protected override void SetFocusInternal ()
 		{
 			(Handle as WindowsFormsNativeControl).Handle.Focus ();
+		}
+
+		protected override Dimension2D GetControlSizeInternal()
+		{
+			return WindowsFormsEngine.SystemDrawingSizeToDimension2D((Handle as WindowsFormsNativeControl).Handle.Size);
 		}
 	}
 }

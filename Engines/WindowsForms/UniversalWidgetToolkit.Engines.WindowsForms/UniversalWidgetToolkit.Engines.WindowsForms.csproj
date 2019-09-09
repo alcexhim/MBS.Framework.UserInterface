@@ -50,6 +50,10 @@
       <Project>{29e1c1bb-3ea5-4062-b62f-85eec703fe07}</Project>
       <Name>UniversalWidgetToolkit</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
+      <Project>{23ACD09E-E096-4B05-A6CE-6853EDDC589A}</Project>
+      <Name>MBS.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engines\" />

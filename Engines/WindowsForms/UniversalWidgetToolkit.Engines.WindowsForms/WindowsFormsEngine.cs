@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Controls;
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Engines.WindowsForms.Printing;
@@ -178,6 +179,11 @@ namespace UniversalWidgetToolkit.Engines.WindowsForms
 				_Clipboard = new WindowsFormsClipboard();
 			}
 			return _Clipboard;
+		}
+
+		internal static Dimension2D SystemDrawingSizeToDimension2D(System.Drawing.Size size)
+		{
+			return new Dimension2D(size.Width, size.Height);
 		}
 
 	}

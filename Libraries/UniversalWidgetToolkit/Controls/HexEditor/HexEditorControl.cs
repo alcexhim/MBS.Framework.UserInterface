@@ -328,7 +328,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 					selectedNybble = 0;
 				}
 
-				Refresh();
+				SelectionStart = SelectionStart;
 			}
 		}
 

@@ -43,7 +43,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			GTKGraphics graphics = new GTKGraphics(cr);
 
 			Dimension2D size = Control.Size;
-			Internal.GTK.Methods.GtkLayout.gtk_layout_set_size((Handle as GTKNativeControl).Handle, (uint)size.Width, (uintsize.Height);
+			Internal.GTK.Methods.GtkLayout.gtk_layout_set_size((Handle as GTKNativeControl).Handle, (uint)size.Width, (uint)size.Height);
 
 			PaintEventArgs e = new PaintEventArgs(graphics);
 			InvokeMethod(ctl, "OnPaint", e);

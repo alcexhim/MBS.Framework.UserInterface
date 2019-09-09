@@ -363,7 +363,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				{
 					// print the offset of data, once per line
 					string strOffset = i.ToString("X").PadLeft(8, '0');
-					e.Graphics.DrawText(strOffset, font, rectPositionText, Brushes.Black);
+					e.Graphics.DrawText(strOffset, font, rectPositionText, new SolidBrush(Colors.DarkRed));
 				}
 
 				if (i == mvarSelectionStart)

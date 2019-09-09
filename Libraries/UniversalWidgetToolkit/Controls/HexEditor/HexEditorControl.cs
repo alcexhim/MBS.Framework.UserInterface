@@ -34,7 +34,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 		public int VerticalCellSpacing { get; set; } = 4;
 
 		private byte[] mvarData = new byte[4096];
-		public byte[] Data { get { return mvarData; } set { mvarData = value; Refresh(); } }
+		public byte[] Data { get { return mvarData; } set { mvarData = value; SelectionStart = SelectionStart; } }
 
 		public HexEditorPosition SelectionStart
 		{

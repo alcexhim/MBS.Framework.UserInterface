@@ -148,6 +148,15 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
 			SouthEast,
 			Static
 		}
+
+		[Flags()]
+		public enum GdkEventMask
+		{
+			ButtonPress = 0x100,
+			ButtonRelease = 0x200,
+			KeyPress = 0x400,
+			KeyRelease = 0x800
+		}
 	}
 }
 

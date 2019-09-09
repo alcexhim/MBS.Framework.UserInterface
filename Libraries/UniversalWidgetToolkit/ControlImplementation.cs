@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using UniversalWidgetToolkit.Input.Mouse;
 using UniversalWidgetToolkit.Input.Keyboard;
 using UniversalWidgetToolkit.DragDrop;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit
 {
@@ -79,6 +80,12 @@ namespace UniversalWidgetToolkit
 		}
 
 		protected abstract NativeControl CreateControlInternal (Control control);
+
+		protected abstract Dimension2D GetControlSizeInternal();
+		public Dimension2D GetControlSize()
+		{
+			return GetControlSizeInternal();
+		}
 
 		private NativeControl mvarHandle = null;
 		public NativeControl Handle { get { return mvarHandle; } }

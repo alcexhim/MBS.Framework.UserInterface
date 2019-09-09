@@ -209,6 +209,11 @@
     <Compile Include="Clipboard.cs" />
     <Compile Include="Drawing\Image.cs" />
     <Compile Include="Drawing\BitmapImage.cs" />
+    <Compile Include="Controls\HexEditor\HexEditorControl.cs" />
+    <Compile Include="Controls\HexEditor\HexEditorHitTestInfo.cs" />
+    <Compile Include="Controls\HexEditor\HexEditorBackspaceBehavior.cs" />
+    <Compile Include="Controls\HexEditor\HexEditorPosition.cs" />
+    <Compile Include="Controls\HexEditor\HexEditorHighlightArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">
@@ -244,5 +249,6 @@
     <Folder Include="Controls\Ribbon\" />
     <Folder Include="Controls\FileBrowser\" />
     <Folder Include="Printing\" />
+    <Folder Include="Controls\HexEditor\" />
   </ItemGroup>
 </Project>

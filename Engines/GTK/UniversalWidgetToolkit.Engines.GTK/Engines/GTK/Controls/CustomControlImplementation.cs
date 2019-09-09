@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Engines.GTK.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
@@ -14,9 +16,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			IntPtr handle = Internal.GTK.Methods.GtkDrawingArea.gtk_drawing_area_new();
+			IntPtr hAdjust = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0.0, 0.0, 1.0, 0.1, 0.5, 0.5);
+			IntPtr vAdjust = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0.0, 0.0, 1.0, 0.1, 0.5, 0.5);
+			IntPtr handle = Internal.GTK.Methods.GtkLayout.gtk_layout_new(hAdjust, vAdjust);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease);
 
 			return new GTKNativeControl(handle);
 		}
@@ -35,6 +41,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 			Contract.Assert(ctl != null);
 
 			GTKGraphics graphics = new GTKGraphics(cr);
+
+			Dimension2D size = Control.Size;
+			Internal.GTK.Methods.GtkLayout.gtk_layout_set_size((Handle as GTKNativeControl).Handle, (uint)size.Width, (uintsize.Height);
 
 			PaintEventArgs e = new PaintEventArgs(graphics);
 			InvokeMethod(ctl, "OnPaint", e);

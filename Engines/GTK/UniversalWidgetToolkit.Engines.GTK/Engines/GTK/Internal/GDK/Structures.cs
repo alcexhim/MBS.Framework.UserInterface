@@ -19,6 +19,13 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GDK
             public ushort green;
             public ushort blue;
         }
+		public struct GdkRectangle
+		{
+			public int x;
+			public int y;
+			public int width;
+			public int height;
+		}
 		public struct GdkEvent
 		{
 			/// <summary>

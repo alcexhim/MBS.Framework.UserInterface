@@ -103,6 +103,12 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_grab_focus(IntPtr /*GtkWidget*/ widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_add_events(IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkEventMask events);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_get_allocation(IntPtr /*GtkWidget*/ widget, ref Internal.GDK.Structures.GdkRectangle /*GtkAllocation*/ alloc);
 	}
 }
 

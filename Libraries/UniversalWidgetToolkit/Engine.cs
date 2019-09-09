@@ -351,6 +351,9 @@ namespace UniversalWidgetToolkit
 		protected abstract void InvalidateControlInternal(Control control, int x, int y, int width, int height);
 		public void InvalidateControl(Control control, int x, int y, int width, int height)
 		{
+			if (!IsControlCreated(control)) 
+				return;
+
 			InvalidateControlInternal(control, x, y, width, height);
 		}
 

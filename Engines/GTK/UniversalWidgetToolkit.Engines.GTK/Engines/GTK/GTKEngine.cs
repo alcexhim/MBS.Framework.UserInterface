@@ -530,7 +530,7 @@ namespace UniversalWidgetToolkit.Engines.GTK
 			ee.Key = GdkKeyCodeToKeyboardKey(e.keyval, e.hardware_keycode, out modifierKeys);
 			ee.ModifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
 			return ee;
-		}
+			}
 
 
 		internal static KeyboardKey GdkKeyCodeToKeyboardKey(uint keyval, uint keycode, out KeyboardModifierKey modifierKeys)
@@ -596,6 +596,8 @@ namespace UniversalWidgetToolkit.Engines.GTK
 				case 65383: key = KeyboardKey.Menu; break;
 				case 269025062: key = KeyboardKey.BrowserBack; break;
 				case 269025153: key = KeyboardKey.SelectMedia; break;
+				case 65360: key = KeyboardKey.Home; break;
+				case 65367: key = KeyboardKey.End; break;
 				case 65379: key = KeyboardKey.Insert; break;
 				case 65535: key = KeyboardKey.Delete; break;
 				case 65307: key = KeyboardKey.Escape; break;

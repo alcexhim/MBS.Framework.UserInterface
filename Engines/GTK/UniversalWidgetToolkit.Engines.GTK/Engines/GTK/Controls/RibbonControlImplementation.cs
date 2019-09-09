@@ -36,6 +36,11 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 		}
 
+		protected override Dimension2D GetControlSizeInternal()
+		{
+			return tbs.Size;
+		}
+
 		protected override void RegisterDragSourceInternal (Control control, DragDropTarget[] targets, DragDropEffect actions, UniversalWidgetToolkit.Input.Mouse.MouseButtons buttons, UniversalWidgetToolkit.Input.Keyboard.KeyboardModifierKey modifierKeys)
 		{
 			throw new NotImplementedException ();

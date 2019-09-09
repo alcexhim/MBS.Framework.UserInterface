@@ -94,7 +94,21 @@ namespace UniversalWidgetToolkit
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
-		public Dimension2D Size { get { return mvarSize; } set { mvarSize = value; } }
+		public Dimension2D Size
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					mvarSize = ControlImplementation.GetControlSize();
+				}
+				return mvarSize;
+			}
+			set
+			{
+				mvarSize = value;
+			}
+		}
 
 		private ControlImplementation mvarControlImplementation = null;
 		public ControlImplementation ControlImplementation

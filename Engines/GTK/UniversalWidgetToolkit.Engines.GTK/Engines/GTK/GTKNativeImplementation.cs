@@ -100,7 +100,18 @@ namespace UniversalWidgetToolkit.Engines.GTK
 
 
 
+		protected override Dimension2D GetControlSizeInternal()
+		{
+			if (!Engine.IsControlCreated(Control))
+			{
+				return Dimension2D.Empty;
+			}
 
+			Internal.GDK.Structures.GdkRectangle hAlloc = new Internal.GDK.Structures.GdkRectangle();
+			Internal.GTK.Methods.GtkWidget.gtk_widget_get_allocation((Handle as GTKNativeControl).Handle, ref hAlloc);
+
+			return new Dimension2D(hAlloc.width, hAlloc.height);
+		}
 
 
 

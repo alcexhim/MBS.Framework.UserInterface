@@ -11,6 +11,23 @@ using UniversalWidgetToolkit.Input.Mouse;
 
 namespace UniversalWidgetToolkit
 {
+	// Realize, Map, and Show, oh my...
+	// From Havoc Pennington / Jim Nelson. Clear as mud.
+	/*
+	* Realize means to create the GDK resources for a widget. i.e. to instantiate the widget on the
+	* display. This is more useful once we have multiple display support in GTK.
+	*  
+	* Map means to actually pop the widget’s window onscreen. It requires the widget to be realized,
+	* since the window is created in realize.
+	*  
+	* Show means the widget should be mapped when its toplevel is mapped, or in the case of a toplevel,
+	* should be mapped immediately.
+	*  
+	* Mapping is asynchronous though; that is, gtk_widget_map() and the map signal are emitted when the
+	* map is requested. When the map actually occurs you get a map_event (distinct from plain map). But
+	* you are not allowed to draw on widgets until you get the first expose, map_event is insufficient.
+	*/
+
 	public abstract class Control : IDisposable, ISupportsExtraData
 	{
 		public class ControlCollection

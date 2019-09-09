@@ -31,5 +31,57 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 			ByteIndex = byteIndex;
 			NybbleIndex = nybbleIndex;
 		}
+
+		public static HexEditorPosition operator ++(HexEditorPosition value)
+		{
+			if (value.NybbleIndex == 1)
+			{
+				return new HexEditorPosition(value.ByteIndex + 1, 0);
+			}
+			else if (value.NybbleIndex == 0)
+			{
+				return new HexEditorPosition(value.ByteIndex, 1);
+			}
+			return value;
+		}
+		public static HexEditorPosition operator --(HexEditorPosition value)
+		{
+			if (value.NybbleIndex == 1)
+			{
+				return new HexEditorPosition(value.ByteIndex, 0);
+			}
+			else if (value.NybbleIndex == 0)
+			{
+				return new HexEditorPosition(value.ByteIndex - 1, 1);
+			}
+			return value;
+		}
+
+		public static HexEditorPosition operator +(HexEditorPosition value, int p)
+		{
+			return new HexEditorPosition(value.ByteIndex + p, 0);
+		}
+		public static HexEditorPosition operator -(HexEditorPosition value, int p)
+		{
+			return new HexEditorPosition(value.ByteIndex - p, 0);
+		}
+
+		public static implicit operator int(HexEditorPosition value)
+		{
+			return value.ByteIndex;
+		}
+		public static implicit operator HexEditorPosition(int value)
+		{
+			return new HexEditorPosition(value, 0);
+		}
+
+		public static implicit operator double(HexEditorPosition value)
+		{
+			return value.ByteIndex + (0.5 * value.NybbleIndex);
+		}
+		public static implicit operator HexEditorPosition(double value)
+		{
+			return new HexEditorPosition((int)value, (value - (int)value > 0 ? 1 : 0));
+		}
 	}
 }

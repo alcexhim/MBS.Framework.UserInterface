@@ -59,6 +59,20 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 					selectedNybble = value.NybbleIndex;
 				}
 
+				cursorBlinking = true;
+				Refresh();
+				OnSelectionChanged(EventArgs.Empty);
+			}
+		}
+
+		private HexEditorPosition mvarSelectionLength = new HexEditorPosition(0, 0);
+		public HexEditorPosition SelectionLength
+		{
+			get { return mvarSelectionLength; }
+			set
+			{
+				mvarSelectionLength = value;
+
 				Refresh();
 				OnSelectionChanged(EventArgs.Empty);
 			}
@@ -92,6 +106,14 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 
 		int PositionGutterWidth = 72;
 		int TextAreaWidth = 128;
+
+		protected internal override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			_tCursorBlinkThread = new System.Threading.Thread(_tCursorBlinkThread_ThreadStart);
+			// _tCursorBlinkThread.Start();
+		}
 
 		public HexEditorHitTestInfo HitTest(double x, double y)
 		{
@@ -158,12 +180,16 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 			{
 				case KeyboardKey.Back:
 				{
+					if (!Editable)
+						return;
+
 					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
 					{
 						if (mvarSelectionStart > 0)
 						{
 							Data[mvarSelectionStart - 1] = 0x0;
 							mvarSelectionStart--;
+							mvarSelectionLength = 0;
 
 							SelectionStart = SelectionStart; // to fire events
 							Refresh();
@@ -185,6 +211,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 							Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
 							selectedNybble = 0;
 						}
+						mvarSelectionLength = 0;
 
 						SelectionStart = SelectionStart; // to fire events
 						Refresh();
@@ -194,74 +221,102 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				}
 				case KeyboardKey.ArrowLeft:
 				{
-					if (selectedNybble == 1)
+					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 					{
-						selectedNybble = 0;
+						mvarSelectionLength -= 0.5;
 					}
-					else if (selectedNybble == 0)
+					else
 					{
-						mvarSelectionStart--;
-						selectedNybble = 1;
-					}
+						mvarSelectionLength = 0;
+						if (selectedNybble == 1)
+						{
+							selectedNybble = 0;
+						}
+						else if (selectedNybble == 0)
+						{
+							mvarSelectionStart--;
+							selectedNybble = 1;
+						}
 
-					if (mvarSelectionStart < 0)
-					{
-						mvarSelectionStart = 0;
-						selectedNybble = 0;
+						if (mvarSelectionStart < 0)
+						{
+							mvarSelectionStart = 0;
+							selectedNybble = 0;
+						}
 					}
-
 					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.ArrowRight:
 				{
-					if (selectedNybble == 1)
+					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 					{
-						mvarSelectionStart++;
-						selectedNybble = 0;
+						mvarSelectionLength += 0.5;
 					}
-					else if (selectedNybble == 0)
+					else
 					{
-						selectedNybble = 1;
+						mvarSelectionLength = 0;
+						if (selectedNybble == 1)
+						{
+							mvarSelectionStart++;
+							selectedNybble = 0;
+						}
+						else if (selectedNybble == 0)
+						{
+							selectedNybble = 1;
+						}
+
+						if (mvarSelectionStart >= Data.Length)
+							mvarSelectionStart = Data.Length - 1;
 					}
-
-					if (mvarSelectionStart >= Data.Length)
-						mvarSelectionStart = Data.Length - 1;
-
 					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.ArrowUp:
 				{
-					if (mvarSelectionStart - mvarMaxDisplayWidth >= 0)
+					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 					{
-						mvarSelectionStart -= mvarMaxDisplayWidth;
+						mvarSelectionLength -= mvarMaxDisplayWidth;
+					}
+					else
+					{
+						mvarSelectionLength = 0;
+						if (mvarSelectionStart - mvarMaxDisplayWidth >= 0)
+						{
+							mvarSelectionStart -= mvarMaxDisplayWidth;
+						}
 					}
 
 					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.ArrowDown:
 				{
-					mvarSelectionStart += mvarMaxDisplayWidth;
+					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+					{
+						mvarSelectionLength += mvarMaxDisplayWidth;
+					}
+					else
+					{
+						mvarSelectionLength = 0;
+						mvarSelectionStart += mvarMaxDisplayWidth;
 
-					if (mvarSelectionStart >= Data.Length)
-						mvarSelectionStart = Data.Length - 1;
+						if (mvarSelectionStart >= Data.Length)
+							mvarSelectionStart = Data.Length - 1;
+
+					}
 
 					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.Home:
 				{
 					// let's try something different
+					mvarSelectionLength = 0;
 					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
 					{
 						mvarSelectionStart = 0;
@@ -281,6 +336,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				case KeyboardKey.End:
 				{
 					// let's try something different
+					mvarSelectionLength = 0;
 					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
 					{
 						mvarSelectionStart = Data.Length - 1;
@@ -299,22 +355,26 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				}
 			}
 
-			if ((int)e.Key >= (int)KeyboardKey.D0 && (int)e.Key <= (int)KeyboardKey.D9)
+			if (Editable)
 			{
-				next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.D0));
-			}
-			else if ((int)e.Key >= (int)KeyboardKey.NumPad0 && (int)e.Key <= (int)KeyboardKey.NumPad9)
-			{
-				next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.NumPad0));
-			}
-			else if ((int)e.Key >= (int)KeyboardKey.A && (int)e.Key <= (int)KeyboardKey.F)
-			{
-				next = (char)((int)'A' + ((int)e.Key - (int)KeyboardKey.A));
+				if ((int)e.Key >= (int)KeyboardKey.D0 && (int)e.Key <= (int)KeyboardKey.D9)
+				{
+					next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.D0));
+				}
+				else if ((int)e.Key >= (int)KeyboardKey.NumPad0 && (int)e.Key <= (int)KeyboardKey.NumPad9)
+				{
+					next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.NumPad0));
+				}
+				else if ((int)e.Key >= (int)KeyboardKey.A && (int)e.Key <= (int)KeyboardKey.F)
+				{
+					next = (char)((int)'A' + ((int)e.Key - (int)KeyboardKey.A));
+				}
 			}
 
 			if (next != '\0')
 			{
 				string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
+				mvarSelectionLength = 0;
 				if (selectedNybble == 0)
 				{
 					Data[mvarSelectionStart] = Byte.Parse(next.ToString() + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
@@ -331,6 +391,31 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 				SelectionStart = SelectionStart;
 			}
 		}
+
+		private bool cursorBlinking = true;
+		public bool BlinkCursor { get; set; } = true;
+
+		private System.Threading.Thread _tCursorBlinkThread = null;
+		private void _tCursorBlinkThread_ThreadStart()
+		{
+			while (true)
+			{
+				System.Threading.Thread.Sleep(500);
+				cursorBlinking = !cursorBlinking;
+
+				if (IsCreated)
+					Refresh(); // replace with call to Invalidate(Rect)
+			}
+		}
+
+		protected internal override void OnUnrealize(EventArgs e)
+		{
+			base.OnUnrealize(e);
+			if (_tCursorBlinkThread != null)
+				_tCursorBlinkThread.Abort();
+		}
+
+		public bool Editable { get; set; } = true;
 
 		protected internal override void OnPaint(PaintEventArgs e)
 		{
@@ -349,13 +434,38 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 			{
 				Rectangle rectPositionText = new Rectangle(rectPosition.X + textOffset.X, rectPosition.Y + textOffset.Y, rectPosition.Width - (textOffset.X * 2), rectPosition.Height - (textOffset.Y * 2));
 				Rectangle rectCellText = new Rectangle(rectCell.X + textOffset.X, rectCell.Y + textOffset.Y, rectCell.Width - (textOffset.X * 2), rectCell.Height - (textOffset.Y * 2));
+				Rectangle rectFirstNybbleCell = new Rectangle(rectCell.X, rectCell.Y, rectCell.Width / 2, rectCell.Height);
 				Rectangle rectNybbleCell = new Rectangle(rectCell.X + ((rectCell.Width / 2) * selectedNybble), rectCell.Y, rectCell.Width / 2, rectCell.Height);
 
-				foreach (HexEditorHighlightArea area in HighlightAreas)
+				bool hasAreaFill = false;
+				for (int j = HighlightAreas.Count - 1;  j > -1;  j--)
 				{
+					HexEditorHighlightArea area = HighlightAreas[j];
 					if (i >= area.Start && i < (area.Start + area.Length))
 					{
 						e.Graphics.FillRectangle(new SolidBrush(area.Color), rectCell);
+						hasAreaFill = true;
+						break;
+					}
+				}
+
+				if (i >= mvarSelectionStart && i <= (mvarSelectionStart + mvarSelectionLength.ByteIndex - 1))
+				{
+					if (mvarSelectionLength.NybbleIndex == 1 || i < (mvarSelectionStart + mvarSelectionLength.ByteIndex - 1))
+					{
+						if (!hasAreaFill)
+						{
+							e.Graphics.FillRectangle(new SolidBrush(Colors.LightSteelBlue), rectCell);
+						}
+						e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectCell);
+					}
+					else if (mvarSelectionLength.NybbleIndex == 0)
+					{
+						if (!hasAreaFill)
+						{
+							e.Graphics.FillRectangle(new SolidBrush(Colors.LightSteelBlue), rectFirstNybbleCell);
+						}
+						e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectFirstNybbleCell);
 					}
 				}
 
@@ -368,8 +478,9 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 
 				if (i == mvarSelectionStart)
 				{
-					e.Graphics.DrawRectangle(new Pen(Colors.LightSteelBlue), rectCell);
-					e.Graphics.FillRectangle(new SolidBrush(Colors.LightSteelBlue), rectNybbleCell);
+					e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectCell);
+					if (!BlinkCursor || cursorBlinking || !Editable)
+						e.Graphics.FillRectangle(new SolidBrush(Colors.SteelBlue), new Rectangle(rectNybbleCell.X, rectNybbleCell.Bottom - 4, rectNybbleCell.Width, 4));
 				}
 
 				string hex = mvarData[i].ToString("X").PadLeft(2, '0');

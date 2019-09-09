@@ -29,15 +29,17 @@ namespace UniversalWidgetToolkit.Controls
 	public class ToolbarItemButton
 		: ToolbarItem
 	{
-		public ToolbarItemButton(string name, string title = "")
+		public ToolbarItemButton(string name, string title = "", EventHandler onClick = null)
 			: base(name, title)
 		{
-
+			if (onClick != null)
+				Click += onClick;
 		}
-		public ToolbarItemButton(string name, StockType stockType)
+		public ToolbarItemButton(string name, StockType stockType, EventHandler onClick = null)
 			: base(name, stockType)
 		{
-
+			if (onClick != null)
+				Click += onClick;
 		}
 
 		public event EventHandler Click;

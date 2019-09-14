@@ -41,6 +41,9 @@ namespace UniversalWidgetToolkit.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_combo_box_set_entry_text_column(IntPtr /*GtkComboBox*/ combo_box, int value);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_combo_box_get_entry_text_column(IntPtr /*GtkComboBox*/ combo_box);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_combo_box_get_active_iter(IntPtr /*GtkComboBox*/ handle, ref Structures.GtkTreeIter iter);
 	}
 }
 

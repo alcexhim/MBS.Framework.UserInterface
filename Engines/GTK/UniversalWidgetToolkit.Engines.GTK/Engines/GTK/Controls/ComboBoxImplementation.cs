@@ -65,6 +65,14 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 
 		public TreeModelRow GetSelectedItem()
 		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter();
+			bool ret = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_active_iter(handle, ref hIter);
+			if (ret)
+			{
+				TreeModelRow row = (Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(hIter);
+				return row;
+			}
 			return null;
 		}
 

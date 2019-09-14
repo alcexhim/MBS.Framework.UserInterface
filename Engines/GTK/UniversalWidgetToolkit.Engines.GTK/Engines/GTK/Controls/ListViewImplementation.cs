@@ -580,6 +580,7 @@ namespace UniversalWidgetToolkit.Engines.GTK.Controls
 		{
 			IntPtr hScrolledWindow = (handle as GTKNativeControl).Handle;
 			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
+			if (hTreeView == IntPtr.Zero) return;
 
 			ListView ctl = (_ControlsByHandle[hTreeView] as ListView);
 			if (ctl == null) {

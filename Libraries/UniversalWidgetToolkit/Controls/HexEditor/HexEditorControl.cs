@@ -95,6 +95,13 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 		private int xoffset = 0;
 		private int yoffset = 16;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this
+		/// <see cref="HexEditorControl"/> allows inserting new data.
+		/// </summary>
+		/// <value><c>true</c> if inserting data is allowed; otherwise, <c>false</c>.</value>
+		public bool EnableInsert { get; set; } = true;
+
 		public HexEditorBackspaceBehavior BackspaceBehavior { get; set; } = HexEditorBackspaceBehavior.EraseNybble;
 
 		public HexEditorControl()
@@ -121,7 +128,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, 24);
 			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, 24, 24);
 
-			for (int i = 0; i < mvarData.Length; i++)
+			for (int i = 0; i < mvarData.Length + 1; i++)
 			{
 				if (x >= rectCell.X && x <= rectCell.Right && y >= rectCell.Y && y <= rectCell.Bottom)
 				{
@@ -344,7 +351,7 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 					}
 					else
 					{
-						mvarSelectionStart = (((int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth) + mvarMaxDisplayWidth) - 1;
+						mvarSelectionStart = Math.Min(Data.Length - 1, (((int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth) + mvarMaxDisplayWidth) - 1);
 						selectedNybble = 1;
 					}
 
@@ -373,6 +380,13 @@ namespace UniversalWidgetToolkit.Controls.HexEditor
 
 			if (next != '\0')
 			{
+				if (mvarSelectionStart >= Data.Length)
+				{
+					if (EnableInsert)
+					{
+						Array.Resize<byte>(ref mvarData, mvarData.Length + 1);
+					}
+				}
 				string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
 				mvarSelectionLength = 0;
 				if (selectedNybble == 0)

@@ -52,5 +52,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			throw new NotSupportedException();
 		}
+
+		protected override void SetCursorInternal(Cursor value)
+		{
+			throw new NotImplementedException();
+		}
+		protected override Cursor GetCursorInternal()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

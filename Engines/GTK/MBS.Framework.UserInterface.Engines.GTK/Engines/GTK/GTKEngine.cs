@@ -2068,6 +2068,98 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			return Internal.GLib.Methods.g_list_reverse(uri_list);
 		}
+
+
+		private static System.Collections.Generic.Dictionary<string, IntPtr> _CursorHandlesByName = new System.Collections.Generic.Dictionary<string, IntPtr>();
+		private static System.Collections.Generic.Dictionary<string, Cursor> _CursorsByName = new Dictionary<string, Cursor>();
+		private static System.Collections.Generic.Dictionary<Cursor, IntPtr> _CursorHandlesByCursor = new Dictionary<Cursor, IntPtr>();
+
+		private static void RegisterCursor(string name, Cursor cursor, IntPtr handle)
+		{
+			_CursorHandlesByCursor[cursor] = handle;
+			_CursorHandlesByName[name] = handle;
+			_CursorsByName[name] = cursor;
+		}
+
+		internal static IntPtr /*GdkCursor*/ GetCursorByName(string name)
+		{
+			if (_CursorHandlesByName.ContainsKey(name))
+				return _CursorHandlesByName[name];
+			return IntPtr.Zero;
+		}
+
+		internal static Cursor GetCursorByHandle(IntPtr /*GdkCursor*/ handle)
+		{
+			foreach (GTKCursorInfo info in cursorInfo)
+			{
+				if (handle == info.Handle)
+					return info.UniversalCursor;
+			}
+			return null;
+		}
+		internal static IntPtr /*GdkCursor*/ GetHandleForCursor(Cursor cursor)
+		{
+			foreach (GTKCursorInfo info in cursorInfo)
+			{
+				if (cursor == info.UniversalCursor)
+					return info.Handle;
+			}
+			return IntPtr.Zero;
+		}
+
+		private static bool mvarCursorsInitialized = false;
+		private static GTKCursorInfo[] cursorInfo = new GTKCursorInfo[]
+		{
+			new GTKCursorInfo("default", Cursors.Default),
+			new GTKCursorInfo("help", Cursors.Help),
+			new GTKCursorInfo("pointer", Cursors.Pointer),
+			new GTKCursorInfo("context-menu", Cursors.ContextMenu),
+			new GTKCursorInfo("progress", Cursors.Progress),
+			new GTKCursorInfo("wait", Cursors.Wait),
+			new GTKCursorInfo("cell", Cursors.Cell),
+			new GTKCursorInfo("crosshair", Cursors.Crosshair),
+			new GTKCursorInfo("text", Cursors.Text),
+			new GTKCursorInfo("vertical-text", Cursors.VerticalText),
+			new GTKCursorInfo("alias", Cursors.Alias),
+			new GTKCursorInfo("copy", Cursors.Copy),
+			new GTKCursorInfo("no-drop", Cursors.NoDrop),
+			new GTKCursorInfo("move", Cursors.Move),
+			new GTKCursorInfo("not-allowed", Cursors.NotAllowed),
+			new GTKCursorInfo("grab", Cursors.Grab),
+			new GTKCursorInfo( "grabbing", Cursors.Grabbing),
+			new GTKCursorInfo("all-scroll", Cursors.AllScroll),
+			new GTKCursorInfo("col-resize", Cursors.ResizeColumn),
+			new GTKCursorInfo("row-resize", Cursors.ResizeRow),
+			new GTKCursorInfo("n-resize", Cursors.ResizeN),
+			new GTKCursorInfo("e-resize", Cursors.ResizeE),
+			new GTKCursorInfo("s-resize", Cursors.ResizeS),
+			new GTKCursorInfo("w-resize", Cursors.ResizeW),
+			new GTKCursorInfo("ne-resize", Cursors.ResizeNE),
+			new GTKCursorInfo("nw-resize", Cursors.ResizeNW),
+			new GTKCursorInfo("sw-resize", Cursors.ResizeSW),
+			new GTKCursorInfo( "se-resize", Cursors.ResizeSE),
+			new GTKCursorInfo("ew-resize", Cursors.ResizeEW),
+			new GTKCursorInfo("ns-resize", Cursors.ResizeNS),
+			new GTKCursorInfo("nesw-resize", Cursors.ResizeNESW),
+			new GTKCursorInfo("nwse-resize", Cursors.ResizeNWSE),
+			new GTKCursorInfo("zoom-in", Cursors.ZoomIn),
+			new GTKCursorInfo("zoom-out", Cursors.ZoomOut)
+		};
+		internal static void InitializeCursors(IntPtr /*GdkDisplay*/ display)
+		{
+			if (mvarCursorsInitialized) return;
+
+			for (int i = 0;  i < cursorInfo.Length;  i++)
+			{
+				GTKCursorInfo info = cursorInfo[i];
+				IntPtr hCursor = Internal.GDK.Methods.gdk_cursor_new_from_name(display, info.Name);
+				Console.WriteLine("setting cursor {0} for {1} to {2}", info.Name, info.UniversalCursor, hCursor);
+				info.Handle = hCursor;
+				RegisterCursor(info.Name, info.UniversalCursor, hCursor);
+				cursorInfo[i] = info; // structs are weird
+			}
+			mvarCursorsInitialized = true;
+		}
 	}
 }
 

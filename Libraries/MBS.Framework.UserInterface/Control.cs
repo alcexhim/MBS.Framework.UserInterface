@@ -196,6 +196,23 @@ namespace MBS.Framework.UserInterface
 
 		public bool FocusOnClick { get; set; } = true;
 
+		private Cursor mvarCursor = Cursors.Default;
+		public Cursor Cursor
+		{
+			get
+			{
+				if (!IsCreated) return mvarCursor;
+				if (ControlImplementation != null)
+					mvarCursor = ControlImplementation.GetCursor();
+				return mvarCursor;
+			}
+			set
+			{
+				mvarCursor = value;
+				ControlImplementation?.SetCursor(value);
+			}
+		}
+
 		private string mvarTooltipText = String.Empty;
 		public string TooltipText
 		{

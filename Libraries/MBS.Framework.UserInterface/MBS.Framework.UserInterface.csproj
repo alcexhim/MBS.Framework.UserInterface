@@ -211,6 +211,8 @@
     <Compile Include="Controls\HexEditor\HexEditorBackspaceBehavior.cs" />
     <Compile Include="Controls\HexEditor\HexEditorPosition.cs" />
     <Compile Include="Controls\HexEditor\HexEditorHighlightArea.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="Cursors.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

@@ -152,6 +152,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[Flags()]
 		public enum GdkEventMask
 		{
+			PointerMotion = 0x4,
+			PointerMotionHint = 0x8,
 			ButtonPress = 0x100,
 			ButtonRelease = 0x200,
 			KeyPress = 0x400,

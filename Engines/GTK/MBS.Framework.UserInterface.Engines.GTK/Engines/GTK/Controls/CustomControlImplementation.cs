@@ -22,7 +22,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease | Internal.GDK.Constants.GdkEventMask.PointerMotion | Internal.GDK.Constants.GdkEventMask.PointerMotionHint);
 
 			return new GTKNativeControl(handle);
 		}

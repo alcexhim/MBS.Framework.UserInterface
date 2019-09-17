@@ -114,6 +114,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern string gtk_widget_get_tooltip_text(IntPtr /*GtkWidget*/ widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_tooltip_text(IntPtr /*GtkWidget*/ widget, string text);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkWindow*/ gtk_widget_get_window(IntPtr /*GtkWidget*/ widget);
 	}
 }
 

@@ -142,7 +142,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			cmdCustomButtons.Controls.Add(cmdCustomRemove, new BoxLayout.Constraints(false, false, 8));
 
 			tabCustom.Controls.Add(cmdCustomButtons);
-			tabCustom.Controls.Add(ctl);
+			tabCustom.Controls.Add(ctl, new BoxLayout.Constraints(true, true));
 
 			tbsTabs.TabPages.Add(tabCustom);
 

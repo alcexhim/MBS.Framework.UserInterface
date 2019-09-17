@@ -243,6 +243,18 @@ namespace MBS.Framework.UserInterface
 		{
 			SetTooltipTextInternal(value);
 		}
+
+		protected abstract Cursor GetCursorInternal();
+		public Cursor GetCursor()
+		{
+			return GetCursorInternal();
+		}
+
+		protected abstract void SetCursorInternal(Cursor value);
+		public void SetCursor(Cursor value)
+		{
+			SetCursorInternal(value);
+		}
 	}
 	public class ControlImplementationAttribute : Attribute
 	{

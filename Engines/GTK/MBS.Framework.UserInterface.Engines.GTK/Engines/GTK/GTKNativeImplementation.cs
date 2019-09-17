@@ -382,5 +382,30 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text((Handle as GTKNativeControl).Handle, value);
 		}
+
+		protected override Cursor GetCursorInternal()
+		{
+			IntPtr hGdkWindow = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window((Handle as GTKNativeControl).Handle);
+			IntPtr hGdkDisplay = Internal.GDK.Methods.gdk_window_get_display(hGdkWindow);
+			IntPtr hCursor = Internal.GDK.Methods.gdk_window_get_cursor(hGdkWindow);
+
+			GTKEngine.InitializeCursors(hGdkDisplay);
+
+			Cursor c = GTKEngine.GetCursorByHandle(hCursor);
+			if (c == null) return Cursors.Default;
+
+			return c;
+		}
+		protected override void SetCursorInternal(Cursor value)
+		{
+			IntPtr hGdkWindow = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window((Handle as GTKNativeControl).Handle);
+			IntPtr hGdkDisplay = Internal.GDK.Methods.gdk_window_get_display(hGdkWindow);
+
+			GTKEngine.InitializeCursors(hGdkDisplay);
+
+			IntPtr hCursor = GTKEngine.GetHandleForCursor(value);
+			Internal.GDK.Methods.gdk_window_set_cursor(hGdkWindow, hCursor);
+		}
+
 	}
 }

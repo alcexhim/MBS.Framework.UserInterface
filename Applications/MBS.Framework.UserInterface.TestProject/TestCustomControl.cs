@@ -3,6 +3,7 @@ using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.TestProject
 {
@@ -28,6 +29,20 @@ namespace MBS.Framework.UserInterface.TestProject
 
 			if (ShowGreenBox)
 				e.Graphics.FillRectangle(Brushes.Green, new Rectangle(64, 64, 200 - 128, 200 - 128));
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			if ((e.X >= 64 && e.Y >= 64 && e.X <= 64 + (200 - 128) && e.Y <= 64 + (200 - 128)) && ShowGreenBox)
+			{
+				Cursor = Cursors.Help;
+			}
+			else
+			{
+				Cursor = Cursors.Default;
+			}
 		}
 	}
 }

@@ -191,6 +191,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			tbs.TooltipText = value;
 		}
+
+		protected override Cursor GetCursorInternal()
+		{
+			return tbs.Cursor;
+		}
+		protected override void SetCursorInternal(Cursor value)
+		{
+			tbs.Cursor = value;
+		}
 	}
 }
 

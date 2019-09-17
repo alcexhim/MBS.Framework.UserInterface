@@ -175,6 +175,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkClipboard.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTextIter.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkLayout.cs" />
+    <Compile Include="Engines\GTK\GTKCursorInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

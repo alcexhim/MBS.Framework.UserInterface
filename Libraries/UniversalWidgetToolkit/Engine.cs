@@ -7,6 +7,7 @@ using UniversalWidgetToolkit.Drawing;
 using MBS.Framework.Collections.Generic;
 using UniversalWidgetToolkit.Printing;
 using System.Diagnostics.Contracts;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit
 {

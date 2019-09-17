@@ -5,6 +5,7 @@ using System.ComponentModel;
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Native;
 using System.Runtime.InteropServices;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Engines.GTK.Controls
 {

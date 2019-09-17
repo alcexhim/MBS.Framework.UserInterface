@@ -1,4 +1,5 @@
 using System;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit.Layouts
 {
@@ -36,7 +37,7 @@ namespace UniversalWidgetToolkit.Layouts
 		private int mvarColumnSpacing = 6;
 		public int ColumnSpacing { get { return mvarColumnSpacing; } set { mvarColumnSpacing = value; } }
 
-		protected override UniversalWidgetToolkit.Drawing.Rectangle GetControlBoundsInternal (Control ctl)
+		protected override Rectangle GetControlBoundsInternal (Control ctl)
 		{
 			throw new NotImplementedException ();
 		}

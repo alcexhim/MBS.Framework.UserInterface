@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 using UniversalWidgetToolkit.Drawing;
 
 namespace UniversalWidgetToolkit
@@ -10,18 +11,14 @@ namespace UniversalWidgetToolkit
 	{
 		private string mvarDeviceName = String.Empty;
 		public string DeviceName { get { return mvarDeviceName; } }
-
-		private Rectangle mvarBounds = Rectangle.Empty;
-		public Rectangle Bounds { get { return mvarBounds; } }
-
-		private Rectangle mvarWorkingArea = Rectangle.Empty;
-		public Rectangle WorkingArea { get { return mvarWorkingArea; } }
+		public Rectangle Bounds { get; } = Rectangle.Empty;
+		public Rectangle WorkingArea { get; } = Rectangle.Empty;
 
 		public Monitor(string deviceName, Rectangle bounds, Rectangle workingArea)
 		{
 			mvarDeviceName = deviceName;
-			mvarBounds = bounds;
-			mvarWorkingArea = workingArea;
+			Bounds = bounds;
+			WorkingArea = workingArea;
 		}
 
 		public static Monitor[] Get()

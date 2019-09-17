@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UniversalWidgetToolkit.Drawing;
 using UniversalWidgetToolkit.Controls.Ribbon;
+using MBS.Framework.Drawing;
 
 namespace UniversalWidgetToolkit
 {
@@ -74,9 +75,7 @@ namespace UniversalWidgetToolkit
 		/// </summary>
 		/// <value><c>true</c> if decorated; otherwise, <c>false</c>.</value>
 		public bool Decorated { get; set; } = true;
-
-		private Rectangle mvarBounds = Rectangle.Empty;
-		public Rectangle Bounds { get { return mvarBounds; } set { mvarBounds = value; } }
+		public Rectangle Bounds { get; set; } = Rectangle.Empty;
 
 		public bool HasFocus => Application.Engine.WindowHasFocus(this);
 		

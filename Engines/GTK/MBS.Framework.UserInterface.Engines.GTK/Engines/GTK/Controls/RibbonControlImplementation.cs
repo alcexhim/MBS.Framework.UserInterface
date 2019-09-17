@@ -102,6 +102,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 							btn.AlwaysShowImage = true; // .DisplayStyle = ButtonDisplayStyle.ImageAndText;
 							btn.BorderStyle = ButtonBorderStyle.None;
 							btn.Click += btn_Click;
+							btn.TooltipText = cmd.Title;
 							btn.SetExtraData<RibbonCommandItemButton> ("rcib", tsb);
 
 							if (tsb.IsImportant) {
@@ -180,6 +181,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override void SetFocusInternal ()
 		{
 			tbs.Focus ();
+		}
+
+		protected override string GetTooltipTextInternal()
+		{
+			return tbs.TooltipText;
+		}
+		protected override void SetTooltipTextInternal(string value)
+		{
+			tbs.TooltipText = value;
 		}
 	}
 }

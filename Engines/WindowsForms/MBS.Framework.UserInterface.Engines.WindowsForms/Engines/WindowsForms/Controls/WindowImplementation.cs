@@ -43,5 +43,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			return WindowsFormsEngine.SystemDrawingSizeToDimension2D((Handle as WindowsFormsNativeControl).Handle.Size);
 		}
+
+		protected override string GetTooltipTextInternal()
+		{
+			throw new NotSupportedException();
+		}
+		protected override void SetTooltipTextInternal(string value)
+		{
+			throw new NotSupportedException();
+		}
 	}
 }

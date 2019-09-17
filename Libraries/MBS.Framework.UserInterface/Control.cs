@@ -196,6 +196,26 @@ namespace MBS.Framework.UserInterface
 
 		public bool FocusOnClick { get; set; } = true;
 
+		private string mvarTooltipText = String.Empty;
+		public string TooltipText
+		{
+			get
+			{
+				if (!IsCreated) return mvarTooltipText;
+				if (ControlImplementation != null)
+					mvarTooltipText = ControlImplementation.GetTooltipText();
+
+				return mvarTooltipText;
+			}
+			set
+			{
+				mvarTooltipText = value;
+
+				if (IsCreated)
+					ControlImplementation?.SetTooltipText(value);
+			}
+		}
+
 		private string mvarText = null;
 		public string Text
 		{

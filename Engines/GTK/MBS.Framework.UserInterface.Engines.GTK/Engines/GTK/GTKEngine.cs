@@ -734,6 +734,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
 
+				if (control.TooltipText != null)
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(nativeHandle, control.TooltipText);
+				}
+
 				RegisterControlHandle (control, handle as GTKNativeControl);
 
 				UpdateControlLayout (control);

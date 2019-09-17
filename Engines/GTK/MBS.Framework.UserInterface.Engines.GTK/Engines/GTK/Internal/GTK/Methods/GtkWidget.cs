@@ -109,6 +109,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_get_allocation(IntPtr /*GtkWidget*/ widget, ref Internal.GDK.Structures.GdkRectangle /*GtkAllocation*/ alloc);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern string gtk_widget_get_tooltip_text(IntPtr /*GtkWidget*/ widget);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_tooltip_text(IntPtr /*GtkWidget*/ widget, string text);
 	}
 }
 

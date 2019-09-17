@@ -231,6 +231,18 @@ namespace MBS.Framework.UserInterface
 		protected virtual void UpdateControlLayoutInternal ()
 		{
 		}
+
+		protected abstract string GetTooltipTextInternal();
+		public string GetTooltipText()
+		{
+			return GetTooltipTextInternal();
+		}
+
+		protected abstract void SetTooltipTextInternal(string value);
+		public void SetTooltipText(string value)
+		{
+			SetTooltipTextInternal(value);
+		}
 	}
 	public class ControlImplementationAttribute : Attribute
 	{

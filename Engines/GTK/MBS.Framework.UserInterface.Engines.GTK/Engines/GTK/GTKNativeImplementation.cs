@@ -373,5 +373,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 
 		#endregion
+
+		protected override string GetTooltipTextInternal()
+		{
+			return Internal.GTK.Methods.GtkWidget.gtk_widget_get_tooltip_text((Handle as GTKNativeControl).Handle);
+		}
+		protected override void SetTooltipTextInternal(string value)
+		{
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text((Handle as GTKNativeControl).Handle, value);
+		}
 	}
 }

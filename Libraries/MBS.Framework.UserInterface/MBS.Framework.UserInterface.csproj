@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UniversalWidgetToolkit</RootNamespace>
-    <AssemblyName>UniversalWidgetToolkit</AssemblyName>
+    <AssemblyName>MBS.Framework.UserInterface</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

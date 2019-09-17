@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface
 
 				Document.Load (mom, xdf, fa);
 
-				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.UniversalWidgetToolkit.Settings", "settings") as MarkupTagElement);
+				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings", "settings") as MarkupTagElement);
 				foreach (MarkupElement elGroup in tagSettings.Elements)
 				{
 					MarkupTagElement tagGroup = (elGroup as MarkupTagElement);
@@ -113,7 +113,7 @@ namespace MBS.Framework.UserInterface
 
 			MarkupTagElement tagSettings = new MarkupTagElement ();
 			tagSettings.FullName = "uwt:settings";
-			tagSettings.Attributes.Add ("xmlns:uwt", "urn:net.alcetech.schemas.UniversalWidgetToolkit.Settings");
+			tagSettings.Attributes.Add ("xmlns:uwt", "urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings");
 
 			foreach (SettingsGroup group in SettingsGroups) {
 				MarkupTagElement tagGroup = new MarkupTagElement ();

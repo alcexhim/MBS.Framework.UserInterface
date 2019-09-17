@@ -28,7 +28,7 @@ namespace MBS.Framework.UserInterface
 		public string ClassName { get; private set; } = null;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:UniversalWidgetToolkit.WindowLayoutAttribute"/> class.
+		/// Initializes a new instance of the <see cref="T:MBS.Framework.UserInterface.WindowLayoutAttribute"/> class.
 		/// </summary>
 		/// <param name="pathName">Path name.</param>
 		public ContainerLayoutAttribute(string pathName, string className = null)

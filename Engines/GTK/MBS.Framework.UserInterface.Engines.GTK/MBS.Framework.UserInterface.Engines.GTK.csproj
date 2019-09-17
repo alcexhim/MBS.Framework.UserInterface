@@ -6,7 +6,7 @@
     <ProjectGuid>{62DC7CF9-C608-49E5-8C39-305B2E3E93F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>UniversalWidgetToolkit</RootNamespace>
-    <AssemblyName>UniversalWidgetToolkit.Engines.GTK</AssemblyName>
+    <AssemblyName>MBS.Framework.UserInterface.Engines.GTK</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\..\MichaelBecker.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -216,7 +216,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MBS.Framework.UserInterface.Engines.GTK.dll.config" />
+    <None Include="MBS.Framework.UserInterface.Engines.GTK.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

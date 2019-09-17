@@ -52,14 +52,14 @@ namespace MBS.Framework.UserInterface
 
 				Document.Load (mom, xdf, fa);
 
-				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings", "settings") as MarkupTagElement);
+				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.UniversalWidgetToolkit.Settings", "settings") as MarkupTagElement);
+				if (tagSettings == null) return;
+
 				foreach (MarkupElement elGroup in tagSettings.Elements)
 				{
 					MarkupTagElement tagGroup = (elGroup as MarkupTagElement);
 					LoadGroup(tagGroup);
 				}
-				if (tagSettings == null) return;
-
 			}
 			catch (System.IO.DirectoryNotFoundException ex) {
 			}

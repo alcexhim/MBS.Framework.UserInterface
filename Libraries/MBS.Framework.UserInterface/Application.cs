@@ -147,6 +147,9 @@ namespace MBS.Framework.UserInterface
 				}
 
 				foreach (Type type in types) {
+					if (type == null)
+						continue;
+
 					if (type.IsSubclassOf (typeof(SettingsProvider)) && !type.IsAbstract) {
 						if (!listOptionProviderTypeNames.Contains (type.FullName)) {
 							try {

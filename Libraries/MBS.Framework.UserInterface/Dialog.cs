@@ -17,7 +17,7 @@ namespace MBS.Framework.UserInterface
 
 		public DialogResult DialogResult { get; set; } = DialogResult.None;
 
-		[DebuggerNonUserCode()]
+		// [DebuggerNonUserCode()]
 		public DialogResult ShowDialog(Window parent = null)
 		{
 			DialogResult result = Application.Engine.ShowDialog(this, parent);

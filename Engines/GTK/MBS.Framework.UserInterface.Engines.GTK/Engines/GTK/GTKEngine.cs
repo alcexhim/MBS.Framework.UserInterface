@@ -772,7 +772,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return monitors;
 		}
 
-		[DebuggerNonUserCode()]
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
 			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
@@ -943,85 +942,86 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			if (handle != IntPtr.Zero)
 			{
-				while (true)
+				int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
+
+				switch (nativeResult)
 				{
-					int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
-
-					switch (nativeResult)
+					case (int)Internal.GTK.Constants.GtkResponseType.OK:
+					case (int)Internal.GTK.Constants.GtkResponseType.Accept:
 					{
-						case (int)Internal.GTK.Constants.GtkResponseType.OK:
-						case (int)Internal.GTK.Constants.GtkResponseType.Accept:
+						if (dialog is FileDialog)
 						{
-							if (dialog is FileDialog)
-							{
-								FileDialog_Accept(dialog as FileDialog, handle);
-							}
-							else if (dialog is ColorDialog)
-							{
-								ColorDialog_Accept(dialog as ColorDialog, handle);
-							}
-							else if (dialog is FontDialog)
-							{
-								FontDialog_Accept(dialog as FontDialog, handle);
-							}
-							result = DialogResult.OK;
-							break;
+							FileDialog_Accept(dialog as FileDialog, handle);
 						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Apply:
+						else if (dialog is ColorDialog)
 						{
-							break;
+							ColorDialog_Accept(dialog as ColorDialog, handle);
 						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Cancel:
+						else if (dialog is FontDialog)
 						{
-							result = DialogResult.Cancel;
-							break;
+							FontDialog_Accept(dialog as FontDialog, handle);
 						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Close:
-						{
-							result = DialogResult.Cancel;
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.DeleteEvent:
-						{
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Help:
-						{
-							result = DialogResult.Help;
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.No:
-						{
-							result = DialogResult.No;
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.None:
-						{
-							result = DialogResult.None;
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Reject:
-						{
-							result = DialogResult.Cancel;
-							break;
-						}
-						case (int)Internal.GTK.Constants.GtkResponseType.Yes:
-						{
-							result = DialogResult.Yes;
-							break;
-						}
+						result = DialogResult.OK;
+						break;
 					}
-
-					// FIXME: this results in corruption; better to cancel dialog close event?
-					if ((nativeResult != 0 && nativeResult != -1) || result == DialogResult.None)
+					case (int)Internal.GTK.Constants.GtkResponseType.Apply:
 					{
 						break;
 					}
+					case (int)Internal.GTK.Constants.GtkResponseType.Cancel:
+					{
+						result = DialogResult.Cancel;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.Close:
+					{
+						result = DialogResult.Cancel;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.DeleteEvent:
+					{
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.Help:
+					{
+						result = DialogResult.Help;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.No:
+					{
+						result = DialogResult.No;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.None:
+					{
+						result = DialogResult.None;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.Reject:
+					{
+						result = DialogResult.Cancel;
+						break;
+					}
+					case (int)Internal.GTK.Constants.GtkResponseType.Yes:
+					{
+						result = DialogResult.Yes;
+						break;
+					}
 				}
+
+				// FIXME: this results in corruption; better to cancel dialog close event?
+				if ((nativeResult != 0 && nativeResult != -1) || result == DialogResult.None)
+				{
+					if (result == DialogResult.None)
+						result = dialog.DialogResult;
+				}
+
+				/*
 				for (int i = 0; i < hButtons.Length; i++)
 				{
 					Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hButtons[i]);
 				}
+				*/
 				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 			}
 			return result;

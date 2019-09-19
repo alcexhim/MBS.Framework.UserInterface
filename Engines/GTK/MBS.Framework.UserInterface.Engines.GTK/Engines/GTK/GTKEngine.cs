@@ -283,9 +283,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_Application_Startup = new Internal.GObject.Delegates.GCallback(Application_Startup);
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
-			
+
 			IntPtr hApp = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
-			
+
 			if (hApp == IntPtr.Zero)
 			{
 				Console.WriteLine("error initting app {0}", Application.UniqueName);
@@ -320,7 +320,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				*/
 				mvarApplicationHandle = hApp;
 			}
-			
+
 			// TODO: fix this, it doesn't work (crashes with SIGSEGV)
 			// Internal.GIO.Methods.g_action_map_add_action (hApp, actionFile);
 
@@ -340,7 +340,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				string[] argv = System.Environment.GetCommandLineArgs();
 				int argc = argv.Length;
-				
+
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
@@ -394,6 +394,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		public GTKEngine()
 		{
 			InitializeStockIDs();
+			InitializeEventHandlers();
 
 			GtkPrintJob_status_changed_handler = new Internal.GObject.Delegates.GCallbackV1I(GtkPrintJob_status_changed);
 		}
@@ -530,7 +531,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			ee.Key = GdkKeyCodeToKeyboardKey(e.keyval, e.hardware_keycode, out modifierKeys);
 			ee.ModifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
 			return ee;
-			}
+		}
 
 
 		internal static KeyboardKey GdkKeyCodeToKeyboardKey(uint keyval, uint keycode, out KeyboardModifierKey modifierKeys)
@@ -609,7 +610,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					if (keyval >= 48 && keyval <= 57)
 					{
-							key = (KeyboardKey)((uint)KeyboardKey.D0 + (keyval - 48));
+						key = (KeyboardKey)((uint)KeyboardKey.D0 + (keyval - 48));
 					}
 					else if (keyval >= 65 && keyval <= 90)
 					{
@@ -667,11 +668,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return null;
 		}
 
-		protected override void UpdateControlLayoutInternal (Control control)
+		protected override void UpdateControlLayoutInternal(Control control)
 		{
 			IntPtr hCtrl = (GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (control.Parent != null && control.Parent.Layout != null) {
-				Constraints constraints = control.Parent.Layout.GetControlConstraints (control);
+				Constraints constraints = control.Parent.Layout.GetControlConstraints(control);
 				if (constraints != null) {
 					if (control.Parent.Layout is Layouts.BoxLayout) {
 						Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
@@ -689,20 +690,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 							}
 
 							IntPtr hLayout = IntPtr.Zero;
-							if (handlesByLayout.ContainsKey (control.Parent.Layout)) {
-								hLayout = handlesByLayout [control.Parent.Layout];
+							if (handlesByLayout.ContainsKey(control.Parent.Layout)) {
+								hLayout = handlesByLayout[control.Parent.Layout];
 							} else {
-								hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new (true, 0);
+								hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new(true, 0);
 							}
 
 							int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
-							Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing (hLayout, hCtrl, cs.Expand, cs.Fill, padding, packType);
+							Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing(hLayout, hCtrl, cs.Expand, cs.Fill, padding, packType);
 						}
 					}
 				}
 			}
 
-			control.ControlImplementation?.UpdateControlLayout ();
+			control.ControlImplementation?.UpdateControlLayout();
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -729,7 +730,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 				if (handle is CustomNativeControl) {
 					Control ctl = (handle as CustomNativeControl).Handle;
-					handle = CreateControlInternal (ctl);
+					handle = CreateControlInternal(ctl);
 				}
 
 				IntPtr nativeHandle = (handle as GTKNativeControl).Handle;
@@ -739,13 +740,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(nativeHandle, control.TooltipText);
 				}
 
-				RegisterControlHandle (control, handle as GTKNativeControl);
+				RegisterControlHandle(control, handle as GTKNativeControl);
 
-				UpdateControlLayout (control);
-				UpdateControlProperties (control);
+				UpdateControlLayout(control);
+				UpdateControlProperties(control);
 
 				if (control.Visible) {
-					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all ((handle as GTKNativeControl).Handle);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all((handle as GTKNativeControl).Handle);
 				}
 			}
 
@@ -770,6 +771,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			Monitor[] monitors = new Monitor[monitorCount];
 			return monitors;
+		}
+
+		private Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
+		private bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
+		{
+			// blatently stolen from GTKNativeImplementation
+			// we need to build more GTKNativeImplementation-based dialog impls to avoid code bloat
+
+			// destroy all handles associated with widget
+			Control ctl = GetControlByHandle(widget);
+			UnregisterControlHandle(ctl);
+			return false;
+		}
+
+		// hack hack hack until we base everything off of GTKNativeImplementation
+		private void InitializeEventHandlers()
+		{
+			// eww
+			gc_delete_event_handler = new Func<IntPtr, IntPtr, bool>(gc_delete_event);
 		}
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
@@ -917,6 +937,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, dialog.Decorated);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
+
+			Internal.GObject.Methods.g_signal_connect(handle, "delete_event", gc_delete_event_handler);
 
 			// Add any additional buttons to the end of the buttons list
 			foreach (Button button in dialog.Buttons)

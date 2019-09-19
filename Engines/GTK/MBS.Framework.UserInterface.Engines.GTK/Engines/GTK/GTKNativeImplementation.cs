@@ -135,6 +135,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Internal.GTK.Delegates.GtkDragEvent gc_drag_begin_handler = null;
 		private Internal.GTK.Delegates.GtkDragEvent gc_drag_data_delete_handler = null;
 		private Internal.GTK.Delegates.GtkDragDataGetEvent gc_drag_data_get_handler = null;
+
+		private Func<IntPtr, IntPtr, bool> gc_destroy_event_handler = null;
+		private bool gc_destroy_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
+		{
+			// destroy all handles associated with widget
+			Control ctl = (Engine as GTKEngine).GetControlByHandle(widget);
+			Engine.UnregisterControlHandle(ctl);
+			return false;
+		}
+		private Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
+		private bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
+		{
+			// destroy all handles associated with widget
+			Control ctl = (Engine as GTKEngine).GetControlByHandle(widget);
+			Engine.UnregisterControlHandle(ctl);
+			return false;
+		}
+
 		private void InitializeEventHandlers()
 		{
 			gc_realize_handler = new Internal.GObject.Delegates.GCallback(gc_realize);
@@ -152,6 +170,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_drag_begin_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_begin);
 			gc_drag_data_delete_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_data_delete);
 			gc_drag_data_get_handler = new Internal.GTK.Delegates.GtkDragDataGetEvent(gc_drag_data_get);
+			gc_destroy_event_handler = new Func<IntPtr, IntPtr, bool>(gc_destroy_event);
+			gc_delete_event_handler = new Func<IntPtr, IntPtr, bool>(gc_delete_event);
 		}
 		/// <summary>
 		/// Connects the native GTK signals for the base GtkWidget class to the control with the given handle.
@@ -171,6 +191,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "show", gc_show_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "map", gc_map_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "map_event", gc_map_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "destroy_event", gc_destroy_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "delete_event", gc_delete_event_handler);
 
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_begin", gc_drag_begin_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);

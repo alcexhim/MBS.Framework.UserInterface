@@ -83,6 +83,29 @@ namespace MBS.Framework.UserInterface
 			controlsByHandle[handle] = control;
 			handlesByControl[control] = handle;
 		}
+		public void UnregisterControlHandle(NativeControl handle)
+		{
+			Control ctl = controlsByHandle[handle];
+
+			handlesByControl.Remove(ctl);
+			controlsByHandle.Remove(handle);
+		}
+		public void UnregisterControlHandle(Control ctl)
+		{
+			NativeControl nc = handlesByControl[ctl];
+
+			handlesByControl.Remove(ctl);
+			controlsByHandle.Remove(nc);
+
+			if (ctl is Container)
+			{
+				Container ct = (ctl as Container);
+				foreach (Control ctl1 in ct.Controls)
+				{
+					UnregisterControlHandle(ctl1);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Determines whether the given window has toplevel focus.

@@ -12,6 +12,8 @@ namespace MBS.Framework.UserInterface
 
 		private MenuItem.MenuItemCollection mvarItems = new MenuItem.MenuItemCollection();
 		public MenuItem.MenuItemCollection Items { get { return mvarItems; } }
+
+		public bool Visible { get; set; } = true;
 	}
 }
 

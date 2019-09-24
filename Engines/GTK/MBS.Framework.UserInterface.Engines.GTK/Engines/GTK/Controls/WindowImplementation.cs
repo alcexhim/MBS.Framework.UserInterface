@@ -296,11 +296,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			// HACK: required for Universal Editor splash screen to work
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_now(handle);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
-			Application.DoEvents();
+			// Internal.GTK.Methods.GtkWidget.gtk_widget_show_now(handle);
+			// Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
+			// Application.DoEvents();
 
 			return new GTKNativeControl(handle);
 		}
+
 	}
 }

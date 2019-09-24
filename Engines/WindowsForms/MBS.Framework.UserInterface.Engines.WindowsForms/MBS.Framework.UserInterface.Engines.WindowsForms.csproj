@@ -7,7 +7,7 @@
     <ProjectGuid>{B8573BB1-A0CD-41F4-A775-E0CB79555C59}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UniversalWidgetToolkit.Engines.WindowsForms</RootNamespace>
+    <RootNamespace>MBS.Framework.UserInterface.Engines.WindowsForms</RootNamespace>
     <AssemblyName>UniversalWidgetToolkit.Engines.WindowsForms</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

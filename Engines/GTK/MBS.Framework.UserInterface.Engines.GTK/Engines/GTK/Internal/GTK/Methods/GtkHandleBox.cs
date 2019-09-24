@@ -1,5 +1,5 @@
 ﻿//
-//  GtkContainer.cs
+//  GtkHandleBox.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -23,18 +23,9 @@ using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
-	internal class GtkContainer
+	internal static class GtkHandleBox
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_container_add(IntPtr container, IntPtr widget);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_container_set_border_width(IntPtr container, int width);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkWidget*/ gtk_container_get_focus_child(IntPtr container);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_container_get_children(IntPtr /*GtkContainer*/ container);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_container_set_focus_child(IntPtr container, IntPtr widget);
+		public static extern IntPtr /*GtkWidget*/ gtk_handle_box_new();
 	}
 }
-

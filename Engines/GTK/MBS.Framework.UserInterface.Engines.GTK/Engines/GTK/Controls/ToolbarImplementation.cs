@@ -61,6 +61,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (tsb != null) InvokeMethod(tsb, "OnClick", EventArgs.Empty);
 		}
 
+		private IntPtr CreateHandleBox(IntPtr child)
+		{
+			IntPtr hHandleBox = IntPtr.Zero;
+			try
+			{
+				hHandleBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
+
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hHandleBox, child);
+				Internal.GTK.Methods.GtkContainer.gtk_container_set_border_width(hHandleBox, 1);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hHandleBox);
+			}
+			catch (EntryPointNotFoundException ex)
+			{
+				Console.WriteLine("GtkHandleBox unsupported, you'll have to do it yourself now!");
+			}
+			return hHandleBox;
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Toolbar ctl = (control as Toolbar);
@@ -148,6 +166,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					int index = ctl.Items.IndexOf(item);
 					Internal.GTK.Methods.GtkToolbar.gtk_toolbar_insert(handle, hItem, index);
 				}
+			}
+
+			// HandleBox f*cks up now that they stopped supporting it... ;-( BUT I WANT COMMAND BARS ON LINUX!!!
+			IntPtr hHandleBox = IntPtr.Zero; // CreateHandleBox(handle);
+			if (hHandleBox != IntPtr.Zero)
+			{
+				return new GTKNativeControl(hHandleBox, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("HandleBox", hHandleBox),
+					new KeyValuePair<string, IntPtr>("Toolbar", handle)
+				});
 			}
 
 			return new GTKNativeControl(handle);

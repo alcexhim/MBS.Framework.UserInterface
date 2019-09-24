@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AssemblyName>MBS.Framework.UserInterface.Engines.WindowsForms</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,6 +49,16 @@
     <Compile Include="Printing\WindowsFormsPrinter.cs" />
     <Compile Include="WindowsFormsNativeTreeModel.cs" />
     <Compile Include="WindowsFormsClipboard.cs" />
+    <Compile Include="Internal\Linux\GTK\Methods.cs" />
+    <Compile Include="Internal\Linux\GLib\Constants.cs" />
+    <Compile Include="Internal\Linux\GLib\Delegates.cs" />
+    <Compile Include="Internal\Linux\GLib\Methods.cs" />
+    <Compile Include="Internal\Linux\GLib\Structures.cs" />
+    <Compile Include="Internal\Linux\Marshaller.cs" />
+    <Compile Include="Internal\Linux\GObject\Methods.cs" />
+    <Compile Include="Internal\IntPtrEqualityComparer.cs" />
+    <Compile Include="Internal\Linux\GTKNativeControl.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\ContainerImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -63,6 +75,11 @@
     <Folder Include="Engines\WindowsForms\" />
     <Folder Include="Engines\WindowsForms\Controls\" />
     <Folder Include="Printing\" />
+    <Folder Include="Internal\" />
+    <Folder Include="Internal\Linux\" />
+    <Folder Include="Internal\Linux\GTK\" />
+    <Folder Include="Internal\Linux\GLib\" />
+    <Folder Include="Internal\Linux\GObject\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

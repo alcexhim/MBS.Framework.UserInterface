@@ -1,71 +1,178 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.WindowsForms.Printing;
 using MBS.Framework.UserInterface.Printing;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
-    public class WindowsFormsEngine : Engine
-    {
-		protected override void DestroyControlInternal (Control control)
+	public class WindowsFormsEngine : Engine
+	{
+		protected override void DestroyControlInternal(Control control)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
-		protected override NativeControl CreateControlInternal (Control control)
+		protected override NativeControl CreateControlInternal(Control control)
 		{
-			return base.CreateControlInternal (control);
-		}
-
-		protected override void TabContainer_ClearTabPagesInternal (TabContainer parent)
-		{
-			throw new NotImplementedException ();
-		}
-		protected override void TabContainer_RemoveTabPageInternal (TabContainer parent, TabPage tabPage)
-		{
-			throw new NotImplementedException ();
-		}
-		protected override void TabContainer_InsertTabPageInternal (TabContainer parent, int index, TabPage tabPage)
-		{
-			throw new NotImplementedException ();
+			return base.CreateControlInternal(control);
 		}
 
-		protected override void UpdateControlLayoutInternal (Control control)
+		protected override void TabContainer_ClearTabPagesInternal(TabContainer parent)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
-		protected override void UpdateControlPropertiesInternal (Control control, NativeControl handle)
+		protected override void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
-		protected override void UpdateNotificationIconInternal (NotificationIcon nid, bool updateContextMenu)
+		protected override void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage)
 		{
-			throw new NotImplementedException ();
-		}
-
-		protected override bool WindowHasFocusInternal (Window window)
-		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
-		protected override void InvalidateControlInternal (Control control, int x, int y, int width, int height)
+		protected override void UpdateControlLayoutInternal(Control control)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
+		}
+		protected override void UpdateControlPropertiesInternal(Control control, NativeControl handle)
+		{
+			throw new NotImplementedException();
+		}
+		protected override void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu)
+		{
+			throw new NotImplementedException();
 		}
 
-		protected override DialogResult ShowDialogInternal (Dialog dialog, Window parent)
+		protected override bool WindowHasFocusInternal(Window window)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
+		}
+
+		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
+		{
+			if (dialog is FileDialog)
+			{
+				FileDialog fd = (dialog as FileDialog);
+				switch (fd.Mode)
+				{
+					case FileDialogMode.CreateFolder:
+					case FileDialogMode.SelectFolder:
+					{
+						System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+						System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+						return SWFDialogResultToDialogResult(result);
+					}
+					case FileDialogMode.Open:
+					{
+						System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+						ofd.Title = fd.Text;
+						ofd.FileName = fd.SelectedFileNames[fd.SelectedFileNames.Count - 1];
+						System.Windows.Forms.DialogResult result = ofd.ShowDialog();
+						foreach (string fn in ofd.FileNames)
+						{
+							fd.SelectedFileNames.Add(fn);
+						}
+						return SWFDialogResultToDialogResult(result);
+					}
+					case FileDialogMode.Save:
+					{
+						System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
+						sfd.Title = fd.Text;
+						sfd.FileName = fd.SelectedFileNames[fd.SelectedFileNames.Count - 1];
+						System.Windows.Forms.DialogResult result = sfd.ShowDialog();
+						foreach (string fn in sfd.FileNames)
+						{
+							fd.SelectedFileNames.Add(fn);
+						}
+						return SWFDialogResultToDialogResult(result);
+					}
+				}
+			}
+			else
+			{
+				System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+				System.Windows.Forms.DialogResult result = f.ShowDialog();
+				return SWFDialogResultToDialogResult(result);
+			}
+			throw new NotImplementedException();
+		}
+
+		internal DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult result)
+		{
+			switch (result)
+			{
+				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+			}
+			return (DialogResult)((int)result);
+		}
+
+		private List<Window> _GetToplevelWindowsRetval = null;
+		private Window[] GTK_GetToplevelWindowsInternal()
+		{
+			if (_GetToplevelWindowsRetval != null)
+			{
+				// should not happen
+				throw new InvalidOperationException();
+			}
+
+			_GetToplevelWindowsRetval = new List<Window>();
+			IntPtr hList = Internal.Linux.GTK.Methods.gtk_window_list_toplevels();
+			Internal.Linux.GLib.Methods.g_list_foreach(hList, GTK_AddToList, IntPtr.Zero);
+
+			Window[] retval = _GetToplevelWindowsRetval.ToArray();
+			Internal.Linux.GLib.Methods.g_list_free(hList);
+
+			_GetToplevelWindowsRetval = null;
+			return retval;
+		}
+		private void /*GFunc*/ GTK_AddToList(IntPtr data, IntPtr user_data)
+		{
+			if (_GetToplevelWindowsRetval == null)
+			{
+				throw new InvalidOperationException("_AddToList called before initializing the list");
+			}
+
+			Control ctl = null; // GetControlByHandle(data);
+			Window window = (ctl as Window);
+
+			if (window == null)
+			{
+				window = new Window();
+				RegisterControlHandle(window, new Internal.Linux.GTKNativeControl(data));
+			}
+
+			_GetToplevelWindowsRetval.Add(window);
 		}
 
 		protected override Window [] GetToplevelWindowsInternal ()
 		{
-			throw new NotImplementedException ();
+			switch (Environment.OSVersion.Platform)
+			{
+				case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
+				case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
+				default: throw new PlatformNotSupportedException();
+			}
+		}
+
+		private Window[] W32_GetToplevelWindowsInternal()
+		{
+			throw new NotImplementedException();
 		}
 
 		protected override int StartInternal (Window waitForClose = null)
@@ -80,7 +187,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		protected override void StopInternal (int exitCode)
 		{
-			throw new NotImplementedException ();
+			System.Windows.Forms.Application.Exit();
 		}
 
 		protected override void ShowNotificationPopupInternal (NotificationPopup popup)

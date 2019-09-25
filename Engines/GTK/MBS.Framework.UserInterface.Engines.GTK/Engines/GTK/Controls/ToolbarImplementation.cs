@@ -63,13 +63,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private IntPtr CreateHandleBox(IntPtr child)
 		{
+			return IntPtr.Zero;
+
 			IntPtr hHandleBox = IntPtr.Zero;
 			try
 			{
 				hHandleBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
 
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hHandleBox, child);
-				Internal.GTK.Methods.GtkContainer.gtk_container_set_border_width(hHandleBox, 1);
+				Internal.GTK.Methods.GtkContainer.gtk_container_set_border_width(child, 5);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hHandleBox);
 			}
 			catch (EntryPointNotFoundException ex)
@@ -169,7 +171,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			// HandleBox f*cks up now that they stopped supporting it... ;-( BUT I WANT COMMAND BARS ON LINUX!!!
-			IntPtr hHandleBox = IntPtr.Zero; // CreateHandleBox(handle);
+			IntPtr hHandleBox = CreateHandleBox(handle);
 			if (hHandleBox != IntPtr.Zero)
 			{
 				return new GTKNativeControl(hHandleBox, new KeyValuePair<string, IntPtr>[]

@@ -259,7 +259,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			if (hContainer != IntPtr.Zero)
 			{
-				Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hContainer, true, true, 0);
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hContainer, true, true, 0);
 			}
 
 			Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hWindowContainer);
@@ -285,6 +285,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 				}
+
+				IntPtr hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hStatusBar, false, true, 0);
 			}
 			switch (window.StartPosition)
 			{

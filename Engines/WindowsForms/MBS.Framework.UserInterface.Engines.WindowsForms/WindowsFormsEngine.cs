@@ -12,6 +12,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
 	public class WindowsFormsEngine : Engine
 	{
+		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
+
 		protected override void DestroyControlInternal(Control control)
 		{
 			throw new NotImplementedException();
@@ -169,6 +171,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				default: throw new PlatformNotSupportedException();
 			}
 		}
+
 
 		private Window[] W32_GetToplevelWindowsInternal()
 		{

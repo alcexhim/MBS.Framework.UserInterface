@@ -24,6 +24,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 {
 	public class GTKEngine : Engine
 	{
+		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Unix ? 1 : -1);
+
 		private int _exitCode = 0;
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
 

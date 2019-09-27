@@ -13,6 +13,8 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class Engine
 	{
+		protected abstract int Priority { get; }
+
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
 		protected static Dictionary<Control, NativeControl> handlesByControl = new Dictionary<Control, NativeControl>();
 
@@ -119,10 +121,13 @@ namespace MBS.Framework.UserInterface
 		{
 			List<Engine> list = new List<Engine>();
 			Type[] engineTypes = MBS.Framework.UserInterface.Common.Reflection.GetAvailableTypes(new Type[] { typeof(Engine) });
+
 			foreach (Type type in engineTypes)
 			{
 				list.Add((Engine)type.Assembly.CreateInstance(type.FullName));
 			}
+			list.Sort(new Comparison<Engine>((x, y) => x.Priority.CompareTo(y.Priority)));
+			list.Reverse();
 			return list.ToArray();
 		}
 

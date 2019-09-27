@@ -76,7 +76,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				mi.Tag = cmi;
 				mi.Click += Mi_Click;
 				mi.Text = cmi.Text.Replace('_', '&');
-				mi.ShortcutKeys = ShortcutToShortcutKeys(cmi.Shortcut);
+				try
+				{
+					mi.ShortcutKeys = ShortcutToShortcutKeys(cmi.Shortcut);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("could not set shortcut keys value from uwt {0} to winforms {1}", cmi.Shortcut, ShortcutToShortcutKeys(cmi.Shortcut));
+				}
 				foreach (MenuItem mi1 in cmi.Items)
 				{
 					if (mi1 == null)

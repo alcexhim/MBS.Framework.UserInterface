@@ -120,7 +120,10 @@ namespace MBS.Framework.UserInterface
 			}
 
 			if (mvarEngine != null)
-				mvarEngine.Initialize ();
+			{
+				Console.WriteLine("Using engine {0}", mvarEngine.GetType().FullName);
+				mvarEngine.Initialize();
+			}
 
 			// after initialization, load option providers
 
@@ -224,12 +227,8 @@ namespace MBS.Framework.UserInterface
 		public static void Stop(int exitCode = 0)
 		{
 			if (mvarEngine == null)
-			{
-				Engine[] engines = Engine.Get();
-				if (engines.Length > 0) mvarEngine = engines[0];
+				return; // why bother getting an engine? we're stopping...
 
-				if (mvarEngine == null) throw new ArgumentNullException("No engines were found or could be loaded");
-			}
 			mvarEngine.Stop(exitCode);
 		}
 

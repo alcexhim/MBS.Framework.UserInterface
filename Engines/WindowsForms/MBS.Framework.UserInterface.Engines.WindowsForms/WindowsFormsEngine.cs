@@ -51,7 +51,40 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override bool WindowHasFocusInternal(Window window)
 		{
-			throw new NotImplementedException();
+			switch (Environment.OSVersion.Platform)
+			{
+				case PlatformID.Win32NT:
+				{
+					IntPtr hWndActive = Internal.Windows.Methods.GetActiveWindow();
+					if (window.ControlImplementation != null)
+					{
+						if (window.ControlImplementation.Handle is Win32NativeControl)
+						{
+							return (window.ControlImplementation.Handle as Win32NativeControl).Handle.Equals(hWndActive);
+						}
+						else if (window.ControlImplementation.Handle is WindowsFormsNativeControl)
+						{
+							return (window.ControlImplementation.Handle as WindowsFormsNativeControl).Handle.Handle.Equals(hWndActive);
+						}
+					}
+					else
+					{
+						NativeControl nc = GetHandleForControl(window);
+						IntPtr hWnd = IntPtr.Zero;
+						if (nc is Win32NativeControl)
+						{
+							hWnd = (nc as Win32NativeControl).Handle;
+						}
+						else if (nc is WindowsFormsNativeControl)
+						{
+							hWnd = (nc as WindowsFormsNativeControl).Handle.Handle;
+						}
+						return hWnd.Equals(hWndActive);
+					}
+					break;
+				}
+			}
+			return false;
 		}
 
 		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
@@ -172,10 +205,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 		}
 
+		private Internal.Windows.Delegates.EnumWindowsProc W32_GetToplevelWindowsCallback;
+		public WindowsFormsEngine()
+		{
+			W32_GetToplevelWindowsCallback = new Internal.Windows.Delegates.EnumWindowsProc(W32_GetToplevelWindowsCallbackFunc);
+		}
+
+		private bool W32_GetToplevelWindowsCallbackFunc(IntPtr hWnd, IntPtr lParam)
+		{
+			if (_GetToplevelWindowsRetval != null)
+			{
+				Window window = new Window();
+				RegisterControlHandle(window, new Win32NativeControl(hWnd));
+
+				_GetToplevelWindowsRetval.Add(window);
+			}
+			return true;
+		}
 
 		private Window[] W32_GetToplevelWindowsInternal()
 		{
-			throw new NotImplementedException();
+			if (_GetToplevelWindowsRetval != null)
+				return new Window[0];
+
+			_GetToplevelWindowsRetval = new List<Window>();
+			bool success = Internal.Windows.Methods.EnumWindows(W32_GetToplevelWindowsCallback, IntPtr.Zero);
+			Window[] list = _GetToplevelWindowsRetval.ToArray();
+			_GetToplevelWindowsRetval = null;
+			return list;
 		}
 
 		protected override int StartInternal (Window waitForClose = null)

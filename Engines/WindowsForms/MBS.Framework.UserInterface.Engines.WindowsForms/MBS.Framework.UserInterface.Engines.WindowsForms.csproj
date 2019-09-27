@@ -59,6 +59,9 @@
     <Compile Include="Internal\IntPtrEqualityComparer.cs" />
     <Compile Include="Internal\Linux\GTKNativeControl.cs" />
     <Compile Include="Engines\WindowsForms\Controls\ContainerImplementation.cs" />
+    <Compile Include="Win32NativeControl.cs" />
+    <Compile Include="Internal\Windows\Delegates.cs" />
+    <Compile Include="Internal\Windows\Methods.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -80,6 +83,7 @@
     <Folder Include="Internal\Linux\GTK\" />
     <Folder Include="Internal\Linux\GLib\" />
     <Folder Include="Internal\Linux\GObject\" />
+    <Folder Include="Internal\Windows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

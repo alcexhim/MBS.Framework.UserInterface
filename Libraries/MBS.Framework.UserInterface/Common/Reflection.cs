@@ -16,20 +16,25 @@ namespace MBS.Framework.UserInterface.Common
 				List<Assembly> list = new List<Assembly>();
 				
 				string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+				Console.WriteLine("uwt: looking for engines in '{0}'", basePath);
+
 				string[] fileNames = System.IO.Directory.GetFiles(basePath, "*.dll", System.IO.SearchOption.AllDirectories);
 				foreach (string fileName in fileNames)
 				{
+					Console.Write("loading '{0}' ...", fileName);
 					Assembly asm = null;
 					try
 					{
 						asm = Assembly.LoadFile(fileName);
 					}
-					catch
+					catch (Exception ex)
 					{
+						Console.WriteLine("failed! {0}", ex.Message);
 					}
 
 					if (asm == null) continue;
 
+					Console.WriteLine(" [ OK ]");
 					list.Add(asm);
 				}
 				mvarAvailableAssemblies = list.ToArray();

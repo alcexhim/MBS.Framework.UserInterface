@@ -1767,31 +1767,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return hMenuFileMenu;
 		}
 
-		protected override void TabContainer_ClearTabPagesInternal(TabContainer parent)
-		{
-			if (!IsControlCreated(parent))
-				return;
-
-			IntPtr handle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
-			int pageCount = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_n_pages(handle);
-			for (int i = 0; i < pageCount; i++)
-			{
-				Internal.GTK.Methods.GtkNotebook.gtk_notebook_remove_page(handle, i);
-			}
-		}
-		protected override void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage)
-		{
-			if (!IsControlCreated(parent))
-				return;
-
-			IntPtr handle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
-			Controls.TabContainerImplementation.NotebookAppendPage(this, parent, handle, tabPage, index);
-		}
-		protected override void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage)
-		{
-			throw new NotImplementedException();
-		}
-
 		private Dictionary<NotificationIcon, NotificationIconInfo> notificationIconInfo = new Dictionary<NotificationIcon, NotificationIconInfo>();
 
 		protected override void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu)

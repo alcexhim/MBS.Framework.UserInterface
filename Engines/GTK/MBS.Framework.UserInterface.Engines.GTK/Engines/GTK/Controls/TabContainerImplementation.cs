@@ -1,11 +1,12 @@
 ﻿using System;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.Native;
 using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(TabContainer))]
-	public class TabContainerImplementation : GTKNativeImplementation
+	public class TabContainerImplementation : GTKNativeImplementation, ITabContainerControlImplementation
 	{
 		public TabContainerImplementation(Engine engine, Control control) : base(engine, control)
 		{
@@ -44,6 +45,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else
 			{
 			}
+		}
+
+		public void ClearTabPages()
+		{
+			if (!Control.IsCreated)
+				return;
+
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+			int pageCount = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_n_pages(handle);
+			for (int i = 0; i < pageCount; i++)
+			{
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_remove_page(handle, i);
+			}
+		}
+
+		public void InsertTabPage(int index, TabPage item)
+		{
+			if (!Control.IsCreated)
+				return;
+
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+			NotebookAppendPage(Engine, (Control as TabContainer), handle, item, index);
+		}
+
+		public void RemoveTabPage(TabPage tabPage)
+		{
+			throw new NotImplementedException();
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

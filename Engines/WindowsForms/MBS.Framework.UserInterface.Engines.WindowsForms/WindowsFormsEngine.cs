@@ -23,19 +23,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return base.CreateControlInternal(control);
 		}
 
-		protected override void TabContainer_ClearTabPagesInternal(TabContainer parent)
-		{
-			throw new NotImplementedException();
-		}
-		protected override void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage)
-		{
-			throw new NotImplementedException();
-		}
-		protected override void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage)
-		{
-			throw new NotImplementedException();
-		}
-
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
 			throw new NotImplementedException();
@@ -135,6 +122,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			else
 			{
 				System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+
 				System.Windows.Forms.DialogResult result = f.ShowDialog();
 				return SWFDialogResultToDialogResult(result);
 			}

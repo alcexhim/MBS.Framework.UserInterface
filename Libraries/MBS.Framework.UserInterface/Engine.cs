@@ -411,22 +411,6 @@ namespace MBS.Framework.UserInterface
 			UpdateControlProperties(control, handle);
 		}
 
-		protected abstract void TabContainer_ClearTabPagesInternal(TabContainer parent);
-		internal void TabContainer_ClearTabPages(TabContainer parent)
-		{
-			TabContainer_ClearTabPagesInternal(parent);
-		}
-		protected abstract void TabContainer_InsertTabPageInternal(TabContainer parent, int index, TabPage tabPage);
-		internal void TabContainer_InsertTabPage(TabContainer parent, int index, TabPage tabPage)
-		{
-			TabContainer_InsertTabPageInternal(parent, index, tabPage);
-		}
-		protected abstract void TabContainer_RemoveTabPageInternal(TabContainer parent, TabPage tabPage);
-		internal void TabContainer_RemoveTabPage(TabContainer parent, TabPage tabPage)
-		{
-			TabContainer_RemoveTabPageInternal(parent, tabPage);
-		}
-
 		protected abstract void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu);
 		public void UpdateNotificationIcon(NotificationIcon nid, bool updateContextMenu = false)
 		{

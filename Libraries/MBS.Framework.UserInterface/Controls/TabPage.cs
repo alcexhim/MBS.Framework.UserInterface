@@ -12,25 +12,25 @@ namespace MBS.Framework.UserInterface.Controls
 			protected override void ClearItems ()
 			{
 				base.ClearItems ();
-				Application.Engine.TabContainer_ClearTabPages (_parentContainer);
+				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.ClearTabPages();
 			}
 			protected override void InsertItem (int index, TabPage item)
 			{
 				base.InsertItem (index, item);
-				Application.Engine.TabContainer_InsertTabPage (_parentContainer, index, item);
+				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 			protected override void RemoveItem (int index)
 			{
-				Application.Engine.TabContainer_RemoveTabPage (_parentContainer, this [index]);
+				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
 				base.RemoveItem (index);
 			}
 			protected override void SetItem (int index, TabPage item)
 			{
 				if (index >= 0 && index < this.Count) {
-					Application.Engine.TabContainer_RemoveTabPage (_parentContainer, this [index]);
+					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
 				}
 				base.SetItem (index, item);
-				Application.Engine.TabContainer_InsertTabPage (_parentContainer, index, item);
+				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 
 			public TabPageCollection(TabContainer parentContainer) {

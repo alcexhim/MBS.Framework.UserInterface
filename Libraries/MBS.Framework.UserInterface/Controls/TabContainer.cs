@@ -2,6 +2,15 @@ using System;
 
 namespace MBS.Framework.UserInterface.Controls
 {
+	namespace Native
+	{
+		public interface ITabContainerControlImplementation
+		{
+			void InsertTabPage(int index, TabPage item);
+			void RemoveTabPage(TabPage tabPage);
+			void ClearTabPages();
+		}
+	}
 	public class TabContainer : SystemControl
 	{
 		private TabPage.TabPageCollection mvarTabPages = null;

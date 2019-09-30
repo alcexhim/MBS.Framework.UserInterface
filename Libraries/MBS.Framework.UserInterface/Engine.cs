@@ -124,7 +124,18 @@ namespace MBS.Framework.UserInterface
 
 			foreach (Type type in engineTypes)
 			{
-				list.Add((Engine)type.Assembly.CreateInstance(type.FullName));
+				Engine engine = null;
+				try
+				{
+					engine = (Engine)type.Assembly.CreateInstance(type.FullName);
+				}
+				catch (Exception ex)
+				{
+					Console.Error.WriteLine("unable to load engine '{0}' : ({1}) {2}", type.FullName, ex.GetType().Name, ex.Message);
+				}
+
+				if (engine != null)
+					list.Add(engine);
 			}
 			list.Sort(new Comparison<Engine>((x, y) => x.Priority.CompareTo(y.Priority)));
 			list.Reverse();

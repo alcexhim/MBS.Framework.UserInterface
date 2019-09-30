@@ -64,6 +64,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			tsc.ContentPanel.Controls.Add(ncContainer.Handle);
 
 			form.Controls.Add(tsc);
+			form.Text = window.Text;
 			return new WindowsFormsNativeControl (form);
 		}
 

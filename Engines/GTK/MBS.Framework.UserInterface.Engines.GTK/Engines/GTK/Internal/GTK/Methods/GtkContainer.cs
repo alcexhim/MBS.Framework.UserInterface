@@ -32,7 +32,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkWidget*/ gtk_container_get_focus_child(IntPtr container);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_container_get_children(IntPtr /*GtkContainer*/ container);
+		public static extern IntPtr /*GList*/ gtk_container_get_children(IntPtr /*GtkContainer*/ container);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_container_set_focus_child(IntPtr container, IntPtr widget);
 	}

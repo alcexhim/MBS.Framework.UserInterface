@@ -36,6 +36,9 @@ namespace MBS.Framework.UserInterface
 			return handlesByControl.ContainsKey(control);
 		}
 
+		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
+		protected internal abstract Image LoadImageFromFile(string filename, string type = null);
+
 		protected abstract Clipboard GetDefaultClipboardInternal();
 		public Clipboard GetDefaultClipboard()
 		{

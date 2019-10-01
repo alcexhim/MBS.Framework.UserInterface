@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Controls
 {
@@ -27,5 +28,6 @@ namespace MBS.Framework.UserInterface.Controls
 	{
 		public string IconName { get; set; }
 		public Dimension2D IconSize { get; set; } = Dimension2D.Empty;
+		public Image Image { get; set; } = null;
 	}
 }

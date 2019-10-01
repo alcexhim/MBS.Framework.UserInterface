@@ -1,5 +1,5 @@
 ﻿//
-//  Image.cs
+//  WindowsFormsNativeImage.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,17 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Drawing
-{
-	public abstract class Image
-	{
-		public int Width { get; protected set; } = 0;
-		public int Height { get; protected set; } = 0;
+using MBS.Framework.UserInterface.Drawing;
 
-		public static Image FromFile(string filename, string type = null)
+namespace MBS.Framework.UserInterface.Engines.WindowsForms
+{
+	public class WindowsFormsNativeImage : Image
+	{
+		public System.Drawing.Image Handle { get; private set; } = null;
+
+		internal WindowsFormsNativeImage(System.Drawing.Image handle)
 		{
-			Image image = Application.Engine.LoadImageFromFile(filename, type);
-			return image;
+			Handle = handle;
 		}
 	}
 }

@@ -29,6 +29,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private int _exitCode = 0;
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
 
+		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
+		protected override Image LoadImageFromFile(string filename, string type = null)
+		{
+			IntPtr hError = IntPtr.Zero;
+			IntPtr hLoader = IntPtr.Zero;
+			if (type != null)
+			{
+				hLoader = Internal.GDK.Methods.gdk_pixbuf_loader_new_with_type(type, ref hError);
+			}
+			else
+			{
+				hLoader = Internal.GDK.Methods.gdk_pixbuf_loader_new();
+			}
+
+			byte[] buffer = System.IO.File.ReadAllBytes(filename);
+			Internal.GDK.Methods.gdk_pixbuf_loader_write(hLoader, buffer, buffer.Length, ref hError);
+			Internal.GDK.Methods.gdk_pixbuf_loader_close(hLoader);
+
+			IntPtr hPixbuf = Internal.GDK.Methods.gdk_pixbuf_loader_get_pixbuf(hLoader);
+			Internal.GObject.Methods.g_object_unref(hLoader);
+
+			GTKNativeImage image = new GTKNativeImage(hPixbuf);
+			return image;
+		}
+
 		private static Version _Version = null;
 		public static Version Version
 		{

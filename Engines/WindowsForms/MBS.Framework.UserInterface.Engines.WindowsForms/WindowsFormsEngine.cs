@@ -36,6 +36,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
+		protected override Image LoadImageFromFile(string filename, string type = null)
+		{
+			System.Drawing.Image image = System.Drawing.Image.FromFile(filename);
+			return new WindowsFormsNativeImage(image);
+		}
+
 		protected override bool WindowHasFocusInternal(Window window)
 		{
 			switch (Environment.OSVersion.Platform)

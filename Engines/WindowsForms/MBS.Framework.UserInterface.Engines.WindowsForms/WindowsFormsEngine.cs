@@ -128,11 +128,52 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			else
 			{
 				System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+				System.Windows.Forms.Panel pnl = CreateContainer(dialog);
+				System.Windows.Forms.Panel pnlButtons = new System.Windows.Forms.Panel();
+				pnl.Dock = System.Windows.Forms.DockStyle.Fill;
+				f.Controls.Add(pnl);
+
+				pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+				f.Controls.Add(pnlButtons);
 
 				System.Windows.Forms.DialogResult result = f.ShowDialog();
 				return SWFDialogResultToDialogResult(result);
 			}
 			throw new NotImplementedException();
+		}
+
+		private System.Windows.Forms.Panel CreateContainer(Container container)
+		{
+			System.Windows.Forms.Panel pnl = null;
+			if (container.Layout is Layouts.AbsoluteLayout || container.Layout is Layouts.BoxLayout)
+			{
+				pnl = new System.Windows.Forms.Panel();
+			}
+			else if (container.Layout is Layouts.FlowLayout)
+			{
+				pnl = new System.Windows.Forms.FlowLayoutPanel();
+			}
+			else if (container.Layout is Layouts.GridLayout)
+			{
+				pnl = new System.Windows.Forms.TableLayoutPanel();
+			}
+			if (pnl != null)
+			{
+				foreach (Control ctl in container.Controls)
+				{
+					if (!ctl.IsCreated)
+						CreateControl(ctl);
+
+					WindowsFormsNativeControl nc = (GetHandleForControl(ctl) as WindowsFormsNativeControl);
+					if (nc != null)
+						pnl.Controls.Add(nc.Handle);
+				}
+			}
+			else
+			{
+				Console.Error.WriteLine("uwt: wf: failed to create System.Windows.Forms.Panel for layout {0}", container.GetType().FullName);
+			}
+			return pnl;
 		}
 
 		internal DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult result)

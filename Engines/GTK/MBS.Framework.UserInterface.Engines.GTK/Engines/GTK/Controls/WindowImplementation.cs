@@ -6,6 +6,7 @@ using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Native;
 using System.Runtime.InteropServices;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
@@ -273,7 +274,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, window.Decorated);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_focus_on_map(handle, true);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name(handle, window.IconName);
-			
+
 			if (window.Decorated)
 			{
 				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
@@ -304,6 +305,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			// Application.DoEvents();
 
 			return new GTKNativeControl(handle);
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			MouseEventArgs ee = GTKEngine.TranslateMouseEventArgs(e, (Handle as GTKNativeControl).Handle);
+			base.OnMouseDown(ee);
+		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			MouseEventArgs ee = GTKEngine.TranslateMouseEventArgs(e, (Handle as GTKNativeControl).Handle);
+			base.OnMouseUp(ee);
+		}
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			MouseEventArgs ee = GTKEngine.TranslateMouseEventArgs(e, (Handle as GTKNativeControl).Handle);
+			base.OnMouseMove(ee);
 		}
 
 	}

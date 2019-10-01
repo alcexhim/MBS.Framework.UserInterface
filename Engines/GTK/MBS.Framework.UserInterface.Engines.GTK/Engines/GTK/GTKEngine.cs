@@ -648,8 +648,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 			KeyboardModifierKey modifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
 			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons, modifierKeys);
+
 			return ee;
 		}
+
+		internal static MouseEventArgs TranslateMouseEventArgs(MouseEventArgs ee, IntPtr widget)
+		{
+			// translate the (window) mouse coordinates for a GtkWidget into (widget) relative coordinates
+			int outX = 0, outY = 0;
+			IntPtr hChildList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(widget);
+			IntPtr hChild = Internal.GLib.Methods.g_list_nth_data(hChildList, 0);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_translate_coordinates(widget, hChild, (int)ee.X, (int)ee.Y, ref outX, ref outY);
+			return new MouseEventArgs(outX, outY, ee.Buttons, ee.ModifierKeys);
+		}
+
 		internal static MouseEventArgs GdkEventMotionToMouseEventArgs(Internal.GDK.Structures.GdkEventMotion e)
 		{
 			MouseButtons buttons = GdkModifierTypeToMouseButtons(e.state);

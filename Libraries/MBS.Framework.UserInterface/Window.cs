@@ -17,6 +17,9 @@ namespace MBS.Framework.UserInterface
 
 			void SetIconName(string value);
 			string GetIconName();
+
+			bool GetStatusBarVisible();
+			void SetStatusBarVisible(bool value);
 		}
 	}
 	public class Window : Container
@@ -43,9 +46,16 @@ namespace MBS.Framework.UserInterface
 		private Menu mvarMenuBar = new Menu();
 		public Menu MenuBar { get { return mvarMenuBar; } }
 
+		public StatusBar StatusBar { get; private set; } = null;
+
 		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
 
 		public WindowStartPosition StartPosition { get; set; } = WindowStartPosition.Default;
+
+		public Window()
+		{
+			StatusBar = new StatusBar(this);
+		}
 
 		private string mvarIconName = null;
 		public string IconName

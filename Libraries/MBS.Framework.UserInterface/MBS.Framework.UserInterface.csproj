@@ -213,6 +213,7 @@
     <Compile Include="Controls\HexEditor\HexEditorHighlightArea.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="Cursors.cs" />
+    <Compile Include="StatusBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

@@ -32,6 +32,30 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name ((Handle as GTKNativeControl).Handle, value);
 		}
 
+		public bool GetStatusBarVisible()
+		{
+			return true;
+
+		}
+		public void SetStatusBarVisible(bool value)
+		{
+			if (Handle == null) return;
+
+			IntPtr hStatusBar = (Handle as GTKNativeControl).GetNamedHandle("StatusBar");
+			if (hStatusBar != IntPtr.Zero)
+			{
+				if (value)
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show(hStatusBar);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hStatusBar);
+				}
+			}
+		}
+
+
 		private List<Window> _GetToplevelWindowsRetval = null;
 		public Window[] GetToplevelWindows()
 		{
@@ -258,6 +282,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			#endregion
 
+			IntPtr hStatusBar = IntPtr.Zero;
+
 			if (hContainer != IntPtr.Zero)
 			{
 				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hContainer, true, true, 0);
@@ -287,7 +313,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 				}
 
-				IntPtr hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();
+				hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();
 				Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hStatusBar, false, true, 0);
 			}
 			switch (window.StartPosition)
@@ -304,7 +330,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			// Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
 			// Application.DoEvents();
 
-			return new GTKNativeControl(handle);
+			return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
+			{
+				new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar)
+			});
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			if (!(Control as Window).StatusBar.Visible)
+			{
+				if (Handle != null)
+				{
+					IntPtr hStatusbar = (Handle as GTKNativeControl).GetNamedHandle("StatusBar");
+					if (hStatusbar != IntPtr.Zero)
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hStatusbar);
+					}
+				}
+			}
+
+			base.OnShown(e);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)

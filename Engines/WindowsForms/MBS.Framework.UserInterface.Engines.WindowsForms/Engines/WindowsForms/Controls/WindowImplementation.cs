@@ -15,6 +15,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		public bool GetStatusBarVisible()
+		{
+			return false;
+		}
+		public void SetStatusBarVisible(bool value)
+		{
+		}
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			Window window = (control as Window);

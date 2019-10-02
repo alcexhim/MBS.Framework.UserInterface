@@ -1,5 +1,5 @@
 ﻿//
-//  Image.cs
+//  GtkIconTheme.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,27 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Drawing
-{
-	public abstract class Image
-	{
-		public int Width { get; protected set; } = 0;
-		public int Height { get; protected set; } = 0;
+using System.Runtime.InteropServices;
 
-		public static Image FromName(string name, int size)
-		{
-			Image image = Application.Engine.LoadImageByName(name, size);
-			return image;
-		}
-		public static Image FromBytes(byte[] data, string type)
-		{
-			Image image = Application.Engine.LoadImage(data, type);
-			return image;
-		}
-		public static Image FromFile(string filename, string type = null)
-		{
-			Image image = Application.Engine.LoadImage(filename, type);
-			return image;
-		}
+namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
+{
+	internal static class GtkIconTheme
+	{
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkIconTheme*/ gtk_icon_theme_get_default();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_icon_theme_has_icon(IntPtr /*GtkIconTheme*/ icon_theme, string name);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkPixbuf*/ gtk_icon_theme_load_icon(IntPtr /*GtkIconTheme*/ icon_theme, string icon_name, int size, Constants.GtkIconLookupFlags flags, ref IntPtr /*GError*/ error);
 	}
 }

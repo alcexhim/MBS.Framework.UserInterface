@@ -37,7 +37,9 @@ namespace MBS.Framework.UserInterface
 		}
 
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
-		protected internal abstract Image LoadImageFromFile(string filename, string type = null);
+		protected internal abstract Image LoadImage(string filename, string type = null);
+		protected internal abstract Image LoadImage(byte[] filedata, string type);
+		protected internal abstract Image LoadImageByName(string name, int size);
 
 		protected abstract Clipboard GetDefaultClipboardInternal();
 		public Clipboard GetDefaultClipboard()

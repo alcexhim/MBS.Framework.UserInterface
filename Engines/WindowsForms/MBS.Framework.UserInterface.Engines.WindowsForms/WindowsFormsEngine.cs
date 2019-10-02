@@ -36,7 +36,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
-		protected override Image LoadImageFromFile(string filename, string type = null)
+		protected override Image LoadImageByName(string name, int size)
+		{
+			return null;
+		}
+		protected override Image LoadImage(byte[] filedata, string type)
+		{
+			System.IO.MemoryStream ms = new System.IO.MemoryStream(filedata);
+			System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
+			return new WindowsFormsNativeImage(image);
+		}
+		protected override Image LoadImage(string filename, string type = null)
 		{
 			System.Drawing.Image image = System.Drawing.Image.FromFile(filename);
 			return new WindowsFormsNativeImage(image);

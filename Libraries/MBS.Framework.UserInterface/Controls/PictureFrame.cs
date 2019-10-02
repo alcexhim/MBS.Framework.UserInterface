@@ -26,8 +26,6 @@ namespace MBS.Framework.UserInterface.Controls
 {
 	public class PictureFrame : SystemControl
 	{
-		public string IconName { get; set; }
-		public Dimension2D IconSize { get; set; } = Dimension2D.Empty;
 		public Image Image { get; set; } = null;
 	}
 }

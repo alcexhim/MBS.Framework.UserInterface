@@ -35,6 +35,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkWidget*/ gtk_image_new_from_pixbuf(IntPtr /*GdkPixbuf*/ pixbuf);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_image_set_pixel_size(IntPtr /*GtkImage*/ image, int pixel_size);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_image_get_pixbuf(IntPtr /*GtkImage*/ image);
 	}
 }
 

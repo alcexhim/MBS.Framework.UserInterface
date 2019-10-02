@@ -211,12 +211,12 @@ namespace MBS.Framework.UserInterface
 					ctl = new Controls.PictureFrame();
 					if (item.Properties["icon_name"] != null)
 					{
-						(ctl as Controls.PictureFrame).IconName = item.Properties["icon_name"].Value;
-					}
-					if (item.Properties["pixel_size"] != null)
-					{
-						int size = Int32.Parse(item.Properties["pixel_size"].Value);
-						(ctl as Controls.PictureFrame).IconSize = new Dimension2D(size, size);
+						int size = 32;
+						if (item.Properties["pixel_size"] != null)
+						{
+							size = Int32.Parse(item.Properties["pixel_size"].Value);
+						}
+						(ctl as Controls.PictureFrame).Image = Image.FromName(item.Properties["icon_name"].Value, size);
 					}
 					break;
 				}

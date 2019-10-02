@@ -30,7 +30,28 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
 
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
-		protected override Image LoadImageFromFile(string filename, string type = null)
+		protected override Image LoadImage(byte[] filedata, string type)
+		{
+			IntPtr hError = IntPtr.Zero;
+			IntPtr hLoader = CreateImageLoader(type);
+			return LoadImage(hLoader, filedata, ref hError);
+		}
+		protected override Image LoadImage(string filename, string type = null)
+		{
+			IntPtr hError = IntPtr.Zero;
+			IntPtr hLoader = CreateImageLoader(type);
+			byte[] buffer = System.IO.File.ReadAllBytes(filename);
+			return LoadImage(hLoader, buffer, ref hError);
+		}
+		protected override Image LoadImageByName(string name, int size)
+		{
+			IntPtr hError = IntPtr.Zero;
+			IntPtr hTheme = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_get_default();
+			IntPtr hPixbuf = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_load_icon(hTheme, name, size, Constants.GtkIconLookupFlags.None, ref hError);
+			return new GTKNativeImage(hPixbuf);
+		}
+
+		private IntPtr CreateImageLoader(string type = null)
 		{
 			IntPtr hError = IntPtr.Zero;
 			IntPtr hLoader = IntPtr.Zero;
@@ -42,16 +63,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				hLoader = Internal.GDK.Methods.gdk_pixbuf_loader_new();
 			}
+			return hLoader;
+		}
 
-			byte[] buffer = System.IO.File.ReadAllBytes(filename);
+		private Image LoadImage(IntPtr hLoader, byte[] buffer, ref IntPtr hError)
+		{
 			Internal.GDK.Methods.gdk_pixbuf_loader_write(hLoader, buffer, buffer.Length, ref hError);
 			Internal.GDK.Methods.gdk_pixbuf_loader_close(hLoader);
 
 			IntPtr hPixbuf = Internal.GDK.Methods.gdk_pixbuf_loader_get_pixbuf(hLoader);
 			Internal.GObject.Methods.g_object_unref(hLoader);
 
-			GTKNativeImage image = new GTKNativeImage(hPixbuf);
-			return image;
+			return new GTKNativeImage(hPixbuf);
 		}
 
 		private static Version _Version = null;

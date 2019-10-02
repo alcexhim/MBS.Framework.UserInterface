@@ -43,15 +43,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				IntPtr hpixbuf = (ctl.Image as GTKNativeImage).Handle;
 				handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hpixbuf);
 			}
+			/*
 			else if (ctl.IconName != null)
 			{
 				handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(ctl.IconName);
 			}
+			*/
 
 			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.PointerMotion | Internal.GDK.Constants.GdkEventMask.PointerMotionHint);
-
-			if (ctl.IconSize != Dimension2D.Empty)
-				Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(handle, (int) ctl.IconSize.Width);
 			return new GTKNativeControl(handle);
 		}
 	}

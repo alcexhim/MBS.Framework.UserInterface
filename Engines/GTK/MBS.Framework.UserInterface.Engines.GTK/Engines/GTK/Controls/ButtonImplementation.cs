@@ -75,8 +75,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			if (ctl.StockType != ButtonStockType.None) {
 				PictureFrame image = new PictureFrame ();
-				image.IconName = Engine.StockTypeToString ((StockType)ctl.StockType);
-				image.IconSize = ctl.ImageSize;
+				image.Image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString ((StockType)ctl.StockType), (int) ctl.ImageSize.Width);
 				if (Engine.CreateControl (image)) {
 					IntPtr hImage = (Engine.GetHandleForControl(image) as GTKNativeControl).Handle;
 					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImage);

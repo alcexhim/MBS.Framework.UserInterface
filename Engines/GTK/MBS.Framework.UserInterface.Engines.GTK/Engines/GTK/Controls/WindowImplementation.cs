@@ -130,6 +130,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (window != null)
 			{
 				InvokeMethod(window, "OnClosed", EventArgs.Empty);
+				Engine.UnregisterControlHandle(window);
 			}
 		}
 

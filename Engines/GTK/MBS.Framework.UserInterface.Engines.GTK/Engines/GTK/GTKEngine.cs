@@ -397,10 +397,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GIO.Methods.g_application_run(mvarApplicationHandle, argc, argv);
 			}
 
+			if (waitForClose != null)
+			{
+				waitForClose.Closed += WaitForClose_Closed;
+			}
+
 			Internal.GTK.Methods.Gtk.gtk_main();
 
 			return _exitCode;
 		}
+
+		private void WaitForClose_Closed(object sender, EventArgs e)
+		{
+			Application.Stop();
+		}
+
 		protected override void StopInternal(int exitCode)
 		{
 			Internal.GTK.Methods.Gtk.gtk_main_quit();

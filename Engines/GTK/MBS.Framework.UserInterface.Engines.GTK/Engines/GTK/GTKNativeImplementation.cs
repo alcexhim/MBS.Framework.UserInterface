@@ -149,7 +149,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			// destroy all handles associated with widget
 			Control ctl = (Engine as GTKEngine).GetControlByHandle(widget);
-			Engine.UnregisterControlHandle(ctl);
+			// Engine.UnregisterControlHandle(ctl);
+			// moved to WindowImplementation
 			return false;
 		}
 

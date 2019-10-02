@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public bool ContainsHandle(IntPtr handle)
 		{
-			if (Handle == handle) return true;
+			if (Handle.Equals(handle)) return true;
 			if (_NamedHandles.ContainsValue(handle)) return true;
 			return false;
 		}

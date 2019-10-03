@@ -19,6 +19,8 @@ namespace MBS.Framework.UserInterface
 		private Shortcut mvarShortcut = null;
 		public Shortcut Shortcut { get { return mvarShortcut; } set { mvarShortcut = value; } }
 
+		public bool Enabled { get; set; } = true;
+
 		public event EventHandler Click;
 
 		public void OnClick(EventArgs e) {

@@ -99,6 +99,12 @@ namespace MBS.Framework.UserInterface
 		}
 		public void UnregisterControlHandle(Control ctl)
 		{
+			if (ctl == null)
+			{
+				Console.WriteLine("NULl passed to Engine::UnregisterControlHandle");
+				return;
+			}
+
 			NativeControl nc = handlesByControl[ctl];
 
 			handlesByControl.Remove(ctl);

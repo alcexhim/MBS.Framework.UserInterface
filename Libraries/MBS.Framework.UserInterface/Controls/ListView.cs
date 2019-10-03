@@ -1,4 +1,5 @@
 using System;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.Controls
 {
@@ -102,6 +103,14 @@ namespace MBS.Framework.UserInterface.Controls
 					RecursiveSetControlParent (row);
 				}
 		(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel (); } }
+
+
+		public ListViewHitTestInfo LastHitTest { get; private set; } = new ListViewHitTestInfo(null, null);
+		protected internal override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			LastHitTest = HitTest(e.X, e.Y);
+		}
 
 		public event TreeModelChangedEventHandler TreeModelChanged;
 		public void OnTreeModelChanged(object sender, TreeModelChangedEventArgs e)

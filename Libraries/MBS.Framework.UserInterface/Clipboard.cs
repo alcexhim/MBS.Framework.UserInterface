@@ -44,11 +44,11 @@ namespace MBS.Framework.UserInterface
 			ClearInternal();
 		}
 
+		protected abstract bool ContainsFileListInternal();
+		public bool ContainsFileList { get { return ContainsFileListInternal(); } }
+
 		protected abstract bool ContainsTextInternal();
-		public bool ContainsText()
-		{
-			return ContainsTextInternal();
-		}
+		public bool ContainsText { get { return ContainsTextInternal(); } }
 
 		protected abstract void SetTextInternal(string value);
 		public void SetText(string value)

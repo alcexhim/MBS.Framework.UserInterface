@@ -55,6 +55,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkClipboard.gtk_clipboard_set_text(Handle, value, value.Length);
 		}
 
+		protected override bool ContainsFileListInternal()
+		{
+			if (ContainsText)
+			{
+				string text = GetText();
+				return text.StartsWith("x-special/nautilus-clipboard\n");
+			}
+			return false;
+		}
+
 		protected override CrossThreadData GetContentInternal()
 		{
 			IntPtr targets = IntPtr.Zero;

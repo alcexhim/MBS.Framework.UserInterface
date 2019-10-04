@@ -37,7 +37,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		/// <returns>TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.</returns>
 		private bool DrawHandler(IntPtr /*GtkWidget*/ widget, IntPtr /*CairoContext*/ cr, IntPtr user_data)
 		{
-			CustomControl ctl = (Engine as GTKEngine).GetControlByHandle(widget) as CustomControl;
+			// FIXME: UWT gets confused if we do this, probably because something's not quite right with the IntPtr comparison down the road
+			// CustomControl ctl = (Engine as GTKEngine).GetControlByHandle(widget) as CustomControl;
+
+			// doing it this way works though (probably because we don't compare any IntPtrs...)
+			CustomControl ctl = Control as CustomControl;
+
 			Contract.Assert(ctl != null);
 
 			GTKGraphics graphics = new GTKGraphics(cr);

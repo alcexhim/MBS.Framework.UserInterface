@@ -45,7 +45,7 @@ namespace MBS.Framework.UserInterface
 			cmd.Execute ();
 		}
 		
-		private static string[] EnumerateDataPaths()
+		public static string[] EnumerateDataPaths()
 		{
 			string basePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 			return new string[]

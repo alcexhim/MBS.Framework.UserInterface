@@ -79,7 +79,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			if (brush is SolidBrush)
 			{
 				SolidBrush sb = (brush as SolidBrush);
-				IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgb(sb.Color.R, sb.Color.G, sb.Color.B);
+				IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(sb.Color.R, sb.Color.G, sb.Color.B, sb.Color.A);
 				Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
 			}
 			else
@@ -90,7 +90,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 		}
 		private void SelectPen(Pen pen)
 		{
-			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgb(pen.Color.R, pen.Color.G, pen.Color.B);
+			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(pen.Color.R, pen.Color.G, pen.Color.B, pen.Color.A);
 			Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
 			Internal.Cairo.Methods.cairo_set_line_width(mvarCairoContext, pen.Width.ConvertTo(MeasurementUnit.Pixel).Value);
 

@@ -31,6 +31,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			return System.Windows.Forms.Clipboard.ContainsText();
 		}
+		protected override bool ContainsFileListInternal()
+		{
+			return System.Windows.Forms.Clipboard.ContainsFileDropList();
+		}
 		protected override string GetTextInternal()
 		{
 			return System.Windows.Forms.Clipboard.GetText();

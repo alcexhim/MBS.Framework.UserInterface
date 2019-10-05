@@ -20,6 +20,10 @@ namespace MBS.Framework.UserInterface
 
 			bool GetStatusBarVisible();
 			void SetStatusBarVisible(bool value);
+
+			void InsertMenuItem(int index, MenuItem item);
+			void ClearMenuItems();
+			void RemoveMenuItem(MenuItem item);
 		}
 	}
 	public class Window : Container
@@ -43,9 +47,7 @@ namespace MBS.Framework.UserInterface
 			base.OnCreating (e);
 		}
 
-		private Menu mvarMenuBar = new Menu();
-		public Menu MenuBar { get { return mvarMenuBar; } }
-
+		public Menu MenuBar { get; private set; } = null;
 		public StatusBar StatusBar { get; private set; } = null;
 
 		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
@@ -55,6 +57,7 @@ namespace MBS.Framework.UserInterface
 		public Window()
 		{
 			StatusBar = new StatusBar(this);
+			MenuBar = new Menu(this);
 		}
 
 		private string mvarIconName = null;

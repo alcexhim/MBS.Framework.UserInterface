@@ -36,6 +36,19 @@ namespace MBS.Framework.UserInterface
 			return handlesByControl.ContainsKey(control);
 		}
 
+		private Dictionary<MenuItem, NativeControl> handlesByMenuItem = new Dictionary<MenuItem, NativeControl>();
+		public NativeControl GetHandleForMenuItem(MenuItem item)
+		{
+			if (item == null)
+				return null;
+			return handlesByMenuItem[item];
+		}
+		public void RegisterMenuItemHandle(MenuItem item, NativeControl handle)
+		{
+			handlesByMenuItem[item] = handle;
+		}
+
+
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
 		protected internal abstract Image LoadImage(string filename, string type = null);
 		protected internal abstract Image LoadImage(byte[] filedata, string type);

@@ -255,6 +255,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hWindowContainer = Internal.GTK.Methods.GtkBox.gtk_vbox_new(false, 2);
 
 			#region Menu Bar
+			IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
+
 			if (window.MenuBar.Items.Count > 0)
 			{
 				if (hDefaultAccelGroup == IntPtr.Zero)
@@ -269,18 +271,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					case CommandDisplayMode.CommandBar:
 					case CommandDisplayMode.Both:
 					{
-						IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
-
 						foreach (MenuItem menuItem in window.MenuBar.Items)
 						{
 							InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
 						}
-
-						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 						break;
 					}
 				}
 			}
+
+			if (window.MenuBar.Items.Count > 0 && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenuBar);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMenuBar);
+			}
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			#endregion
 
 			IntPtr hStatusBar = IntPtr.Zero;
@@ -333,6 +341,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
 			{
+				new KeyValuePair<string, IntPtr>("MenuBar", hMenuBar),
 				new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar)
 			});
 		}
@@ -370,5 +379,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			base.OnMouseMove(ee);
 		}
 
+		public void InsertMenuItem(int index, MenuItem item)
+		{
+			IntPtr hMenuBar = (Handle as GTKNativeControl).GetNamedHandle("MenuBar");
+			IntPtr hMenuChild = (Engine as GTKEngine).InitMenuItem(item);
+			Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_insert(hMenuBar, hMenuChild, index);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenuChild);
+		}
+		public void ClearMenuItems()
+		{
+			IntPtr hMenuBar = (Handle as GTKNativeControl).GetNamedHandle("MenuBar");
+		}
+		public void RemoveMenuItem(MenuItem item)
+		{
+			IntPtr hMenuBar = (Handle as GTKNativeControl).GetNamedHandle("MenuBar");
+			IntPtr hMenuItem = ((Engine as GTKEngine).GetHandleForMenuItem(item) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hMenuItem);
+		}
 	}
 }

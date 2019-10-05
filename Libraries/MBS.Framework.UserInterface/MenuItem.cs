@@ -13,6 +13,32 @@ namespace MBS.Framework.UserInterface
 					Add (mi);
 				}
 			}
+
+			private Menu _parent = null;
+			public MenuItemCollection(Menu parent = null)
+			{
+				_parent = parent;
+			}
+
+			protected override void InsertItem(int index, MenuItem item)
+			{
+				base.InsertItem(index, item);
+				_parent?.InsertMenuItem(index, item);
+			}
+			protected override void ClearItems()
+			{
+				base.ClearItems();
+				_parent?.ClearMenuItems();
+			}
+			protected override void RemoveItem(int index)
+			{
+				_parent?.RemoveMenuItem(this[index]);
+				base.RemoveItem(index);
+			}
+			protected override void SetItem(int index, MenuItem item)
+			{
+				base.SetItem(index, item);
+			}
 		}
 
 		private string mvarName = String.Empty;

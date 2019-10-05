@@ -1708,7 +1708,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 
 		private static IntPtr hDefaultAccelGroup = IntPtr.Zero;
-		private void InitMenuItem(MenuItem menuItem, IntPtr hMenuShell, string accelPath = null)
+		internal IntPtr InitMenuItem(MenuItem menuItem, string accelPath = null)
 		{
 			if (menuItem is CommandMenuItem)
 			{
@@ -1755,15 +1755,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
 				}
-
-				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				RegisterMenuItemHandle(menuItem, new GTKNativeControl(hMenuFile));
+				return hMenuFile;
 			}
 			else if (menuItem is SeparatorMenuItem)
 			{
 				// IntPtr hMenuFile = Internal.GTK.Methods.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
 				IntPtr hMenuFile = Internal.GTK.Methods.GtkSeparatorMenuItem.gtk_separator_menu_item_new();
-				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
+				RegisterMenuItemHandle(menuItem, new GTKNativeControl(hMenuFile));
+				return hMenuFile;
 			}
+			return IntPtr.Zero;
 		}
 
 		public IntPtr BuildMenu(Menu menu, string accelPath = null)
@@ -1797,7 +1799,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			foreach (MenuItem menuItem1 in menu.Items)
 			{
-				InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
+				IntPtr hMenuItem = InitMenuItem(menuItem1, accelPath);
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuItem);
 			}
 			return hMenuFileMenu;
 		}
@@ -1832,7 +1835,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			foreach (MenuItem menuItem1 in cmi.Items)
 			{
-				InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
+				IntPtr hMenuItem = InitMenuItem(menuItem1, accelPath);
+				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuItem);
 			}
 
 			Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
@@ -1875,7 +1879,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					{
 						foreach (MenuItem mi in nid.ContextMenu.Items)
 						{
-							InitMenuItem(mi, hMenu);
+							IntPtr hMenuItem = InitMenuItem(mi);
+							Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenu, hMenuItem);
 						}
 					}
 

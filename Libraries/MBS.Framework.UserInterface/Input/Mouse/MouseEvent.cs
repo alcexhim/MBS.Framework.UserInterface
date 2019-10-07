@@ -19,7 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System.ComponentModel;
-
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Input.Keyboard;
 
 namespace MBS.Framework.UserInterface.Input.Mouse
@@ -29,6 +29,8 @@ namespace MBS.Framework.UserInterface.Input.Mouse
 	{
 		public double X { get; private set; }
 		public double Y { get; private set; }
+
+		public Vector2D Location { get { return new Vector2D((int)X, (int)Y); } }
 		
 		public MouseButtons Buttons { get; private set; }
 		public KeyboardModifierKey ModifierKeys { get; private set; }

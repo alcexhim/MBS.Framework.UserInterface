@@ -422,6 +422,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private Dictionary<IntPtr, MenuItem> menuItemsByHandle = new Dictionary<IntPtr, MenuItem>();
 
+		protected override void SetMenuItemVisibilityInternal(MenuItem item, bool visible)
+		{
+			IntPtr hMenuItem = (GetHandleForMenuItem(item) as GTKNativeControl).Handle;
+			if (visible)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenuItem);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMenuItem);
+			}
+		}
+
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;

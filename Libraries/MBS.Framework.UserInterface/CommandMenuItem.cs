@@ -29,6 +29,11 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public CommandMenuItem(string name, string text, MenuItem[] items = null, EventHandler onClick = null, Shortcut shortcut = null)
+			: this(text, items, onClick, shortcut)
+		{
+			Name = name;
+		}
 		public CommandMenuItem(string text, MenuItem[] items = null, EventHandler onClick = null, Shortcut shortcut = null)
 		{
 			mvarText = text;

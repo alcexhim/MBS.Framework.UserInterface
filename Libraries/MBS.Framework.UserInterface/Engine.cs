@@ -36,6 +36,12 @@ namespace MBS.Framework.UserInterface
 			return handlesByControl.ContainsKey(control);
 		}
 
+		protected abstract void SetMenuItemVisibilityInternal(MenuItem item, bool visible);
+		internal void SetMenuItemVisibility(MenuItem item, bool visible)
+		{
+			SetMenuItemVisibilityInternal(item, visible);
+		}
+
 		private Dictionary<MenuItem, NativeControl> handlesByMenuItem = new Dictionary<MenuItem, NativeControl>();
 		public NativeControl GetHandleForMenuItem(MenuItem item)
 		{
@@ -85,7 +91,7 @@ namespace MBS.Framework.UserInterface
 				Console.WriteLine("Engine::InvokeMethod: obj is null");
 				return;
 			}
-			
+
 			Type t = obj.GetType();
 			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 			if (mi != null)
@@ -226,7 +232,7 @@ namespace MBS.Framework.UserInterface
 		private ControlImplementation FindNativeImplementationForControl(Control control)
 		{
 			Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
-			List<Type> possibleHandlers = new List<Type> ();
+			List<Type> possibleHandlers = new List<Type>();
 			foreach (Type t in ts)
 			{
 				if (t.IsSubclassOf(typeof(ControlImplementation)))
@@ -247,14 +253,16 @@ namespace MBS.Framework.UserInterface
 						continue;
 					}
 				}
- 			}
+			}
 
-			if (possibleHandlers.Count > 0) {
-				if (possibleHandlers.Count > 1) {
+			if (possibleHandlers.Count > 0)
+			{
+				if (possibleHandlers.Count > 1)
+				{
 					// holy shit this actually works
-					possibleHandlers.Sort (runtimeTypeComparer);
+					possibleHandlers.Sort(runtimeTypeComparer);
 				}
-				Type t = possibleHandlers [0];
+				Type t = possibleHandlers[0];
 				return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as ControlImplementation);
 			}
 			return null;
@@ -265,9 +273,9 @@ namespace MBS.Framework.UserInterface
 		{
 			public int Compare(Type left, Type right)
 			{
-				if (left.IsSubclassOf (right))
+				if (left.IsSubclassOf(right))
 					return -1;
-				if (right.IsSubclassOf (left))
+				if (right.IsSubclassOf(left))
 					return 1;
 				return 0;
 			}
@@ -311,9 +319,11 @@ namespace MBS.Framework.UserInterface
 		}
 
 		private Dictionary<Control, bool> _control_creating = new Dictionary<Control, bool>();
-		public bool IsControlCreating(Control control) {
-			if (_control_creating.ContainsKey (control)) {
-				return _control_creating [control];
+		public bool IsControlCreating(Control control)
+		{
+			if (_control_creating.ContainsKey(control))
+			{
+				return _control_creating[control];
 			}
 			return false;
 		}
@@ -322,16 +332,16 @@ namespace MBS.Framework.UserInterface
 		{
 			InvokeMethod(control, "OnCreating", EventArgs.Empty);
 
-			_control_creating [control] = true;
+			_control_creating[control] = true;
 			NativeControl result = CreateControlInternal(control);
-			_control_creating [control] = false;
+			_control_creating[control] = false;
 
 			if (result == null)
 				return false;
 
 			// set the control text if it has not been set already
 			control.ControlImplementation?.SetControlText(control, control.Text);
-			
+
 			InvokeMethod(control, "OnCreated", EventArgs.Empty);
 			return true;
 		}
@@ -413,19 +423,19 @@ namespace MBS.Framework.UserInterface
 		protected abstract void InvalidateControlInternal(Control control, int x, int y, int width, int height);
 		public void InvalidateControl(Control control, int x, int y, int width, int height)
 		{
-			if (!IsControlCreated(control)) 
+			if (!IsControlCreated(control))
 				return;
 
 			InvalidateControlInternal(control, x, y, width, height);
 		}
 
-		protected abstract void UpdateControlLayoutInternal (Control control);
-		public void UpdateControlLayout (Control control)
+		protected abstract void UpdateControlLayoutInternal(Control control);
+		public void UpdateControlLayout(Control control)
 		{
-			if (!IsControlCreated (control))
+			if (!IsControlCreated(control))
 				return;
 
-			UpdateControlLayoutInternal (control);
+			UpdateControlLayoutInternal(control);
 		}
 
 		private bool inUpdateControlProperties = false;
@@ -442,7 +452,7 @@ namespace MBS.Framework.UserInterface
 		{
 			if (!IsControlCreated(control)) return;
 			NativeControl handle = GetHandleForControl(control);
-			
+
 			UpdateControlProperties(control, handle);
 		}
 

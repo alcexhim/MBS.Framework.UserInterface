@@ -347,18 +347,47 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			if (ee.Buttons == MouseButtons.Secondary)
 			{
 				// default implementation - display a context menu if we have one set
-				OnBeforeContextMenu(ee);
 				if (Control.ContextMenu != null)
 				{
 					IntPtr hMenu = (Engine as GTKEngine).BuildMenu(Control.ContextMenu);
-					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenu);
+
+					OnBeforeContextMenu(ee);
+
+					foreach (MenuItem mi in Control.ContextMenu.Items)
+					{
+						RecursiveApplyMenuItemVisibility(mi);
+					}
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenu);
 					Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_pointer(hMenu, IntPtr.Zero);
+
+					OnAfterContextMenu(ee);
 				}
-				OnAfterContextMenu(ee);
 			}
 
 			return false;
 		}
+
+		private void RecursiveApplyMenuItemVisibility(MenuItem mi)
+		{
+			IntPtr hMi = ((Engine as GTKEngine).GetHandleForMenuItem(mi) as GTKNativeControl).Handle;
+			if (mi.Visible)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMi);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMi);
+			}
+
+			if (mi is CommandMenuItem)
+			{
+				foreach (MenuItem mi1 in (mi as CommandMenuItem).Items)
+				{
+					RecursiveApplyMenuItemVisibility(mi1);
+				}
+			}
+		}
+
 		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
 			Internal.GDK.Structures.GdkEventMotion e = (Internal.GDK.Structures.GdkEventMotion)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventMotion));

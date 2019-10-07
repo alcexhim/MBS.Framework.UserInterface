@@ -69,61 +69,64 @@ namespace MBS.Framework.UserInterface.Layouts
 			if (!bounds.ContainsKey(ctl))
 			{
 				Rectangle rect = new Rectangle();
-				foreach (Control ctl1 in ctl.Parent.Controls)
+				if (ctl.Parent != null)
 				{
-					Rectangle parentRect = GetControlBounds(ctl.Parent);
-					switch (mvarOrientation)
+					foreach (Control ctl1 in ctl.Parent.Controls)
 					{
- 						case Orientation.Horizontal:
-						{
-							rect.Height = parentRect.Height - (ctl.Parent.Padding.Top + ctl.Parent.Padding.Bottom);
-							rect.Width = (double)((double)(parentRect.Width - (ctl.Parent.Padding.Left + ctl.Parent.Padding.Right)) / ctl.Parent.Controls.Count);
-							if (ctl.Parent.Controls.IndexOf(ctl) < ctl.Parent.Controls.Count - 1) rect.Width -= mvarSpacing;
-							break;
-						}
-						case Orientation.Vertical:
-						{
-							rect.Width = parentRect.Width - (ctl.Parent.Padding.Left + ctl.Parent.Padding.Right);
-							rect.Height = (double)((double)(parentRect.Height - (ctl.Parent.Padding.Top + ctl.Parent.Padding.Bottom)) / ctl.Parent.Controls.Count);
-							if (ctl.Parent.Controls.IndexOf(ctl) < ctl.Parent.Controls.Count - 1) rect.Height -= mvarSpacing;
-							break;
-						}
-					}
-
-					if (ctl1 == ctl) break;
-
-					Rectangle rect1 = GetControlBounds(ctl1);
-					switch (mvarOrientation)
-					{
-						case Orientation.Vertical:
-						{
-							rect.Y += rect1.Height + mvarSpacing;
-							break;
-						}
-						case Orientation.Horizontal:
-						{
-							rect.X += rect1.Width + mvarSpacing;
-							break;
-						}
-					}
-					/*
-					if (mvarAlignment == Alignment.Far)
-					{
+						Rectangle parentRect = GetControlBounds(ctl.Parent);
 						switch (mvarOrientation)
 						{
 							case Orientation.Horizontal:
 							{
-								rect.X = parentRect.Right - rect.Width;
+								rect.Height = parentRect.Height - (ctl.Parent.Padding.Top + ctl.Parent.Padding.Bottom);
+								rect.Width = (double)((double)(parentRect.Width - (ctl.Parent.Padding.Left + ctl.Parent.Padding.Right)) / ctl.Parent.Controls.Count);
+								if (ctl.Parent.Controls.IndexOf(ctl) < ctl.Parent.Controls.Count - 1) rect.Width -= mvarSpacing;
 								break;
 							}
 							case Orientation.Vertical:
 							{
-								rect.Y = parentRect.Bottom - rect.Height;
+								rect.Width = parentRect.Width - (ctl.Parent.Padding.Left + ctl.Parent.Padding.Right);
+								rect.Height = (double)((double)(parentRect.Height - (ctl.Parent.Padding.Top + ctl.Parent.Padding.Bottom)) / ctl.Parent.Controls.Count);
+								if (ctl.Parent.Controls.IndexOf(ctl) < ctl.Parent.Controls.Count - 1) rect.Height -= mvarSpacing;
 								break;
 							}
 						}
+
+						if (ctl1 == ctl) break;
+
+						Rectangle rect1 = GetControlBounds(ctl1);
+						switch (mvarOrientation)
+						{
+							case Orientation.Vertical:
+							{
+								rect.Y += rect1.Height + mvarSpacing;
+								break;
+							}
+							case Orientation.Horizontal:
+							{
+								rect.X += rect1.Width + mvarSpacing;
+								break;
+							}
+						}
+						/*
+						if (mvarAlignment == Alignment.Far)
+						{
+							switch (mvarOrientation)
+							{
+								case Orientation.Horizontal:
+								{
+									rect.X = parentRect.Right - rect.Width;
+									break;
+								}
+								case Orientation.Vertical:
+								{
+									rect.Y = parentRect.Bottom - rect.Height;
+									break;
+								}
+							}
+						}
+						*/
 					}
-					*/
 				}
 				bounds[ctl] = rect;
 			}

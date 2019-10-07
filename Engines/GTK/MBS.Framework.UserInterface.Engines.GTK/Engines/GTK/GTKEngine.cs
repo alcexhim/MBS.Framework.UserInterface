@@ -29,7 +29,30 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private int _exitCode = 0;
 		private IntPtr mvarApplicationHandle = IntPtr.Zero;
 
+		protected override Graphics CreateGraphicsInternal(Image image)
+		{
+			CairoImage ci = (image as CairoImage);
+			if (ci == null)
+				throw new NotSupportedException();
+
+			IntPtr hCairoSurface = ci.Handle;
+			IntPtr cr = Internal.Cairo.Methods.cairo_create(hCairoSurface);
+
+			GTKGraphics graphics = new GTKGraphics(cr);
+			return graphics;
+		}
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
+		protected override Image CreateImage(int width, int height)
+		{
+			// IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new(Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height);
+			IntPtr hImage = Internal.Cairo.Methods.cairo_image_surface_create(Internal.Cairo.Constants.CairoFormat.ARGB32, width, height);
+			return new CairoImage(hImage);
+		}
+		protected override Image LoadImage(StockType stockType, int size)
+		{
+			string stockTypeId = StockTypeToString(stockType);
+			return LoadImageByName(stockTypeId, size);
+		}
 		protected override Image LoadImage(byte[] filedata, string type)
 		{
 			IntPtr hError = IntPtr.Zero;
@@ -48,7 +71,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hError = IntPtr.Zero;
 			IntPtr hTheme = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_get_default();
 			IntPtr hPixbuf = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_load_icon(hTheme, name, size, Constants.GtkIconLookupFlags.None, ref hError);
-			return new GTKNativeImage(hPixbuf);
+			return new GDKPixbufImage(hPixbuf);
 		}
 
 		private IntPtr CreateImageLoader(string type = null)
@@ -74,7 +97,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hPixbuf = Internal.GDK.Methods.gdk_pixbuf_loader_get_pixbuf(hLoader);
 			Internal.GObject.Methods.g_object_unref(hLoader);
 
-			return new GTKNativeImage(hPixbuf);
+			return new GDKPixbufImage(hPixbuf);
 		}
 
 		private static Version _Version = null;
@@ -2232,7 +2255,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			new GTKCursorInfo("nesw-resize", Cursors.ResizeNESW),
 			new GTKCursorInfo("nwse-resize", Cursors.ResizeNWSE),
 			new GTKCursorInfo("zoom-in", Cursors.ZoomIn),
-			new GTKCursorInfo("zoom-out", Cursors.ZoomOut)
+			new GTKCursorInfo("zoom-out", Cursors.ZoomOut),
+
+			new GTKCursorInfo("pencil", Cursors.Pencil),
+			new GTKCursorInfo("eraser", Cursors.Eraser)
 		};
 		internal static void InitializeCursors(IntPtr /*GdkDisplay*/ display)
 		{

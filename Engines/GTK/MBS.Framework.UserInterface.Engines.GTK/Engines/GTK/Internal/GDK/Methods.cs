@@ -28,6 +28,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_window_set_cursor(IntPtr /*GdkWindow*/ window, IntPtr /*GdkCursor*/ cursor);
 
+		// pixbuf
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_pixbuf_new(Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height);
+
 		// pixbuf loader
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkPixbufLoader*/ gdk_pixbuf_loader_new();

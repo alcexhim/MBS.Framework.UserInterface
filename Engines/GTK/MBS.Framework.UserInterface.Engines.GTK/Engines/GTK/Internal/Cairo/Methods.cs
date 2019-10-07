@@ -143,5 +143,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_surface_destroy(IntPtr /*cairo_surface_t*/ surface);
 		#endregion
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*cairo_surface_t*/ cairo_image_surface_create(Constants.CairoFormat format, int width, int height);
 	}
 }

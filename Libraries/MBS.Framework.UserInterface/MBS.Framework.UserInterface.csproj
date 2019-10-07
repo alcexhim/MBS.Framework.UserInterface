@@ -205,7 +205,6 @@
     <Compile Include="NativeTreeModel.cs" />
     <Compile Include="Clipboard.cs" />
     <Compile Include="Drawing\Image.cs" />
-    <Compile Include="Drawing\BitmapImage.cs" />
     <Compile Include="Controls\HexEditor\HexEditorControl.cs" />
     <Compile Include="Controls\HexEditor\HexEditorHitTestInfo.cs" />
     <Compile Include="Controls\HexEditor\HexEditorBackspaceBehavior.cs" />

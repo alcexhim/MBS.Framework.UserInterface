@@ -178,8 +178,9 @@
     <Compile Include="Engines\GTK\GTKCursorInfo.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkHandleBox.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkStatusBar.cs" />
-    <Compile Include="Engines\GTK\GTKNativeImage.cs" />
+    <Compile Include="Engines\GTK\GDKPixbufImage.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkIconTheme.cs" />
+    <Compile Include="Engines\GTK\CairoImage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

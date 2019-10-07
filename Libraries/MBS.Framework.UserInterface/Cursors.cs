@@ -57,5 +57,9 @@ namespace MBS.Framework.UserInterface
 		public static Cursor ResizeNWSE { get; } = new Cursor();
 		public static Cursor ZoomIn { get; } = new Cursor();
 		public static Cursor ZoomOut { get; } = new Cursor();
+
+		// stock cursors used by some editing applications, may need to be custom-drawn on many OSes
+		public static Cursor Pencil { get; } = new Cursor();
+		public static Cursor Eraser { get; } = new Cursor();
 	}
 }

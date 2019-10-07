@@ -16,6 +16,13 @@ namespace MBS.Framework.UserInterface
 		protected abstract int Priority { get; }
 
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
+
+		protected abstract Graphics CreateGraphicsInternal(Image image);
+		internal Graphics CreateGraphics(Image image)
+		{
+			return CreateGraphicsInternal(image);
+		}
+
 		protected static Dictionary<Control, NativeControl> handlesByControl = new Dictionary<Control, NativeControl>();
 
 		public Control GetControlByHandle(NativeControl handle)
@@ -56,6 +63,9 @@ namespace MBS.Framework.UserInterface
 
 
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
+		protected internal abstract Image CreateImage(int width, int height);
+		protected internal abstract Image LoadImage(StockType stockType, int size);
+
 		protected internal abstract Image LoadImage(string filename, string type = null);
 		protected internal abstract Image LoadImage(byte[] filedata, string type);
 		protected internal abstract Image LoadImageByName(string name, int size);

@@ -1,5 +1,5 @@
 ﻿//
-//  GTKNativeImage.cs
+//  CairoImage.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -23,11 +23,11 @@ using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
-	public class GTKNativeImage : Image
+	public class CairoImage : Image
 	{
 		public IntPtr Handle { get; private set; }
 
-		internal GTKNativeImage(IntPtr handle)
+		internal CairoImage(IntPtr handle)
 		{
 			Handle = handle;
 		}

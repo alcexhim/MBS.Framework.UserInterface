@@ -11,6 +11,11 @@ namespace MBS.Framework.UserInterface.Drawing
 {
 	public abstract class Graphics
 	{
+		public static Graphics FromImage(Image image)
+		{
+			return Application.Engine.CreateGraphics(image);
+		}
+
 		protected abstract void DrawImageInternal(Image image, double x, double y, double width, double height);
 		public void DrawImage(Image image, double x, double y)
 		{
@@ -49,7 +54,7 @@ namespace MBS.Framework.UserInterface.Drawing
 
 		public void Clear(Color color)
 		{
-			
+
 		}
 
 		/// <summary>
@@ -59,7 +64,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		/// <param name="stateID"></param>
 		public void DrawThemeComponent(ThemeComponentReference paramz, Control component, Dictionary<string, object> variables = null)
 		{
-			if (variables == null) variables = new Dictionary<string,object>();
+			if (variables == null) variables = new Dictionary<string, object>();
 
 			ThemeComponent tc = ThemeManager.CurrentTheme.GetComponent(paramz.ComponentID);
 			DrawThemeComponent(tc, component, paramz.StateID, variables);
@@ -150,13 +155,13 @@ namespace MBS.Framework.UserInterface.Drawing
 
 						switch (threed.Type)
 						{
-							case ThreeDOutlineType.Inset:
+						case ThreeDOutlineType.Inset:
 							{
 								lightColor = Color.FromString(threed.DarkColor);
 								darkColor = Color.FromString(threed.LightColor);
 								break;
 							}
-							case ThreeDOutlineType.Outset:
+						case ThreeDOutlineType.Outset:
 							{
 								lightColor = Color.FromString(threed.LightColor);
 								darkColor = Color.FromString(threed.DarkColor);
@@ -212,6 +217,11 @@ namespace MBS.Framework.UserInterface.Drawing
 			}
 		}
 
+		protected abstract void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
+		public void DrawText(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
+		{
+			DrawTextInternal(value, font, location, brush, horizontalAlignment, verticalAlignment);
+		}
 		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
 		public void DrawText(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
@@ -236,10 +246,10 @@ namespace MBS.Framework.UserInterface.Drawing
 		{
 			switch (orientation)
 			{
-				case LinearGradientFillOrientation.BackwardDiagonal: return LinearGradientBrushOrientation.BackwardDiagonal;
-				case LinearGradientFillOrientation.ForwardDiagonal: return LinearGradientBrushOrientation.ForwardDiagonal;
-				case LinearGradientFillOrientation.Horizontal: return LinearGradientBrushOrientation.Horizontal;
-				case LinearGradientFillOrientation.Vertical: return LinearGradientBrushOrientation.Vertical;
+			case LinearGradientFillOrientation.BackwardDiagonal: return LinearGradientBrushOrientation.BackwardDiagonal;
+			case LinearGradientFillOrientation.ForwardDiagonal: return LinearGradientBrushOrientation.ForwardDiagonal;
+			case LinearGradientFillOrientation.Horizontal: return LinearGradientBrushOrientation.Horizontal;
+			case LinearGradientFillOrientation.Vertical: return LinearGradientBrushOrientation.Vertical;
 			}
 			return LinearGradientBrushOrientation.Horizontal;
 		}

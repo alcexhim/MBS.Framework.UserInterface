@@ -1,5 +1,5 @@
 ﻿//
-//  BitmapImage.cs
+//  GTKNativeImage.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,14 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Drawing
+using MBS.Framework.UserInterface.Drawing;
+
+namespace MBS.Framework.UserInterface.Engines.GTK
 {
-	public class BitmapImage : Image
+	public class GDKPixbufImage : Image
 	{
-		public BitmapImage(int width, int height)
+		public IntPtr Handle { get; private set; }
+
+		internal GDKPixbufImage(IntPtr handle)
 		{
-			Width = width;
-			Height = height;
+			Handle = handle;
 		}
 	}
 }

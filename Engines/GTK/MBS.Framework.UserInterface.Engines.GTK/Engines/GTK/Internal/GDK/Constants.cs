@@ -159,6 +159,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			KeyPress = 0x400,
 			KeyRelease = 0x800
 		}
+
+		public enum GdkColorspace
+		{
+			RGB
+		}
 	}
 }
 

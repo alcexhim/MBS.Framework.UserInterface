@@ -26,6 +26,10 @@ namespace MBS.Framework.UserInterface.Drawing
 		public int Width { get; protected set; } = 0;
 		public int Height { get; protected set; } = 0;
 
+		public static Image FromStock(StockType stockType, int size)
+		{
+			return Application.Engine.LoadImage(stockType, size);
+		}
 		public static Image FromName(string name, int size)
 		{
 			Image image = Application.Engine.LoadImageByName(name, size);
@@ -36,6 +40,13 @@ namespace MBS.Framework.UserInterface.Drawing
 			Image image = Application.Engine.LoadImage(data, type);
 			return image;
 		}
+
+		public static Image Create(int width, int height)
+		{
+			Image image = Application.Engine.CreateImage(width, height);
+			return image;
+		}
+
 		public static Image FromFile(string filename, string type = null)
 		{
 			Image image = Application.Engine.LoadImage(filename, type);

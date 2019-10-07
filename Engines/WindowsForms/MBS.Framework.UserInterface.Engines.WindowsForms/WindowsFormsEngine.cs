@@ -36,8 +36,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
+		protected override Graphics CreateGraphicsInternal(Image image)
+		{
+			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(((WindowsFormsNativeImage)image).Handle);
+			return new WindowsFormsNativeGraphics(g);
+		}
+
+		protected override Image CreateImage(int width, int height)
+		{
+			return new WindowsFormsNativeImage(new System.Drawing.Bitmap(width, height));
+		}
 		protected override Image LoadImageByName(string name, int size)
 		{
+			return null;
+		}
+		protected override Image LoadImage(StockType stockType, int size)
+		{
+			// TODO: figure out which images to use for stock images on WinForms
+			// because WinForms does not have any concept of "stock images"
 			return null;
 		}
 		protected override Image LoadImage(byte[] filedata, string type)
@@ -396,6 +412,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		internal static Dimension2D SystemDrawingSizeToDimension2D(System.Drawing.Size size)
 		{
 			return new Dimension2D(size.Width, size.Height);
+		}
+
+		protected override void SetMenuItemVisibilityInternal(MenuItem item, bool visible)
+		{
+			throw new NotImplementedException();
 		}
 
 	}

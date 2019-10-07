@@ -64,6 +64,7 @@
     <Compile Include="Internal\Windows\Methods.cs" />
     <Compile Include="Engines\WindowsForms\Controls\TabContainerImplementation.cs" />
     <Compile Include="WindowsFormsNativeImage.cs" />
+    <Compile Include="WindowsFormsNativeGraphics.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

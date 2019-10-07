@@ -279,5 +279,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			throw new NotImplementedException();
 		}
+
+		public void InsertMenuItem(int index, MenuItem item)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ClearMenuItems()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void RemoveMenuItem(MenuItem item)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

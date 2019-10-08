@@ -40,7 +40,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gdk_pixbuf_loader_write(IntPtr /*GdkPixbufLoader*/ loader, byte[] buffer, int count, ref IntPtr /*GError*/ error);
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern bool gdk_pixbuf_loader_close(IntPtr /*GdkPixbufLoader*/ loader);
+		public static extern bool gdk_pixbuf_loader_close(IntPtr /*GdkPixbufLoader*/ loader, ref IntPtr /*GError*/ error);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkPixbuf*/ gdk_pixbuf_loader_get_pixbuf(IntPtr /*GdkPixbufLoader*/ loader);
 

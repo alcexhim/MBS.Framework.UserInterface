@@ -92,11 +92,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Image LoadImage(IntPtr hLoader, byte[] buffer, ref IntPtr hError)
 		{
 			Internal.GDK.Methods.gdk_pixbuf_loader_write(hLoader, buffer, buffer.Length, ref hError);
-			Internal.GDK.Methods.gdk_pixbuf_loader_close(hLoader);
-
 			IntPtr hPixbuf = Internal.GDK.Methods.gdk_pixbuf_loader_get_pixbuf(hLoader);
-			Internal.GObject.Methods.g_object_unref(hLoader);
-
+			Internal.GDK.Methods.gdk_pixbuf_loader_close(hLoader, ref hError);
 			return new GDKPixbufImage(hPixbuf);
 		}
 

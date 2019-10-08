@@ -24,19 +24,25 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			protected override void InsertItem(int index, DockingItem item)
 			{
 				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).InsertDockingItem(item, index);
+				item.Parent = _parent;
 				base.InsertItem(index, item);
 			}
 			protected override void RemoveItem(int index)
 			{
 				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).RemoveDockingItem(this[index]);
+				this[index].Parent = null;
 				base.RemoveItem(index);
 			}
 			protected override void SetItem(int index, DockingItem item)
 			{
 				if (_parent.ControlImplementation != null) (_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).SetDockingItem(index, item);
+				this[index].Parent = null;
+				item.Parent = _parent;
 				base.SetItem(index, item);
 			}
 		}
+
+		public DockingContainer Parent { get; private set; } = null;
 
 		private DockingItemPlacement mvarPlacement = DockingItemPlacement.Center;
 		public DockingItemPlacement Placement {  get { return mvarPlacement;  } set { mvarPlacement = value; } }
@@ -45,7 +51,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
 
 		private Control mvarChildControl = null;
-		public Control ChildControl {  get { return mvarChildControl;  } set { mvarChildControl = value; } }
+		public Control ChildControl {  get { return mvarChildControl;  } set { mvarChildControl = value; mvarChildControl.SetParent(Parent?.Parent); } }
 
 		private DockingItemBehavior mvarBehavior = DockingItemBehavior.Normal;
 		public DockingItemBehavior Behavior {  get { return mvarBehavior;  } set { mvarBehavior = value; } }

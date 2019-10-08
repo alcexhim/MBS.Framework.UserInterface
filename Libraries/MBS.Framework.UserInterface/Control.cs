@@ -194,6 +194,11 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		internal void SetParent(Container parent)
+		{
+			mvarParent = parent;
+		}
+
 		public bool FocusOnClick { get; set; } = true;
 
 		private Cursor mvarCursor = Cursors.Default;

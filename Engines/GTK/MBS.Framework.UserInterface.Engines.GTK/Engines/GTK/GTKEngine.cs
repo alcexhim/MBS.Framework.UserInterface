@@ -688,6 +688,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 65362: key = KeyboardKey.ArrowUp; break;
 				case 65363: key = KeyboardKey.ArrowRight; break;
 				case 65364: key = KeyboardKey.ArrowDown; break;
+				case 65365: key = KeyboardKey.PageUp; break;
+				case 65366: key = KeyboardKey.PageDown; break;
 				case 65383: key = KeyboardKey.Menu; break;
 				case 269025062: key = KeyboardKey.BrowserBack; break;
 				case 269025153: key = KeyboardKey.SelectMedia; break;

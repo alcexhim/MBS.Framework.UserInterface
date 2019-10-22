@@ -347,11 +347,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			if (ee.Buttons == MouseButtons.Secondary)
 			{
 				// default implementation - display a context menu if we have one set
+				// moved this up here to give us a chance to add a context menu if we don't have one associated yet
+				OnBeforeContextMenu(ee);
+
 				if (Control.ContextMenu != null)
 				{
 					IntPtr hMenu = (Engine as GTKEngine).BuildMenu(Control.ContextMenu);
-
-					OnBeforeContextMenu(ee);
 
 					foreach (MenuItem mi in Control.ContextMenu.Items)
 					{

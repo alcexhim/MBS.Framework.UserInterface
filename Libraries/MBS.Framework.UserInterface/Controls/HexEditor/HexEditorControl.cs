@@ -431,6 +431,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 		public bool Editable { get; set; } = true;
 
+		private Brush bForeColor = new SolidBrush(Colors.Black); // SolidBrush(SystemColors.TextBoxForegroundColor);
+		private Brush bOffsetColor = new SolidBrush(Colors.DarkRed);
+
 		protected internal override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
@@ -487,7 +490,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				{
 					// print the offset of data, once per line
 					string strOffset = i.ToString("X").PadLeft(8, '0');
-					e.Graphics.DrawText(strOffset, font, rectPositionText, new SolidBrush(Colors.DarkRed));
+					e.Graphics.DrawText(strOffset, font, rectPositionText, bOffsetColor);
 				}
 
 				if (i == mvarSelectionStart)
@@ -498,7 +501,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 
 				string hex = mvarData[i].ToString("X").PadLeft(2, '0');
-				e.Graphics.DrawText(hex, font, rectCellText, Brushes.Black);
+				e.Graphics.DrawText(hex, font, rectCellText, bForeColor);
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
 
 				if (((i + 1) % mvarMaxDisplayWidth) == 0)

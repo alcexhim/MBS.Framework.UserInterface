@@ -181,6 +181,7 @@
     <Compile Include="Engines\GTK\GDKPixbufImage.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkIconTheme.cs" />
     <Compile Include="Engines\GTK\CairoImage.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFlowBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

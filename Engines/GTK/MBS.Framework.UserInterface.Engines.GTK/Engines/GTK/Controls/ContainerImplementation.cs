@@ -145,6 +145,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
 				}
 			}
+			else if (layout is Layouts.FlowLayout)
+			{
+				hContainer = Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_new();
+				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.None);
+			}
 
 			if (hContainer != IntPtr.Zero)
 			{

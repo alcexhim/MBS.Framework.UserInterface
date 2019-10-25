@@ -19,13 +19,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private void Button_Clicked(IntPtr handle, IntPtr data)
 		{
-			Button button = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Button);
-			// maybe it's the button not the tabpage?
-			if (button != null)
-			{
-				EventArgs e = new EventArgs();
-				InvokeMethod(button.ControlImplementation, "OnClick", e);
-			}
+			EventArgs e = new EventArgs();
+			// OnClick(e);
 		}
 
 		protected override string GetControlTextInternal(Control control)

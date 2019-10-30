@@ -1300,7 +1300,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			string[] patterns = filter.Filter.Split(new char[] { ';' });
 			foreach (string pattern in patterns)
 			{
-				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, pattern);
+				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, pattern.Trim());
 			}
 			return hFileFilter;
 		}

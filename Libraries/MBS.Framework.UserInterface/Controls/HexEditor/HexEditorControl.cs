@@ -274,8 +274,12 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 							selectedNybble = 1;
 						}
 
-						if (mvarSelectionStart >= Data.Length)
-							mvarSelectionStart = Data.Length - 1;
+						int end = Editable ? Data.Length : Data.Length - 1;
+						if (mvarSelectionStart > end)
+						{
+							mvarSelectionStart = end;
+							selectedNybble = 1;
+						}
 					}
 					SelectionStart = SelectionStart; // to fire events
 					e.Cancel = true;
@@ -447,13 +451,17 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			Rectangle rectPosition = new Rectangle(xoffset, yoffset, 72, 24);
 			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, 24, 24);
 
-			for (int i = 0; i < mvarData.Length; i++)
+			int end = mvarData.Length;
+			if (Editable)
+				end++;
+
+			for (int i = 0; i < end; i++)
 			{
 				Rectangle rectPositionText = new Rectangle(rectPosition.X + textOffset.X, rectPosition.Y + textOffset.Y, rectPosition.Width - (textOffset.X * 2), rectPosition.Height - (textOffset.Y * 2));
 				Rectangle rectCellText = new Rectangle(rectCell.X + textOffset.X, rectCell.Y + textOffset.Y, rectCell.Width - (textOffset.X * 2), rectCell.Height - (textOffset.Y * 2));
 				Rectangle rectFirstNybbleCell = new Rectangle(rectCell.X, rectCell.Y, rectCell.Width / 2, rectCell.Height);
 				Rectangle rectNybbleCell = new Rectangle(rectCell.X + ((rectCell.Width / 2) * selectedNybble), rectCell.Y, rectCell.Width / 2, rectCell.Height);
-
+				
 				bool hasAreaFill = false;
 				for (int j = HighlightAreas.Count - 1;  j > -1;  j--)
 				{
@@ -500,8 +508,12 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						e.Graphics.FillRectangle(new SolidBrush(Colors.SteelBlue), new Rectangle(rectNybbleCell.X, rectNybbleCell.Bottom - 4, rectNybbleCell.Width, 4));
 				}
 
-				string hex = mvarData[i].ToString("X").PadLeft(2, '0');
-				e.Graphics.DrawText(hex, font, rectCellText, bForeColor);
+				if (i < mvarData.Length)
+				{
+					string hex = mvarData[i].ToString("X").PadLeft(2, '0');
+					e.Graphics.DrawText(hex, font, rectCellText, bForeColor);
+				}
+
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
 
 				if (((i + 1) % mvarMaxDisplayWidth) == 0)

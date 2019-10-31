@@ -683,8 +683,15 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					selectedNybble = 0;
 				}
 
+				OnChanged(EventArgs.Empty);
 				SelectionStart = SelectionStart;
 			}
+		}
+
+		public event EventHandler Changed;
+		protected virtual void OnChanged(EventArgs e)
+		{
+			Changed?.Invoke(this, e);
 		}
 
 		private bool cursorBlinking = true;
@@ -750,7 +757,10 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				Rectangle rectCellText = new Rectangle(rectCell.X + textOffset.X, rectCell.Y + textOffset.Y, rectCell.Width - (textOffset.X * 2), rectCell.Height - (textOffset.Y * 2));
 				Rectangle rectFirstNybbleCell = new Rectangle(rectCell.X, rectCell.Y, rectCell.Width / 2, rectCell.Height);
 				Rectangle rectNybbleCell = new Rectangle(rectCell.X + ((rectCell.Width / 2) * selectedNybble), rectCell.Y, rectCell.Width / 2, rectCell.Height);
-				
+
+				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
+				Rectangle rectCharText = new Rectangle(rectChar.X, rectChar.Y + textOffset.Y, rectChar.Width, rectChar.Height);
+
 				bool hasAreaFill = false;
 				for (int j = HighlightAreas.Count - 1;  j > -1;  j--)
 				{
@@ -758,6 +768,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					if (i >= area.Start && i < (area.Start + area.Length))
 					{
 						e.Graphics.FillRectangle(new SolidBrush(area.Color), rectCell);
+						e.Graphics.FillRectangle(new SolidBrush(area.Color), rectChar);
 						hasAreaFill = true;
 						break;
 					}
@@ -805,21 +816,23 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
 
-				if (mvarData.Length > 0 && i < mvarData.Length)
+				if (mvarData.Length > 0 && i < end)
 				{
-					Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
-					Rectangle rectCharText = new Rectangle(rectChar.X, rectChar.Y + textOffset.Y, rectChar.Width, rectChar.Height);
 					if (i >= mvarSelectionStart && i <= mvarSelectionStart + mvarSelectionLength)
 					{
-						e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectChar);
+						e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));
 					}
-					if (mvarData[i] >= 0 && mvarData[i] < asciiTable.Length)
+
+					if (i < mvarData.Length)
 					{
-						e.Graphics.DrawText((asciiTable[mvarData[i]]).ToString(), font, rectCharText, bForeColor);
-					}
-					else
-					{
-						e.Graphics.DrawText(".", font, rectCharText, bForeColor);
+						if (mvarData[i] >= 0 && mvarData[i] < asciiTable.Length)
+						{
+							e.Graphics.DrawText((asciiTable[mvarData[i]]).ToString(), font, rectCharText, bForeColor);
+						}
+						else
+						{
+							e.Graphics.DrawText(".", font, rectCharText, bForeColor);
+						}
 					}
 				}
 

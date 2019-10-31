@@ -118,6 +118,11 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		internal void UpdateColumnValue(TreeModelRowColumn rc)
+		{
+			(ParentControl?.ControlImplementation as Controls.Native.IListViewNativeImplementation)?.UpdateTreeModelColumn(rc);
+		}
+
 		public class TreeModelRowCollection
 			: System.Collections.ObjectModel.ObservableCollection<TreeModelRow>
 		{
@@ -199,15 +204,19 @@ namespace MBS.Framework.UserInterface
 
 		public TreeModelRow.TreeModelRowCollection Rows { get; } = new TreeModelRowCollection();
 
-		private TreeModelRowColumn.TreeModelRowColumnCollection mvarRowColumns = new TreeModelRowColumn.TreeModelRowColumnCollection();
+		private TreeModelRowColumn.TreeModelRowColumnCollection mvarRowColumns = null;
 		public TreeModelRowColumn.TreeModelRowColumnCollection RowColumns { get { return mvarRowColumns; } }
 
-		public TreeModelRow(TreeModelRowColumn[] rowColumns)
+		public TreeModelRow(TreeModelRowColumn[] rowColumns = null)
 		{
 			this.Rows.CollectionChanged += Rows_CollectionChanged;
-			foreach (TreeModelRowColumn rc in rowColumns)
+			mvarRowColumns = new TreeModelRowColumn.TreeModelRowColumnCollection(this);
+			if (rowColumns != null)
 			{
-				mvarRowColumns.Add(rc);
+				foreach (TreeModelRowColumn rc in rowColumns)
+				{
+					mvarRowColumns.Add(rc);
+				}
 			}
 		}
 

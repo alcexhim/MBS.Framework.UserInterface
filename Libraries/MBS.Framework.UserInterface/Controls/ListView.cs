@@ -9,7 +9,9 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			void UpdateTreeModel ();
 			void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e);
-			
+
+			void UpdateTreeModelColumn(TreeModelRowColumn rc);
+
 			SelectionMode GetSelectionMode();
 			void SetSelectionMode(SelectionMode value);
 

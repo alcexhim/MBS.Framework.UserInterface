@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 
 using MBS.Framework.UserInterface;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.Native;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Engines.GTK.Internal.GLib;
@@ -12,7 +13,7 @@ using MBS.Framework.UserInterface.Engines.GTK.Internal.GTK;
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(ListView))]
-	public class ListViewImplementation : GTKNativeImplementation, MBS.Framework.UserInterface.Controls.Native.IListViewNativeImplementation, MBS.Framework.UserInterface.Native.ITreeModelRowCollectionNativeImplementation
+	public class ListViewImplementation : GTKNativeImplementation, IListViewNativeImplementation, MBS.Framework.UserInterface.Native.ITreeModelRowCollectionNativeImplementation
 	{
 		private enum ImplementedAsType
 		{
@@ -240,6 +241,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public void UpdateTreeModel ()
 		{
 			UpdateTreeModel ((Handle as GTKNativeControl).Handle);
+		}
+
+		public void UpdateTreeModelColumn(TreeModelRowColumn rc)
+		{
+			TreeModel tm = (rc.Parent.ParentControl as ListView).Model;
+			GTKNativeTreeModel ntm = Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel;
+			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(rc.Parent);
+
+			IntPtr hTreeStore = ntm.Handle;
+
+			Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
+
+			Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 		}
 
 		protected void UpdateTreeModel (IntPtr handle)

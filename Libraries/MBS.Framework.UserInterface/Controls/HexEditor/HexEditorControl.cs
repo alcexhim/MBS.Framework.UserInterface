@@ -187,8 +187,10 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			{
 				case KeyboardKey.Back:
 				{
-					if (!Editable)
+					if (!Editable || ((SelectionStart == 0 && selectedNybble == 0) || SelectionStart < 0))
+					{
 						return;
+					}
 
 					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
 					{
@@ -214,8 +216,11 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						}
 						else if (selectedNybble == 1)
 						{
-							string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
-							Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
+							if (mvarSelectionStart < Data.Length)
+							{
+								string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
+								Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
+							}
 							selectedNybble = 0;
 						}
 						mvarSelectionLength = 0;

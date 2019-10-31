@@ -1,5 +1,5 @@
 ﻿//
-//  HexEditorHitTestInfo.cs
+//  HexEditorHitTestPanel.cs - enum to indicate which section (hex or ascii) is selected
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -21,17 +21,9 @@
 using System;
 namespace MBS.Framework.UserInterface.Controls.HexEditor
 {
-	public class HexEditorHitTestInfo
+	public enum HexEditorHitTestSection
 	{
-		public int ByteIndex { get; private set; } = -1;
-		public int NybbleIndex { get; private set; } = -1;
-		public HexEditorHitTestSection Section { get; private set; } = HexEditorHitTestSection.Hexadecimal;
-
-		internal HexEditorHitTestInfo(int byteIndex = -1, int nybbleIndex = -1, HexEditorHitTestSection section = HexEditorHitTestSection.Hexadecimal)
-		{
-			ByteIndex = byteIndex;
-			NybbleIndex = nybbleIndex;
-			Section = section;
-		}
+		Hexadecimal,
+		ASCII
 	}
 }

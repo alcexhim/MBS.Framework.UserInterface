@@ -36,6 +36,8 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private byte[] mvarData = new byte[4096];
 		public byte[] Data { get { return mvarData; } set { mvarData = value; SelectionStart = SelectionStart; } }
 
+		public HexEditorHitTestSection SelectedSection { get; private set; } = HexEditorHitTestSection.Hexadecimal;
+
 		public HexEditorPosition SelectionStart
 		{
 			get { return new HexEditorPosition(mvarSelectionStart, selectedNybble); }
@@ -130,6 +132,8 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			for (int i = 0; i < mvarData.Length + 1; i++)
 			{
+				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
+
 				if (x >= rectCell.X && x <= rectCell.Right && y >= rectCell.Y && y <= rectCell.Bottom)
 				{
 					byteIndex = i;
@@ -141,7 +145,13 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						nybbleIndex = 0;
 					}
-					return new HexEditorHitTestInfo(byteIndex, nybbleIndex);
+					return new HexEditorHitTestInfo(byteIndex, nybbleIndex, HexEditorHitTestSection.Hexadecimal);
+				}
+				else if (x >= rectChar.X && x <= rectChar.Right && y >= rectChar.Y && y <= rectChar.Bottom)
+				{
+					byteIndex = i;
+					nybbleIndex = 0;
+					return new HexEditorHitTestInfo(byteIndex, nybbleIndex, HexEditorHitTestSection.ASCII);
 				}
 
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
@@ -153,7 +163,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					rectPosition.Y += rectPosition.Height + VerticalCellSpacing;
 				}
 			}
-			return new HexEditorHitTestInfo(byteIndex, nybbleIndex);
+			return new HexEditorHitTestInfo(byteIndex, nybbleIndex, HexEditorHitTestSection.Hexadecimal);
 		}
 
 		protected internal override void OnMouseDown(MouseEventArgs e)
@@ -168,12 +178,26 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				selectedNybble = index.NybbleIndex;
 
 				SelectionStart = SelectionStart;
+				SelectedSection = index.Section;
 				Refresh();
 			}
 		}
 		protected internal override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+		}
+
+		private bool shouldSwitchSectionOnFocus = false;
+
+		protected internal override void OnGotFocus(EventArgs e)
+		{
+			base.OnGotFocus(e);
+
+			if (shouldSwitchSectionOnFocus)
+			{
+				SelectedSection = HexEditorHitTestSection.Hexadecimal;
+				shouldSwitchSectionOnFocus = false;
+			}
 		}
 
 		protected internal override void OnKeyDown(KeyEventArgs e)
@@ -185,6 +209,21 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			switch (e.Key)
 			{
+				case KeyboardKey.Tab:
+				{
+					if (SelectedSection == HexEditorHitTestSection.ASCII)
+					{
+						// do nothing; let the owner handle the tab to next window
+						// but we should switch the section on the next focus
+						shouldSwitchSectionOnFocus = true;
+					}
+					else if (SelectedSection == HexEditorHitTestSection.Hexadecimal)
+					{
+						SelectedSection = HexEditorHitTestSection.ASCII;
+						e.Cancel = true;
+					}
+					return;
+				}
 				case KeyboardKey.Back:
 				{
 					if (!Editable || ((SelectionStart == 0 && selectedNybble == 0) || SelectionStart < 0))
@@ -192,8 +231,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						return;
 					}
 
-					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
+					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte || SelectedSection == HexEditorHitTestSection.ASCII)
 					{
+						// ASCII section ALWAYS erases a whole byte
 						if (mvarSelectionStart > 0)
 						{
 							Data[mvarSelectionStart - 1] = 0x0;
@@ -233,27 +273,48 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 				case KeyboardKey.ArrowLeft:
 				{
-					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+					if (SelectedSection == HexEditorHitTestSection.Hexadecimal)
 					{
-						mvarSelectionLength -= 0.5;
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							mvarSelectionLength -= 0.5;
+						}
+						else
+						{
+							mvarSelectionLength = 0;
+							if (selectedNybble == 1)
+							{
+								selectedNybble = 0;
+							}
+							else if (selectedNybble == 0)
+							{
+								mvarSelectionStart--;
+								selectedNybble = 1;
+							}
+
+							if (mvarSelectionStart < 0)
+							{
+								mvarSelectionStart = 0;
+								selectedNybble = 0;
+							}
+						}
 					}
 					else
 					{
-						mvarSelectionLength = 0;
-						if (selectedNybble == 1)
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
-							selectedNybble = 0;
+							mvarSelectionLength -= 1;
 						}
-						else if (selectedNybble == 0)
+						else
 						{
+							mvarSelectionLength = 0;
 							mvarSelectionStart--;
-							selectedNybble = 1;
-						}
-
-						if (mvarSelectionStart < 0)
-						{
-							mvarSelectionStart = 0;
 							selectedNybble = 0;
+
+							if (mvarSelectionStart < 0)
+							{
+								mvarSelectionStart = 0;
+							}
 						}
 					}
 					SelectionStart = SelectionStart; // to fire events
@@ -262,28 +323,51 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 				case KeyboardKey.ArrowRight:
 				{
-					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+					if (SelectedSection == HexEditorHitTestSection.Hexadecimal)
 					{
-						mvarSelectionLength += 0.5;
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							mvarSelectionLength += 0.5;
+						}
+						else
+						{
+							mvarSelectionLength = 0;
+							if (selectedNybble == 1)
+							{
+								mvarSelectionStart++;
+								selectedNybble = 0;
+							}
+							else if (selectedNybble == 0)
+							{
+								selectedNybble = 1;
+							}
+
+							int end = Editable ? Data.Length : Data.Length - 1;
+							if (mvarSelectionStart > end)
+							{
+								mvarSelectionStart = end;
+								selectedNybble = 1;
+							}
+						}
 					}
 					else
 					{
-						mvarSelectionLength = 0;
-						if (selectedNybble == 1)
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
+							mvarSelectionLength += 1;
+						}
+						else
+						{
+							mvarSelectionLength = 0;
 							mvarSelectionStart++;
 							selectedNybble = 0;
-						}
-						else if (selectedNybble == 0)
-						{
-							selectedNybble = 1;
-						}
 
-						int end = Editable ? Data.Length : Data.Length - 1;
-						if (mvarSelectionStart > end)
-						{
-							mvarSelectionStart = end;
-							selectedNybble = 1;
+							int end = Editable ? Data.Length : Data.Length - 1;
+							if (mvarSelectionStart > end)
+							{
+								mvarSelectionStart = end;
+								selectedNybble = 0;
+							}
 						}
 					}
 					SelectionStart = SelectionStart; // to fire events
@@ -373,17 +457,195 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			if (Editable)
 			{
-				if ((int)e.Key >= (int)KeyboardKey.D0 && (int)e.Key <= (int)KeyboardKey.D9)
+				if (SelectedSection == HexEditorHitTestSection.Hexadecimal)
 				{
-					next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.D0));
+					if ((int)e.Key >= (int)KeyboardKey.D0 && (int)e.Key <= (int)KeyboardKey.D9)
+					{
+						next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.D0));
+					}
+					else if ((int)e.Key >= (int)KeyboardKey.NumPad0 && (int)e.Key <= (int)KeyboardKey.NumPad9)
+					{
+						next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.NumPad0));
+					}
+					else if ((int)e.Key >= (int)KeyboardKey.A && (int)e.Key <= (int)KeyboardKey.F)
+					{
+						next = (char)((int)'A' + ((int)e.Key - (int)KeyboardKey.A));
+					}
 				}
-				else if ((int)e.Key >= (int)KeyboardKey.NumPad0 && (int)e.Key <= (int)KeyboardKey.NumPad9)
+				else if (SelectedSection == HexEditorHitTestSection.ASCII)
 				{
-					next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.NumPad0));
-				}
-				else if ((int)e.Key >= (int)KeyboardKey.A && (int)e.Key <= (int)KeyboardKey.F)
-				{
-					next = (char)((int)'A' + ((int)e.Key - (int)KeyboardKey.A));
+					if (((int)e.Key >= (int)KeyboardKey.D0 && (int)e.Key <= (int)KeyboardKey.D9) && e.ModifierKeys == KeyboardModifierKey.None)
+					{
+						next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.D0));
+					}
+					else if ((int)e.Key >= (int)KeyboardKey.NumPad0 && (int)e.Key <= (int)KeyboardKey.NumPad9)
+					{
+						next = (char)((int)'0' + ((int)e.Key - (int)KeyboardKey.NumPad0));
+					}
+					else if ((int)e.Key >= (int)KeyboardKey.A && (int)e.Key <= (int)KeyboardKey.Z)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = (char)((int)'A' + ((int)e.Key - (int)KeyboardKey.A));
+						}
+						else
+						{
+							next = (char)((int)'a' + ((int)e.Key - (int)KeyboardKey.A));
+						}
+					}
+					else if (e.Key == KeyboardKey.Space)
+					{
+						next = ' ';
+					}
+					else if (e.Key == KeyboardKey.Tilde)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '~';
+						}
+						else
+						{
+							next = '`';
+						}
+					}
+					else if (e.Key == KeyboardKey.Backslash)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '|';
+						}
+						else
+						{
+							next = '\\';
+						}
+					}
+					else if (e.Key == KeyboardKey.Pipe)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '|';
+						}
+						else
+						{
+							next = '\\';
+						}
+					}
+					else if (e.Key == KeyboardKey.Question)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '?';
+						}
+						else
+						{
+							next = '/';
+						}
+					}
+					else if (e.Key == KeyboardKey.OpenBrackets)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '{';
+						}
+						else
+						{
+							next = '[';
+						}
+					}
+					else if (e.Key == KeyboardKey.CloseBrackets)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '}';
+						}
+						else
+						{
+							next = ']';
+						}
+					}
+					else if (e.Key == KeyboardKey.Minus)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '_';
+						}
+						else
+						{
+							next = '-';
+						}
+					}
+					else if (e.Key == KeyboardKey.Plus)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '+';
+						}
+						else
+						{
+							next = '=';
+						}
+					}
+					else if (e.Key == KeyboardKey.Semicolon)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = ':';
+						}
+						else
+						{
+							next = ';';
+						}
+					}
+					else if (e.Key == KeyboardKey.Quotes)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '"';
+						}
+						else
+						{
+							next = '\'';
+						}
+					}
+					else if (e.Key == KeyboardKey.Period)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '>';
+						}
+						else
+						{
+							next = '.';
+						}
+					}
+					else if (e.Key == KeyboardKey.Comma)
+					{
+						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+						{
+							next = '<';
+						}
+						else
+						{
+							next = ',';
+						}
+					}
+					else if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
+					{
+						// special case certain !@#$% we're having trouble with
+						switch (e.Key)
+						{
+							case KeyboardKey.D0: next = ')'; break;
+							case KeyboardKey.D1: next = '!'; break;
+							case KeyboardKey.D2: next = '@'; break;
+							case KeyboardKey.D3: next = '#'; break;
+							case KeyboardKey.D4: next = '$'; break;
+							case KeyboardKey.D5: next = '%'; break;
+							case KeyboardKey.D6: next = '^'; break;
+							case KeyboardKey.D7: next = '&'; break;
+							case KeyboardKey.D8: next = '*'; break;
+							case KeyboardKey.D9: next = '('; break;
+						}
+					}
 				}
 			}
 
@@ -396,17 +658,27 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						Array.Resize<byte>(ref mvarData, mvarData.Length + 1);
 					}
 				}
-				string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
-				mvarSelectionLength = 0;
-				if (selectedNybble == 0)
-				{
-					Data[mvarSelectionStart] = Byte.Parse(next.ToString() + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
-					selectedNybble = 1;
-				}
-				else if (selectedNybble == 1)
-				{
-					Data[mvarSelectionStart] = Byte.Parse(curhex.Substring(0, 1) + next.ToString(), System.Globalization.NumberStyles.HexNumber);
 
+				if (SelectedSection == HexEditorHitTestSection.Hexadecimal)
+				{
+					string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
+					mvarSelectionLength = 0;
+					if (selectedNybble == 0)
+					{
+						Data[mvarSelectionStart] = Byte.Parse(next.ToString() + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
+						selectedNybble = 1;
+					}
+					else if (selectedNybble == 1)
+					{
+						Data[mvarSelectionStart] = Byte.Parse(curhex.Substring(0, 1) + next.ToString(), System.Globalization.NumberStyles.HexNumber);
+
+						mvarSelectionStart++;
+						selectedNybble = 0;
+					}
+				}
+				else
+				{
+					Data[mvarSelectionStart] = (byte)next;
 					mvarSelectionStart++;
 					selectedNybble = 0;
 				}
@@ -443,17 +715,29 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private Brush bForeColor = new SolidBrush(Colors.Black); // SolidBrush(SystemColors.TextBoxForegroundColor);
 		private Brush bOffsetColor = new SolidBrush(Colors.DarkRed);
 
+		// from bless, with <3
+		private static readonly string asciiTable = "................................ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.................................................................................................................................";
+		private static readonly int HexAsciiMargin = 24;
+
+		private static readonly Vector2D textOffset = new Vector2D(4, 16);
+
+		private Pen pSelectionBorderFocused = new Pen(Colors.SteelBlue);
+		private Brush bSelectionBorderFocused = new SolidBrush(Colors.SteelBlue);
+		private Brush bSelectionBackgroundFocused = new SolidBrush(Colors.LightSteelBlue);
+
+		private Pen pSelectionBorderUnfocused = new Pen(Colors.Gray);
+		private Brush bSelectionBorderUnfocused = new SolidBrush(Colors.Gray);
+		private Brush bSelectionBackgroundUnfocused = new SolidBrush(Colors.LightGray);
+
 		protected internal override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 
-			mvarMaxDisplayWidth = (int)((this.Size.Width - PositionGutterWidth - TextAreaWidth) / 24);
+			mvarMaxDisplayWidth = (int)((this.Size.Width - PositionGutterWidth - TextAreaWidth - 128 - HexAsciiMargin) / 24);
 
 			Font font = Font.FromFamily("Monospace", 14.0);
 
-			Vector2D textOffset = new Vector2D(4, 16);
-
-			Rectangle rectPosition = new Rectangle(xoffset, yoffset, 72, 24);
+			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, 24);
 			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, 24, 24);
 
 			int end = mvarData.Length;
@@ -485,17 +769,17 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						if (!hasAreaFill)
 						{
-							e.Graphics.FillRectangle(new SolidBrush(Colors.LightSteelBlue), rectCell);
+							e.Graphics.FillRectangle(bSelectionBackgroundFocused, rectCell);
 						}
-						e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectCell);
+						e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectCell);
 					}
 					else if (mvarSelectionLength.NybbleIndex == 0)
 					{
 						if (!hasAreaFill)
 						{
-							e.Graphics.FillRectangle(new SolidBrush(Colors.LightSteelBlue), rectFirstNybbleCell);
+							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? bSelectionBackgroundFocused : bSelectionBackgroundUnfocused, rectFirstNybbleCell);
 						}
-						e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectFirstNybbleCell);
+						e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectFirstNybbleCell);
 					}
 				}
 
@@ -508,9 +792,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				if (i == mvarSelectionStart)
 				{
-					e.Graphics.DrawRectangle(new Pen(Colors.SteelBlue), rectCell);
+					e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectCell);
 					if (!BlinkCursor || cursorBlinking || !Editable)
-						e.Graphics.FillRectangle(new SolidBrush(Colors.SteelBlue), new Rectangle(rectNybbleCell.X, rectNybbleCell.Bottom - 4, rectNybbleCell.Width, 4));
+						e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectNybbleCell.X, rectNybbleCell.Bottom - 4, rectNybbleCell.Width, 4));
 				}
 
 				if (i < mvarData.Length)
@@ -520,6 +804,24 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
+
+				if (mvarData.Length > 0 && i < mvarData.Length)
+				{
+					Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
+					Rectangle rectCharText = new Rectangle(rectChar.X, rectChar.Y + textOffset.Y, rectChar.Width, rectChar.Height);
+					if (i >= mvarSelectionStart && i <= mvarSelectionStart + mvarSelectionLength)
+					{
+						e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectChar);
+					}
+					if (mvarData[i] >= 0 && mvarData[i] < asciiTable.Length)
+					{
+						e.Graphics.DrawText((asciiTable[mvarData[i]]).ToString(), font, rectCharText, bForeColor);
+					}
+					else
+					{
+						e.Graphics.DrawText(".", font, rectCharText, bForeColor);
+					}
+				}
 
 				if (((i + 1) % mvarMaxDisplayWidth) == 0)
 				{

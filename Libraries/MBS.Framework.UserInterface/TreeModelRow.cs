@@ -147,6 +147,14 @@ namespace MBS.Framework.UserInterface
 				return _itemsByName.ContainsKey(name);
 			}
 
+			public void AddRange(TreeModelRow[] items)
+			{
+				for (int i = 0; i < items.Length; i++)
+				{
+					Add(items[i]);
+				}
+			}
+
 			protected override void ClearItems()
 			{
 				base.ClearItems();

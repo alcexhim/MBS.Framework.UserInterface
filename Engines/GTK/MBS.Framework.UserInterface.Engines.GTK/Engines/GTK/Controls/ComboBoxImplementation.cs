@@ -31,6 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public ComboBoxImplementation (Engine engine, Control control)
 			: base(engine, control)
 		{
+			gc_Changed_Handler = new Action<IntPtr>(gc_Changed);
 		}
 
 		public TreeModel GetModel()
@@ -81,6 +82,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		}
 
+		private Action<IntPtr> gc_Changed_Handler = null;
+		private void gc_Changed(IntPtr combo_box)
+		{
+			OnChanged(EventArgs.Empty);
+		}
+
+		protected virtual void OnChanged(EventArgs e)
+		{
+			InvokeMethod((Control as ComboBox), "OnChanged", e);
+		}
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			IntPtr handle = IntPtr.Zero;
@@ -116,6 +128,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
 				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
 			}
+
+			Internal.GObject.Methods.g_signal_connect(handle, "changed", gc_Changed_Handler);
 
 			return new GTKNativeControl (handle, new KeyValuePair<string, IntPtr>[]
 			{

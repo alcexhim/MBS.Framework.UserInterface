@@ -95,10 +95,21 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 			set
 			{
+				bool changed = (mvarSelectedItem != value);
+
 				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
 				impl?.SetSelectedItem(value);
 				mvarSelectedItem = value;
+
+				if (changed)
+					OnChanged(EventArgs.Empty);
 			}
+		}
+
+		public event EventHandler Changed;
+		protected virtual void OnChanged(EventArgs e)
+		{
+			Changed?.Invoke(this, e);
 		}
 	}
 }

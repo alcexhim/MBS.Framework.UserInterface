@@ -167,7 +167,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Internal.GObject.Delegates.GCallbackV1I TextBuffer_Changed_Handler;
 		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
-			TextBox ctl = (Application.Engine as GTKEngine).GetControlByHandle(handle) as TextBox;
+			TextBox ctl = Control as TextBox;
 			if (ctl == null)
 				return;
 

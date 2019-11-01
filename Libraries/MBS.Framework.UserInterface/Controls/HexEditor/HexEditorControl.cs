@@ -722,8 +722,6 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private Brush bForeColor = new SolidBrush(Colors.Black); // SolidBrush(SystemColors.TextBoxForegroundColor);
 		private Brush bOffsetColor = new SolidBrush(Colors.DarkRed);
 
-		// from bless, with <3
-		private static readonly string asciiTable = "................................ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.................................................................................................................................";
 		private static readonly int HexAsciiMargin = 24;
 
 		private static readonly Vector2D textOffset = new Vector2D(4, 16);
@@ -825,9 +823,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 					if (i < mvarData.Length)
 					{
-						if (mvarData[i] >= 0 && mvarData[i] < asciiTable.Length)
+						if (!Char.IsControl((char)mvarData[i])) // (mvarData[i] > 31 && mvarData[i] < 128)
 						{
-							e.Graphics.DrawText((asciiTable[mvarData[i]]).ToString(), font, rectCharText, bForeColor);
+							e.Graphics.DrawText(((char)mvarData[i]).ToString(), font, rectCharText, bForeColor);
 						}
 						else
 						{

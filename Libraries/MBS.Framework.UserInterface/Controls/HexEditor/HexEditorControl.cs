@@ -94,8 +94,8 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private int mvarMaxDisplayWidth = 16;
 
 		// offsets for data display
-		private int xoffset = 0;
-		private int yoffset = 16;
+		private const int xoffset = 0;
+		private const int yoffset = 16 + 16;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this
@@ -743,11 +743,17 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			Font font = Font.FromFamily("Monospace", 14.0);
 
 			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, 24);
-			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, 24, 24);
+			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width, yoffset, 24, 24);
 
 			int end = mvarData.Length;
 			if (Editable)
 				end++;
+
+
+			for (int i = 0; i < mvarMaxDisplayWidth; i++)
+			{
+				e.Graphics.DrawText(i.ToString("X").PadLeft(2, '0'), font, new Rectangle(rectCell.X + textOffset.X + (i * (24 + HorizontalCellSpacing)), yoffset - 8, 24, 24), bOffsetColor);
+			}
 
 			for (int i = 0; i < end; i++)
 			{
@@ -836,7 +842,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				if (((i + 1) % mvarMaxDisplayWidth) == 0)
 				{
-					rectCell.X = rectPosition.X + rectPosition.Width + HorizontalCellSpacing;
+					rectCell.X = rectPosition.X + rectPosition.Width;
 					rectCell.Y += rectCell.Height + VerticalCellSpacing;
 					rectPosition.Y += rectPosition.Height + VerticalCellSpacing;
 				}

@@ -176,6 +176,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			{
 				mvarSelectionStart = index.ByteIndex;
 				selectedNybble = index.NybbleIndex;
+				mvarSelectionLength = new HexEditorPosition(0, 0);
 
 				SelectionStart = SelectionStart;
 				SelectedSection = index.Section;
@@ -185,6 +186,15 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		protected internal override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+
+			if (e.Buttons == MouseButtons.Primary)
+			{
+				HexEditorHitTestInfo index = HitTest(e.X, e.Y);
+				if (index.ByteIndex > -1)
+				{
+					SelectionLength = new HexEditorPosition(index.ByteIndex - mvarSelectionStart + 1, index.NybbleIndex);
+				}
+			}
 		}
 
 		private bool shouldSwitchSectionOnFocus = false;

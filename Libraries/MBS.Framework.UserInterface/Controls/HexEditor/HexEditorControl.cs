@@ -195,6 +195,15 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					SelectionLength = new HexEditorPosition(index.ByteIndex - mvarSelectionStart + 1, index.NybbleIndex);
 				}
 			}
+
+			if (e.X > this.Size.Width - TextAreaWidth - PositionGutterWidth)
+			{
+				Cursor = Cursors.Text;
+			}
+			else
+			{
+				Cursor = Cursors.Default;
+			}
 		}
 
 		private bool shouldSwitchSectionOnFocus = false;

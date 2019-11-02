@@ -213,6 +213,11 @@ namespace MBS.Framework.UserInterface
 			}
 			set
 			{
+				if (mvarCursor == value)
+				{
+					// do not set cursor if we don't really have to, save some CPU
+					return;
+				}
 				mvarCursor = value;
 				ControlImplementation?.SetCursor(value);
 			}

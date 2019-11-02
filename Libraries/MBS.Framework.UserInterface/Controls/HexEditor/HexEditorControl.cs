@@ -788,9 +788,17 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					}
 				}
 
-				if (i >= mvarSelectionStart && i <= (mvarSelectionStart + mvarSelectionLength.ByteIndex - 1))
+				int start = mvarSelectionStart;
+				int length = mvarSelectionLength.ByteIndex;
+				if (length < 0)
 				{
-					if (mvarSelectionLength.NybbleIndex == 1 || i < (mvarSelectionStart + mvarSelectionLength.ByteIndex - 1))
+					length = Math.Abs(length);
+					start = mvarSelectionStart - length;
+				}
+
+				if (i >= start && i <= (start + length - 1))
+				{
+					if (mvarSelectionLength.NybbleIndex == 1 || i < (start + length - 1))
 					{
 						if (!hasAreaFill)
 						{
@@ -832,14 +840,14 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				if (mvarData.Length > 0 && i < end)
 				{
-					if (i >= mvarSelectionStart && i <= mvarSelectionStart + mvarSelectionLength)
+					if (i >= start && i <= start + length)
 					{
-						if (i < mvarSelectionStart + mvarSelectionLength)
+						if (i < start + length)
 						{
 							// highlight
 							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBackgroundFocused : bSelectionBackgroundUnfocused, new Rectangle(rectChar.X, rectChar.Y, rectChar.Width, rectChar.Height));
 						}
-						if (i == mvarSelectionStart)
+						if (i == start)
 						{
 							// cursor
 							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));

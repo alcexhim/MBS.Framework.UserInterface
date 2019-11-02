@@ -824,7 +824,16 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				{
 					if (i >= mvarSelectionStart && i <= mvarSelectionStart + mvarSelectionLength)
 					{
-						e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));
+						if (i < mvarSelectionStart + mvarSelectionLength)
+						{
+							// highlight
+							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBackgroundFocused : bSelectionBackgroundUnfocused, new Rectangle(rectChar.X, rectChar.Y, rectChar.Width, rectChar.Height));
+						}
+						if (i == mvarSelectionStart)
+						{
+							// cursor
+							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));
+						}
 					}
 
 					if (i < mvarData.Length)

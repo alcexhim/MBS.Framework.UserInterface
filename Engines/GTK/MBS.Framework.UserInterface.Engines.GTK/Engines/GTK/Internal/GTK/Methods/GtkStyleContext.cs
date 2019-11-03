@@ -26,9 +26,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	internal class GtkStyleContext
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_style_context_add_provider (IntPtr hStyleContext, IntPtr /*GtkStyleProvider*/ provider, Constants.GtkStyleProviderPriority priority);
+		public static extern IntPtr /*GtkStyleContext*/ gtk_style_context_new();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_add_provider(IntPtr hStyleContext, IntPtr /*GtkStyleProvider*/ provider, Constants.GtkStyleProviderPriority priority);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_add_class(IntPtr /*GtkStyleContext*/ context, string value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_get_property(IntPtr /*GtkStyleContext*/ context, string name, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GLib.Structures.Value value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_get_background_color(IntPtr /*GtkStyleContext*/ context, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GDK.Structures.GdkRGBA value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_get_color(IntPtr /*GtkStyleContext*/ context, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GDK.Structures.GdkRGBA value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_set_path(IntPtr /*GtkStyleContext*/ context, IntPtr /*GtkWidgetPath*/ path);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_set_state(IntPtr /*GtkStyleContext*/ context, Constants.GtkStateFlags state);
 	}
 }
 

@@ -2274,6 +2274,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 			mvarCursorsInitialized = true;
 		}
+
+		protected override void UpdateSystemColorsInternal()
+		{
+			Internal.GLib.Structures.Value val = new Internal.GLib.Structures.Value();
+
+			IntPtr hctrl = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
+			IntPtr hCtxTextBox = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hctrl);
+			// IntPtr hCtxTextBox = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
+
+			IntPtr hPathTextBox = Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_new();
+			Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_append_type(hPathTextBox, Internal.GTK.Methods.GtkEntry.gtk_entry_get_type());
+
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_set_path(hCtxTextBox, hPathTextBox);
+
+			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
+			UpdateSystemColor(SystemColor.TextBoxForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
+			UpdateSystemColor(SystemColor.HighlightBackgroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
+			UpdateSystemColor(SystemColor.HighlightForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+		}
 	}
 }
 

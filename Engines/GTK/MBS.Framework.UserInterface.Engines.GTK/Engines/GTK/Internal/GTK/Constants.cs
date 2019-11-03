@@ -550,6 +550,72 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			/// </summary>
 			RightToLeft = 1 << 8
 		}
+
+		/// <summary>
+		/// Describes a widget state. Widget states are used to match the widget
+		/// against CSS pseudo-classes. Note that GTK extends the regular CSS
+		/// classes and sometimes uses different names.
+		/// </summary>
+		[Flags()]
+		public enum GtkStateFlags
+		{
+			/// <summary>
+			/// State during normal operation.
+			/// </summary>
+			Normal = 0,
+			/// <summary>
+			/// Widget is active.
+			/// </summary>
+			Active = 1 << 0,
+			/// <summary>
+			/// Widget has a mouse pointer over it.
+			/// </summary>
+			Hover = 1 << 1,
+			/// <summary>
+			/// Widget is selected.
+			/// </summary>
+			Selected = 1 << 2,
+			/// <summary>
+			/// Widget is insensitive.
+			/// </summary>
+			Disabled = 1 << 3,
+			/// <summary>
+			/// Widget is inconsistent.
+			/// </summary>
+			Inconsistent = 1 << 4,
+			/// <summary>
+			/// Widget has the keyboard focus.
+			/// </summary>
+			Focused = 1 << 5,
+			/// <summary>
+			/// Widget is in a background toplevel window.
+			/// </summary>
+			Backdrop = 1 << 6,
+			/// <summary>
+			/// Widget is in left-to-right text direction. Since 3.8
+			/// </summary>
+			LeftToRight = 1 << 7,
+			/// <summary>
+			/// Widget is in right-to-left text direction. Since 3.8
+			/// </summary>
+			RightToLeft = 1 << 8,
+			/// <summary>
+			/// Widget is a link. Since 3.12
+			/// </summary>
+			Link = 1 << 9,
+			/// <summary>
+			/// The location the widget points to has already been visited. Since 3.12
+			/// </summary>
+			Visited = 1 << 10,
+			/// <summary>
+			/// Widget is checked. Since 3.14
+			/// </summary>
+			Checked = 1 << 11,
+			/// <summary>
+			/// Widget is highlighted as a drop target for DND. Since 3.20
+			/// </summary>
+			DropActive = 1 << 12
+		}
 	}
 }
 

@@ -31,6 +31,27 @@ namespace MBS.Framework.UserInterface
 				return controlsByHandle[handle];
 			return null;
 		}
+
+		private Dictionary<SystemColor, Color> _SystemColors = new Dictionary<SystemColor, Color>();
+		protected void UpdateSystemColor(SystemColor color, Color value)
+		{
+			_SystemColors[color] = value;
+		}
+
+		protected abstract void UpdateSystemColorsInternal();
+		public void UpdateSystemColors()
+		{
+			UpdateSystemColorsInternal();
+		}
+
+		public Color GetSystemColor(SystemColor color)
+		{
+			UpdateSystemColors();
+			if (_SystemColors.ContainsKey(color))
+				return _SystemColors[color];
+			return Color.Empty;
+		}
+
 		[DebuggerNonUserCode()]
 		public NativeControl GetHandleForControl(Control control)
 		{
@@ -118,11 +139,13 @@ namespace MBS.Framework.UserInterface
 		{
 			controlsByHandle[handle] = control;
 			handlesByControl[control] = handle;
+			Console.WriteLine("registered control handle {0} for {1} ({2} handles registered)", handle, control.GetType(), controlsByHandle.Count);
 		}
 		public void UnregisterControlHandle(NativeControl handle)
 		{
 			Control ctl = controlsByHandle[handle];
 
+			Console.WriteLine("unregistered control handle {0} for {1} ({2} handles registered)", handle, ctl.GetType(), controlsByHandle.Count - 1);
 			handlesByControl.Remove(ctl);
 			controlsByHandle.Remove(handle);
 		}

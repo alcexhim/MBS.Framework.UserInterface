@@ -67,7 +67,14 @@ namespace MBS.Framework.UserInterface
 		protected abstract void SetMenuItemVisibilityInternal(MenuItem item, bool visible);
 		internal void SetMenuItemVisibility(MenuItem item, bool visible)
 		{
+			if (!IsMenuItemCreated(item))
+				return;
 			SetMenuItemVisibilityInternal(item, visible);
+		}
+
+		public bool IsMenuItemCreated(MenuItem item)
+		{
+			return handlesByMenuItem.ContainsKey(item);
 		}
 
 		private Dictionary<MenuItem, NativeControl> handlesByMenuItem = new Dictionary<MenuItem, NativeControl>();

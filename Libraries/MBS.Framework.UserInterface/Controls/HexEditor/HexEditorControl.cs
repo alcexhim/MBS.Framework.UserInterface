@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+
+using MBS.Framework;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Input.Keyboard;
@@ -105,6 +107,11 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public bool EnableInsert { get; set; } = true;
 
 		public HexEditorBackspaceBehavior BackspaceBehavior { get; set; } = HexEditorBackspaceBehavior.EraseNybble;
+		/// <summary>
+		/// Gets or sets a value indicating whether the backspace or delete key clears a byte instead of deleting it.
+		/// </summary>
+		/// <value><c>true</c> if backspace deletes; otherwise, <c>false</c>.</value>
+		public bool BackspaceDeletes { get; set; } = true;
 
 		public HexEditorControl()
 		{
@@ -255,8 +262,26 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						// ASCII section ALWAYS erases a whole byte
 						if (mvarSelectionStart > 0)
 						{
-							Data[mvarSelectionStart - 1] = 0x0;
-							mvarSelectionStart--;
+							if (BackspaceDeletes)
+							{
+								if (mvarSelectionLength == 0)
+								{
+									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1, mvarSelectionLength + 1);
+									mvarSelectionStart--;
+								}
+								else
+								{
+									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart, mvarSelectionLength);
+									if (mvarSelectionLength < 0)
+									{
+										mvarSelectionStart += mvarSelectionLength;
+									}
+								}
+							}
+							else // if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
+							{
+								Data[mvarSelectionStart - 1] = 0x0;
+							}
 							mvarSelectionLength = 0;
 
 							SelectionStart = SelectionStart; // to fire events
@@ -270,6 +295,8 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						{
 							string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');
 							Data[mvarSelectionStart - 1] = Byte.Parse(curhex.Substring(0, 1) + '0', System.Globalization.NumberStyles.HexNumber);
+							ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
+
 							mvarSelectionStart--;
 							selectedNybble = 1;
 						}
@@ -767,7 +794,6 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			int end = mvarData.Length;
 			if (Editable)
 				end++;
-
 
 			for (int i = 0; i < mvarMaxDisplayWidth; i++)
 			{

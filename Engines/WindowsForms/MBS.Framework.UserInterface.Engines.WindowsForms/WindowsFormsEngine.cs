@@ -23,6 +23,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return base.CreateControlInternal(control);
 		}
 
+		protected override void UpdateSystemColorsInternal()
+		{
+			UpdateSystemColor(SystemColor.HighlightBackgroundColor, System.Drawing.SystemColors.Highlight);
+			UpdateSystemColor(SystemColor.HighlightForegroundColor, System.Drawing.SystemColors.HighlightText);
+			UpdateSystemColor(SystemColor.TextBoxForegroundColor, System.Drawing.SystemColors.WindowText);
+		}
+
+		public void UpdateSystemColor(SystemColor color, System.Drawing.Color value)
+		{
+			UpdateSystemColor(color, Color.FromRGBAByte(value.R, value.G, value.B, value.A));
+		}
+
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
 			throw new NotImplementedException();

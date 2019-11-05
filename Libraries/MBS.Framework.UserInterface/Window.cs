@@ -58,6 +58,8 @@ namespace MBS.Framework.UserInterface
 		{
 			StatusBar = new StatusBar(this);
 			MenuBar = new Menu(this);
+
+			Application.AddWindow(this);
 		}
 
 		private string mvarIconName = null;

@@ -216,6 +216,8 @@
     <Compile Include="Controls\HexEditor\HexEditorHitTestSection.cs" />
     <Compile Include="SystemColors.cs" />
     <Compile Include="SystemColor.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="KnownContexts.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

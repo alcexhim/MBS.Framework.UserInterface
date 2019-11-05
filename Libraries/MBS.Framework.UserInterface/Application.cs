@@ -24,6 +24,96 @@ namespace MBS.Framework.UserInterface
 		public static event EventHandler Startup;
 		public static event EventHandler Shutdown;
 
+		/// <summary>
+		/// Gets a collection of <see cref="Context" /> objects representing system, application, user, and custom contexts for settings and other items.
+		/// </summary>
+		/// <value>A collection of <see cref="Context" /> objects representing contexts for settings and other items.</value>
+		public static Context.ContextCollection Contexts { get; } = new Context.ContextCollection();
+
+		private static void Application_MenuBar_Item_Click(object sender, EventArgs e)
+		{
+			CommandMenuItem mi = (sender as CommandMenuItem);
+			if (mi == null)
+				return;
+
+			Command cmd = Application.Commands[mi.Name];
+			if (cmd == null)
+			{
+				Console.WriteLine("unknown cmd '" + mi.Name + "'");
+				return;
+			}
+
+			cmd.Execute();
+		}
+
+		private static List<Window> _windows = new List<Window>();
+		private static System.Collections.ObjectModel.ReadOnlyCollection<Window> _windowsRO = null;
+		public static System.Collections.ObjectModel.ReadOnlyCollection<Window> Windows
+		{
+			get
+			{
+				if (_windowsRO == null)
+				{
+					_windowsRO = new System.Collections.ObjectModel.ReadOnlyCollection<Window>(_windows);
+				}
+				return _windowsRO;
+			}
+		}
+		internal static void AddWindow(Window window)
+		{
+			_windows.Add(window);
+		}
+
+		private static Dictionary<Context, List<MenuItem>> _listContextMenuItems = new Dictionary<Context, List<MenuItem>>();
+
+		/// <summary>
+		/// Handles updating the menus, toolbars, keyboard shortcuts, and other UI elements associated with the application <see cref="Context" />.
+		/// </summary>
+		internal static void AddContext(Context ctx)
+		{
+			foreach (Command cmd in ctx.Commands)
+			{
+				Application.Commands.Add(cmd);
+			}
+
+			if (!_listContextMenuItems.ContainsKey(ctx))
+			{
+				_listContextMenuItems[ctx] = new List<MenuItem>();
+			}
+
+			foreach (CommandItem ci in ctx.MenuItems)
+			{
+				MenuItem mi = MenuItem.LoadMenuItem(ci, Application_MenuBar_Item_Click);
+				_listContextMenuItems[ctx].Add(mi);
+				foreach (Window w in Application.Windows)
+				{
+					w.MenuBar.Items.Add(mi);
+				}
+			}
+		}
+		/// <summary>
+		/// Handles updating the menus, toolbars, keyboard shortcuts, and other UI elements associated with the application <see cref="Context" />.
+		/// </summary>
+		internal static void RemoveContext(Context ctx)
+		{
+			if (_listContextMenuItems.ContainsKey(ctx))
+			{
+				foreach (Window w in Application.Windows)
+				{
+					foreach (MenuItem mi in _listContextMenuItems[ctx])
+					{
+						w.MenuBar.Items.Remove(mi);
+					}
+				}
+			}
+			_listContextMenuItems[ctx].Clear();
+
+			foreach (Command cmd in ctx.Commands)
+			{
+				Application.Commands.Remove(cmd);
+			}
+		}
+
 		public static Command.CommandCollection Commands { get; } = new Command.CommandCollection();
 		public static bool AttachCommandEventHandler(string commandID, EventHandler handler)
 		{
@@ -186,6 +276,14 @@ namespace MBS.Framework.UserInterface
 
 		static Application()
 		{
+			Type tKnownContexts = typeof(KnownContexts);
+			System.Reflection.PropertyInfo[] pis = tKnownContexts.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			for (int i = 0; i < pis.Length; i++)
+			{
+				Context ctx = (Context)pis[i].GetValue(null, null);
+				Application.Contexts.Add(ctx);
+			}
+
 			Engine[] engines = Engine.Get();
 			if (engines.Length > 0) mvarEngine = engines[0];
 			

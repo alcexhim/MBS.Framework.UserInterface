@@ -466,7 +466,49 @@ namespace MBS.Framework.UserInterface
 			Resizing?.Invoke(this, e);
 		}
 
-		public Menu ContextMenu { get; set; } = null;
+		private bool _ContextMenuCommandIDChanged = false;
+		private Menu _ContextMenu = null;
+		public Menu ContextMenu
+		{
+			get
+			{
+				if (_ContextMenu == null && (_ContextMenuCommandID != null && _ContextMenuCommandIDChanged))
+				{
+					Command cmd = Application.Commands[_ContextMenuCommandID];
+
+					_ContextMenu = new Menu();
+					foreach (CommandItem ci in cmd.Items)
+					{
+						MenuItem mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+						if (mi == null)
+							continue;
+
+						_ContextMenu.Items.Add(mi);
+					}
+				}
+				return _ContextMenu;
+			}
+			set { _ContextMenu = value; }
+		}
+		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
+		{
+			CommandMenuItem mi = (sender as CommandMenuItem);
+			if (mi == null)
+				return;
+
+			Application.ExecuteCommand(mi.Name);
+		}
+
+		private string _ContextMenuCommandID = null;
+		public string ContextMenuCommandID
+		{
+			get { return _ContextMenuCommandID; }
+			set
+			{
+				_ContextMenuCommandIDChanged = (_ContextMenuCommandID != value);
+				_ContextMenuCommandID = value;
+			}
+		}
 
 		public Window ParentWindow
 		{

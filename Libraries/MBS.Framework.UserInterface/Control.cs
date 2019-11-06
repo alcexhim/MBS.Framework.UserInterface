@@ -485,6 +485,7 @@ namespace MBS.Framework.UserInterface
 
 						_ContextMenu.Items.Add(mi);
 					}
+					_ContextMenuCommandIDChanged = false;
 				}
 				return _ContextMenu;
 			}

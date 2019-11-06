@@ -363,16 +363,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			if (hApp != IntPtr.Zero)
 			{
 				bool isRegistered = Internal.GIO.Methods.g_application_get_is_registered(hApp);
-				Console.WriteLine("GtkApplication is registered? {0}", isRegistered);
-
 				if (!isRegistered)
 				{
-					Console.WriteLine("no, we are registering it now");
 					Internal.GIO.Methods.g_application_register(hApp, IntPtr.Zero, IntPtr.Zero);
 				}
 
-				isRegistered = Internal.GIO.Methods.g_application_get_is_registered(hApp);
-				Console.WriteLine("GtkApplication is registered? How about now? {0}", isRegistered);
 				/*
 				IntPtr simpleActionGroup = Internal.GIO.Methods.g_simple_action_group_new();
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
@@ -14,10 +15,22 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
+			private Dictionary<string, MenuItem> _itemsByName = new Dictionary<string, MenuItem>();
+
 			private Menu _parent = null;
 			public MenuItemCollection(Menu parent = null)
 			{
 				_parent = parent;
+			}
+
+			public MenuItem this[string name]
+			{
+				get
+				{
+					if (_itemsByName.ContainsKey(name))
+						return _itemsByName[name];
+					return null;
+				}
 			}
 
 			protected override void InsertItem(int index, MenuItem item)
@@ -25,6 +38,7 @@ namespace MBS.Framework.UserInterface
 				base.InsertItem(index, item);
 				if (item != null)
 				{
+					_itemsByName[item.Name] = item;
 					item.Parent = _parent;
 					_parent?.InsertMenuItem(index, item);
 				}
@@ -35,11 +49,13 @@ namespace MBS.Framework.UserInterface
 				{
 					item.Parent = null;
 				}
+				_itemsByName.Clear();
 				base.ClearItems();
 				_parent?.ClearMenuItems();
 			}
 			protected override void RemoveItem(int index)
 			{
+				_itemsByName.Remove(this[index].Name);
 				this[index].Parent = null;
 				_parent?.RemoveMenuItem(this[index]);
 				base.RemoveItem(index);

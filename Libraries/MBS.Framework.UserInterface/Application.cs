@@ -114,6 +114,9 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+
+		private static Dictionary<string, List<EventHandler>> _CommandEventHandlers = new Dictionary<string, List<EventHandler>>();
+
 		public static Command.CommandCollection Commands { get; } = new Command.CommandCollection();
 		public static bool AttachCommandEventHandler(string commandID, EventHandler handler)
 		{
@@ -124,14 +127,35 @@ namespace MBS.Framework.UserInterface
 				return true;
 			}
 			Console.WriteLine("attempted to attach handler for unknown command '" + commandID + "'");
+
+			// handle command event handlers attached without a Command instance
+			if (!_CommandEventHandlers.ContainsKey(commandID))
+			{
+				_CommandEventHandlers.Add(commandID, new List<EventHandler>());
+			}
+			if (!_CommandEventHandlers[commandID].Contains(handler))
+			{
+				_CommandEventHandlers[commandID].Add(handler);
+			}
 			return false;
 		}
 		public static void ExecuteCommand(string id)
 		{
+			// handle command event handlers attached without a Command instance
+			if (_CommandEventHandlers.ContainsKey(id))
+			{
+				List<EventHandler> c = _CommandEventHandlers[id];
+				for (int i = 0;  i < c.Count; i++)
+				{
+					c[i](null, EventArgs.Empty);
+				}
+				return;
+			}
+
 			Command cmd = Commands [id];
 			if (cmd == null)
 				return;
-			
+
 			cmd.Execute ();
 		}
 		

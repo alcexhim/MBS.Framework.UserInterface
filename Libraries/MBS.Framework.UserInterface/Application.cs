@@ -141,18 +141,19 @@ namespace MBS.Framework.UserInterface
 		}
 		public static void ExecuteCommand(string id)
 		{
+			Command cmd = Commands[id];
+
 			// handle command event handlers attached without a Command instance
 			if (_CommandEventHandlers.ContainsKey(id))
 			{
 				List<EventHandler> c = _CommandEventHandlers[id];
 				for (int i = 0;  i < c.Count; i++)
 				{
-					c[i](null, EventArgs.Empty);
+					c[i](cmd, EventArgs.Empty);
 				}
 				return;
 			}
 
-			Command cmd = Commands [id];
 			if (cmd == null)
 				return;
 

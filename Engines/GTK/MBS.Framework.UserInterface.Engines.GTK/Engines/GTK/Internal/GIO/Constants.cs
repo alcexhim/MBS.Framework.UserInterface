@@ -21,7 +21,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GIO
 			/// <summary>
 			/// This application handles opening files (in the primary instance). Note that this flag
 			/// only affects the default implementation of local_command_line(), and has no effect if
-			/// %G_APPLICATION_HANDLES_COMMAND_LINE is given. See g_application_run() for details.
+			/// <see cref="HandlesCommandLine"/> is given. See g_application_run() for details.
 			/// </summary>
 			HandlesOpen = (1 << 2),
 			/// <summary>

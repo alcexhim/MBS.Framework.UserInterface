@@ -474,17 +474,7 @@ namespace MBS.Framework.UserInterface
 			{
 				if (_ContextMenu == null && (_ContextMenuCommandID != null && _ContextMenuCommandIDChanged))
 				{
-					Command cmd = Application.Commands[_ContextMenuCommandID];
-
-					_ContextMenu = new Menu();
-					foreach (CommandItem ci in cmd.Items)
-					{
-						MenuItem mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
-						if (mi == null)
-							continue;
-
-						_ContextMenu.Items.Add(mi);
-					}
+					ReloadContextMenu();
 					_ContextMenuCommandIDChanged = false;
 				}
 				return _ContextMenu;
@@ -508,6 +498,30 @@ namespace MBS.Framework.UserInterface
 			{
 				_ContextMenuCommandIDChanged = (_ContextMenuCommandID != value);
 				_ContextMenuCommandID = value;
+
+				if (_ContextMenuCommandIDChanged)
+					ReloadContextMenu();
+			}
+		}
+
+		private void ReloadContextMenu()
+		{
+			Command cmd = Application.Commands[_ContextMenuCommandID];
+			if (cmd == null)
+			{
+				_ContextMenu = null;
+			}
+			else
+			{
+				_ContextMenu = new Menu();
+				foreach (CommandItem ci in cmd.Items)
+				{
+					MenuItem mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+					if (mi == null)
+						continue;
+
+					_ContextMenu.Items.Add(mi);
+				}
 			}
 		}
 

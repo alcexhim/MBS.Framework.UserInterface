@@ -64,6 +64,18 @@ namespace MBS.Framework.UserInterface
 			_windows.Add(window);
 		}
 
+		public static ContextChangedEventHandler ContextAdded;
+		private static void OnContextAdded(ContextChangedEventArgs e)
+		{
+			ContextAdded?.Invoke(typeof(Application), e);
+		}
+
+		public static ContextChangedEventHandler ContextRemoved;
+		private static void OnContextRemoved(ContextChangedEventArgs e)
+		{
+			ContextRemoved?.Invoke(typeof(Application), e);
+		}
+
 		private static Dictionary<Context, List<MenuItem>> _listContextMenuItems = new Dictionary<Context, List<MenuItem>>();
 
 		/// <summary>
@@ -90,6 +102,8 @@ namespace MBS.Framework.UserInterface
 					w.MenuBar.Items.Add(mi);
 				}
 			}
+
+			OnContextAdded(new ContextChangedEventArgs(ctx));
 		}
 		/// <summary>
 		/// Handles updating the menus, toolbars, keyboard shortcuts, and other UI elements associated with the application <see cref="Context" />.

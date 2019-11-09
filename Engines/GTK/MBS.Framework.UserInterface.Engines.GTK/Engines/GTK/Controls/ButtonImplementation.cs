@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
-			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
 			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, hTitle);
 		}

@@ -52,6 +52,7 @@ namespace MBS.Framework.UserInterface
 		// public MenuBar MenuBar { get; } = new MenuBar();
 		public CommandItem.CommandItemCollection MenuItems { get; } = new CommandItem.CommandItemCollection();
 		public Command.CommandCollection Commands { get; } = new Command.CommandCollection();
+		public KeyBinding.KeyBindingCollection KeyBindings { get; } = new KeyBinding.KeyBindingCollection();
 
 		public Context(Guid id, string name)
 		{

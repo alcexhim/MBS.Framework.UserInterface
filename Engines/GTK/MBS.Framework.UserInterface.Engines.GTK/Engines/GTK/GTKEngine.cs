@@ -1316,6 +1316,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				title = "Select Color";
 
 			IntPtr handle = Internal.GTK.Methods.GtkColorDialog.gtk_color_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
+			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_set_use_alpha(handle, true);
+
+			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
+			rgba.alpha = dlg.SelectedColor.A;
+			rgba.blue = dlg.SelectedColor.B;
+			rgba.green = dlg.SelectedColor.G;
+			rgba.red = dlg.SelectedColor.R;
+			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_set_rgba(handle, ref rgba);
 			return handle;
 		}
 		private void ColorDialog_Accept(ColorDialog dlg, IntPtr handle)

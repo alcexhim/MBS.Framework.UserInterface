@@ -48,6 +48,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		// only in gtk-3
 		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_color_chooser_get_rgba")]
 		private static extern IntPtr gtk_color_chooser_get_rgba_internal(IntPtr /*GtkColorChooser*/ chooser, out Internal.GDK.Structures.GdkRGBA color);
+		// only in gtk-3
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_color_chooser_set_rgba")]
+		private static extern void gtk_color_chooser_set_rgba_internal(IntPtr /*GtkColorChooser*/ chooser, ref Internal.GDK.Structures.GdkRGBA color);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		private static extern IntPtr gtk_color_selection_dialog_get_color_selection(IntPtr /*GtkColorSelectionDialog*/ chooser);
@@ -56,6 +59,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		private static extern IntPtr gtk_color_selection_get_current_color(IntPtr /*GtkColorSelection*/ colorsel, out Internal.GDK.Structures.GdkColor color);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		private static extern IntPtr gtk_color_selection_get_previous_color(IntPtr /*GtkColorSelection*/ colorsel, out Internal.GDK.Structures.GdkColor color);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		private static extern void gtk_color_selection_set_current_color(IntPtr /*GtkColorSelection*/ colorsel, Internal.GDK.Structures.GdkColor color);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_color_chooser_set_use_alpha(IntPtr /*GtkColorChooser*/ chooser, bool use_alpha); 
 
 		public static IntPtr gtk_color_chooser_get_rgba(IntPtr /*GtkColorChooser*/ chooser, out Internal.GDK.Structures.GdkRGBA color)
 		{
@@ -85,6 +93,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 			Internal.GDK.Structures.GdkRGBA empty = new Internal.GDK.Structures.GdkRGBA();
 			color = empty;
 			return IntPtr.Zero;
+		}
+		public static void gtk_color_chooser_set_rgba(IntPtr /*GtkColorChooser*/ chooser, ref Internal.GDK.Structures.GdkRGBA color)
+		{
+			if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V3)
+			{
+				gtk_color_chooser_set_rgba_internal(chooser, ref color);
+			}
+			else if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V2)
+			{
+				IntPtr colorsel = gtk_color_selection_dialog_get_color_selection(chooser);
+				Internal.GDK.Structures.GdkColor color1 = new Internal.GDK.Structures.GdkColor();
+				color1.blue = (ushort)(color.blue * 255);
+				color1.green = (ushort)(color.green * 255);
+				color1.red = (ushort)(color.red * 255);
+				gtk_color_selection_set_current_color(colorsel, color1);
+			}
 		}
 	}
 }

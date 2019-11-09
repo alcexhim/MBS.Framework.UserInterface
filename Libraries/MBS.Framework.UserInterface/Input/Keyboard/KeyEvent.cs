@@ -34,5 +34,42 @@ namespace MBS.Framework.UserInterface.Input.Keyboard
 
 		public int KeyCode { get; set; }
 		public int HardwareKeyCode { get; set; }
+		public bool KeyIsModifier
+		{
+			get
+			{
+				return Key == KeyboardKey.LControlKey
+					|| Key == KeyboardKey.LShiftKey
+					|| Key == KeyboardKey.LMenu
+					|| Key == KeyboardKey.LWin
+					|| Key == KeyboardKey.RControlKey
+					|| Key == KeyboardKey.RShiftKey
+					|| Key == KeyboardKey.RMenu
+					|| Key == KeyboardKey.RWin;
+			}
+		}
+
+		public KeyboardModifierKey KeyAsModifier
+		{
+			get
+			{
+				switch (Key)
+				{
+					case KeyboardKey.LControlKey:
+					case KeyboardKey.RControlKey:
+						return KeyboardModifierKey.Control;
+					case KeyboardKey.LShiftKey:
+					case KeyboardKey.RShiftKey:
+						return KeyboardModifierKey.Shift;
+					case KeyboardKey.LMenu:
+					case KeyboardKey.RMenu:
+						return KeyboardModifierKey.Alt;
+					case KeyboardKey.LWin:
+					case KeyboardKey.RWin:
+						return KeyboardModifierKey.Super;
+				}
+				return KeyboardModifierKey.None;
+			}
+		}
 	}
 }

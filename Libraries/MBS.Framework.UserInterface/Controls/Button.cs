@@ -34,6 +34,12 @@ namespace MBS.Framework.UserInterface.Controls
 			: this(text, DialogResult.None)
 		{
 		}
+		public Button(string text, EventHandler onClick)
+			: this(text, DialogResult.None)
+		{
+			if (onClick != null)
+				Click += onClick;
+		}
 		public Button(string text, DialogResult responseValue = DialogResult.None)
 			: this(text, (int)responseValue)
 		{

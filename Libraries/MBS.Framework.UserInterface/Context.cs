@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+
 namespace MBS.Framework.UserInterface
 {
 	public class Context
@@ -63,6 +65,33 @@ namespace MBS.Framework.UserInterface
 		public override string ToString()
 		{
 			return String.Format("{0}     {1}", Name, ID);
+		}
+
+		private Dictionary<string, List<EventHandler>> _CommandEventHandlers = new Dictionary<string, List<EventHandler>>();
+		public bool AttachCommandEventHandler(string commandID, EventHandler handler)
+		{
+			// handle command event handlers attached without a Command instance
+			if (!_CommandEventHandlers.ContainsKey(commandID))
+			{
+				_CommandEventHandlers.Add(commandID, new List<EventHandler>());
+			}
+			if (!_CommandEventHandlers[commandID].Contains(handler))
+			{
+				_CommandEventHandlers[commandID].Add(handler);
+				return true;
+			}
+			return false;
+		}
+		public bool ExecuteCommand(string commandID)
+		{
+			if (_CommandEventHandlers.ContainsKey(commandID))
+			{
+				for (int i = 0; i < _CommandEventHandlers[commandID].Count; i++)
+				{
+					_CommandEventHandlers[commandID][i](this, EventArgs.Empty);
+				}
+			}
+			return false;
 		}
 	}
 }

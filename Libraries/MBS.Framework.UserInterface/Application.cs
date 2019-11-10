@@ -168,6 +168,13 @@ namespace MBS.Framework.UserInterface
 				return;
 			}
 
+			// handle command event handlers attached in a context, most recently added first
+			for (int i = Contexts.Count - 1; i >= 0; i--)
+			{
+				if (Contexts[i].ExecuteCommand(id))
+					return;
+			}
+
 			if (cmd == null)
 				return;
 

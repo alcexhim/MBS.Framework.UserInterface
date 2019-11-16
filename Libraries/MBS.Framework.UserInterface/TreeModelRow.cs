@@ -228,7 +228,19 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public Control ParentControl { get; internal set; }
+		private Control _ParentControl = null;
+		public Control ParentControl
+		{
+			get { return _ParentControl; }
+			internal set
+			{
+				_ParentControl = value;
+				for (int i = 0; i < this.Rows.Count; i++)
+				{
+					this.Rows[i].ParentControl = value;
+				}
+			}
+		}
 		public TreeModelRow ParentRow { get; private set; }
 		public string Name { get; set; }
 

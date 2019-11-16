@@ -96,5 +96,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 			/// </summary>
 			RGB30
 		}
-}
+		public enum CairoContent
+		{
+			Color = 0x1000,
+			Alpha = 0x2000,
+			Both = 0x3000
+		}
+	}
 }

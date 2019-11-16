@@ -81,6 +81,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*cairo_pattern_t*/ cairo_pattern_create_rgb(double red, double green, double blue);
 
+		#region Raster Pattern
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*cairo_pattern_t*/ cairo_pattern_create_raster_source(IntPtr user_data, Constants.CairoContent content, int width, int height);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_raster_source_pattern_set_acquire(IntPtr /*cairo_pattern_t*/ pattern,
+			Func<IntPtr /*cairo_pattern_t*/, IntPtr /*void callback_data*/, IntPtr /*cairo_surface_t target*/, Internal.Cairo.Structures.cairo_rectangle_int_t /*extents*/, IntPtr /*cairo_surface_t *retval*/> acquire,
+			Action<IntPtr /*cairo_pattern_t*/, IntPtr /*void callback_data*/, IntPtr /*cairo_surface_t surface*/> release);
+
+		#endregion
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_select_font_face(IntPtr /*cairo_t*/ cr, string familyName, Constants.CairoFontSlant slant, Constants.CairoFontWeight weight);
 
@@ -146,5 +157,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*cairo_surface_t*/ cairo_image_surface_create(Constants.CairoFormat format, int width, int height);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int cairo_image_surface_get_height(IntPtr /*cairo_surface_t*/ surface);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int cairo_image_surface_get_width(IntPtr /*cairo_surface_t*/ surface);
 	}
 }

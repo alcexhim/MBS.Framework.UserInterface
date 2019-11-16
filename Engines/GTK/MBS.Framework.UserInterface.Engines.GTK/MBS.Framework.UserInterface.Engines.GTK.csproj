@@ -184,6 +184,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkFlowBox.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkWidgetPath.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkRender.cs" />
+    <Compile Include="Engines\GTK\Internal\Cairo\Structures.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

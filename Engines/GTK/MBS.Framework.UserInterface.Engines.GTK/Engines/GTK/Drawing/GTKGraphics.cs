@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Drawing;
@@ -109,18 +110,56 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 
 		private void SelectBrush(Brush brush)
 		{
+			IntPtr hPattern = IntPtr.Zero;
 			if (brush is SolidBrush)
 			{
 				SolidBrush sb = (brush as SolidBrush);
-				IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(sb.Color.R, sb.Color.G, sb.Color.B, sb.Color.A);
-				Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
+				hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(sb.Color.R, sb.Color.G, sb.Color.B, sb.Color.A);
+				CheckStatus();
 			}
-			else
+			else if (brush is TextureBrush)
+			{
+				TextureBrush tb = (brush as TextureBrush);
+				if (tb.Image == null)
+				{
+					throw new NullReferenceException();
+				}
+
+				PatternIndices++;
+				hPattern = Internal.Cairo.Methods.cairo_pattern_create_raster_source(new IntPtr(PatternIndices), Internal.Cairo.Constants.CairoContent.Both, tb.Image.Width, tb.Image.Height);
+				CheckStatus();
+
+				PatternTextures[PatternIndices] = tb;
+
+				Internal.Cairo.Methods.cairo_raster_source_pattern_set_acquire(hPattern, hPattern_Acquire, hPattern_Release);
+				CheckStatus();
+			}
+
+			if (hPattern == IntPtr.Zero)
 			{
 				throw new NotImplementedException("Brush type " + brush.GetType().FullName);
 			}
-			CheckStatus();
+			else
+			{
+				Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
+				CheckStatus();
+			}
 		}
+
+		private int PatternIndices = 0;
+		private static Dictionary<int, TextureBrush> PatternTextures = new Dictionary<int, TextureBrush>();
+
+		private static IntPtr hPattern_Acquire(IntPtr /*cairo_pattern_t*/ pattern, IntPtr /*void*/ callback_data, IntPtr /*cairo_surface_t*/ target,  Internal.Cairo.Structures.cairo_rectangle_int_t extents)
+		{
+			TextureBrush tb = PatternTextures[callback_data.ToInt32()];
+			IntPtr hImage = (tb.Image as CairoImage).Handle;
+
+			return hImage;
+		}
+		private static void hPattern_Release(IntPtr /*cairo_pattern_t*/ pattern, IntPtr /*void*/ callback_data, IntPtr /*cairo_surface_t*/ target)
+		{
+		}
+
 		private void SelectPen(Pen pen)
 		{
 			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(pen.Color.R, pen.Color.G, pen.Color.B, pen.Color.A);

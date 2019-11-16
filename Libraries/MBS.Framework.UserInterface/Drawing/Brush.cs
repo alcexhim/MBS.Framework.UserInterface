@@ -3,9 +3,102 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing.Drawing2D;
 
 namespace MBS.Framework.UserInterface.Drawing
 {
+	public class TextureBrush : Brush
+	{
+		public Image Image { get; private set; } = null;
+
+		public WrapMode WrapMode { get; set; } = WrapMode.Tile;
+		/*
+		public Matrix Transform
+		{
+			get
+			{
+				throw null;
+			}
+			set
+			{
+			}
+		}
+		*/
+
+		public TextureBrush(Image image)
+		{
+			Image = image;
+		}
+
+		public TextureBrush(Image image, WrapMode wrapMode)
+		{
+			Image = image;
+			WrapMode = wrapMode;
+		}
+
+		public TextureBrush(Image image, WrapMode wrapMode, Rectangle dstRect)
+		{
+			Image = image;
+			WrapMode = wrapMode;
+		}
+
+		public TextureBrush(Image image, Rectangle dstRect)
+		{
+			Image = image;
+		}
+		/*
+		[System.MonoLimitation("ImageAttributes are ignored when using libgdiplus")]
+		public TextureBrush(Image image, Rectangle dstRect, ImageAttributes imageAttr)
+		{
+		}
+
+		[System.MonoLimitation("ImageAttributes are ignored when using libgdiplus")]
+		public TextureBrush(Image image, RectangleF dstRect, ImageAttributes imageAttr)
+		{
+		}
+			
+		public override object Clone()
+		{
+			throw null;
+		}
+
+		public void MultiplyTransform(Matrix matrix)
+		{
+		}
+
+		public void MultiplyTransform(Matrix matrix, MatrixOrder order)
+		{
+		}
+
+		public void ResetTransform()
+		{
+		}
+
+		public void RotateTransform(float angle)
+		{
+		}
+
+		public void RotateTransform(float angle, MatrixOrder order)
+		{
+		}
+
+		public void ScaleTransform(float sx, float sy)
+		{
+		}
+
+		public void ScaleTransform(float sx, float sy, MatrixOrder order)
+		{
+		}
+
+		public void TranslateTransform(float dx, float dy)
+		{
+		}
+
+		public void TranslateTransform(float dx, float dy, MatrixOrder order)
+		{
+		}
+		*/
+	}
 	public enum LinearGradientBrushOrientation
 	{
 		BackwardDiagonal,

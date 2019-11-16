@@ -1,5 +1,5 @@
 ﻿//
-//  CairoImage.cs
+//  WrapMode.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,20 +19,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using MBS.Framework.UserInterface.Drawing;
-
-namespace MBS.Framework.UserInterface.Engines.GTK
+namespace MBS.Framework.UserInterface.Drawing.Drawing2D
 {
-	public class CairoImage : Image
+	public enum WrapMode
 	{
-		public IntPtr Handle { get; private set; }
-
-		internal CairoImage(IntPtr handle)
-		{
-			Handle = handle;
-
-			Width = Internal.Cairo.Methods.cairo_image_surface_get_width(handle);
-			Height = Internal.Cairo.Methods.cairo_image_surface_get_height(handle);
-		}
+		Tile = 0,
+		TileFlipX = 1,
+		TileFlipY = 2,
+		TileFlipXY = 3,
+		Clamp = 4
 	}
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace MBS.Framework.UserInterface.Controls.Docking
 {
 	namespace Native
@@ -15,7 +17,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		}
 	}
 
-	public class DockingContainer : SystemControl
+	public class DockingContainer : SystemControl, IVirtualControlContainer
 	{
 		private DockingItem mvarCurrentItem = null;
 		public DockingItem CurrentItem
@@ -41,6 +43,24 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		protected virtual void OnSelectionChanged(EventArgs e)
 		{
 			SelectionChanged?.Invoke(this, e);
+		}
+
+		public Control[] GetAllControls()
+		{
+			List<Control> list = new List<Control>();
+			foreach (DockingItem item in mvarItems)
+			{
+				if (item.ChildControl is IVirtualControlContainer)
+				{
+					Control[] childControls = ((IVirtualControlContainer)item.ChildControl).GetAllControls();
+					foreach (Control ctlChild in childControls)
+					{
+						list.Add(ctlChild);
+					}
+				}
+				list.Add(item.ChildControl);
+			}
+			return list.ToArray();
 		}
 
 		public DockingContainer()

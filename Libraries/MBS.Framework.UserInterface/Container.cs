@@ -13,7 +13,7 @@ using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Container : Control
+	public class Container : Control, IVirtualControlContainer
 	{
 		public Container()
 		{
@@ -90,9 +90,9 @@ namespace MBS.Framework.UserInterface
 			System.Collections.Generic.List<Control> list = new System.Collections.Generic.List<Control>();
 			foreach (Control ctl in this.Controls)
 			{
-				if (ctl is Container)
+				if (ctl is IVirtualControlContainer)
 				{
-					Control[] childControls = ((Container)ctl).GetAllControls();
+					Control[] childControls = ((IVirtualControlContainer)ctl).GetAllControls();
 					foreach (Control ctlChild in childControls)
 					{
 						list.Add(ctlChild);

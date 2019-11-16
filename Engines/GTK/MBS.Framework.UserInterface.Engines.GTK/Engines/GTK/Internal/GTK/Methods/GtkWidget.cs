@@ -117,6 +117,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkWindow*/ gtk_widget_get_window(IntPtr /*GtkWidget*/ widget);
+
+		/// <summary>
+		/// Determines if the widget has the global input focus. See gtk_widget_is_focus() for the difference between having the global input focus, and only having the focus within a toplevel.
+		/// </summary>
+		/// <returns><c>true</c>, if widget has focus was gtked, <c>false</c> otherwise.</returns>
+		/// <param name="widget">Widget.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_has_focus(IntPtr /*GtkWidget*/ widget);
+		/// <summary>
+		/// Determines if the widget is the focus widget within its toplevel. (This does not mean that the “has-focus” property is necessarily set; “has-focus” will only be set if the toplevel widget additionally has the global input focus.)
+		/// </summary>
+		/// <returns><c>true</c>, if widget is focus was gtked, <c>false</c> otherwise.</returns>
+		/// <param name="widget">Widget.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_is_focus(IntPtr /*GtkWidget*/ widget);
 	}
 }
 

@@ -460,5 +460,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GDK.Methods.gdk_window_set_cursor(hGdkWindow, hCursor);
 		}
 
+		protected override bool HasFocusInternal()
+		{
+			GTKNativeControl nc = (Handle as GTKNativeControl);
+			bool hasFocus = Internal.GTK.Methods.GtkWidget.gtk_widget_has_focus(nc.Handle);
+			bool isFocus = Internal.GTK.Methods.GtkWidget.gtk_widget_is_focus(nc.Handle);
+			for (int i = 0; i < nc.AdditionalHandles.Length; i++)
+			{
+				bool hasFocus2 = Internal.GTK.Methods.GtkWidget.gtk_widget_has_focus(nc.AdditionalHandles[i]);
+				bool isFocus2 = Internal.GTK.Methods.GtkWidget.gtk_widget_is_focus(nc.AdditionalHandles[i]);
+				hasFocus = hasFocus || hasFocus2;
+				isFocus = isFocus || isFocus2;
+			}
+			return hasFocus || isFocus;
+		}
+
 	}
 }

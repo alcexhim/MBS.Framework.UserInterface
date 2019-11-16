@@ -13,6 +13,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
+		protected override bool HasFocusInternal()
+		{
+			return ((Handle as WindowsFormsNativeControl).Handle).Focused;
+		}
+
 		protected override Dimension2D GetControlSizeInternal()
 		{
 			throw new NotImplementedException();

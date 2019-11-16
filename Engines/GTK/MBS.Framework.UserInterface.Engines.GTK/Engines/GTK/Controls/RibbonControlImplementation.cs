@@ -200,6 +200,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			tbs.Cursor = value;
 		}
+
+		protected override bool HasFocusInternal()
+		{
+			return (tbs?.Focused).GetValueOrDefault();
+		}
 	}
 }
 

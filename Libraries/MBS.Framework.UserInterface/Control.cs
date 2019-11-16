@@ -612,6 +612,8 @@ namespace MBS.Framework.UserInterface
 		private ControlStyle mvarStyle = null;
 		public ControlStyle Style { get { return mvarStyle; } }
 
+		public bool Focused { get { return (ControlImplementation?.HasFocus()).GetValueOrDefault(); } }
+
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
 		public T GetExtraData<T>(string key, T defaultValue = default(T))
 		{

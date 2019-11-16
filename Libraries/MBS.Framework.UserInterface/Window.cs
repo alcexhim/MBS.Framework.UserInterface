@@ -50,6 +50,20 @@ namespace MBS.Framework.UserInterface
 		public Menu MenuBar { get; private set; } = null;
 		public StatusBar StatusBar { get; private set; } = null;
 
+		public Control ActiveControl
+		{
+			get
+			{
+				Control[] ctls = this.GetAllControls();
+				foreach (Control ctl in ctls)
+				{
+					if (ctl.Focused)
+						return ctl;
+				}
+				return null;
+			}
+		}
+
 		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
 
 		public WindowStartPosition StartPosition { get; set; } = WindowStartPosition.Default;

@@ -255,6 +255,12 @@ namespace MBS.Framework.UserInterface
 		{
 			SetCursorInternal(value);
 		}
+
+		protected abstract bool HasFocusInternal();
+		public bool HasFocus()
+		{
+			return HasFocusInternal();
+		}
 	}
 	public class ControlImplementationAttribute : Attribute
 	{

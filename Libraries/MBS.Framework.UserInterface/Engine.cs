@@ -413,6 +413,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		protected abstract DialogResult ShowDialogInternal(Dialog dialog, Window parent);
+		[DebuggerNonUserCode()]
 		public DialogResult ShowDialog(Dialog dialog, Window parent)
 		{
 			/*

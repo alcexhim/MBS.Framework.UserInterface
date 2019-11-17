@@ -33,9 +33,12 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			get
 			{
-				Native.ISplitContainerImplementation impl = (ControlImplementation as Native.ISplitContainerImplementation);
-				if (impl != null) {
-					mvarSplitterPosition = impl.GetSplitterPosition ();
+				if (IsCreated)
+				{
+					Native.ISplitContainerImplementation impl = (ControlImplementation as Native.ISplitContainerImplementation);
+					if (impl != null) {
+						mvarSplitterPosition = impl.GetSplitterPosition ();
+					}
 				}
 				return mvarSplitterPosition;
 			}

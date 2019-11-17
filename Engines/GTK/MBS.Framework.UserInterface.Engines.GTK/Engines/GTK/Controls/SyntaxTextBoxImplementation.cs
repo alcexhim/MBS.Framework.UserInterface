@@ -30,6 +30,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 		}
 
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			// base.SetControlTextInternal(control, text);
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer != IntPtr.Zero)
+			{
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, control.Text, control.Text.Length);
+			}
+			else
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+		}
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			SyntaxTextBox ctl = (control as SyntaxTextBox);
@@ -41,6 +55,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			IntPtr hBuffer = Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_new (IntPtr.Zero);
 			Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_set_language (hBuffer, hLanguage);
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctl.Text, ctl.Text.Length);
 			handle = Internal.GTK.Methods.GtkSourceView.gtk_source_view_new_with_buffer (hBuffer);
 
 			// setup monospace
@@ -58,7 +73,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			popup = new PopupWindow ();
 			Engine.CreateControl (popup);
 
-			return new GTKNativeControl (handle);
+			return new GTKNativeControl (handle, new System.Collections.Generic.KeyValuePair<string, IntPtr>[] { new System.Collections.Generic.KeyValuePair<string, IntPtr>("TextBuffer", hBuffer) });
 		}
 
 		private PopupWindow popup = null;

@@ -370,6 +370,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private void RecursiveApplyMenuItemVisibility(MenuItem mi)
 		{
+			if (mi == null)
+				return;
+
 			IntPtr hMi = ((Engine as GTKEngine).GetHandleForMenuItem(mi) as GTKNativeControl).Handle;
 			if (mi.Visible)
 			{

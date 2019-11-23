@@ -18,6 +18,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.AppIndicator
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void app_indicator_set_title(IntPtr /*AppIndicator*/ handle, string value);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern void app_indicator_set_icon(IntPtr /*AppIndicator*/ handle, string value);
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void app_indicator_set_attention_icon(IntPtr /*AppIndicator*/ handle, string value);
 
 	}

@@ -36,7 +36,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
 			if (hBuffer != IntPtr.Zero)
 			{
-				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, control.Text, control.Text.Length);
+				if (!String.IsNullOrEmpty(text))
+					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, text, text.Length);
 			}
 			else
 			{
@@ -55,7 +56,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			IntPtr hBuffer = Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_new (IntPtr.Zero);
 			Internal.GTK.Methods.GtkSourceBuffer.gtk_source_buffer_set_language (hBuffer, hLanguage);
-			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctl.Text, ctl.Text.Length);
+			if (!String.IsNullOrEmpty(ctl.Text))
+			{
+				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctl.Text, ctl.Text.Length);
+			}
 			handle = Internal.GTK.Methods.GtkSourceView.gtk_source_view_new_with_buffer (hBuffer);
 
 			// setup monospace

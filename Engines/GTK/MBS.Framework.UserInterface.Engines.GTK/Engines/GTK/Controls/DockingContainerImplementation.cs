@@ -113,7 +113,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private IntPtr CreateDockingItem(DockingItem item)
 		{
-			IntPtr handle = Internal.GDL.Methods.gdl_dock_item_new(item.Title, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
+			IntPtr handle = Internal.GDL.Methods.gdl_dock_item_new(item.Name, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
 			Internal.GObject.Methods.g_signal_connect (handle, "selected", DockingItem_Selected_Handler);
 			Internal.GObject.Methods.g_signal_connect (handle, "move-focus-child", DockingItem_MoveFocusChild_Handler);
 			return handle;

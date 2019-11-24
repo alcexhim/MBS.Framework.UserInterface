@@ -47,6 +47,9 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		private DockingItemPlacement mvarPlacement = DockingItemPlacement.Center;
 		public DockingItemPlacement Placement {  get { return mvarPlacement;  } set { mvarPlacement = value; } }
 
+		private string mvarName = String.Empty;
+		public string Name { get { return mvarName; } set { mvarName = value; } }
+
 		private string mvarTitle = String.Empty;
 		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
 
@@ -57,7 +60,12 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public DockingItemBehavior Behavior {  get { return mvarBehavior;  } set { mvarBehavior = value; } }
 
 		public DockingItem(string title, Control child)
+			: this(title, title, child)
 		{
+		}
+		public DockingItem(string name, string title, Control child)
+		{
+			mvarName = name;
 			mvarTitle = title;
 			mvarChildControl = child;
 		}

@@ -27,7 +27,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Unix ? 1 : -1);
 
 		private int _exitCode = 0;
-		private IntPtr mvarApplicationHandle = IntPtr.Zero;
+
+		public IntPtr ApplicationHandle { get; private set; } = IntPtr.Zero;
 
 		protected override Graphics CreateGraphicsInternal(Image image)
 		{
@@ -349,76 +350,34 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			string appname = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
 			Internal.Notify.Methods.notify_init(appname);
 
-			gc_Application_Activate = new Internal.GObject.Delegates.GCallback(Application_Activate);
 			gc_Application_Startup = new Internal.GObject.Delegates.GCallback(Application_Startup);
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 
-			IntPtr hApp = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
-
-			if (hApp == IntPtr.Zero)
-			{
-				Console.WriteLine("error initting app {0}", Application.UniqueName);
-			}
-			if (hApp != IntPtr.Zero)
-			{
-				bool isRegistered = Internal.GIO.Methods.g_application_get_is_registered(hApp);
-				if (!isRegistered)
-				{
-					Internal.GIO.Methods.g_application_register(hApp, IntPtr.Zero, IntPtr.Zero);
-				}
-
-				/*
-				IntPtr simpleActionGroup = Internal.GIO.Methods.g_simple_action_group_new();
-
-				IntPtr hActionNew = Internal.GIO.Methods.g_simple_action_new("new", Internal.GLib.Constants.GVariantType.Byte);
-
-				Internal.GIO.Methods.g_action_map_add_action(hApp, hActionNew);
-
-				IntPtr hMenu = Internal.GIO.Methods.g_menu_new();
-
-				IntPtr hMenuItemFile = Internal.GIO.Methods.g_menu_item_new("_New Document", "app.new");
-
-				Internal.GIO.Methods.g_menu_append_item(hMenu, hMenuItemFile);
-
-				Internal.GTK.Methods.Methods.gtk_application_set_app_menu(hApp, hMenu);
-				*/
-				mvarApplicationHandle = hApp;
-			}
-
-			// TODO: fix this, it doesn't work (crashes with SIGSEGV)
-			// Internal.GIO.Methods.g_action_map_add_action (hApp, actionFile);
-
-			/*
-			IntPtr hMenu = Internal.GIO.Methods.g_menu_new ();s
-			IntPtr hMenuItem = Internal.GIO.Methods.g_menu_item_new ("File", "app.file");
-			Internal.GIO.Methods.g_menu_append_item (hMenu, hMenuItem);
-
-			Internal.GTK.Methods.Methods.gtk_application_set_menubar (hApp, hMenu);
-			*/
+			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
 
 			return check;
 		}
 		protected override int StartInternal(Window waitForClose)
 		{
-			if (mvarApplicationHandle != IntPtr.Zero)
+			if (ApplicationHandle != IntPtr.Zero)
 			{
 				string[] argv = System.Environment.GetCommandLineArgs();
 				int argc = argv.Length;
 
-				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
-				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
-				Internal.GObject.Methods.g_signal_connect(mvarApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
-				Internal.GIO.Methods.g_application_run(mvarApplicationHandle, argc, argv);
+				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
+
+				_exitCode = Internal.GIO.Methods.g_application_run(ApplicationHandle, argc, argv);
+
+				Internal.GObject.Methods.g_object_unref(ApplicationHandle);
 			}
 
 			if (waitForClose != null)
 			{
 				waitForClose.Closed += WaitForClose_Closed;
 			}
-
-			Internal.GTK.Methods.Gtk.gtk_main();
-
 			return _exitCode;
 		}
 
@@ -429,8 +388,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override void StopInternal(int exitCode)
 		{
-			Internal.GTK.Methods.Gtk.gtk_main_quit();
 			_exitCode = exitCode;
+			Internal.GIO.Methods.g_application_quit(ApplicationHandle);
 		}
 
 		private Dictionary<Layout, IntPtr> handlesByLayout = new Dictionary<Layout, IntPtr>();
@@ -455,17 +414,44 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;
 		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
 
-		private void Application_Activate(IntPtr handle, IntPtr data)
-		{
-		}
 		private void Application_Startup(IntPtr application, IntPtr user_data)
 		{
 			Console.WriteLine("Application_Startup");
-			InvokeStaticMethod(typeof(Application), "OnStartup");
+			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
 		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct PtrToStringArrayStruct
+		{
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
+			public IntPtr[] listOfStrings;
+		}
+
+		public static string[] PtrToStringArray(IntPtr hptr, int size)
+		{
+			// eww.. gross. thanks https://stackoverflow.com/questions/1323797/marshaling-pointer-to-an-array-of-strings
+			PtrToStringArrayStruct hwss = (PtrToStringArrayStruct)Marshal.PtrToStructure(hptr, typeof(PtrToStringArrayStruct));
+			string[] argv = new string[size];
+			for (int i = 0; i < size; i++)
+			{
+				IntPtr hstr = hwss.listOfStrings[i];
+
+				string p = Marshal.PtrToStringAuto(hstr);
+				argv[i] = p;
+			}
+			return argv;
+		}
+
 		private int Application_CommandLine(IntPtr handle, IntPtr commandLine, IntPtr data)
 		{
-			return 0;
+			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
+
+			int argc = 0;
+			IntPtr hwpp = Internal.GIO.Methods.g_application_command_line_get_arguments(commandLine, ref argc);
+
+			e.Arguments = PtrToStringArray(hwpp, argc);
+			InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
+			return e.ExitCode;
 		}
 
 		private void MenuItem_Activate(IntPtr handle, IntPtr data)

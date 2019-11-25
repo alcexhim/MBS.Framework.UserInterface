@@ -21,7 +21,21 @@ namespace MBS.Framework.UserInterface
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
 
+		/// <summary>
+		/// The event that is called the first time an applicati
+		/// </summary>
 		public static event EventHandler Startup;
+		private static void OnStartup(EventArgs e)
+		{
+			Startup?.Invoke(typeof(Application), e);
+		}
+
+		public static event ApplicationActivatedEventHandler Activated;
+		private static void OnActivated(ApplicationActivatedEventArgs e)
+		{
+			Activated?.Invoke(typeof(Application), e);
+		}
+
 		public static event EventHandler Shutdown;
 
 		/// <summary>

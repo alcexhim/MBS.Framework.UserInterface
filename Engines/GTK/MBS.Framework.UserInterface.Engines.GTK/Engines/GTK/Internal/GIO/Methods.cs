@@ -15,7 +15,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GIO
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool g_application_get_is_registered (IntPtr /*GApplication*/ application);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr g_application_command_line_get_arguments(IntPtr /*GApplication*/ commandLine, ref int argc);
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern int g_application_run (IntPtr /*GApplication*/ application, int argc, string[] argv);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr g_application_quit(IntPtr /*GApplication*/ application);
 		#endregion
 
 		#region GMenu

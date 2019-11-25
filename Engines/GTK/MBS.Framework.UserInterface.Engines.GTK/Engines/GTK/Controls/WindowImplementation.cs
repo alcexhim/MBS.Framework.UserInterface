@@ -243,7 +243,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Window window = (control as Window);
 			if (window == null) throw new InvalidOperationException();
 
-			IntPtr handle = Internal.GTK.Methods.GtkWindow.gtk_window_new(Internal.GTK.Constants.GtkWindowType.TopLevel);
+			IntPtr handle = Internal.GTK.Methods.GtkApplicationWindow.gtk_application_window_new((Application.Engine as GTKEngine).ApplicationHandle);
 			GTKNativeControl ncContainer = (base.CreateControlInternal(control) as GTKNativeControl);
 			IntPtr hContainer = ncContainer.Handle;
 

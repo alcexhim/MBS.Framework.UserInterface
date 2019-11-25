@@ -185,6 +185,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkWidgetPath.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkRender.cs" />
     <Compile Include="Engines\GTK\Internal\Cairo\Structures.cs" />
+    <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkApplicationWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

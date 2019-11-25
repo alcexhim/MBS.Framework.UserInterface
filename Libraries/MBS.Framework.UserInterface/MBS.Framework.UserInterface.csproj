@@ -222,6 +222,7 @@
     <Compile Include="ContextChangedEvent.cs" />
     <Compile Include="IVirtualControlContainer.cs" />
     <Compile Include="Drawing\Drawing2D\WrapMode.cs" />
+    <Compile Include="Plugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

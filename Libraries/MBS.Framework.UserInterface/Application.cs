@@ -318,6 +318,16 @@ namespace MBS.Framework.UserInterface
 					provider.LoadSettings ();
 				}
 			}
+
+			Plugin[] plugins = Plugin.Get();
+			for (int i = 0; i < plugins.Length; i++)
+			{
+				Console.WriteLine("initializing plugin '{0}'", plugins[i].GetType().FullName);
+				plugins[i].Initialize();
+
+				if (plugins[i].Context != null)
+					Application.Contexts.Add(plugins[i].Context);
+			}
 		}
 
 		static Application()

@@ -24,10 +24,17 @@ namespace MBS.Framework.UserInterface
 		{
 
 		}
-		public Command(string id, string title)
+		public Command(string id, string title, CommandItem[] items = null)
 		{
 			ID = id;
 			Title = title;
+			if (items != null)
+			{
+				for (int i = 0; i < items.Length; i++)
+				{
+					Items.Add(items[i]);
+				}
+			}
 		}
 
 		private bool mvarEnableTearoff = false;

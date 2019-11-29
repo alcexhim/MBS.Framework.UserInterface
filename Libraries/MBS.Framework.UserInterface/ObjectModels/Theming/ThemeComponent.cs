@@ -39,16 +39,16 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 		private ThemeComponentState.ThemeComponentStateCollection mvarStates = new ThemeComponentState.ThemeComponentStateCollection();
 		public ThemeComponentState.ThemeComponentStateCollection States { get { return mvarStates; } }
 
-		private Rendering.RenderingCollection mvarRenderings = new Rendering.RenderingCollection();
-		public Rendering.RenderingCollection Renderings { get { return mvarRenderings; } }
+		private ThemeRendering.RenderingCollection mvarRenderings = new ThemeRendering.RenderingCollection();
+		public ThemeRendering.RenderingCollection Renderings { get { return mvarRenderings; } }
 
 		public object Clone()
 		{
 			ThemeComponent clone = new ThemeComponent();
 			clone.ID = mvarID;
-			foreach (Rendering item in mvarRenderings)
+			foreach (ThemeRendering item in mvarRenderings)
 			{
-				clone.Renderings.Add(item.Clone() as Rendering);
+				clone.Renderings.Add(item.Clone() as ThemeRendering);
 			}
 			return clone;
 		}

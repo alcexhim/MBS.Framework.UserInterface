@@ -245,7 +245,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Theming
 									MarkupTagElement tagRenderingActions = (tagRendering.Elements["Actions"] as MarkupTagElement);
 									if (tagRenderingActions == null) continue;
 
-									Rendering rendering = new Rendering();
+									ThemeRendering rendering = new ThemeRendering();
 									foreach (MarkupElement elRenderingAction in tagRenderingActions.Elements)
 									{
 										MarkupTagElement tagRenderingAction = (elRenderingAction as MarkupTagElement);

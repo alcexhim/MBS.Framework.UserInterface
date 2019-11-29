@@ -5,10 +5,10 @@ using System.Text;
 
 namespace MBS.Framework.UserInterface.ObjectModels.Theming
 {
-	public class Rendering : ICloneable
+	public class ThemeRendering : ICloneable
 	{
 		public class RenderingCollection
-			: System.Collections.ObjectModel.Collection<Rendering>
+			: System.Collections.ObjectModel.Collection<ThemeRendering>
 		{
 
 		}
@@ -21,7 +21,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 
 		public object Clone()
 		{
-			Rendering clone = new Rendering();
+			ThemeRendering clone = new ThemeRendering();
 			foreach (ThemeComponentStateReference item in mvarStates)
 			{
 				clone.States.Add(item.Clone() as ThemeComponentStateReference);

@@ -23,10 +23,20 @@ namespace MBS.Framework.UserInterface.Controls
 {
 	public class OpenGLCanvas : SystemControl
 	{
+		public MBS.Framework.Rendering.Engine Engine { get; private set; }
+
+		public OpenGLCanvas()
+		{
+			Engine = MBS.Framework.Rendering.Engine.GetDefault();
+		}
+
 		public event OpenGLCanvasRenderEventHandler Render;
 		public void OnRender(OpenGLCanvasRenderEventArgs e)
 		{
 			Render?.Invoke(this, e);
+
+			if (Engine != null)
+				Engine.Flush();
 		}
 	}
 }

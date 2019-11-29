@@ -225,6 +225,10 @@
       <Project>{29E1C1BB-3EA5-4062-B62F-85EEC703FE07}</Project>
       <Name>MBS.Framework.UserInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\MBS.Framework.Rendering\Libraries\MBS.Framework.Rendering\MBS.Framework.Rendering.csproj">
+      <Project>{2A0B4A53-8A3A-478D-80A7-B6FF20B38317}</Project>
+      <Name>MBS.Framework.Rendering</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="MBS.Framework.UserInterface.Engines.GTK.dll.config">

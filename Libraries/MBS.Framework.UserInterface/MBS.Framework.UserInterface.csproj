@@ -63,7 +63,7 @@
     <Compile Include="ObjectModels\Theming\Fill.cs" />
     <Compile Include="ObjectModels\Theming\Metrics\PaddingMetric.cs" />
     <Compile Include="ObjectModels\Theming\Outline.cs" />
-    <Compile Include="ObjectModels\Theming\Rendering.cs" />
+    <Compile Include="ObjectModels\Theming\ThemeRendering.cs" />
     <Compile Include="ObjectModels\Theming\RenderingAction.cs" />
     <Compile Include="ObjectModels\Theming\RenderingActions\LineRenderingAction.cs" />
     <Compile Include="ObjectModels\Theming\RenderingActions\RectangleRenderingAction.cs" />
@@ -237,6 +237,10 @@
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
       <Project>{00266B21-35C9-4A7F-A6BA-D54D7FDCC25C}</Project>
       <Name>MBS.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\MBS.Framework.Rendering\Libraries\MBS.Framework.Rendering\MBS.Framework.Rendering.csproj">
+      <Project>{2A0B4A53-8A3A-478D-80A7-B6FF20B38317}</Project>
+      <Name>MBS.Framework.Rendering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

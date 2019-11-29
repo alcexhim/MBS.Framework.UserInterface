@@ -77,7 +77,7 @@ namespace MBS.Framework.UserInterface.Drawing
 				DrawThemeComponent(tc.InheritsComponent, component, stateID, variables);
 			}
 
-			foreach (Rendering rendering in tc.Renderings)
+			foreach (ThemeRendering rendering in tc.Renderings)
 			{
 				if (rendering.States.Count == 0 || rendering.States.Contains(stateID))
 				{
@@ -87,7 +87,7 @@ namespace MBS.Framework.UserInterface.Drawing
 			}
 		}
 
-		private void DrawRendering(Rendering rendering, Control component, Dictionary<string, object> variables)
+		private void DrawRendering(ThemeRendering rendering, Control component, Dictionary<string, object> variables)
 		{
 			foreach (RenderingAction action in rendering.Actions)
 			{

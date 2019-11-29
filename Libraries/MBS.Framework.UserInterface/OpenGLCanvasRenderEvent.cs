@@ -19,11 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Rendering;
+
 namespace MBS.Framework.UserInterface
 {
 	public class OpenGLCanvasRenderEventArgs : EventArgs
 	{
-
+		public OpenGLCanvasRenderEventArgs(Canvas canvas)
+		{
+			Canvas = canvas;
+		}
+		public Canvas Canvas { get; } = null;
 	}
 	public delegate void OpenGLCanvasRenderEventHandler(object sender, OpenGLCanvasRenderEventArgs e);
 }

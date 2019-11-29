@@ -110,7 +110,7 @@ namespace MBS.Framework.UserInterface.TestProject
 				new TreeModelRowColumn(tm.Columns[1], 91)
 			}));
 
-			tabTreeView.Controls.Add(tv);
+			tabTreeView.Controls.Add(tv, new BoxLayout.Constraints(true, true));
 
 			tbsTabs.TabPages.Add(tabTreeView);
 
@@ -299,7 +299,7 @@ namespace MBS.Framework.UserInterface.TestProject
 						// dlg.AutoUpgradeEnabled = false;
 						if (dlg.ShowDialog() == DialogResult.OK)
 						{
-							// MessageDialog.ShowDialog(dlg.SelectedFont.ToString());
+							// MessageDialog.ShowDialog(dlg.SelectedApplication.ToString());
 						}
 					})
 				}),
@@ -312,7 +312,7 @@ namespace MBS.Framework.UserInterface.TestProject
 						dlg.Version = new Version(1, 0);
 						dlg.Copyright = "Copyright (c) 1997-2016 Mike Becker's Software";
 						dlg.Comments = "Provides a way to test various elements of the Universal Widget Toolkit on various operating systems.";
-						dlg.LicenseType = LicenseType.BSD;
+						dlg.LicenseType = LicenseType.GPL30;
 						dlg.Website = "http://www.alce.io/uwt";
 						dlg.ShowDialog();
 					})

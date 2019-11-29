@@ -47,7 +47,7 @@ namespace MBS.Framework.UserInterface
 		{
 			if (_plugins == null)
 			{
-				Type[] types = UniversalEditor.Common.Reflection.GetAvailableTypes(new Type[] { typeof(Plugin) });
+				Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(Plugin) });
 				List<Plugin> plugins = new List<Plugin>();
 				for (int i = 0; i < types.Length; i++)
 				{

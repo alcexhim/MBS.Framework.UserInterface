@@ -287,41 +287,30 @@ namespace MBS.Framework.UserInterface
 			}
 
 
-			System.Reflection.Assembly[] asms = UniversalEditor.Common.Reflection.GetAvailableAssemblies();
-			foreach (System.Reflection.Assembly asm in asms) {
-				Type[] types = null;
-				try {
-					types = asm.GetTypes ();
-				} catch (System.Reflection.ReflectionTypeLoadException ex) {
-					Console.Error.WriteLine ("ReflectionTypeLoadException(" + ex.LoaderExceptions.Length.ToString () + "): " + asm.FullName);
-					Console.Error.WriteLine (ex.Message);
+			Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(SettingsProvider) });
 
-					types = ex.Types;
-				}
+			foreach (Type type in types) {
+				if (type == null)
+					continue;
 
-				foreach (Type type in types) {
-					if (type == null)
-						continue;
-
-					if (type.IsSubclassOf (typeof(SettingsProvider)) && !type.IsAbstract) {
-						if (!listOptionProviderTypeNames.Contains (type.FullName)) {
-							try {
-								SettingsProvider provider = (type.Assembly.CreateInstance (type.FullName) as SettingsProvider);
-								if (provider == null) {
-									Console.Error.WriteLine ("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
-									continue;
-								}
-								listOptionProviderTypeNames.Add (type.FullName);
-								listOptionProviders.Add (provider);
-								Console.WriteLine ("loaded option provider \"{0}\"", type.FullName);
-							} catch (System.Reflection.TargetInvocationException ex) {
-								Console.WriteLine ("binding error: " + ex.InnerException.Message);
-							} catch (Exception ex) {
-								Console.WriteLine ("error while loading editor '" + type.FullName + "': " + ex.Message);
+				if (type.IsSubclassOf (typeof(SettingsProvider)) && !type.IsAbstract) {
+					if (!listOptionProviderTypeNames.Contains (type.FullName)) {
+						try {
+							SettingsProvider provider = (type.Assembly.CreateInstance (type.FullName) as SettingsProvider);
+							if (provider == null) {
+								Console.Error.WriteLine ("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
+								continue;
 							}
-						} else {
-							Console.WriteLine ("skipping already loaded OptionProvider '{0}'", type.FullName);
+							listOptionProviderTypeNames.Add (type.FullName);
+							listOptionProviders.Add (provider);
+							Console.WriteLine ("loaded option provider \"{0}\"", type.FullName);
+						} catch (System.Reflection.TargetInvocationException ex) {
+							Console.WriteLine ("binding error: " + ex.InnerException.Message);
+						} catch (Exception ex) {
+							Console.WriteLine ("error while loading editor '" + type.FullName + "': " + ex.Message);
 						}
+					} else {
+						Console.WriteLine ("skipping already loaded OptionProvider '{0}'", type.FullName);
 					}
 				}
 			}

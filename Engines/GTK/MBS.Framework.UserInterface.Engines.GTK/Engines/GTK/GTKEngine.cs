@@ -442,14 +442,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return argv;
 		}
 
+		private static bool _firstRun = true;
 		private int Application_CommandLine(IntPtr handle, IntPtr commandLine, IntPtr data)
 		{
-			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
+			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs(_firstRun);
 
 			int argc = 0;
 			IntPtr hwpp = Internal.GIO.Methods.g_application_command_line_get_arguments(commandLine, ref argc);
-
 			e.Arguments = PtrToStringArray(hwpp, argc);
+
+			_firstRun = false;
 			InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
 			return e.ExitCode;
 		}

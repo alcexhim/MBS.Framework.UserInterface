@@ -23,8 +23,14 @@ namespace MBS.Framework.UserInterface
 {
 	public class ApplicationActivatedEventArgs : EventArgs
 	{
+		public bool FirstRun { get; private set; } = true;
 		public string[] Arguments { get; set; } = null;
 		public int ExitCode { get; set; } = 0;
+
+		public ApplicationActivatedEventArgs(bool firstRun = true)
+		{
+			FirstRun = firstRun;
+		}
 	}
 	public delegate void ApplicationActivatedEventHandler(object sender, ApplicationActivatedEventArgs e);
 }

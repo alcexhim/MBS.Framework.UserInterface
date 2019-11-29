@@ -16,7 +16,12 @@ namespace MBS.Framework.UserInterface.TestProject
 			this.Size = new Dimension2D(200, 200);
 		}
 
-		public bool ShowGreenBox { get; set; } = false;
+		private bool _ShowGreenBox = false;
+		public bool ShowGreenBox
+		{
+			get { return _ShowGreenBox; }
+			set { bool changed = (_ShowGreenBox != value); _ShowGreenBox = value; if (changed) Refresh(); }
+		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-
+using MBS.Framework.Rendering;
 using MBS.Framework.UserInterface;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Drawing;
@@ -39,7 +39,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (ctl == null)
 				return true;
 
-			OpenGLCanvasRenderEventArgs e = new OpenGLCanvasRenderEventArgs();
+			Canvas canvas = Rendering.Engine.GetDefault()?.CreateCanvas();
+
+			OpenGLCanvasRenderEventArgs e = new OpenGLCanvasRenderEventArgs(canvas);
 			ctl.OnRender(e);
 			return true;
 		}
@@ -50,7 +52,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			
 			// We need to make the context current if we want to call GL API
 			Internal.GTK.Methods.GtkGlArea.gtk_gl_area_make_current(handle);
-			
+
 			// do some error checking before we hand control over to UWT
 			IntPtr hGErr = Internal.GTK.Methods.GtkGlArea.gtk_gl_area_get_error(handle);
 			if (hGErr != IntPtr.Zero)

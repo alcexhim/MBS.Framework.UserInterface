@@ -256,6 +256,47 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 		}
 
+		private Dictionary<ListViewColumn, IntPtr> _ColumnHandles = new Dictionary<ListViewColumn, IntPtr>();
+		private Dictionary<IntPtr, ListViewColumn> _HandleColumns = new Dictionary<IntPtr, ListViewColumn>();
+		private IntPtr GetHandleForTreeViewColumn(ListViewColumn column)
+		{
+			if (!_ColumnHandles.ContainsKey(column))
+				return IntPtr.Zero;
+			return _ColumnHandles[column];
+		}
+		private ListViewColumn GetTreeViewColumnForHandle(IntPtr handle)
+		{
+			if (!_HandleColumns.ContainsKey(handle))
+				return null;
+			return _HandleColumns[handle];
+		}
+		private void RegisterTreeViewColumn(ListViewColumn column, IntPtr handle)
+		{
+			_ColumnHandles[column] = handle;
+			_HandleColumns[handle] = column;
+		}
+
+		public bool IsColumnResizable(ListViewColumn column)
+		{
+			IntPtr hColumn = GetHandleForTreeViewColumn(column);
+			return Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_get_resizable(hColumn);
+		}
+		public void SetColumnResizable(ListViewColumn column, bool value)
+		{
+			IntPtr hColumn = GetHandleForTreeViewColumn(column);
+			Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_resizable(hColumn, value);
+		}
+		public bool IsColumnReorderable(ListViewColumn column)
+		{
+			IntPtr hColumn = GetHandleForTreeViewColumn(column);
+			return Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_get_reorderable(hColumn);
+		}
+		public void SetColumnReorderable(ListViewColumn column, bool value)
+		{
+			IntPtr hColumn = GetHandleForTreeViewColumn(column);
+			Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_reorderable(hColumn, value);
+		}
+
 		protected void UpdateTreeModel (IntPtr handle)
 		{
 			ListView tv = (Control as ListView);
@@ -286,7 +327,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
 
 								IntPtr hColumn = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_column(handle, columnIndex);
+								RegisterTreeViewColumn(tvc, hColumn);
+
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_sort_column_id(hColumn, columnIndex);
+								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_resizable(hColumn, tvc.Resizable);
+								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_reorderable(hColumn, tvc.Reorderable);
 							}
 						}
 

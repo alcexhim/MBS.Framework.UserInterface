@@ -27,5 +27,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_column_set_sort_column_id(IntPtr /*GtkTreeViewColumn*/ tree_column, int sort_column_id);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_set_resizable(IntPtr /*GtkTreeViewColumn*/ tree_column, bool resizable);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_column_get_resizable(IntPtr /*GtkTreeViewColumn*/ tree_column);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_set_reorderable(IntPtr /*GtkTreeViewColumn*/ tree_column, bool reorderable);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_column_get_reorderable(IntPtr /*GtkTreeViewColumn*/ tree_column);
 	}
 }

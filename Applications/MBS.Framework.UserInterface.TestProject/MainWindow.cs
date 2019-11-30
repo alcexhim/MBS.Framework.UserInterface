@@ -14,7 +14,7 @@ namespace MBS.Framework.UserInterface.TestProject
 		{
 			InitializeComponent();
 		}
-
+		private ListView tv = null;
 		private void InitializeComponent()
 		{
 			this.Padding = new Padding(13);
@@ -71,7 +71,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			tabTreeView.Layout = new BoxLayout(Orientation.Horizontal);
 			tabTreeView.Text = "Tree View Test";
 
-			ListView tv = new ListView();
+			tv = new ListView();
 
 			DefaultTreeModel tm = new DefaultTreeModel(new Type[]
 			{
@@ -109,6 +109,9 @@ namespace MBS.Framework.UserInterface.TestProject
 				new TreeModelRowColumn(tm.Columns[0], "Joe Bungop"),
 				new TreeModelRowColumn(tm.Columns[1], 91)
 			}));
+
+			Button btnDynamicTV = new Button("dynamically do stuff", btnDynamicTV_Click);
+			tabTreeView.Controls.Add(btnDynamicTV, new BoxLayout.Constraints(false, false));
 
 			tabTreeView.Controls.Add(tv, new BoxLayout.Constraints(true, true));
 
@@ -318,6 +321,17 @@ namespace MBS.Framework.UserInterface.TestProject
 					})
 				})
 			});
+		}
+
+		/// <summary>
+		/// tests the dynamic treeview enabling/disabling of column sort or drag
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void btnDynamicTV_Click(object sender, EventArgs e)
+		{
+			tv.Columns[0].Reorderable = false;
+			tv.Columns[1].Resizable = false;
 		}
 
 		protected override void OnClosed (EventArgs e)

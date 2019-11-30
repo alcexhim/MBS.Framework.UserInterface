@@ -16,6 +16,12 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetSelectionMode(SelectionMode value);
 
 			ListViewHitTestInfo HitTest(double x, double y);
+
+			bool IsColumnReorderable(ListViewColumn column);
+			void SetColumnReorderable(ListViewColumn column, bool value);
+
+			bool IsColumnResizable(ListViewColumn column);
+			void SetColumnResizable(ListViewColumn column, bool value);
 		}
 	}
 
@@ -39,14 +45,92 @@ namespace MBS.Framework.UserInterface.Controls
 		public class ListViewColumnCollection
 			: System.Collections.ObjectModel.Collection<ListViewColumn>
 		{
+			private ListView _parent = null;
+			public ListViewColumnCollection(ListView parent)
+			{
+				_parent = parent;
+			}
 
+			protected override void InsertItem(int index, ListViewColumn item)
+			{
+				base.InsertItem(index, item);
+				item.Parent = _parent;
+			}
+			protected override void ClearItems()
+			{
+				for (int i = 0; i < Count; i++)
+					this[i].Parent = null;
+				base.ClearItems();
+			}
+			protected override void RemoveItem(int index)
+			{
+				this[index].Parent = null;
+				base.RemoveItem(index);
+			}
 		}
+
+		public ListView Parent { get; private set; } = null;
 
 		private TreeModelColumn mvarColumn = null;
 		public TreeModelColumn Column { get { return mvarColumn; } set { mvarColumn = value; } }
 
 		private string mvarTitle = String.Empty;
 		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
+
+		private bool _Resizable = true;
+		public bool Resizable
+		{
+			get
+			{
+
+				if (Parent != null)
+				{
+					if (Parent.IsCreated)
+					{
+						_Resizable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnResizable(this)).GetValueOrDefault(_Resizable);
+					}
+				}
+				return _Resizable;
+			}
+			set
+			{
+				if (Parent != null)
+				{
+					if (Parent.IsCreated)
+					{
+						(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnResizable(this, value);
+					}
+				}
+				_Resizable = value;
+			}
+		}
+
+		private bool _Reorderable = true;
+		public bool Reorderable
+		{
+			get
+			{
+				if (Parent != null)
+				{
+					if (Parent.IsCreated)
+					{
+						_Reorderable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnReorderable(this)).GetValueOrDefault(_Reorderable);
+					}
+				}
+				return _Reorderable;
+			}
+			set
+			{
+				if (Parent != null)
+				{
+					if (Parent.IsCreated)
+					{
+						(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnReorderable(this, value);
+					}
+				}
+				_Reorderable = value;
+			}
+		}
 
 		public ListViewColumn(TreeModelColumn column, string title = "")
 		{
@@ -66,6 +150,7 @@ namespace MBS.Framework.UserInterface.Controls
 		public ListView()
 		{
 			this.SelectedRows = new TreeModelRow.TreeModelSelectedRowCollection(this);
+			mvarColumns = new ListViewColumn.ListViewColumnCollection(this);
 		}
 
 		private SelectionMode mvarSelectionMode = SelectionMode.Single;
@@ -150,7 +235,7 @@ namespace MBS.Framework.UserInterface.Controls
 			(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel(ControlImplementation.Handle, e);
 		}
 
-		private ListViewColumn.ListViewColumnCollection mvarColumns = new ListViewColumn.ListViewColumnCollection();
+		private ListViewColumn.ListViewColumnCollection mvarColumns = null;
 		public ListViewColumn.ListViewColumnCollection Columns { get { return mvarColumns; } }
 
 		public ColumnHeaderStyle HeaderStyle { get; set; } = ColumnHeaderStyle.Clickable;

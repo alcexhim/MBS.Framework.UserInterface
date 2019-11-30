@@ -90,6 +90,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			Internal.GDL.Constants.GdlDockItemBehavior retval = Internal.GDL.Constants.GdlDockItemBehavior.BEH_NORMAL;
 			if ((value & DockingItemBehavior.Normal) == DockingItemBehavior.Normal) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_NORMAL;
+			if ((value & DockingItemBehavior.Locked) == DockingItemBehavior.Locked) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_LOCKED;
+			if ((value & DockingItemBehavior.NeverFloating) == DockingItemBehavior.NeverFloating) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_NEVER_FLOATING;
+			if ((value & DockingItemBehavior.NeverHorizontal) == DockingItemBehavior.NeverHorizontal) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_NEVER_HORIZONTAL;
+			if ((value & DockingItemBehavior.NeverVertical) == DockingItemBehavior.NeverVertical) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_NEVER_VERTICAL;
+			if ((value & DockingItemBehavior.NoClose) == DockingItemBehavior.NoClose) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_CLOSE;
+			if ((value & DockingItemBehavior.NoDockBottom) == DockingItemBehavior.NoDockBottom) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_DOCK_BOTTOM;
+			if ((value & DockingItemBehavior.NoDockCenter) == DockingItemBehavior.NoDockCenter) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_DOCK_CENTER;
+			if ((value & DockingItemBehavior.NoDockLeft) == DockingItemBehavior.NoDockLeft) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_DOCK_LEFT;
+			if ((value & DockingItemBehavior.NoDockRight) == DockingItemBehavior.NoDockRight) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_DOCK_RIGHT;
+			if ((value & DockingItemBehavior.NoDockTop) == DockingItemBehavior.NoDockTop) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_DOCK_TOP;
+			if ((value & DockingItemBehavior.NoGrip) == DockingItemBehavior.NoGrip) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_NO_GRIP;
+			if ((value & DockingItemBehavior.NoMinimize) == DockingItemBehavior.NoMinimize) retval |= Internal.GDL.Constants.GdlDockItemBehavior.BEH_CANT_ICONIFY;
 			return retval;
 		}
 

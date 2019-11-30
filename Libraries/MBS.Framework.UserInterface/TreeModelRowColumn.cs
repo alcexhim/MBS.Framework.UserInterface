@@ -52,6 +52,23 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		private object _RawValue = null;
+		/// <summary>
+		/// Gets the value that is used to sort this <see cref="TreeModelRowColumn" />.
+		/// </summary>
+		/// <value>The raw value.</value>
+		public object RawValue
+		{
+			get
+			{
+				if (_RawValue != null)
+					return _RawValue;
+				return Value;
+			}
+			set
+			{ _RawValue = value; }
+		}
+
 		public TreeModelRowColumn(TreeModelColumn column, object value)
 		{
 			mvarColumn = column;

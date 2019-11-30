@@ -2086,13 +2086,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			if (columnIndex >= 0 && columnIndex < rowA.RowColumns.Count && columnIndex < rowB.RowColumns.Count)
 			{
-				if (rowA.RowColumns[columnIndex].Value is IComparable)
+				if (rowA.RowColumns[columnIndex].RawValue is IComparable)
 				{
-					return (rowA.RowColumns[columnIndex].Value as IComparable).CompareTo(rowB.RowColumns[columnIndex].Value);
+					return (rowA.RowColumns[columnIndex].RawValue as IComparable).CompareTo(rowB.RowColumns[columnIndex].RawValue);
 				}
-				else if (rowB.RowColumns[columnIndex].Value is IComparable)
+				else if (rowB.RowColumns[columnIndex].RawValue is IComparable)
 				{
-					return (rowB.RowColumns[columnIndex].Value as IComparable).CompareTo(rowA.RowColumns[columnIndex].Value);
+					return (rowB.RowColumns[columnIndex].RawValue as IComparable).CompareTo(rowA.RowColumns[columnIndex].RawValue);
 				}
 			}
 			return -1;

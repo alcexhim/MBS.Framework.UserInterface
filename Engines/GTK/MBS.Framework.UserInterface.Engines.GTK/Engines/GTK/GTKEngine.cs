@@ -2041,6 +2041,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr[] columnTypes = listColumnTypes.ToArray();
 			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv(columnTypes.Length, columnTypes);
 
+			HandleGtkTreeIterCompareFunc_d = new Delegates.GtkTreeIterCompareFunc(HandleGtkTreeIterCompareFunc);
+			HandleGClosureNotify_d = new Internal.GObject.Delegates.GClosureNotify(HandleGClosureNotify);
+			for (int i = 0; i < columnTypes.Length; i++)
+			{
+				Internal.GTK.Methods.GtkTreeSortable.gtk_tree_sortable_set_sort_func(hTreeStore, i, HandleGtkTreeIterCompareFunc_d, new IntPtr(i), HandleGClosureNotify_d);
+			}
+
 			DefaultTreeModel dtm = (model as DefaultTreeModel);
 			if (dtm != null)
 			{
@@ -2054,12 +2061,52 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return new GTKNativeTreeModel(hTreeStore);
 		}
 
+		void HandleGClosureNotify(IntPtr data, IntPtr closure)
+		{
+		}
+
+		Internal.GObject.Delegates.GClosureNotify HandleGClosureNotify_d = null;
+		Internal.GTK.Delegates.GtkTreeIterCompareFunc HandleGtkTreeIterCompareFunc_d = null;
+
+		int HandleGtkTreeIterCompareFunc(IntPtr model, ref Structures.GtkTreeIter a, ref Structures.GtkTreeIter b, IntPtr user_data)
+		{
+			// user_data isn't actually a pointer, it's just an int wrapped in a ptr (bad? :P )
+			int columnIndex = user_data.ToInt32();
+
+			TreeModel tm = TreeModelFromHandle(new GTKNativeTreeModel(model));
+			if (tm == null)
+				return -1;
+
+			TreeModelRow rowA = GetTreeModelRowForGtkTreeIter(a.user_data);
+			TreeModelRow rowB = GetTreeModelRowForGtkTreeIter(b.user_data);
+			if (rowA == null || rowB == null)
+			{
+				return -1;
+			}
+
+			if (columnIndex >= 0 && columnIndex < rowA.RowColumns.Count && columnIndex < rowB.RowColumns.Count)
+			{
+				if (rowA.RowColumns[columnIndex].Value is IComparable)
+				{
+					return (rowA.RowColumns[columnIndex].Value as IComparable).CompareTo(rowB.RowColumns[columnIndex].Value);
+				}
+				else if (rowB.RowColumns[columnIndex].Value is IComparable)
+				{
+					return (rowB.RowColumns[columnIndex].Value as IComparable).CompareTo(rowA.RowColumns[columnIndex].Value);
+				}
+			}
+			return -1;
+		}
+
+
 		private Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
 		private Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
+		private Dictionary<IntPtr, TreeModelRow> _TreeModelRowForGtkTreeIterU = new Dictionary<IntPtr, TreeModelRow>();
 		internal void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
 		{
 			_GtkTreeIterForTreeModelRow[row] = hIter;
 			_TreeModelRowForGtkTreeIter[hIter] = row;
+			_TreeModelRowForGtkTreeIterU[hIter.user_data] = row;
 		}
 		internal void UnregisterGtkTreeIter(Structures.GtkTreeIter iter)
 		{
@@ -2077,6 +2124,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			if (_TreeModelRowForGtkTreeIter.ContainsKey(hIter))
 				return _TreeModelRowForGtkTreeIter[hIter];
+			return null;
+		}
+		internal TreeModelRow GetTreeModelRowForGtkTreeIter(IntPtr user_data)
+		{
+			if (_TreeModelRowForGtkTreeIterU.ContainsKey(user_data))
+				return _TreeModelRowForGtkTreeIterU[user_data];
 			return null;
 		}
 		internal Internal.GTK.Structures.GtkTreeIter GetGtkTreeIterForTreeModelRow(TreeModelRow row)

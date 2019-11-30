@@ -284,6 +284,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 							{
 								int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column_with_attributes(handle, -1, tvc.Title, renderer, "text", columnIndex, IntPtr.Zero);
+
+								IntPtr hColumn = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_column(handle, columnIndex);
+								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_sort_column_id(hColumn, columnIndex);
 							}
 						}
 

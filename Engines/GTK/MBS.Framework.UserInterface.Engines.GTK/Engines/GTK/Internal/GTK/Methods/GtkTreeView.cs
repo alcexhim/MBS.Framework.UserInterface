@@ -61,6 +61,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_view_row_expanded(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path);
 
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_tree_view_get_column(IntPtr /*GtkTreeView*/ tree_view, int n);
 	}
 }
 

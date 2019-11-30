@@ -34,5 +34,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 		public delegate bool GtkTreeSelectionFunc(IntPtr /*GtkTreeSelection*/ selection, IntPtr /*GtkTreeModel*/ model, IntPtr /*GtkTreePath*/ path, bool path_currently_selected, IntPtr data);
 
 		public delegate void GtkPrintJobCompleteFunc(IntPtr /*GtkPrintJob*/ print_job, IntPtr user_data, ref GLib.Structures.GError error);
+
+		public delegate int GtkTreeIterCompareFunc(IntPtr /*GtkTreeModel*/ model, ref Structures.GtkTreeIter a, ref Structures.GtkTreeIter b, IntPtr user_data);
 	}
 }

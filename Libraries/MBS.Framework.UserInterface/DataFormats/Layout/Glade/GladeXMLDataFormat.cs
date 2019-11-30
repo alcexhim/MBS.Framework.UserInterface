@@ -87,22 +87,22 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					}
 					case "attributes":
 					{
-							foreach (MarkupElement elAttr in tag1.Elements)
-							{
-								MarkupTagElement tagAttr = (elAttr as MarkupTagElement);
-								if (tagAttr == null) continue;
+						foreach (MarkupElement elAttr in tag1.Elements)
+						{
+							MarkupTagElement tagAttr = (elAttr as MarkupTagElement);
+							if (tagAttr == null) continue;
 
-								MarkupAttribute attName = tagAttr.Attributes["name"];
-								MarkupAttribute attValue = tagAttr.Attributes["value"];
+							MarkupAttribute attName = tagAttr.Attributes["name"];
+							MarkupAttribute attValue = tagAttr.Attributes["value"];
 
-								if (attName == null) continue;
+							if (attName == null) continue;
 
-								string value = null;
-								if (attValue != null) value = attValue.Value;
+							string value = null;
+							if (attValue != null) value = attValue.Value;
 
-								item.Attributes.Add(attName.Value, value);
-							}
-							break;
+							item.Attributes.Add(attName.Value, value);
+						}
+						break;
 					}
 					case "property":
 					{
@@ -130,9 +130,33 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					item.PackingProperties.Add(attName.Value, tagPackingProperty.Value);
 				}
 			}
+
+			MarkupTagElement tagColumns = tag.Elements["columns"] as MarkupTagElement;
+			if (tagColumns != null)
+			{
+				LayoutItem columns = new LayoutItem();
+				columns.ClassName = "columns";
+				foreach (MarkupElement elColumn in tagColumns.Elements)
+				{
+					LayoutItem column = new LayoutItem();
+
+					MarkupTagElement tagColumn = (elColumn as MarkupTagElement);
+					if (tagColumn == null) continue;
+					if (tagColumn.FullName != "column") continue;
+
+					MarkupAttribute type = tagColumn.Attributes["type"];
+					if (type != null)
+					{
+						column.ClassName = type.Value;
+					}
+
+					columns.Items.Add(column);
+				}
+				item.Items.Add(columns);
+			}
 			return item;
 		}
-
+		
 		protected override void BeforeSaveInternal(Stack<ObjectModel> objectModels)
 		{
 			base.BeforeSaveInternal(objectModels);

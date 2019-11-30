@@ -10,6 +10,7 @@ using MBS.Framework.UserInterface.Layouts;
 using MBS.Framework.UserInterface.ObjectModels.Layout;
 
 using MBS.Framework.Drawing;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
@@ -267,7 +268,7 @@ namespace MBS.Framework.UserInterface
 					{
 						if (item2.ClassName == "GtkTreeViewColumn")
 						{
-							ListViewColumn ch = new ListViewColumnText(null, item.Properties["title"]?.Value);
+							ListViewColumn ch = new ListViewColumnText(null, item2.Properties["title"]?.Value);
 							(ctl as ListView).Columns.Add(ch);
 						}
 					}
@@ -428,10 +429,57 @@ namespace MBS.Framework.UserInterface
 
 			foreach (LayoutItem item in layout.Items)
 			{
+				if (item.ClassName == "GtkTreeStore")
+				{
+					// ugh... copypasta
+					System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+					foreach (System.Reflection.FieldInfo fi in fis)
+					{
+						if (fi.FieldType.IsSubclassOf(typeof(TreeModel)))
+						{
+							// see if we have a control by that name in the list
+							if (fi.Name == item.ID)
+							{
+								List<Type> types = new List<Type>();
+								for (int i = 0; i < item.Items.Count; i++)
+								{
+									if (item.Items[i].ClassName == "columns")
+									{
+										for (int j = 0; j < item.Items[i].Items.Count; j++)
+										{
+											switch (item.Items[i].Items[j].ClassName)
+											{
+												case "gboolean": types.Add(typeof(bool)); break;
+												case "gint": types.Add(typeof(int)); break;
+												case "guint": types.Add(typeof(uint)); break;
+												case "glong": types.Add(typeof(long)); break;
+												case "gulong": types.Add(typeof(ulong)); break;
+												case "gint64": types.Add(typeof(long)); break;
+												case "guint64": types.Add(typeof(ulong)); break;
+												case "gfloat": types.Add(typeof(float)); break;
+												case "gdouble": types.Add(typeof(double)); break;
+												case "gchararray": types.Add(typeof(string)); break;
+												case "gpointer": types.Add(typeof(IntPtr)); break;
+												default: types.Add(typeof(string)); break;
+											}
+										}
+									}
+								}
+								fi.SetValue(this, new DefaultTreeModel(types.ToArray()));
+							}
+						}
+					}
+				}
+
 				if (className != null && (item.ClassName != className)) continue;
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 
 				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid" });
+				if (itemBox == null)
+				{
+					Console.WriteLine("warning: layout designer did not specify a container; using GtkBox");
+					itemBox = item;
+				}
 				RecursiveLoadContainer(itemBox, this);
 			}
 		}

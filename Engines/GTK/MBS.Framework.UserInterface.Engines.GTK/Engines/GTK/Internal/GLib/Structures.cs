@@ -270,13 +270,45 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 				{
 					val = new Value((string)value);
 				}
+				else if (value is byte)
+				{
+					val = new Value((byte)value);
+				}
+				else if (value is sbyte)
+				{
+					val = new Value((sbyte)value);
+				}
+				else if (value is short)
+				{
+					val = new Value((short)value);
+				}
+				else if (value is ushort)
+				{
+					val = new Value((ushort)value);
+				}
 				else if (value is int)
 				{
 					val = new Value((int)value);
 				}
+				else if (value is uint)
+				{
+					val = new Value((uint)value);
+				}
 				else if (value is long)
 				{
 					val = new Value((long)value);
+				}
+				else if (value is ulong)
+				{
+					val = new Value((ulong)value);
+				}
+				else if (value is float)
+				{
+					val = new Value((float)value);
+				}
+				else if (value is double)
+				{
+					val = new Value((double)value);
 				}
 				else
 				{

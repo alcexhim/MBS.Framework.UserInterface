@@ -81,6 +81,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 		protected override void SetControlTextInternal(Control control, string text)
 		{
+			if (text == null)
+				text = String.Empty;
+
 			TextBox ctl = (control as TextBox);
 			if (ctl.Multiline)
 			{
@@ -89,6 +92,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
 
 				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+
 				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, text, text.Length);
 			}
 			else

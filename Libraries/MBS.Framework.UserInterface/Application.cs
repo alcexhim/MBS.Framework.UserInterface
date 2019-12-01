@@ -11,6 +11,8 @@ namespace MBS.Framework.UserInterface
 		private static Engine mvarEngine = null;
 		public static Engine Engine { get { return mvarEngine; } }
 
+		public static CommandLine CommandLine { get; private set; } = null;
+
 		public static DefaultSettingsProvider DefaultSettingsProvider { get; } = new DefaultSettingsProvider();
 		public static SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
@@ -335,6 +337,8 @@ namespace MBS.Framework.UserInterface
 
 		static Application()
 		{
+			CommandLine = new DefaultCommandLine();
+
 			Type tKnownContexts = typeof(KnownContexts);
 			System.Reflection.PropertyInfo[] pis = tKnownContexts.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
 			for (int i = 0; i < pis.Length; i++)

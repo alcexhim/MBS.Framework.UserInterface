@@ -1,5 +1,5 @@
 ﻿//
-//  ApplicationActivatedEvent.cs
+//  CommandLineOptionValueType.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,20 +19,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-
 namespace MBS.Framework.UserInterface
 {
-	public class ApplicationActivatedEventArgs : EventArgs
+	public enum CommandLineOptionValueType
 	{
-		public bool FirstRun { get; private set; } = true;
-		public CommandLine CommandLine { get; set; } = null;
-		public int ExitCode { get; set; } = 0;
-
-		public ApplicationActivatedEventArgs(bool firstRun = true)
-		{
-			FirstRun = firstRun;
-		}
+		None = 0,
+		Single = 1,
+		Multiple = 2
 	}
-	public delegate void ApplicationActivatedEventHandler(object sender, ApplicationActivatedEventArgs e);
 }

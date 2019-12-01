@@ -449,7 +449,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			int argc = 0;
 			IntPtr hwpp = Internal.GIO.Methods.g_application_command_line_get_arguments(commandLine, ref argc);
-			e.Arguments = PtrToStringArray(hwpp, argc);
+
+			string[] arguments = PtrToStringArray(hwpp, argc);
+			e.CommandLine = new GTKCommandLine(arguments);
 
 			_firstRun = false;
 			InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });

@@ -189,6 +189,7 @@
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkApplicationWindow.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeSortable.cs" />
     <Compile Include="Engines\GTK\Internal\GTK\Methods\GtkTreeViewColumn.cs" />
+    <Compile Include="Engines\GTK\GTKCommandLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

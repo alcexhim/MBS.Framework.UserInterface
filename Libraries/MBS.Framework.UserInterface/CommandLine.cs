@@ -1,5 +1,5 @@
 ﻿//
-//  ApplicationActivatedEvent.cs
+//  CommandLine.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -23,16 +23,28 @@ using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
-	public class ApplicationActivatedEventArgs : EventArgs
+	public abstract class CommandLine
 	{
-		public bool FirstRun { get; private set; } = true;
-		public CommandLine CommandLine { get; set; } = null;
-		public int ExitCode { get; set; } = 0;
+		/// <summary>
+		/// Gets the original <see cref="String" /> array of arguments.
+		/// </summary>
+		/// <value>The arguments.</value>
+		public string[] Arguments { get; private set; }
 
-		public ApplicationActivatedEventArgs(bool firstRun = true)
+		/// <summary>
+		/// Gets the list of file names passed on the command line.
+		/// </summary>
+		/// <value>The file names.</value>
+		public List<string> FileNames { get; } = new List<string>();
+
+		public CommandLineOption.CommandLineOptionCollection Options { get; } = new CommandLineOption.CommandLineOptionCollection();
+
+		protected CommandLine()
 		{
-			FirstRun = firstRun;
+		}
+		protected internal CommandLine(string[] arguments)
+		{
+			this.Arguments = arguments;
 		}
 	}
-	public delegate void ApplicationActivatedEventHandler(object sender, ApplicationActivatedEventArgs e);
 }

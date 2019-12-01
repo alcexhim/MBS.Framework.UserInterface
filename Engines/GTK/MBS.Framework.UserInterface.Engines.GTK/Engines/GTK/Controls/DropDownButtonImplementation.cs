@@ -69,9 +69,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				return;
 
 			popup.Owner = ctl;
-			Engine.CreateControl (popup);
+			popup.Controls.Add(ctl.Container);
 
-			popup.Controls.Add (ctl.Container);
+			Engine.CreateControl (popup);
 		}
 	}
 }

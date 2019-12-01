@@ -15,6 +15,12 @@ namespace MBS.Framework.UserInterface
 				mvarColumns.Add(c);
 			}
 		}
+
+		protected abstract TreeModelRow FindInternal(object value);
+		public TreeModelRow Find(object value)
+		{
+			return FindInternal(value);
+		}
 	}
 	public class DefaultTreeModel : TreeModel
 	{
@@ -81,6 +87,38 @@ namespace MBS.Framework.UserInterface
 
 		public TreeModelRow.TreeModelRowCollection Rows { get; private set; } = null;
 
+		private TreeModelRow FindRecursive(object value, TreeModelRow where)
+		{
+			for (int i = 0; i < where.RowColumns.Count; i++)
+			{
+				if (where.RowColumns[i].Value == null)
+					continue;
+
+				if (where.RowColumns[i].Value is string && String.IsNullOrEmpty((where.RowColumns[i].Value as string)))
+					continue;
+
+				if (where.RowColumns[i].Value.Equals(value))
+					return where;
+			}
+
+			for (int i = 0; i < where.Rows.Count; i++)
+			{
+				TreeModelRow ret = FindRecursive(value, where.Rows[i]);
+				if (ret != null)
+					return ret;
+			}
+			return null;
+		}
+		protected override TreeModelRow FindInternal(object value)
+		{
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				TreeModelRow ret = FindRecursive(value, Rows[i]);
+				if (ret != null)
+					return ret;
+			}
+			return null;
+		}
 	}
 }
 

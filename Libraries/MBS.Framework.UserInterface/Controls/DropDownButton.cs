@@ -33,6 +33,11 @@ namespace MBS.Framework.UserInterface.Controls
 
 	public class DropDownButton : Button
 	{
+		public event EventHandler DropDownOpened;
+		protected virtual void OnDropDownOpened(EventArgs e)
+		{
+			DropDownOpened?.Invoke(this, e);
+		}
 		public event EventHandler DropDownClosed;
 		protected virtual void OnDropDownClosed(EventArgs e)
 		{

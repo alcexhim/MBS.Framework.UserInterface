@@ -35,15 +35,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void OpenDropDown()
 		{
-			IntPtr hPopOver = (Handle as GTKNativeControl).GetNamedHandle("popover");
+			IntPtr hPopOver = (popup.ControlImplementation.Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkPopover.gtk_popover_popup (hPopOver);
 		}
 		public void CloseDropDown()
 		{
-			IntPtr hPopOver = (Handle as GTKNativeControl).GetNamedHandle("popover");
+			IntPtr hPopOver = (popup.ControlImplementation.Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkPopover.gtk_popover_popdown (hPopOver);
 		}
 
+		protected internal virtual void OnDropDownOpened(EventArgs e)
+		{
+			InvokeMethod(Control, "OnDropDownOpened", e);
+		}
 		protected internal virtual void OnDropDownClosed(EventArgs e)
 		{
 			InvokeMethod(Control, "OnDropDownClosed", e);
@@ -68,11 +72,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (ctl == null)
 				return;
 
+			popup.Shown += Popup_Shown;
+			popup.Closed += Popup_Closed;
+
 			popup.Owner = ctl;
 			popup.Controls.Add(ctl.Container);
 
 			Engine.CreateControl (popup);
 		}
+
+		private void Popup_Closed(object sender, EventArgs e)
+		{
+			OnDropDownClosed(e);
+		}
+
+		private void Popup_Shown(object sender, EventArgs e)
+		{
+			OnDropDownOpened(e);
+		}
+
 	}
 }
 

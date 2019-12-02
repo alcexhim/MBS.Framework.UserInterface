@@ -51,7 +51,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			// set up the file filters
 			foreach (FileDialogFileNameFilter filter in ctl.FileNameFilters)
 			{
-				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(handle, GTKEngine.CreateGTKFileChooserFilter(filter));
+				AddFileNameFilter(ctl, filter);
 			}
 
 			Internal.GObject.Methods.g_signal_connect (handle, "file_activated", file_activated_handler);
@@ -68,6 +68,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			foreach (string fileName in fileNames) {
 				coll.Add (fileName);
 			}
+		}
+
+		public void ClearFileNameFilters()
+		{
+			FileBrowserControl ctl = (Control as FileBrowserControl);
+			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
+
+			for (int i = 0; i < ctl.FileNameFilters.Count; i++)
+			{
+				IntPtr hFilter = GTKEngine.GetHandleForGTKFileChooserFilter(ctl.FileNameFilters[i]);
+				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_remove_filter(hFileBrowser, hFilter);
+				GTKEngine.UnregisterGTKFileChooserFilter(ctl.FileNameFilters[i]);
+			}
+		}
+
+		public void AddFileNameFilter(IFileBrowserControl control, FileDialogFileNameFilter filter)
+		{
+			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(hFileBrowser, GTKEngine.CreateGTKFileChooserFilter(filter));
+		}
+
+		public void RemoveFileNameFilter(IFileBrowserControl control, FileDialogFileNameFilter filter)
+		{
+			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
+			IntPtr hFilter = GTKEngine.GetHandleForGTKFileChooserFilter(filter);
+			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_remove_filter(hFileBrowser, hFilter);
+			GTKEngine.UnregisterGTKFileChooserFilter(filter);
 		}
 	}
 }

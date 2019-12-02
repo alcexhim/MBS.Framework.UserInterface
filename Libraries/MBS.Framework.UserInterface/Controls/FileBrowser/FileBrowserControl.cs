@@ -27,9 +27,13 @@ namespace MBS.Framework.UserInterface.Controls.FileBrowser
 		public interface IFileBrowserControlImplementation
 		{
 			void UpdateSelectedFileNames (System.Collections.Generic.List<string> coll);
+
+			void ClearFileNameFilters();
+			void AddFileNameFilter(IFileBrowserControl control, Dialogs.FileDialogFileNameFilter filter);
+			void RemoveFileNameFilter(IFileBrowserControl control, Dialogs.FileDialogFileNameFilter filter);
 		}
 	}
-	public class FileBrowserControl : Control
+	public class FileBrowserControl : Control, IFileBrowserControl
 	{
 		public event EventHandler ItemActivated;
 		protected virtual void OnItemActivated (EventArgs e)
@@ -37,7 +41,12 @@ namespace MBS.Framework.UserInterface.Controls.FileBrowser
 			ItemActivated?.Invoke (this, e);
 		}
 
-		public Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection FileNameFilters { get; } = new Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection ();
+		public FileBrowserControl()
+		{
+			FileNameFilters = new Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection(this);
+		}
+
+		public Dialogs.FileDialogFileNameFilter.FileDialogFileNameFilterCollection FileNameFilters { get; } = null;
 		public FileBrowserMode Mode { get; set; }
 
 		public System.Collections.ObjectModel.ReadOnlyCollection<string> SelectedFileNames {

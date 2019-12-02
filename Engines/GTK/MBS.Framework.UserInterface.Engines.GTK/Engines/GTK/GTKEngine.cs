@@ -19,6 +19,7 @@ using MBS.Framework.UserInterface.Printing;
 using MBS.Framework.UserInterface.Engines.GTK.Printing;
 using MBS.Framework.UserInterface.Engines.GTK.Drawing;
 using MBS.Framework.UserInterface.Engines.GTK.Internal.GTK;
+using System.Text;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
@@ -1278,6 +1279,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return handle;
 		}
 
+		private static Dictionary<FileDialogFileNameFilter, IntPtr> _FileNameFilterHandles = new Dictionary<FileDialogFileNameFilter, IntPtr>();
+		private static Dictionary<IntPtr, FileDialogFileNameFilter> _HandleFileNameFilters = new Dictionary<IntPtr, FileDialogFileNameFilter>();
 		internal static IntPtr CreateGTKFileChooserFilter(FileDialogFileNameFilter filter)
 		{
 			IntPtr hFileFilter = Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_new();
@@ -1285,9 +1288,60 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			string[] patterns = filter.Filter.Split(new char[] { ';' });
 			foreach (string pattern in patterns)
 			{
-				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, pattern.Trim());
+				string pattern2 = pattern.Trim();
+
+				StringBuilder sbp = new StringBuilder();
+				if (pattern2.StartsWith("*.") || pattern2.StartsWith("."))
+				{
+					if (pattern[0] == '*')
+						pattern2 = pattern2.Substring(1);
+
+					sbp.Append("*.");
+					// now we have .xyz
+					// convert it to .[xX][yY][zZ]
+					if (!filter.CaseSensitive)
+					{
+						for (int i = 1; i < pattern2.Length; i++)
+						{
+							sbp.Append('[');
+							sbp.Append(Char.ToLower(pattern2[i]));
+							sbp.Append(Char.ToUpper(pattern2[i]));
+							sbp.Append(']');
+						}
+					}
+				}
+				else
+				{
+					sbp.Append(pattern);
+				}
+				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, sbp.ToString());
 			}
+
+			_FileNameFilterHandles[filter] = hFileFilter;
+			_HandleFileNameFilters[hFileFilter] = filter;
 			return hFileFilter;
+		}
+		internal static FileDialogFileNameFilter GetGTKFileChooserFilter(IntPtr handle)
+		{
+			if (_HandleFileNameFilters.ContainsKey(handle))
+				return _HandleFileNameFilters[handle];
+			return null;
+		}
+		internal static IntPtr GetHandleForGTKFileChooserFilter(FileDialogFileNameFilter handle)
+		{
+			if (_FileNameFilterHandles.ContainsKey(handle))
+				return _FileNameFilterHandles[handle];
+			return IntPtr.Zero;
+		}
+		internal static bool UnregisterGTKFileChooserFilter(FileDialogFileNameFilter handle)
+		{
+			if (_FileNameFilterHandles.ContainsKey(handle))
+			{
+				_HandleFileNameFilters.Remove(_FileNameFilterHandles[handle]);
+				_FileNameFilterHandles.Remove(handle);
+				return true;
+			}
+			return false;
 		}
 
 		private void FileDialog_Accept(FileDialog dlg, IntPtr handle)

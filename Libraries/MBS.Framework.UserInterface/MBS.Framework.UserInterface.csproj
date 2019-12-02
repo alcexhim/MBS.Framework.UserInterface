@@ -229,6 +229,7 @@
     <Compile Include="DefaultCommandLine.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="CommandLineOptionValueType.cs" />
+    <Compile Include="Controls\FileBrowser\IFileBrowserControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

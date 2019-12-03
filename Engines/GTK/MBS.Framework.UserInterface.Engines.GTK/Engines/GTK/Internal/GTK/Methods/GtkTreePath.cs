@@ -27,6 +27,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_tree_path_to_string(IntPtr /*GtkTreePath*/ path);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkTreePath*/ gtk_tree_path_new_from_string(string path);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_path_free(IntPtr /*GtkTreePath*/ path);
 	}
 }
 

@@ -39,6 +39,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkTreeSelection*/ gtk_tree_view_get_selection(IntPtr /*GtkTreeView*/ tree_view);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_tree_view_insert_column(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreeViewColumn*/ column, int position);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_insert_column_with_attributes(IntPtr handle, int position, string title, IntPtr /*GtkCellRenderer*/ cell, string attributeName, int columnIndexForAttributeValue, IntPtr setThisToZero);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]

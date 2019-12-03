@@ -26,6 +26,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	internal static class GtkTreeViewColumn
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkTreeViewColumn*/ gtk_tree_view_column_new();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_set_title(IntPtr /*GtkTreeViewColumn*/ column, string title);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_clear(IntPtr /*GtkTreeViewColumn*/ column);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_add_attribute(IntPtr /*GtkTreeViewColumn*/ column, IntPtr /*GtkCellRenderer*/ renderer, string name, int value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_column_pack_start(IntPtr /*GtkTreeViewColumn*/ column, IntPtr /*GtkCellRenderer*/ renderer, bool expand);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_column_set_sort_column_id(IntPtr /*GtkTreeViewColumn*/ tree_column, int sort_column_id);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tree_view_column_set_resizable(IntPtr /*GtkTreeViewColumn*/ tree_column, bool resizable);

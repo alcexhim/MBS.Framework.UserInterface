@@ -22,6 +22,7 @@ namespace MBS.Framework.UserInterface.Controls
 
 			bool IsColumnResizable(ListViewColumn column);
 			void SetColumnResizable(ListViewColumn column, bool value);
+			void SetColumnEditable(ListViewColumn column, bool value);
 		}
 	}
 
@@ -129,6 +130,22 @@ namespace MBS.Framework.UserInterface.Controls
 					}
 				}
 				_Reorderable = value;
+			}
+		}
+
+		private bool _Editable = false;
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:MBS.Framework.UserInterface.Controls.ListViewColumn"/>
+		/// is editable.
+		/// </summary>
+		/// <value><c>true</c> if editable; otherwise, <c>false</c>.</value>
+		public bool Editable
+		{
+			get { return _Editable; }
+			set
+			{
+				(Parent?.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnEditable(this, value);
+				_Editable = value;
 			}
 		}
 
@@ -264,6 +281,17 @@ namespace MBS.Framework.UserInterface.Controls
 		public void Select(TreeModelRow row)
 		{
 			SelectedRows.Add(row);
+		}
+
+		public event TreeModelRowColumnEditingEventHandler RowColumnEditing;
+		protected virtual void OnRowColumnEditing(TreeModelRowColumnEditingEventArgs e)
+		{
+			RowColumnEditing?.Invoke(this, e);
+		}
+		public event TreeModelRowColumnEditedEventHandler RowColumnEdited;
+		protected virtual void OnRowColumnEdited(TreeModelRowColumnEditedEventArgs e)
+		{
+			RowColumnEdited?.Invoke(this, e);
 		}
 	}
 }

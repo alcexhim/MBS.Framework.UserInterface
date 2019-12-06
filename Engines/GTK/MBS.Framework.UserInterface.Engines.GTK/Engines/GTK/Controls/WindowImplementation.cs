@@ -319,6 +319,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					IntPtr hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
+					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 				}
 

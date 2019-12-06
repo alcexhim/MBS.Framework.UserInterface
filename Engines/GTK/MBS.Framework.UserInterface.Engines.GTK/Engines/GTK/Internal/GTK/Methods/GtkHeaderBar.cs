@@ -32,6 +32,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_header_bar_set_title(IntPtr /*GtkHeaderBar*/ bar, string title);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_header_bar_set_subtitle(IntPtr /*GtkHeaderBar*/ bar, string subtitle);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_header_bar_set_show_close_button(IntPtr /*GtkHeaderBar*/ bar, bool value);
 	}
 }
 

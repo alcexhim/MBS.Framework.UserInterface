@@ -353,17 +353,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
-							IntPtr renderer = IntPtr.Zero;
-
-							if (tvc is ListViewColumnText)
-							{
-								renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
-
-								Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
-								RegisterCellRendererForColumn(tvc, renderer);
-							}
-							if (renderer == IntPtr.Zero) continue;
-
 							if (tv.Model != null)
 							{
 								int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
@@ -372,8 +361,47 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_title(hColumn, tvc.Title);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_clear(hColumn);
 
-								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
-								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "text", columnIndex);
+								if (tvc is ListViewColumnText)
+								{
+									IntPtr renderer = IntPtr.Zero;
+									if (tvc is ListViewColumnText)
+									{
+										ListViewColumnText tvct = (tvc as ListViewColumnText);
+
+										if (tvct.ValidValues.Count > 0)
+										{
+											renderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
+
+											DefaultTreeModel model = new DefaultTreeModel(new Type[] { typeof(string) });
+											model.TreeModelChanged += Model_TreeModelChanged;
+
+											NativeTreeModel nTreeModel = (Engine as GTKEngine).CreateTreeModel(model);
+											IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
+
+											TreeModelForListViewColumn[tvct] = model;
+
+											Internal.GObject.Methods.g_object_set_property(renderer, "model", hModel);
+
+											Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value((int)0);
+											Internal.GObject.Methods.g_object_set_property(renderer, "text_column", ref valTextColumn);
+
+											AddColumnValidValues(tvct, tvct.ValidValues);
+										}
+										else
+										{
+											renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+										}
+
+										if (renderer != null)
+										{
+											Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+											RegisterCellRendererForColumn(tvc, renderer);
+
+											Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
+											Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "text", columnIndex);
+										}
+									}
+								}
 
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column(handle, hColumn, -1);
 
@@ -401,6 +429,45 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);
+		}
+
+		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
+		{
+			TreeModelRow.TreeModelRowCollection coll = (sender as TreeModelRow.TreeModelRowCollection);
+			UpdateTreeModel(coll.Model, e);
+		}
+
+
+		private Dictionary<ListViewColumnText, DefaultTreeModel> TreeModelForListViewColumn = new Dictionary<ListViewColumnText, DefaultTreeModel>();
+		public void AddColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
+		{
+			if (!TreeModelForListViewColumn.ContainsKey(tvc))
+				return;
+
+			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
+			for (int i = 0; i < list.Count; i++)
+			{
+				model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+				{
+					new TreeModelRowColumn(model.Columns[0], list[i])
+				}));
+			}
+		}
+		public void RemoveColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
+		{
+			if (!TreeModelForListViewColumn.ContainsKey(tvc))
+				return;
+
+			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
+			return;
+
+			for (int i = 0; i < list.Count; i++)
+			{
+				model.Rows.Remove(new TreeModelRow(new TreeModelRowColumn[]
+				{
+					new TreeModelRowColumn(model.Columns[0], list[i])
+				}));
+			}
 		}
 
 		private Dictionary<ListViewColumn, IntPtr> _CellRenderersForColumn = new Dictionary<ListViewColumn, IntPtr>();
@@ -678,7 +745,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 		private IntPtr GetHandleForTreeModel(TreeModel tm)
 		{
-			return (Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel).Handle;
+			GTKNativeTreeModel ntm = (Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel);
+			if (ntm == null) return IntPtr.Zero;
+
+			return ntm.Handle;
 		}
 		
 		/// <summary>
@@ -709,30 +779,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
-		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)
+		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)
 		{
-			IntPtr hScrolledWindow = (handle as GTKNativeControl).Handle;
-			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
-			if (hTreeView == IntPtr.Zero) return;
-
-			ListView ctl = (_ControlsByHandle[hTreeView] as ListView);
-			if (ctl == null) {
-				Console.Error.WriteLine("UpdateTreeModel: _ControlsByHandle[" + hTreeView.ToString() + "] is null");
+			IntPtr hTreeModel = GetHandleForTreeModel(tm);
+			if (hTreeModel == IntPtr.Zero)
+			{
+				// we do not have a treemodel handle yet
 				return;
 			}
-			
-			
-			IntPtr hTreeModel = IntPtr.Zero;
-			if (ctl.Mode == ListViewMode.Detail)
-			{
-				hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(hTreeView);
-			}
-			else if (ctl.Mode == ListViewMode.LargeIcon)
-			{
-				hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
-			}
-			TreeModel tm = TreeModelFromHandle(hTreeModel);
-
 			switch (e.Action)
 			{
 				case TreeModelChangedAction.Add:
@@ -774,6 +828,32 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					break;
 				}
 			}
+		}
+
+		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)
+		{
+			IntPtr hScrolledWindow = (handle as GTKNativeControl).Handle;
+			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
+			if (hTreeView == IntPtr.Zero) return;
+
+			ListView ctl = (_ControlsByHandle[hTreeView] as ListView);
+			if (ctl == null) {
+				Console.Error.WriteLine("UpdateTreeModel: _ControlsByHandle[" + hTreeView.ToString() + "] is null");
+				return;
+			}
+			
+			
+			IntPtr hTreeModel = IntPtr.Zero;
+			if (ctl.Mode == ListViewMode.Detail)
+			{
+				hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(hTreeView);
+			}
+			else if (ctl.Mode == ListViewMode.LargeIcon)
+			{
+				hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
+			}
+			TreeModel tm = TreeModelFromHandle(hTreeModel);
+			UpdateTreeModel(tm, e);
 		}
 
 		private IntPtr GetHTreeView(IntPtr hScrolledWindow)

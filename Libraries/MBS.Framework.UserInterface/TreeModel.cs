@@ -27,7 +27,7 @@ namespace MBS.Framework.UserInterface
 		public DefaultTreeModel(Type[] columnTypes)
 			: base(columnTypes)
 		{
-			this.Rows = new TreeModelRow.TreeModelRowCollection();
+			this.Rows = new TreeModelRow.TreeModelRowCollection(this);
 			this.Rows.CollectionChanged += (sender, e) =>
 			{
 				TreeModelChangedEventArgs ee = null;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.Controls
@@ -23,6 +24,9 @@ namespace MBS.Framework.UserInterface.Controls
 			bool IsColumnResizable(ListViewColumn column);
 			void SetColumnResizable(ListViewColumn column, bool value);
 			void SetColumnEditable(ListViewColumn column, bool value);
+
+			void AddColumnValidValues(ListViewColumnText column, IList items);
+			void RemoveColumnValidValues(ListViewColumnText column, IList items);
 		}
 	}
 
@@ -158,9 +162,41 @@ namespace MBS.Framework.UserInterface.Controls
 	public class ListViewColumnText
 		: ListViewColumn
 	{
-		public ListViewColumnText(TreeModelColumn column, string title = "") : base(column, title)
+		/// <summary>
+		/// Gets a collection of <see cref="String" /> values that are valid for this <see cref="ListViewColumn" />.
+		/// </summary>
+		/// <value>The valid values.</value>
+		public System.Collections.ObjectModel.ObservableCollection<string> ValidValues { get; } = new System.Collections.ObjectModel.ObservableCollection<string>();
+
+		public ListViewColumnText(TreeModelColumn column, string title = "", string[] validValues = null) : base(column, title)
 		{
+			ValidValues.CollectionChanged += ValidValues_CollectionChanged;
+			if (validValues != null)
+			{
+				for (int i = 0; i < validValues.Length; i++)
+				{
+					ValidValues.Add(validValues[i]);
+				}
+			}
 		}
+
+		private void ValidValues_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action)
+			{
+				case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+				{
+					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.AddColumnValidValues(this, e.NewItems);
+					break;
+				}
+				case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+				{
+					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.RemoveColumnValidValues(this, e.OldItems);
+					break;
+				}
+			}
+		}
+
 	}
 	public class ListView : SystemControl
 	{

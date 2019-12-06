@@ -126,6 +126,12 @@ namespace MBS.Framework.UserInterface
 		public class TreeModelRowCollection
 			: System.Collections.ObjectModel.ObservableCollection<TreeModelRow>
 		{
+			public TreeModel Model { get; private set; } = null;
+			public TreeModelRowCollection(TreeModel model = null)
+			{
+				Model = model;
+			}
+
 			private Dictionary<string, TreeModelRow> _itemsByName = new Dictionary<string, TreeModelRow>();
 			public TreeModelRow this[string name]
 			{

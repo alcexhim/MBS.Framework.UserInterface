@@ -31,8 +31,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null)
+			if ((object)obj == null && (object)this == null)
+				return true;
+			if ((object)obj == null || (object)this == null)
 				return false;
+
 			if (obj is GTKNativeTreeModel)
 				return Equals(obj as GTKNativeTreeModel);
 
@@ -56,8 +59,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public static bool operator ==(GTKNativeTreeModel left, GTKNativeTreeModel right)
 		{
-			if (left == null || right == null)
-				return object.Equals(left, right);
+			if ((object)left == null && (object)right == null)
+				return true;
+			if ((object)left == null || (object)right == null)
+				return false;
 
 			return left.Equals(right);
 		}

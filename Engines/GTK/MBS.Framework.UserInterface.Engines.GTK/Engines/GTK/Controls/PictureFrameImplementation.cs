@@ -24,14 +24,24 @@ using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Controls.Native;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
 	[ControlImplementation(typeof(PictureFrame))]
-	public class PictureFrameImplementation : GTKNativeImplementation
+	public class PictureFrameImplementation : GTKNativeImplementation, IPictureFrameControlImplementation
 	{
 		public PictureFrameImplementation(Engine engine, Control control) : base(engine, control)
 		{
+		}
+
+		public void SetImage(Image value)
+		{
+			if (value is GDKPixbufImage)
+			{
+				IntPtr hImage = (value as GDKPixbufImage).Handle;
+				Internal.GTK.Methods.GtkImage.gtk_image_set_from_pixbuf((Handle as GTKNativeControl).Handle, hImage);
+			}
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

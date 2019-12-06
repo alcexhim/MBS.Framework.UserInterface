@@ -841,6 +841,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 				if (control.Visible) {
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all((handle as GTKNativeControl).Handle);
+
+					Control[] children = new Control[0];
+					if (control is IVirtualControlContainer)
+					{
+						children = (control as IVirtualControlContainer).GetAllControls();
+					}
+					for (int i = 0; i < children.Length; i++)
+					{
+						if (!children[i].Visible)
+						{
+							GTKNativeControl nc = (children[i].ControlImplementation?.Handle as GTKNativeControl);
+							if (nc != null)
+								Internal.GTK.Methods.GtkWidget.gtk_widget_hide(nc.Handle);
+						}
+					}
 				}
 			}
 

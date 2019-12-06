@@ -76,6 +76,8 @@ namespace MBS.Framework.UserInterface
 		}
 		public void SetControlText (Control control, string text)
 		{
+			if (!control.IsCreated)
+				return;
 			SetControlTextInternal (control, text);
 		}
 

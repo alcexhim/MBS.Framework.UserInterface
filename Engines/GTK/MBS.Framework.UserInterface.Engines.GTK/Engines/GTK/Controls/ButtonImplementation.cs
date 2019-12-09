@@ -20,7 +20,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private void Button_Clicked(IntPtr handle, IntPtr data)
 		{
 			EventArgs e = new EventArgs();
-			// OnClick(e);
+			base.OnClick(e);
+		}
+
+		protected override void OnClick(EventArgs e)
+		{
+			// Button clicks get handled by the OS in Button_Clicked handler
+			// base.OnClick(e);
 		}
 
 		protected override string GetControlTextInternal(Control control)

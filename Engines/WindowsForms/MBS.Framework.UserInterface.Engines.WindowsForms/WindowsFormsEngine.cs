@@ -18,10 +18,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			throw new NotImplementedException();
 		}
-		protected override NativeControl CreateControlInternal(Control control)
-		{
-			return base.CreateControlInternal(control);
-		}
 
 		protected override void UpdateSystemColorsInternal()
 		{
@@ -310,10 +306,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override int StartInternal (Window waitForClose = null)
 		{
+			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
+
 			if (waitForClose != null) {
 				WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl (waitForClose) as WindowsFormsNativeControl);
 				System.Windows.Forms.Application.Run (ncWaitForClose.Handle as System.Windows.Forms.Form);
 			} else {
+
+				ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
+				e.CommandLine = new WindowsFormsCommandLine(Environment.GetCommandLineArgs());
+				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
 				System.Windows.Forms.Application.Run ();
 			}
 			return 0;

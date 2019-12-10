@@ -28,7 +28,8 @@ namespace MBS.Framework.UserInterface
 		Left,
 		Right,
 		Top,
-		Bottom
+		Bottom,
+		Overlay
 	}
 }
 

@@ -833,33 +833,35 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(nativeHandle, control.TooltipText);
 				}
+			}
+			return (handle as GTKNativeControl);
+		}
 
-				RegisterControlHandle(control, handle as GTKNativeControl);
+		protected override void AfterHandleRegistered(Control control)
+		{
+			GTKNativeControl nc = (GetHandleForControl(control) as GTKNativeControl);
+			UpdateControlLayout(control);
+			UpdateControlProperties(control);
 
-				UpdateControlLayout(control);
-				UpdateControlProperties(control);
+			if (control.Visible)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(nc.Handle);
 
-				if (control.Visible) {
-					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all((handle as GTKNativeControl).Handle);
-
-					Control[] children = new Control[0];
-					if (control is IVirtualControlContainer)
+				Control[] children = new Control[0];
+				if (control is IVirtualControlContainer)
+				{
+					children = (control as IVirtualControlContainer).GetAllControls();
+				}
+				for (int i = 0; i < children.Length; i++)
+				{
+					if (!children[i].Visible)
 					{
-						children = (control as IVirtualControlContainer).GetAllControls();
-					}
-					for (int i = 0; i < children.Length; i++)
-					{
-						if (!children[i].Visible)
-						{
-							GTKNativeControl nc = (children[i].ControlImplementation?.Handle as GTKNativeControl);
-							if (nc != null)
-								Internal.GTK.Methods.GtkWidget.gtk_widget_hide(nc.Handle);
-						}
+						GTKNativeControl nc1 = (children[i].ControlImplementation?.Handle as GTKNativeControl);
+						if (nc1 != null)
+							Internal.GTK.Methods.GtkWidget.gtk_widget_hide(nc1.Handle);
 					}
 				}
 			}
-
-			return (handle as GTKNativeControl);
 		}
 
 		protected override bool IsControlDisposedInternal(Control control)

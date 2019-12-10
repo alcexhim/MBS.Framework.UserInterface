@@ -44,6 +44,10 @@ namespace MBS.Framework.UserInterface
 			UpdateSystemColorsInternal();
 		}
 
+		protected virtual void AfterHandleRegistered(Control control)
+		{
+		}
+
 		public Color GetSystemColor(SystemColor color)
 		{
 			UpdateSystemColors();
@@ -57,6 +61,11 @@ namespace MBS.Framework.UserInterface
 		{
 			if (control == null)
 				return null;
+			if (!handlesByControl.ContainsKey(control))
+			{
+				Console.WriteLine("handle unregistered for control type {0}", control.GetType());
+				return null;
+			}
 			return handlesByControl[control];
 		}
 		public bool IsControlCreated(Control control)
@@ -378,6 +387,9 @@ namespace MBS.Framework.UserInterface
 
 			if (result == null)
 				return false;
+
+			RegisterControlHandle(control, result);
+			AfterHandleRegistered(control);
 
 			// set the control text if it has not been set already
 			control.ControlImplementation?.SetControlText(control, control.Text);

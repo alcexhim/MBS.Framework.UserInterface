@@ -117,6 +117,12 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
+		protected abstract bool IsControlVisibleInternal();
+		public bool IsControlVisible()
+		{
+			return IsControlVisibleInternal();
+		}
+
 		public void SetControlVisibility (bool visible)
 		{
 			SetControlVisibilityInternal (visible);

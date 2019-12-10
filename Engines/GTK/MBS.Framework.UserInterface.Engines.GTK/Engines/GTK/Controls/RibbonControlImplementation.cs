@@ -50,6 +50,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			throw new NotImplementedException ();
 		}
 
+		protected override bool IsControlVisibleInternal()
+		{
+			return (tbs?.Visible).GetValueOrDefault(false);
+		}
 		protected override void SetControlVisibilityInternal (bool visible)
 		{
 			if (tbs == null)

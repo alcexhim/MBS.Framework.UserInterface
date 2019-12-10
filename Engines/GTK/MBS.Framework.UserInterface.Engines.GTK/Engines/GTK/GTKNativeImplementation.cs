@@ -34,6 +34,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			InitializeEventHandlers();
 		}
 
+		protected override bool IsControlVisibleInternal()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			return Internal.GTK.Methods.GtkWidget.gtk_widget_is_visible(handle);
+		}
 		protected override void SetControlVisibilityInternal (bool visible)
 		{
 			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;

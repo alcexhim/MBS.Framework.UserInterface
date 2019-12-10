@@ -37,6 +37,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_widget_get_type();
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_widget_is_visible(IntPtr /*GtkWidget*/ widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show(IntPtr widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show_all(IntPtr widget);

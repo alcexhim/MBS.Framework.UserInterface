@@ -270,7 +270,12 @@ namespace MBS.Framework.UserInterface
 		private bool mvarVisible = true;
 		public bool Visible
 		{
-			get { return mvarVisible; }
+			get
+			{
+				//  if (IsCreated)
+					// mvarVisible = ((this.ControlImplementation)?.IsControlVisible()).GetValueOrDefault(mvarVisible);
+				return mvarVisible;
+			}
 			set
 			{
 				mvarVisible = value;

@@ -31,6 +31,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 		public static extern bool EnumWindows(Delegates.EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
 		[DllImport(LIBRARY_FILENAME_USER32)]
+		public static extern bool IsWindowVisible(IntPtr /*HWND*/ hWnd);
+
+		[DllImport(LIBRARY_FILENAME_USER32)]
 		public static extern IntPtr GetActiveWindow();
 	}
 }

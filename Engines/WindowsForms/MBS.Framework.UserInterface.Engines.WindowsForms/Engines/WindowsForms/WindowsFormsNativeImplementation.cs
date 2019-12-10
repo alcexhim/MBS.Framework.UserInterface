@@ -47,6 +47,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			throw new NotImplementedException();
 		}
+		protected override bool IsControlVisibleInternal()
+		{
+			if (Handle is Win32NativeControl)
+			{
+				return Internal.Windows.Methods.IsWindowVisible((Handle as Win32NativeControl).Handle);
+			}
+			else if (Handle is WindowsFormsNativeControl)
+			{
+				return (Handle as WindowsFormsNativeControl).Handle.Visible;
+			}
+			throw new NotSupportedException();
+		}
 
 		protected override void SetCursorInternal(Cursor value)
 		{

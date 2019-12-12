@@ -199,7 +199,7 @@ namespace MBS.Framework.UserInterface
 		public static Engine[] Get()
 		{
 			List<Engine> list = new List<Engine>();
-			Type[] engineTypes = MBS.Framework.UserInterface.Common.Reflection.GetAvailableTypes(new Type[] { typeof(Engine) });
+			Type[] engineTypes = Reflection.GetAvailableTypes(new Type[] { typeof(Engine) });
 
 			foreach (Type type in engineTypes)
 			{

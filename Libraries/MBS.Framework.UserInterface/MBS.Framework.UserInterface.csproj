@@ -40,7 +40,6 @@
     <Compile Include="Alignment.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="CommonDialog.cs" />
-    <Compile Include="Common\Reflection.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="Controls\Button.cs" />

@@ -23,6 +23,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		public System.Windows.Forms.FormStartPosition WindowStartPositionToFormStartPosition(WindowStartPosition value)
+		{
+			switch (value)
+			{
+				case WindowStartPosition.CenterParent: return System.Windows.Forms.FormStartPosition.CenterParent;
+				case WindowStartPosition.Center: return System.Windows.Forms.FormStartPosition.CenterScreen;
+				case WindowStartPosition.Manual: return System.Windows.Forms.FormStartPosition.Manual;
+				case WindowStartPosition.DefaultBounds: return System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+				case WindowStartPosition.Default: return System.Windows.Forms.FormStartPosition.WindowsDefaultLocation;
+			}
+			throw new NotSupportedException();
+		}
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			Window window = (control as Window);
@@ -44,6 +57,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			}
 			form.Size = new System.Drawing.Size((int)window.Size.Width, (int)window.Size.Height);
+			form.StartPosition = WindowStartPositionToFormStartPosition(window.StartPosition);
 			form.Shown += form_Shown;
 
 			System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
@@ -69,10 +83,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// sb.Visible = window.StatusBar.Visible;
 
 			WindowsFormsNativeControl ncContainer = (base.CreateControlInternal(control) as WindowsFormsNativeControl);
+			ncContainer.Handle.Dock = System.Windows.Forms.DockStyle.Fill;
 			tsc.ContentPanel.Controls.Add(ncContainer.Handle);
 
+			tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 			form.Controls.Add(tsc);
 			form.Text = window.Text;
+			form.AutoSize = true;
 			return new WindowsFormsNativeControl (form);
 		}
 

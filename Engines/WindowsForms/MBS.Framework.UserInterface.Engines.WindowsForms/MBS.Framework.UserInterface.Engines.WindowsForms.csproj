@@ -40,6 +40,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WindowsFormsEngine.cs" />
@@ -66,7 +68,125 @@
     <Compile Include="Engines\WindowsForms\Controls\TabContainerImplementation.cs" />
     <Compile Include="WindowsFormsNativeImage.cs" />
     <Compile Include="WindowsFormsNativeGraphics.cs" />
+    <Compile Include="Internal\Windows\Constants.cs" />
+    <Compile Include="WindowsFormsCommandLine.cs" />
     <Compile Include="Engines\WindowsForms\Controls\ButtonImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\CheckBoxImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\DockingContainerImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.DockDragHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\SplitterBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockContentHandler.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\IImageService.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPaneStripBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.Appearance.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Measures.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.AutoHideWindow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Enums.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockAreasEditor.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockContentCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockContentEventArgs.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\NestedDockingStatus.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripExtender.Designer.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripExtender.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPane.SplitterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\PatchController.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Interfaces.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanelExtender.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockWindow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Strings.Designer.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DummyControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.Persistor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DragForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\ThemeBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\FloatWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.FocusManager.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.MdiClientController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Localization.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\AutoHideStripBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanelSkin.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\InertButtonBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanelColorPalette.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockOutlineBase.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.DragHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\FloatWindowCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\NestedPaneCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\IPaintingService.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripRenderer.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.SplitterDragHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\VisualStudioColorTable.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPaneCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPanel.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\VisibleNestedPaneCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockWindowCollection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DockPaneCaptionBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\DrawingRoutines.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\LayoutUtils.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Configuration\PatchSection.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Helpers\Win32Helper.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Helpers\DrawHelper.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Helpers\ResourceHelper.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Helpers\DockHelper.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Win32\NativeMethods.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\Internal\Docking\DockPanelSuite\Win32\Enums.cs" />
+    <Compile Include="Engines\WindowsForms\Dialogs\FileDialogImplementation.cs" />
+    <Compile Include="WindowsFormsNativeDialog.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\ComboBoxImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\CustomControlImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\DropDownButtonImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\LabelImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\PictureFrameImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\PopupWindowImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\RibbonControlImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\SplitContainerImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\TextBoxImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\ToolbarImplementation.cs" />
+    <Compile Include="Engines\WindowsForms\Controls\ListViewImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -78,18 +198,7 @@
       <Name>MBS.Framework.UserInterface</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Engines\" />
-    <Folder Include="Engines\WindowsForms\" />
-    <Folder Include="Engines\WindowsForms\Controls\" />
-    <Folder Include="Printing\" />
-    <Folder Include="Internal\" />
-    <Folder Include="Internal\Linux\" />
-    <Folder Include="Internal\Linux\GTK\" />
-    <Folder Include="Internal\Linux\GLib\" />
-    <Folder Include="Internal\Linux\GObject\" />
-    <Folder Include="Internal\Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

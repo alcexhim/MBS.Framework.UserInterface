@@ -1,5 +1,5 @@
 ﻿//
-//  Methods.cs
+//  WindowsFormsNativeDialog.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
@@ -19,23 +19,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.InteropServices;
-
-namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
+namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
-	internal static class Methods
+	public class WindowsFormsNativeDialog : NativeControl
 	{
-		public const string LIBRARY_FILENAME_USER32 = "user32";
-
-		[DllImport(LIBRARY_FILENAME_USER32)]
-		public static extern bool EnumWindows(Delegates.EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-		[DllImport(LIBRARY_FILENAME_USER32)]
-		public static extern bool IsWindowVisible(IntPtr /*HWND*/ hWnd);
-
-		[DllImport(LIBRARY_FILENAME_USER32)]
-		public static extern IntPtr GetActiveWindow();
-		[DllImport(LIBRARY_FILENAME_USER32)]
-		public static extern bool ShowWindow(IntPtr /*HWND*/ hWnd, Constants.ShowWindowCommand nCmdShow);
+		public System.Windows.Forms.CommonDialog Handle { get; private set; }
+		public WindowsFormsNativeDialog(System.Windows.Forms.CommonDialog handle)
+		{
+			Handle = handle;
+		}
 	}
 }

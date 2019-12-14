@@ -26,6 +26,39 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			UpdateSystemColor(SystemColor.TextBoxForegroundColor, System.Drawing.SystemColors.WindowText);
 		}
 
+		public static System.Drawing.ContentAlignment HorizontalVerticalAlignmentToContentAlignment(HorizontalAlignment ha, VerticalAlignment va)
+		{
+			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Bottom) return System.Drawing.ContentAlignment.BottomCenter;
+			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Middle) return System.Drawing.ContentAlignment.MiddleCenter;
+			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Top) return System.Drawing.ContentAlignment.TopCenter;
+			if (ha == HorizontalAlignment.Left && va == VerticalAlignment.Bottom) return System.Drawing.ContentAlignment.BottomLeft;
+			if (ha == HorizontalAlignment.Left && va == VerticalAlignment.Middle) return System.Drawing.ContentAlignment.MiddleLeft;
+			if (ha == HorizontalAlignment.Left && va == VerticalAlignment.Top) return System.Drawing.ContentAlignment.TopLeft;
+			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Bottom) return System.Drawing.ContentAlignment.BottomRight;
+			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Middle) return System.Drawing.ContentAlignment.MiddleRight;
+			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Top) return System.Drawing.ContentAlignment.TopRight;
+			throw new NotSupportedException();
+		}
+
+		public static System.Windows.Forms.Orientation OrientationToWindowsFormsOrientation(Orientation orientation)
+		{
+			switch (orientation)
+			{
+				case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
+				case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
+			}
+			throw new NotSupportedException();
+		}
+		public static Orientation WindowsFormsOrientationToOrientation(System.Windows.Forms.Orientation orientation)
+		{
+			switch (orientation)
+			{
+				case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
+				case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
+			}
+			throw new NotSupportedException();
+		}
+
 		public void UpdateSystemColor(SystemColor color, System.Drawing.Color value)
 		{
 			UpdateSystemColor(color, Color.FromRGBAByte(value.R, value.G, value.B, value.A));
@@ -70,6 +103,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
 			return new WindowsFormsNativeImage(image);
 		}
+
 		protected override Image LoadImage(string filename, string type = null)
 		{
 			System.Drawing.Image image = System.Drawing.Image.FromFile(filename);
@@ -214,14 +248,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (result)
 			{
-				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
-				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
-				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
-				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
-				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
-				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
-				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
-				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+			case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+			case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+			case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+			case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+			case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+			case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+			case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+			case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
 			}
 			return (DialogResult)((int)result);
 		}
@@ -264,13 +298,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			_GetToplevelWindowsRetval.Add(window);
 		}
 
-		protected override Window [] GetToplevelWindowsInternal ()
+		protected override Window[] GetToplevelWindowsInternal()
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-				case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
-				case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
-				default: throw new PlatformNotSupportedException();
+			case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
+			case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
+			default: throw new PlatformNotSupportedException();
 			}
 		}
 
@@ -304,80 +338,112 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return list;
 		}
 
-		protected override int StartInternal (Window waitForClose = null)
+		protected override int StartInternal(Window waitForClose = null)
 		{
 			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
 
-			if (waitForClose != null) {
-				WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl (waitForClose) as WindowsFormsNativeControl);
-				System.Windows.Forms.Application.Run (ncWaitForClose.Handle as System.Windows.Forms.Form);
-			} else {
+			if (waitForClose != null)
+			{
+				WindowsFormsNativeControl ncWaitForClose = (GetHandleForControl(waitForClose) as WindowsFormsNativeControl);
+				System.Windows.Forms.Application.Run(ncWaitForClose.Handle as System.Windows.Forms.Form);
+			}
+			else
+			{
 
 				ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
 				e.CommandLine = new WindowsFormsCommandLine(Environment.GetCommandLineArgs());
 				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
-				System.Windows.Forms.Application.Run ();
+				System.Windows.Forms.Application.Run();
 			}
 			return 0;
 		}
-		protected override void StopInternal (int exitCode)
+		protected override void StopInternal(int exitCode)
 		{
 			System.Windows.Forms.Application.Exit();
 		}
 
-		protected override void ShowNotificationPopupInternal (NotificationPopup popup)
+		protected override void ShowNotificationPopupInternal(NotificationPopup popup)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
-		protected override void SetControlEnabledInternal (Control control, bool value)
+		protected override void SetControlEnabledInternal(Control control, bool value)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
-		protected override Vector2D ClientToScreenCoordinatesInternal (Vector2D point)
+		protected override Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point)
 		{
-			throw new NotImplementedException ();
+			if (!control.IsCreated)
+				return point;
+			return SystemDrawingPointToVector2D((((control.ControlImplementation as WindowsFormsNativeImplementation).Handle as WindowsFormsNativeControl)?.Handle.PointToScreen(Vector2DToSystemDrawingPoint(point))).GetValueOrDefault());
 		}
 
-		protected override void DoEventsInternal ()
+		public static Vector2D SystemDrawingPointToVector2D(System.Drawing.Point v)
 		{
-			System.Windows.Forms.Application.DoEvents ();
+			return new Vector2D(v.X, v.Y);
+		}
+		public static Vector2D SystemDrawingPointFToVector2D(System.Drawing.PointF v)
+		{
+			return new Vector2D(v.X, v.Y);
+		}
+		public static System.Drawing.PointF Vector2DToSystemDrawingPointF(Vector2D point)
+		{
+			return new System.Drawing.PointF((float)point.X, (float)point.Y);
+		}
+		public static System.Drawing.Point Vector2DToSystemDrawingPoint(Vector2D point)
+		{
+			return new System.Drawing.Point((int)point.X, (int)point.Y);
 		}
 
-		protected override Monitor [] GetMonitorsInternal ()
+		public static System.Drawing.SizeF Dimension2DToSystemDrawingSizeF(Dimension2D size)
 		{
-			List<Monitor> list = new List<Monitor> ();
-			foreach (System.Windows.Forms.Screen scr in System.Windows.Forms.Screen.AllScreens) {
-				list.Add (new Monitor (scr.DeviceName, SDRectangleToUWTRectangle(scr.Bounds), SDRectangleToUWTRectangle(scr.WorkingArea)/*, scr.Primary*/));
+			return new System.Drawing.SizeF((float)size.Width, (float)size.Height);
+		}
+		public static System.Drawing.Size Dimension2DToSystemDrawingSize(Dimension2D size)
+		{
+			return new System.Drawing.Size((int)size.Width, (int)size.Height);
+		}
+
+		protected override void DoEventsInternal()
+		{
+			System.Windows.Forms.Application.DoEvents();
+		}
+
+		protected override Monitor[] GetMonitorsInternal()
+		{
+			List<Monitor> list = new List<Monitor>();
+			foreach (System.Windows.Forms.Screen scr in System.Windows.Forms.Screen.AllScreens)
+			{
+				list.Add(new Monitor(scr.DeviceName, SDRectangleToUWTRectangle(scr.Bounds), SDRectangleToUWTRectangle(scr.WorkingArea)/*, scr.Primary*/));
 			}
-			return list.ToArray ();
+			return list.ToArray();
 		}
 
-		private Rectangle SDRectangleToUWTRectangle (System.Drawing.Rectangle rect)
+		private Rectangle SDRectangleToUWTRectangle(System.Drawing.Rectangle rect)
 		{
-			return new Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+			return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		protected override void RepaintCustomControl (CustomControl control, int x, int y, int width, int height)
+		protected override void RepaintCustomControl(CustomControl control, int x, int y, int width, int height)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
-		protected override bool IsControlDisposedInternal (Control ctl)
+		protected override bool IsControlDisposedInternal(Control ctl)
 		{
-			if (!IsControlCreated (ctl)) return true;
-			return (GetHandleForControl (ctl) as WindowsFormsNativeControl).Handle.IsDisposed;
+			if (!IsControlCreated(ctl)) return true;
+			return (GetHandleForControl(ctl) as WindowsFormsNativeControl).Handle.IsDisposed;
 		}
-		protected override bool IsControlEnabledInternal (Control control)
+		protected override bool IsControlEnabledInternal(Control control)
 		{
-			return (GetHandleForControl (control) as WindowsFormsNativeControl).Handle.Enabled;
+			return (GetHandleForControl(control) as WindowsFormsNativeControl).Handle.Enabled;
 		}
 
-		protected override bool InitializeInternal ()
+		protected override bool InitializeInternal()
 		{
-			System.Windows.Forms.Application.EnableVisualStyles ();
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault (false);
+			System.Windows.Forms.Application.EnableVisualStyles();
+			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			return true;
 		}
 
@@ -389,6 +455,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				list.Add(new WindowsFormsPrinter(p));
 			}
 			return list.ToArray();
+		}
+
+		public static System.Windows.Forms.ColumnHeaderStyle HeaderStyleToSWFHeaderStyle(ColumnHeaderStyle headerStyle)
+		{
+			switch (headerStyle)
+			{
+				case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
+				case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+				case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
+			}
+			throw new NotSupportedException();
 		}
 
 		protected override void PrintInternal(PrintJob job)

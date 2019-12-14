@@ -45,7 +45,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void SetControlVisibilityInternal(bool visible)
 		{
-			throw new NotImplementedException();
+			if (Handle is Win32NativeControl)
+			{
+				Internal.Windows.Methods.ShowWindow((Handle as Win32NativeControl).Handle, visible ? Internal.Windows.Constants.ShowWindowCommand.Show : Internal.Windows.Constants.ShowWindowCommand.Hide);
+				return;
+			}
+			else if (Handle is WindowsFormsNativeControl)
+			{
+				(Handle as WindowsFormsNativeControl).Handle.Visible = visible;
+				return;
+			}
+			throw new NotSupportedException();
 		}
 		protected override bool IsControlVisibleInternal()
 		{

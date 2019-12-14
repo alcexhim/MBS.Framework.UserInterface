@@ -1,4 +1,5 @@
-﻿using MBS.Framework.Drawing;
+﻿using System;
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
@@ -33,6 +34,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			else if (layout is GridLayout)
 			{
 				hContainer = new System.Windows.Forms.TableLayoutPanel();
+			}
+			else if (layout is FlowLayout)
+			{
+				hContainer = new System.Windows.Forms.FlowLayoutPanel();
 			}
 
 			if (hContainer != null)
@@ -109,6 +114,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					}
 				}
 			}
+			else if (layout is FlowLayout)
+			{
+				(hContainer as System.Windows.Forms.FlowLayoutPanel).Controls.Add(ctlNative);
+			}
 			else
 			{
 				hContainer.Controls.Add(ctlNative);
@@ -139,11 +148,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 
 		protected override void RegisterDropTargetInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		protected override void SetControlVisibilityInternal(bool visible)
 		{
 			throw new System.NotImplementedException();
 		}

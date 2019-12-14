@@ -1308,7 +1308,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				string pattern2 = pattern.Trim();
 
 				StringBuilder sbp = new StringBuilder();
-				if (pattern2.StartsWith("*.") || pattern2.StartsWith("."))
+				if (pattern2 != "*.*" && (pattern2.StartsWith("*.") || pattern2.StartsWith(".")))
 				{
 					if (pattern[0] == '*')
 						pattern2 = pattern2.Substring(1);

@@ -107,7 +107,7 @@ namespace MBS.Framework.UserInterface
 		/// <param name="point">Point.</param>
 		public Vector2D ClientToScreenCoordinates(Vector2D point)
 		{
-			return Application.Engine.ClientToScreenCoordinates(point);
+			return Application.Engine.ClientToScreenCoordinates(this, point);
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
@@ -547,6 +547,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public Dimension2D MaximumSize { get; set; } = Dimension2D.Empty;
 		public Dimension2D MinimumSize { get; set; } = Dimension2D.Empty;
 
 		public void Invalidate()

@@ -59,6 +59,8 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		private DockingItemBehavior mvarBehavior = DockingItemBehavior.Normal;
 		public DockingItemBehavior Behavior {  get { return mvarBehavior;  } set { mvarBehavior = value; } }
 
+		public bool AutoHide { get; set; } = false;
+
 		public DockingItem(string title, Control child)
 			: this(title, title, child)
 		{

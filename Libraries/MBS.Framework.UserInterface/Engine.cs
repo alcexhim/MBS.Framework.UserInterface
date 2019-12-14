@@ -330,10 +330,10 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		protected abstract Vector2D ClientToScreenCoordinatesInternal(Vector2D point);
-		public Vector2D ClientToScreenCoordinates(Vector2D point)
+		protected abstract Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point);
+		public Vector2D ClientToScreenCoordinates(Control control, Vector2D point)
 		{
-			return ClientToScreenCoordinatesInternal(point);
+			return ClientToScreenCoordinatesInternal(control, point);
 		}
 
 		/// <summary>

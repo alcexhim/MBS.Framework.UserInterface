@@ -120,7 +120,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return Internal.GTK.Methods.GtkWindow.gtk_window_has_toplevel_focus(hWindow);
 		}
 
-		protected override Vector2D ClientToScreenCoordinatesInternal(Vector2D point)
+		protected override Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point)
 		{
 			return point;
 		}

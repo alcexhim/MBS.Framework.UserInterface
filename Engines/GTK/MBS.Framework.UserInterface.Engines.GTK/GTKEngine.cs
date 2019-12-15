@@ -68,6 +68,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			byte[] buffer = System.IO.File.ReadAllBytes(filename);
 			return LoadImage(hLoader, buffer, ref hError);
 		}
+
 		protected override Image LoadImageByName(string name, int size)
 		{
 			IntPtr hError = IntPtr.Zero;
@@ -920,250 +921,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				parentHandle = (GetHandleForControl(parent) as GTKNativeControl).Handle;
 			}
 
-			IntPtr handle = IntPtr.Zero;
-			List<Button> buttons = new List<Button>();
-
-			if (dialog is MessageDialog)
+			Type[] types = Reflection.GetAvailableTypes(new Type[] { typeof(GTKDialogImplementation) });
+			for (int i = 0; i < types.Length; i++)
 			{
-				MessageDialog dlg = (dialog as MessageDialog);
+				if (types[i].IsAbstract) continue;
 
-				Internal.GTK.Constants.GtkMessageType messageType = Internal.GTK.Constants.GtkMessageType.Other;
-				switch (dlg.Icon)
+				object[] atts = (types[i].GetCustomAttributes(typeof(ControlImplementationAttribute), false));
+				if (atts.Length > 0)
 				{
-					case MessageDialogIcon.Error:
+					ControlImplementationAttribute cia = (atts[0] as ControlImplementationAttribute);
+					if (cia != null)
 					{
-						messageType = Internal.GTK.Constants.GtkMessageType.Error;
-						break;
-					}
-					case MessageDialogIcon.Information:
-					{
-						messageType = Internal.GTK.Constants.GtkMessageType.Info;
-						break;
-					}
-					case MessageDialogIcon.Warning:
-					{
-						messageType = Internal.GTK.Constants.GtkMessageType.Warning;
-						break;
-					}
-					case MessageDialogIcon.Question:
-					{
-						messageType = Internal.GTK.Constants.GtkMessageType.Question;
-						break;
-					}
-				}
-
-				Internal.GTK.Constants.GtkButtonsType buttonsType = Internal.GTK.Constants.GtkButtonsType.None;
-				switch (dlg.Buttons)
-				{
-					case MessageDialogButtons.AbortRetryIgnore:
-					case MessageDialogButtons.CancelTryContinue:
-					case MessageDialogButtons.RetryCancel:
-					case MessageDialogButtons.YesNoCancel:
-					{
-						buttonsType = Internal.GTK.Constants.GtkButtonsType.None;
-						break;
-					}
-					case MessageDialogButtons.OK:
-					{
-						buttonsType = Internal.GTK.Constants.GtkButtonsType.OK;
-						break;
-					}
-					case MessageDialogButtons.OKCancel:
-					{
-						buttonsType = Internal.GTK.Constants.GtkButtonsType.OKCancel;
-						break;
-					}
-					case MessageDialogButtons.YesNo:
-					{
-						buttonsType = Internal.GTK.Constants.GtkButtonsType.YesNo;
-						break;
-					}
-				}
-				handle = Internal.GTK.Methods.GtkMessageDialog.gtk_message_dialog_new(parentHandle, Internal.GTK.Constants.GtkDialogFlags.Modal, messageType, buttonsType, dlg.Content);
-
-				switch (dlg.Buttons)
-				{
-					case MessageDialogButtons.AbortRetryIgnore:
-					{
-						buttons.Add(new Button("_Abort", DialogResult.Abort));
-						buttons.Add(new Button("_Retry", DialogResult.Retry));
-						buttons.Add(new Button("_Ignore", DialogResult.Ignore));
-						break;
-					}
-					case MessageDialogButtons.CancelTryContinue:
-					{
-						buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Abort));
-						buttons.Add(new Button("T_ry Again", DialogResult.Retry));
-						buttons.Add(new Button("C_ontinue", DialogResult.Ignore));
-						break;
-					}
-					case MessageDialogButtons.RetryCancel:
-					{
-						buttons.Add(new Button("_Retry", DialogResult.Retry));
-						buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Ignore));
-						break;
-					}
-					case MessageDialogButtons.YesNoCancel:
-					{
-						buttons.Add(new Button(ButtonStockType.Yes, DialogResult.Abort));
-						buttons.Add(new Button(ButtonStockType.No, DialogResult.Retry));
-						buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Ignore));
-						break;
-					}
-				}
-			}
-			else if (dialog is FileDialog)
-			{
-				handle = FileDialog_Create(dialog as FileDialog);
-			}
-			else if (dialog is ColorDialog)
-			{
-				handle = ColorDialog_Create(dialog as ColorDialog);
-			}
-			else if (dialog is FontDialog)
-			{
-				handle = FontDialog_Create(dialog as FontDialog);
-			}
-			else if (dialog is AboutDialog)
-			{
-				handle = AboutDialog_Create(dialog as AboutDialog);
-			}
-			else if (dialog is PrintDialog)
-			{
-				GTKNativeControl nc = ((new Dialogs.PrintDialogImplementation(this, dialog).CreateControl(dialog)) as GTKNativeControl);
-				handle = nc.Handle;
-
-				DialogResult result1 = PrintDialog_Run(parentHandle, handle);
-				return result1;
-			}
-			else if (dialog is AppChooserDialog)
-			{
-				handle = AppChooserDialog_Create(dialog as AppChooserDialog);
-			}
-			else
-			{
-				handle = Dialog_Create(dialog, parentHandle);
-			}
-
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, dialog.Decorated);
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
-
-			Internal.GObject.Methods.g_signal_connect(handle, "delete_event", gc_delete_event_handler);
-
-			// Add any additional buttons to the end of the buttons list
-			foreach (Button button in dialog.Buttons)
-			{
-				buttons.Add(button);
-			}
-
-			IntPtr[] hButtons = Dialog_AddButtons(handle, buttons);
-
-			if (dialog.DefaultButton != null)
-			{
-				IntPtr hButtonDefault = (GetHandleForControl(dialog.DefaultButton) as GTKNativeControl).Handle;
-				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
-			}
-
-			// if (dialog.AutoUpgradeEnabled) {
-			Internal.GLib.Structures.Value val = new MBS.Framework.UserInterface.Engines.GTK.Internal.GLib.Structures.Value(1);
-			// }
-
-			DialogResult result = DialogResult.None;
-
-			InvokeMethod(dialog, "OnCreated", EventArgs.Empty);
-
-			if (handle != IntPtr.Zero)
-			{
-				int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
-
-				switch (nativeResult)
-				{
-					case (int)Internal.GTK.Constants.GtkResponseType.OK:
-					case (int)Internal.GTK.Constants.GtkResponseType.Accept:
-					{
-						if (dialog is FileDialog)
+						// yeah... that's a hack right ---------------------------------->there
+						// it can be fixed, but we'd have to figure out the best way to implement CustomDialog vs. CommonDialog without
+						// having the GenericDialogImplementation hijack the CommonDialog stuff if it comes up first in the list
+						if (dialog.GetType().IsSubclassOf(cia.ControlType) || dialog.GetType() == cia.ControlType || (dialog.GetType().BaseType == typeof(Dialog) && cia.ControlType.BaseType == typeof(Dialog)))
 						{
-							FileDialog_Accept(dialog as FileDialog, handle);
+							GTKDialogImplementation di = (types[i].Assembly.CreateInstance(types[i].FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, dialog }, System.Globalization.CultureInfo.CurrentCulture, null) as GTKDialogImplementation);
+							GTKNativeControl nc = (di.CreateControl(dialog) as GTKNativeControl);
+							DialogResult result1 = di.Run(parentHandle);
+							return result1;
 						}
-						else if (dialog is ColorDialog)
-						{
-							ColorDialog_Accept(dialog as ColorDialog, handle);
-						}
-						else if (dialog is FontDialog)
-						{
-							FontDialog_Accept(dialog as FontDialog, handle);
-						}
-						result = DialogResult.OK;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Apply:
-					{
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Cancel:
-					{
-						result = DialogResult.Cancel;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Close:
-					{
-						result = DialogResult.Cancel;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.DeleteEvent:
-					{
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Help:
-					{
-						result = DialogResult.Help;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.No:
-					{
-						result = DialogResult.No;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.None:
-					{
-						result = DialogResult.None;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Reject:
-					{
-						result = DialogResult.Cancel;
-						break;
-					}
-					case (int)Internal.GTK.Constants.GtkResponseType.Yes:
-					{
-						result = DialogResult.Yes;
-						break;
 					}
 				}
-
-				// FIXME: this results in corruption; better to cancel dialog close event?
-				if ((nativeResult != 0 && nativeResult != -1) || result == DialogResult.None)
-				{
-					if (result == DialogResult.None)
-						result = dialog.DialogResult;
-				}
-
-				/*
-				for (int i = 0; i < hButtons.Length; i++)
-				{
-					Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hButtons[i]);
-				}
-				*/
-				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
 			}
-			return result;
-		}
-
-		private IntPtr AppChooserDialog_Create(AppChooserDialog dialog)
-		{
-			IntPtr handle = Internal.GTK.Methods.GtkAppChooserDialog.gtk_app_chooser_dialog_new_for_content_type(CommonDialog_GetParentHandle(dialog), Internal.GTK.Constants.GtkDialogFlags.Modal, dialog.ContentType);
-			return handle;
+			return DialogResult.None;
 		}
 
 		private DialogResult GtkPrintOperationResultToDialogResult(Internal.GTK.Constants.GtkPrintOperationResult value)
@@ -1182,232 +964,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 
 		#region Common Dialog
-		private IntPtr CommonDialog_GetParentHandle(CommonDialog dlg)
+		public IntPtr CommonDialog_GetParentHandle(Dialog dlg)
 		{
 			if (dlg.Parent != null && IsControlCreated(dlg.Parent))
 			{
 				return (GetHandleForControl(dlg.Parent) as GTKNativeControl).Handle;
 			}
 			return IntPtr.Zero;
-		}
-		#endregion
-		#region File Dialog
-		private IntPtr FileDialog_Create(FileDialog dlg)
-		{
-			string title = dlg.Text;
-
-			Internal.GTK.Constants.GtkFileChooserAction fca = Internal.GTK.Constants.GtkFileChooserAction.Open;
-			switch (dlg.Mode)
-			{
-				case FileDialogMode.CreateFolder:
-				{
-					fca = Internal.GTK.Constants.GtkFileChooserAction.CreateFolder;
-					if (title == null)
-						title = "Create Folder";
-					break;
-				}
-				case FileDialogMode.Open:
-				{
-					fca = Internal.GTK.Constants.GtkFileChooserAction.Open;
-					if (title == null)
-						title = "Open";
-					break;
-				}
-				case FileDialogMode.Save:
-				{
-					fca = Internal.GTK.Constants.GtkFileChooserAction.Save;
-					if (title == null)
-						title = "Save";
-					break;
-				}
-				case FileDialogMode.SelectFolder:
-				{
-					fca = Internal.GTK.Constants.GtkFileChooserAction.SelectFolder;
-					if (title == null)
-						title = "Select Folder";
-					break;
-				}
-			}
-
-			IntPtr handle = Internal.GTK.Methods.GtkFileChooserDialog.gtk_file_chooser_dialog_new(title, CommonDialog_GetParentHandle(dlg), fca);
-
-			// set up the file filters
-			foreach (FileDialogFileNameFilter filter in dlg.FileNameFilters)
-			{
-				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(handle, CreateGTKFileChooserFilter(filter));
-			}
-
-			string accept_button = "gtk-save";
-			string cancel_button = "gtk-cancel";
-
-			switch (dlg.Mode)
-			{
-				case FileDialogMode.CreateFolder:
-				case FileDialogMode.Save:
-				{
-					accept_button = StockTypeToString(StockType.Save);
-					break;
-				}
-				case FileDialogMode.SelectFolder:
-				case FileDialogMode.Open:
-				{
-					accept_button = StockTypeToString(StockType.Open);
-					break;
-				}
-			}
-
-			switch (System.Environment.OSVersion.Platform)
-			{
-				case PlatformID.MacOSX:
-				case PlatformID.Unix:
-				{
-					// buttons go cancel, then accept
-					// gnome3 : no longer display explicitcancel button in UI
-					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
-					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
-					break;
-				}
-				case PlatformID.Win32NT:
-				case PlatformID.Win32S:
-				case PlatformID.Win32Windows:
-				case PlatformID.WinCE:
-				case PlatformID.Xbox:
-				{
-					// buttons go accept, then cancel
-					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, accept_button, Internal.GTK.Constants.GtkResponseType.Accept);
-					Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button(handle, cancel_button, Internal.GTK.Constants.GtkResponseType.Cancel);
-					break;
-				}
-			}
-
-			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_select_multiple(handle, dlg.MultiSelect);
-			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_do_overwrite_confirmation(handle, dlg.ConfirmOverwrite);
-			if (dlg.SelectedFileNames.Count > 0)
-			{
-				if (System.IO.File.Exists(dlg.SelectedFileNames[0]) && dlg.HighlightExistingFile)
-				{
-					Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_filename(handle, dlg.SelectedFileNames[0]);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_current_name(handle, dlg.SelectedFileNames[0]);
-				}
-			}
-			return handle;
-		}
-
-		private static Dictionary<FileDialogFileNameFilter, IntPtr> _FileNameFilterHandles = new Dictionary<FileDialogFileNameFilter, IntPtr>();
-		private static Dictionary<IntPtr, FileDialogFileNameFilter> _HandleFileNameFilters = new Dictionary<IntPtr, FileDialogFileNameFilter>();
-		internal static IntPtr CreateGTKFileChooserFilter(FileDialogFileNameFilter filter)
-		{
-			IntPtr hFileFilter = Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_new();
-			Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_set_name(hFileFilter, filter.Title);
-			string[] patterns = filter.Filter.Split(new char[] { ';' });
-			foreach (string pattern in patterns)
-			{
-				string pattern2 = pattern.Trim();
-
-				StringBuilder sbp = new StringBuilder();
-				if (pattern2 != "*.*" && (pattern2.StartsWith("*.") || pattern2.StartsWith(".")))
-				{
-					if (pattern[0] == '*')
-						pattern2 = pattern2.Substring(1);
-
-					sbp.Append("*.");
-					// now we have .xyz
-					// convert it to .[xX][yY][zZ]
-					if (!filter.CaseSensitive)
-					{
-						for (int i = 1; i < pattern2.Length; i++)
-						{
-							sbp.Append('[');
-							sbp.Append(Char.ToLower(pattern2[i]));
-							sbp.Append(Char.ToUpper(pattern2[i]));
-							sbp.Append(']');
-						}
-					}
-				}
-				else
-				{
-					sbp.Append(pattern);
-				}
-				Internal.GTK.Methods.GtkFileFilter.gtk_file_filter_add_pattern(hFileFilter, sbp.ToString());
-			}
-
-			_FileNameFilterHandles[filter] = hFileFilter;
-			_HandleFileNameFilters[hFileFilter] = filter;
-			return hFileFilter;
-		}
-		internal static FileDialogFileNameFilter GetGTKFileChooserFilter(IntPtr handle)
-		{
-			if (_HandleFileNameFilters.ContainsKey(handle))
-				return _HandleFileNameFilters[handle];
-			return null;
-		}
-		internal static IntPtr GetHandleForGTKFileChooserFilter(FileDialogFileNameFilter handle)
-		{
-			if (_FileNameFilterHandles.ContainsKey(handle))
-				return _FileNameFilterHandles[handle];
-			return IntPtr.Zero;
-		}
-		internal static bool UnregisterGTKFileChooserFilter(FileDialogFileNameFilter handle)
-		{
-			if (_FileNameFilterHandles.ContainsKey(handle))
-			{
-				_HandleFileNameFilters.Remove(_FileNameFilterHandles[handle]);
-				_FileNameFilterHandles.Remove(handle);
-				return true;
-			}
-			return false;
-		}
-
-		private void FileDialog_Accept(FileDialog dlg, IntPtr handle)
-		{
-			string[] fileNames = Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_get_filenames_managed (handle);
-			foreach (string fileName in fileNames) {
-				dlg.SelectedFileNames.Add (fileName);
-			}
-		}
-		#endregion
-		#region Color Dialog
-		private IntPtr ColorDialog_Create(ColorDialog dlg)
-		{
-			string title = dlg.Text;
-			if (title == null)
-				title = "Select Color";
-
-			IntPtr handle = Internal.GTK.Methods.GtkColorDialog.gtk_color_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
-			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_set_use_alpha(handle, true);
-
-			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
-			rgba.alpha = dlg.SelectedColor.A;
-			rgba.blue = dlg.SelectedColor.B;
-			rgba.green = dlg.SelectedColor.G;
-			rgba.red = dlg.SelectedColor.R;
-			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_set_rgba(handle, ref rgba);
-			return handle;
-		}
-		private void ColorDialog_Accept(ColorDialog dlg, IntPtr handle)
-		{
-			Internal.GDK.Structures.GdkRGBA color = new Internal.GDK.Structures.GdkRGBA();
-			Internal.GTK.Methods.GtkColorDialog.gtk_color_chooser_get_rgba(handle, out color);
-			dlg.SelectedColor = Color.FromRGBADouble(color.red, color.green, color.blue, color.alpha);
-		}
-		#endregion
-		#region Font Dialog
-		private IntPtr FontDialog_Create(FontDialog dlg)
-		{
-			string title = dlg.Text;
-			if (title == null)
-				title = "Select Font";
-
-			IntPtr handle = Internal.GTK.Methods.GtkFontChooserDialog.gtk_font_dialog_new(title, CommonDialog_GetParentHandle(dlg), !dlg.AutoUpgradeEnabled);
-			return handle;
-		}
-		private void FontDialog_Accept(FontDialog dlg, IntPtr handle)
-		{
-			MBS.Framework.UserInterface.Drawing.Font font = Internal.GTK.Methods.GtkFontChooserDialog.gtk_font_dialog_get_font(handle, !dlg.AutoUpgradeEnabled);
-			dlg.SelectedFont = font;
 		}
 		#endregion
 		#region About Dialog
@@ -1489,14 +1052,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 		#endregion
 		#region Print Dialog
-
-		private DialogResult PrintDialog_Run(IntPtr parent, IntPtr handle)
-		{
-			IntPtr error = IntPtr.Zero;
-			Internal.GTK.Constants.GtkResponseType gtkResult = (Internal.GTK.Constants.GtkResponseType) Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
-			return GtkResponseTypeToDialogResult(gtkResult);
-		}
 
 		private Dictionary<Printer, IntPtr> _PrinterToHandle = new Dictionary<Printer, IntPtr>();
 		private Dictionary<IntPtr, Printer> _HandleToPrinter = new Dictionary<IntPtr, Printer>();
@@ -1620,84 +1175,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		#endregion
 		#region Generic Dialog
-		private IntPtr Dialog_AddButton(IntPtr handle, Button button)
-		{
-			/*
-			if (button.ResponseValue == (int)DialogResult.Cancel)
-				return IntPtr.Zero;
-			*/
-
-			IntPtr buttonHandle = IntPtr.Zero;
-			if (!IsControlCreated(button)) CreateControl(button);
-
-			buttonHandle = (GetHandleForControl(button) as GTKNativeControl).Handle;
-
-			if (button.ResponseValue == (int)DialogResult.OK) {
-				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
-				{
-				}
-				else
-				{
-					IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(buttonHandle);
-					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleCtx, "suggested-action");
-				}
-			}
-
-			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);
-
-			int nativeResponseValue = button.ResponseValue;
-			switch (button.ResponseValue)
-			{
-				case (int)DialogResult.Cancel:
-				{
-					nativeResponseValue = (int)Internal.GTK.Constants.GtkResponseType.Cancel;
-					break;
-				}
-				case (int)DialogResult.No:
-				{
-					nativeResponseValue = (int)Internal.GTK.Constants.GtkResponseType.No;
-					break;
-				}
-				case (int)DialogResult.OK:
-				{
-					nativeResponseValue = (int)Internal.GTK.Constants.GtkResponseType.OK;
-					break;
-				}
-				case (int)DialogResult.Yes:
-				{
-					nativeResponseValue = (int)Internal.GTK.Constants.GtkResponseType.Yes;
-					break;
-				}
-			}
-
-			Internal.GTK.Methods.GtkDialog.gtk_dialog_add_action_widget(handle, buttonHandle, nativeResponseValue);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_default(buttonHandle, true);
-
-			// UpdateControlProperties(button, buttonHandle);
-			// above updatecontrolprops call must be called after buttonHandle is realized
-
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(buttonHandle);
-			return buttonHandle;
-		}
-		private IntPtr Dialog_Create(Dialog dlg, IntPtr hParent)
-		{
-			IntPtr handle = Internal.GObject.Methods.g_object_new (Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type (), "transient-for", hParent, "use-header-bar", 1, IntPtr.Zero);
-			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
-
-			IntPtr hText = Marshal.StringToHGlobalAuto (dlg.Text);
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(handle, hText);
-
-			IntPtr hDialogContent = Internal.GTK.Methods.GtkDialog.gtk_dialog_get_content_area(handle);
-
-			NativeControl hContainer = (new Controls.ContainerImplementation(this, dlg)).CreateControl(dlg);
-			// NativeControl hContainer = CreateContainer (dlg);
-
-			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hDialogContent);
-
-			RegisterControlHandle(dlg, new GTKNativeControl(handle));
-			return handle;
-		}
 
 		private void RecursiveShowChildControls(Container container)
 		{
@@ -1718,40 +1195,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show (hCtl);
 				}
 			}
-		}
-
-		private IntPtr[] Dialog_AddButtons(IntPtr handle, List<Button> buttons)
-		{
-			List<IntPtr> list = new List<IntPtr>();
-			switch (Environment.OSVersion.Platform)
-			{
-				case PlatformID.MacOSX:
-				case PlatformID.Unix:
-				{
-					for (int i = buttons.Count - 1; i > -1; i--)
-					{
-						IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
-						if (hButton == IntPtr.Zero)
-							continue;
-						list.Add(hButton);
-					}
-					break;
-				}
-				case PlatformID.Win32NT:
-				case PlatformID.Win32S:
-				case PlatformID.Win32Windows:
-				case PlatformID.WinCE:
-				case PlatformID.Xbox:
-				{
-					for (int i = 0; i < buttons.Count; i++)
-					{
-						IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
-						list.Add(hButton);
-					}
-					break;
-				}
-			}
-			return list.ToArray();
 		}
 		#endregion
 
@@ -1997,20 +1440,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				switch (nid.Status)
 				{
 					case NotificationIconStatus.Hidden:
-						{
-							Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Passive);
-							break;
-						}
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Passive);
+						break;
+					}
 					case NotificationIconStatus.Visible:
-						{
-							Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Active);
-							break;
-						}
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Active);
+						break;
+					}
 					case NotificationIconStatus.Attention:
-						{
-							Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Attention);
-							break;
-						}
+					{
+						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Attention);
+						break;
+					}
 				}
 			}
 			catch
@@ -2071,22 +1514,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		internal Internal.GTK.Constants.GtkPositionType RelativePositionToGtkPositionType(RelativePosition value)
 		{
-			switch (value) {
-			case RelativePosition.Left: return Internal.GTK.Constants.GtkPositionType.Left;
-			case RelativePosition.Right: return Internal.GTK.Constants.GtkPositionType.Right;
-			case RelativePosition.Top: return Internal.GTK.Constants.GtkPositionType.Top;
-			case RelativePosition.Bottom: return Internal.GTK.Constants.GtkPositionType.Bottom;
+			switch (value)
+			{
+				case RelativePosition.Left: return Internal.GTK.Constants.GtkPositionType.Left;
+				case RelativePosition.Right: return Internal.GTK.Constants.GtkPositionType.Right;
+				case RelativePosition.Top: return Internal.GTK.Constants.GtkPositionType.Top;
+				case RelativePosition.Bottom: return Internal.GTK.Constants.GtkPositionType.Bottom;
 			}
 
 			return Internal.GTK.Constants.GtkPositionType.Left;
 		}
 		internal RelativePosition GtkPositionTypeToRelativePosition(Internal.GTK.Constants.GtkPositionType value)
 		{
-			switch (value) {
-			case Internal.GTK.Constants.GtkPositionType.Left: return RelativePosition.Left;
-			case Internal.GTK.Constants.GtkPositionType.Right: return RelativePosition.Right;
-			case Internal.GTK.Constants.GtkPositionType.Top: return RelativePosition.Top;
-			case Internal.GTK.Constants.GtkPositionType.Bottom: return RelativePosition.Bottom;
+			switch (value)
+			{
+				case Internal.GTK.Constants.GtkPositionType.Left: return RelativePosition.Left;
+				case Internal.GTK.Constants.GtkPositionType.Right: return RelativePosition.Right;
+				case Internal.GTK.Constants.GtkPositionType.Top: return RelativePosition.Top;
+				case Internal.GTK.Constants.GtkPositionType.Bottom: return RelativePosition.Bottom;
 			}
 			return RelativePosition.Default;
 		}

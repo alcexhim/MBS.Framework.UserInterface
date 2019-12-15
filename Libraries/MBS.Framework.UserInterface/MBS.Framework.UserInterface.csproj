@@ -230,6 +230,7 @@
     <Compile Include="CommandLineOptionValueType.cs" />
     <Compile Include="Controls\FileBrowser\IFileBrowserControl.cs" />
     <Compile Include="TreeModelRowColumnEvent.cs" />
+    <Compile Include="CustomDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

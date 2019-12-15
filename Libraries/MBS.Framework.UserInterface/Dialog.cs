@@ -4,7 +4,7 @@ using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Dialog : Window
+	public abstract class Dialog : Window
 	{
 		private Control mvarParent = null;
 		public new Control Parent { get { return mvarParent; } set { mvarParent = value; } }

@@ -77,24 +77,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			for (int i = 0; i < ctl.FileNameFilters.Count; i++)
 			{
-				IntPtr hFilter = GTKEngine.GetHandleForGTKFileChooserFilter(ctl.FileNameFilters[i]);
+				IntPtr hFilter = Dialogs.FileDialogImplementation.GetHandleForGTKFileChooserFilter(ctl.FileNameFilters[i]);
 				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_remove_filter(hFileBrowser, hFilter);
-				GTKEngine.UnregisterGTKFileChooserFilter(ctl.FileNameFilters[i]);
+				Dialogs.FileDialogImplementation.UnregisterGTKFileChooserFilter(ctl.FileNameFilters[i]);
 			}
 		}
 
 		public void AddFileNameFilter(IFileBrowserControl control, FileDialogFileNameFilter filter)
 		{
 			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(hFileBrowser, GTKEngine.CreateGTKFileChooserFilter(filter));
+			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_add_filter(hFileBrowser, Dialogs.FileDialogImplementation.CreateGTKFileChooserFilter(filter));
 		}
 
 		public void RemoveFileNameFilter(IFileBrowserControl control, FileDialogFileNameFilter filter)
 		{
 			IntPtr hFileBrowser = (Handle as GTKNativeControl).Handle;
-			IntPtr hFilter = GTKEngine.GetHandleForGTKFileChooserFilter(filter);
+			IntPtr hFilter = Dialogs.FileDialogImplementation.GetHandleForGTKFileChooserFilter(filter);
 			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_remove_filter(hFileBrowser, hFilter);
-			GTKEngine.UnregisterGTKFileChooserFilter(filter);
+			Dialogs.FileDialogImplementation.UnregisterGTKFileChooserFilter(filter);
 		}
 	}
 }

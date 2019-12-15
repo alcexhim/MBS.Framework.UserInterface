@@ -151,7 +151,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		protected void RegisterControlHandle(Control control, NativeControl handle)
+		public void RegisterControlHandle(Control control, NativeControl handle)
 		{
 			controlsByHandle[handle] = control;
 			handlesByControl[control] = handle;

@@ -191,6 +191,13 @@
     <Compile Include="Internal\Notify\Methods.cs" />
     <Compile Include="Internal\Pango\Methods.cs" />
     <Compile Include="Printing\GTKPrinter.cs" />
+    <Compile Include="Dialogs\FileDialogImplementation.cs" />
+    <Compile Include="GTKDialogImplementation.cs" />
+    <Compile Include="Dialogs\MessageDialogImplementation.cs" />
+    <Compile Include="Dialogs\ColorDialogImplementation.cs" />
+    <Compile Include="Dialogs\FontDialogImplementation.cs" />
+    <Compile Include="Dialogs\GenericDialogImplementation.cs" />
+    <Compile Include="Dialogs\AppChooserDialogImplementation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

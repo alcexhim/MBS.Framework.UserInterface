@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Dialogs.Native;
 using MBS.Framework.UserInterface.DragDrop;
@@ -30,7 +32,7 @@ using MBS.Framework.UserInterface.Printing;
 namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 {
 	[ControlImplementation(typeof(PrintDialog))]
-	public class PrintDialogImplementation : GTKNativeImplementation, IPrintDialogImplementation
+	public class PrintDialogImplementation : GTKDialogImplementation, IPrintDialogImplementation
 	{
 		public PrintDialogImplementation(Engine engine, Control control)
 			: base(engine, control)
@@ -59,17 +61,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 		{
 		}
 
-		protected override NativeControl CreateControlInternal(Control control)
-		{
-			GTKNativeControl nc = (Engine.GetHandleForControl(control.ParentWindow) as GTKNativeControl);
-			IntPtr hParentWindow = (nc == null ? IntPtr.Zero : nc.Handle);
-
-			IntPtr handle = Internal.GTK.Methods.GtkPrintUnixDialog.gtk_print_unix_dialog_new(control.Text, hParentWindow);
-
-			// Internal.GObject.Methods.g_signal_connect(handle, "begin_print", begin_print_handler);
-			return new GTKNativeControl(handle);
-		}
-
 		protected override void RegisterDragSourceInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 		}
@@ -84,6 +75,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 		protected override void SetFocusInternal()
 		{
+		}
+
+		protected override bool AcceptInternal()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override GTKNativeControl CreateDialogInternal(Dialog dialog, List<Button> buttons)
+		{
+			GTKNativeControl nc = (Engine.GetHandleForControl(dialog.ParentWindow) as GTKNativeControl);
+			IntPtr hParentWindow = (nc == null ? IntPtr.Zero : nc.Handle);
+
+			IntPtr handle = Internal.GTK.Methods.GtkPrintUnixDialog.gtk_print_unix_dialog_new(dialog.Text, hParentWindow);
+
+			// Internal.GObject.Methods.g_signal_connect(handle, "begin_print", begin_print_handler);
+			return new GTKNativeControl(handle);
 		}
 	}
 }

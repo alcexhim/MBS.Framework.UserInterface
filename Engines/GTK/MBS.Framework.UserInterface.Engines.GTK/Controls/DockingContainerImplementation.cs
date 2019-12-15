@@ -14,6 +14,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			DockingItem_MoveFocusChild_Handler = new Internal.GDL.Delegates.GdlMoveFocusChildCallback (DockingItem_MoveFocusChild);
 		}
 
+		public void UpdateDockingItemTitle(DockingItem item, string title)
+		{
+			if (!_HandlesForDockingItem.ContainsKey(item))
+				return;
+
+			IntPtr handle = _HandlesForDockingItem[item];
+			Internal.GDL.Methods.gdl_dock_object_set_long_name(handle, title);
+		}
+
 		public void ClearDockingItems()
 		{
 		}

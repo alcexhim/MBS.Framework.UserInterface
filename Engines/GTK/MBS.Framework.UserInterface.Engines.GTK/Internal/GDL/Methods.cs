@@ -45,5 +45,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		/// <param name="dock">The GdlDock widget to bind it to. Note that this widget must be a type of GdlDock.</param>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_item_unbind(IntPtr item);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_object_set_long_name(IntPtr /*GdlDockObject*/ item, string value);
 	}
 }

@@ -16,6 +16,23 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				_parent = parent;
 			}
 
+			/// <summary>
+			/// Gets the <see cref="DockingItem"/> that contains the specified <see cref="Control" />.
+			/// </summary>
+			/// <param name="childControl">The <see cref="Control" /> to look for.</param>
+			public DockingItem this[Control childControl]
+			{
+				get
+				{
+					for (int i = 0; i < Count; i++)
+					{
+						if (this[i].ChildControl == childControl)
+							return this[i];
+					}
+					return null;
+				}
+			}
+
 			protected override void ClearItems()
 			{
 				(_parent.ControlImplementation as Native.IDockingContainerNativeImplementation).ClearDockingItems();
@@ -51,7 +68,15 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public string Name { get { return mvarName; } set { mvarName = value; } }
 
 		private string mvarTitle = String.Empty;
-		public string Title { get { return mvarTitle; } set { mvarTitle = value; } }
+		public string Title
+		{
+			get { return mvarTitle; }
+			set
+			{
+				mvarTitle = value;
+				(Parent?.ControlImplementation as Native.IDockingContainerNativeImplementation)?.UpdateDockingItemTitle(this, value);
+			}
+		}
 
 		private Control mvarChildControl = null;
 		public Control ChildControl {  get { return mvarChildControl;  } set { mvarChildControl = value; mvarChildControl.SetParent(Parent?.Parent); } }

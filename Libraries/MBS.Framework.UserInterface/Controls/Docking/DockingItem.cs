@@ -65,7 +65,15 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public DockingItemPlacement Placement {  get { return mvarPlacement;  } set { mvarPlacement = value; } }
 
 		private string mvarName = String.Empty;
-		public string Name { get { return mvarName; } set { mvarName = value; } }
+		public string Name
+		{
+			get { return mvarName; }
+			set
+			{
+				mvarName = value;
+				(Parent?.ControlImplementation as Native.IDockingContainerNativeImplementation)?.UpdateDockingItemName(this, value);
+			}
+		}
 
 		private string mvarTitle = String.Empty;
 		public string Title

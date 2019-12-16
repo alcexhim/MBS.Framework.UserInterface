@@ -15,6 +15,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			DockingItem GetCurrentItem();
 			void SetCurrentItem (DockingItem item);
 
+			void UpdateDockingItemName(DockingItem item, string text);
 			void UpdateDockingItemTitle(DockingItem item, string text);
 		}
 	}

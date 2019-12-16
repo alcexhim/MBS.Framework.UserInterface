@@ -38,8 +38,6 @@ namespace MBS.Framework.UserInterface
 			Activated?.Invoke(typeof(Application), e);
 		}
 
-		public static event EventHandler Shutdown;
-
 		/// <summary>
 		/// Gets a collection of <see cref="Context" /> objects representing system, application, user, and custom contexts for settings and other items.
 		/// </summary>
@@ -385,12 +383,29 @@ namespace MBS.Framework.UserInterface
 			return exitCode;
 		}
 
+		public static event System.ComponentModel.CancelEventHandler BeforeShutdown;
+		private static void OnBeforeShutdown(System.ComponentModel.CancelEventArgs e)
+		{
+			BeforeShutdown?.Invoke(typeof(Application), e);
+		}
+
+		public static event EventHandler Shutdown;
+		private static void OnShutdown(EventArgs e)
+		{
+			Shutdown?.Invoke(typeof(Application), e);
+		}
+
 		public static void Stop(int exitCode = 0)
 		{
 			if (mvarEngine == null)
 				return; // why bother getting an engine? we're stopping...
 
+			System.ComponentModel.CancelEventArgs ce = new System.ComponentModel.CancelEventArgs();
+			OnBeforeShutdown(ce);
+			if (ce.Cancel) return;
+
 			mvarEngine.Stop(exitCode);
+			OnShutdown(EventArgs.Empty);
 		}
 
 		public static void DoEvents()

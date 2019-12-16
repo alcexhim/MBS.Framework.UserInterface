@@ -12,6 +12,8 @@ namespace MBS.Framework.UserInterface
 		private Button.ButtonCollection mvarButtons = new Button.ButtonCollection ();
 		public Button.ButtonCollection Buttons { get { return mvarButtons; } }
 
+		public bool AutoAlignButtons { get; set; } = true;
+
 		private Button mvarDefaultButton = null;
 		public Button DefaultButton { get { return mvarDefaultButton; } set { mvarDefaultButton = value; } }
 

@@ -39,8 +39,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 		protected override GTKNativeControl CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
-			IntPtr hParent = (Engine as GTKEngine).CommonDialog_GetParentHandle(dialog);
-			IntPtr handle = Internal.GObject.Methods.g_object_new(Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type(), "transient-for", hParent, "use-header-bar", 1, IntPtr.Zero);
+			IntPtr handle = Internal.GObject.Methods.g_object_new(Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type(), "use-header-bar", 1, IntPtr.Zero);
 			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
 
 			IntPtr hText = Marshal.StringToHGlobalAuto(dialog.Text);

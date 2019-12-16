@@ -217,6 +217,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			DialogResult result = DialogResult.None;
 			if (handle != IntPtr.Zero)
 			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_set_transient_for(handle, parentHandle);
 				int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
 
 				switch (nativeResult)

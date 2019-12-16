@@ -34,6 +34,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_window_set_title(IntPtr window, IntPtr title);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_set_transient_for(IntPtr /*GtkWindow*/ window, IntPtr /*GtkWindow*/ parent);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_window_get_icon_name(IntPtr window);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_icon_name(IntPtr window, string icon_name);

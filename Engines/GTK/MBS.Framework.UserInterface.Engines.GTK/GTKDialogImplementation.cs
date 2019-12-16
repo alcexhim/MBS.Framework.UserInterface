@@ -151,6 +151,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
 		private bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
 		{
+			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(widget) as Window);
+			if (window != null)
+			{
+				System.ComponentModel.CancelEventArgs e = new System.ComponentModel.CancelEventArgs();
+				InvokeMethod(window, "OnClosing", e);
+				if (e.Cancel)
+					return true;
+			}
+
 			// blatently stolen from GTKNativeImplementation
 			// we need to build more GTKNativeImplementation-based dialog impls to avoid code bloat
 
@@ -189,6 +198,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "delete_event", gc_delete_event_handler);
+			// Internal.GObject.Methods.g_signal_connect_after(handle, "destroy", gc_Window_Closed, new IntPtr(0xDEADBEEF));
 
 			// if (dialog.AutoUpgradeEnabled) {
 			Internal.GLib.Structures.Value val = new MBS.Framework.UserInterface.Engines.GTK.Internal.GLib.Structures.Value(1);

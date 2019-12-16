@@ -18,7 +18,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 
 		private Internal.GObject.Delegates.GCallback gc_Window_Activate = null;
-		private Internal.GObject.Delegates.GCallback gc_Window_Closing = null;
+		private Func<IntPtr, IntPtr, bool> gc_Window_Closing = null;
 		private Internal.GObject.Delegates.GCallback gc_Window_Closed = null;
 
 		public string GetIconName()
@@ -101,7 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			gc_MenuItem_Activated = new MBS.Framework.UserInterface.Engines.GTK.Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 
 			gc_Window_Activate = new MBS.Framework.UserInterface.Engines.GTK.Internal.GObject.Delegates.GCallback(Window_Activate);
-			gc_Window_Closing = new MBS.Framework.UserInterface.Engines.GTK.Internal.GObject.Delegates.GCallback(Window_Closing);
+			gc_Window_Closing = new Func<IntPtr, IntPtr, bool>(Window_Closing);
 			gc_Window_Closed = new MBS.Framework.UserInterface.Engines.GTK.Internal.GObject.Delegates.GCallback(Window_Closed);
 		}
 		
@@ -114,14 +114,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			InvokeMethod(window, "OnActivate", EventArgs.Empty);
 		}
 
-		private void Window_Closing(IntPtr handle, IntPtr data)
+		private bool Window_Closing(IntPtr handle, IntPtr data)
 		{
 			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
 			if (window != null)
 			{
 				CancelEventArgs e = new CancelEventArgs();
 				InvokeMethod(window, "OnClosing", e);
+				if (e.Cancel)
+					return true;
 			}
+			return false;
 		}
 
 		private void Window_Closed(IntPtr handle, IntPtr data)
@@ -302,7 +305,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Internal.GObject.Methods.g_signal_connect_after(handle, "show", gc_Window_Activate);
 
-			Internal.GObject.Methods.g_signal_connect(handle, "destroy", gc_Window_Closing, new IntPtr(0xDEADBEEF));
+			Internal.GObject.Methods.g_signal_connect(handle, "delete_event", gc_Window_Closing, new IntPtr(0xDEADBEEF));
 			Internal.GObject.Methods.g_signal_connect_after(handle, "destroy", gc_Window_Closed, new IntPtr(0xDEADBEEF));
 
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)window.Size.Width, (int)window.Size.Height);

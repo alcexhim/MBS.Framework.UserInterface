@@ -364,43 +364,51 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								if (tvc is ListViewColumnText)
 								{
 									IntPtr renderer = IntPtr.Zero;
-									if (tvc is ListViewColumnText)
+									ListViewColumnText tvct = (tvc as ListViewColumnText);
+
+									if (tvct.ValidValues.Count > 0)
 									{
-										ListViewColumnText tvct = (tvc as ListViewColumnText);
+										renderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
 
-										if (tvct.ValidValues.Count > 0)
-										{
-											renderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
+										DefaultTreeModel model = new DefaultTreeModel(new Type[] { typeof(string) });
+										model.TreeModelChanged += Model_TreeModelChanged;
 
-											DefaultTreeModel model = new DefaultTreeModel(new Type[] { typeof(string) });
-											model.TreeModelChanged += Model_TreeModelChanged;
+										NativeTreeModel nTreeModel = (Engine as GTKEngine).CreateTreeModel(model);
+										IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
 
-											NativeTreeModel nTreeModel = (Engine as GTKEngine).CreateTreeModel(model);
-											IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
+										TreeModelForListViewColumn[tvct] = model;
 
-											TreeModelForListViewColumn[tvct] = model;
+										Internal.GObject.Methods.g_object_set_property(renderer, "model", hModel);
 
-											Internal.GObject.Methods.g_object_set_property(renderer, "model", hModel);
+										Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value((int)0);
+										Internal.GObject.Methods.g_object_set_property(renderer, "text_column", ref valTextColumn);
 
-											Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value((int)0);
-											Internal.GObject.Methods.g_object_set_property(renderer, "text_column", ref valTextColumn);
-
-											AddColumnValidValues(tvct, tvct.ValidValues);
-										}
-										else
-										{
-											renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
-										}
-
-										if (renderer != null)
-										{
-											Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
-											RegisterCellRendererForColumn(tvc, renderer);
-
-											Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
-											Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "text", columnIndex);
-										}
+										AddColumnValidValues(tvct, tvct.ValidValues);
 									}
+									else
+									{
+										renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+									}
+
+									if (renderer != null)
+									{
+										Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+										RegisterCellRendererForColumn(tvc, renderer);
+
+										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
+										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "text", columnIndex);
+									}
+								}
+								else if (tvc is ListViewColumnCheckBox)
+								{
+									IntPtr renderer = Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_new();
+									Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(renderer, true);
+
+									Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+									RegisterCellRendererForColumn(tvc, renderer);
+
+									Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
+									// Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "active", columnIndex);
 								}
 
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column(handle, hColumn, -1);

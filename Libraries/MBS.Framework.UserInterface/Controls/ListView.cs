@@ -159,6 +159,13 @@ namespace MBS.Framework.UserInterface.Controls
 			mvarTitle = title;
 		}
 	}
+	public class ListViewColumnCheckBox
+		: ListViewColumn
+	{
+		public ListViewColumnCheckBox(TreeModelColumn column, string title = "") : base(column, title)
+		{
+		}
+	}
 	public class ListViewColumnText
 		: ListViewColumn
 	{

@@ -62,6 +62,11 @@ namespace MBS.Framework.UserInterface.Controls
 		/// <value><c>true</c> if is changed by user; otherwise, <c>false</c>.</value>
 		public bool IsChangedByUser { get; private set; }
 
+		public void ResetChangedByUser()
+		{
+			IsChangedByUser = false;
+		}
+
 		protected internal override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);

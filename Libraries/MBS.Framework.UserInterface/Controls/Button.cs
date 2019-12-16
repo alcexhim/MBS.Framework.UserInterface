@@ -79,6 +79,17 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 
+		protected internal override void OnClick(EventArgs e)
+		{
+			if (ResponseValue != (int)DialogResult.None && this.ParentWindow is Dialog)
+			{
+				(this.ParentWindow as Dialog).DialogResult = (DialogResult)ResponseValue;
+				(this.ParentWindow as Dialog).Close();
+				return;
+			}
+			base.OnClick(e);
+		}
+
 		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
 		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }
 

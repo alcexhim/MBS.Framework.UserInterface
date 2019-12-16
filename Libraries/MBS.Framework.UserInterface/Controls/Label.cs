@@ -19,8 +19,6 @@ namespace MBS.Framework.UserInterface.Controls
 
 		public bool UseMnemonic { get; set; } = true;
 
-		public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Default;
-		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
 		public WordWrapMode WordWrap { get; set; } = WordWrapMode.Default;
 	}
 }

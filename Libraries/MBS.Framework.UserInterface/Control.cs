@@ -127,6 +127,9 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Default;
+		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
+
 		private ControlImplementation mvarControlImplementation = null;
 		public ControlImplementation ControlImplementation
 		{

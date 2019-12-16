@@ -54,62 +54,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.Pango.Methods.pango_attr_list_insert(hAttrList, hAttr);
 			}
 
-			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
-			{
-			}
-			else
-			{
-				switch (ctl.HorizontalAlignment)
-				{
-					case HorizontalAlignment.Default:
-					case HorizontalAlignment.Center:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
-						break;
-					}
-					case HorizontalAlignment.Justify:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Fill);
-						break;
-					}
-					case HorizontalAlignment.Left:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
-						break;
-					}
-					case HorizontalAlignment.Right:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
-						break;
-					}
-				}
-
-				switch (ctl.VerticalAlignment)
-				{
-					case VerticalAlignment.Baseline:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Baseline);
-						break;
-					}
-					case VerticalAlignment.Bottom:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.End);
-						break;
-						}
-					case VerticalAlignment.Default:
-					case VerticalAlignment.Middle:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Center);
-						break;
-					}
-					case VerticalAlignment.Top:
-					{
-						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Start);
-						break;
-					}
-				}
-			}
-
 			if (ctl.WordWrap == WordWrapMode.Always)
 			{
 				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, true);

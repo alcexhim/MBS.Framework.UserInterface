@@ -95,6 +95,66 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class (hStyleContext, cls.Value);
 				}
 			}
+
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+			{
+			}
+			else
+			{
+				switch (Control.HorizontalAlignment)
+				{
+					case HorizontalAlignment.Center:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
+						break;
+					}
+					case HorizontalAlignment.Default:
+					case HorizontalAlignment.Justify:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Fill);
+						break;
+					}
+					case HorizontalAlignment.Left:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
+						break;
+					}
+					case HorizontalAlignment.Right:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
+						break;
+					}
+				}
+
+				switch (Control.VerticalAlignment)
+				{
+					case VerticalAlignment.Baseline:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Baseline);
+						break;
+					}
+					case VerticalAlignment.Bottom:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.End);
+						break;
+					}
+					case VerticalAlignment.Default:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Fill);
+						break;
+					}
+					case VerticalAlignment.Middle:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Center);
+						break;
+					}
+					case VerticalAlignment.Top:
+					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Start);
+						break;
+					}
+				}
+			}
 		}
 
 		protected override void SetFocusInternal ()

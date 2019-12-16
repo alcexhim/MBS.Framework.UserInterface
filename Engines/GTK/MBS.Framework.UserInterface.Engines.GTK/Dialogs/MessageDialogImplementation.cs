@@ -34,7 +34,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 		protected override bool AcceptInternal()
 		{
-			throw new NotImplementedException();
+			// nothing to do here
+			return true;
 		}
 
 		protected override GTKNativeControl CreateDialogInternal(Dialog control, List<Button> buttons)

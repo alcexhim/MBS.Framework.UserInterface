@@ -45,33 +45,28 @@ namespace MBS.Framework.UserInterface.Dialogs
 		}
 
 		private Label lblTitle = null;
-		private Label lblSelectDocuments = null;
 		private Label lblNoSaveWarning = null;
 		private ListView lv = null;
 		private DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(bool), typeof(string) });
 
 		public SaveConfirmationDialog()
 		{
-			this.Layout = new BoxLayout(Orientation.Horizontal);
+			this.Layout = new BoxLayout(Orientation.Vertical);
+
+			Container ct1 = new Container();
+			ct1.Layout = new BoxLayout(Orientation.Horizontal);
 
 			PictureFrame picIcon = new PictureFrame();
-			picIcon.Image = Drawing.Image.FromStock(StockType.DialogWarning, 48);
-			this.Controls.Add(picIcon);
+			picIcon.VerticalAlignment = VerticalAlignment.Top;
+			picIcon.Image = Drawing.Image.FromStock(StockType.DialogWarning, 64);
+			ct1.Controls.Add(picIcon, new BoxLayout.Constraints(false, false, 24));
 
 			Container ct = new Container();
 			ct.Layout = new BoxLayout(Orientation.Vertical);
 
-			this.Buttons.Add(new Button("Close _without Saving", DialogResult.No));
-			this.Buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
-			// this.Buttons.Add(new Button("_Don't save"));
-			this.Buttons.Add(new Button(ButtonStockType.Save, DialogResult.Yes));
-			this.AutoAlignButtons = false; // we know better than UWT
-
 			this.lblTitle = new Label();
-			ct.Controls.Add(lblTitle);
-
-			this.lblSelectDocuments = new Label();
-			ct.Controls.Add(lblSelectDocuments);
+			lblTitle.HorizontalAlignment = HorizontalAlignment.Left;
+			ct.Controls.Add(lblTitle, new BoxLayout.Constraints(false, false, 8));
 
 			this.lv = new ListView();
 			lv.Model = tm;
@@ -79,13 +74,28 @@ namespace MBS.Framework.UserInterface.Dialogs
 			lv.Columns.Add(new ListViewColumnText(tm.Columns[1], "File name"));
 			lv.HeaderStyle = ColumnHeaderStyle.None;
 
-			ct.Controls.Add(lv, new BoxLayout.Constraints(true, true));
+			ct.Controls.Add(lv, new BoxLayout.Constraints(true, true, 16));
 
 			this.lblNoSaveWarning = new Label();
-			ct.Controls.Add(lblNoSaveWarning);
+			lblNoSaveWarning.HorizontalAlignment = HorizontalAlignment.Left;
+			ct.Controls.Add(lblNoSaveWarning, new BoxLayout.Constraints(false, false, 8));
 
 
-			this.Controls.Add(ct, new BoxLayout.Constraints(true, true));
+			ct1.Controls.Add(ct, new BoxLayout.Constraints(true, true, 8));
+
+			this.Controls.Add(ct1, new BoxLayout.Constraints(true, true, 8));
+
+			Container ctButton = new Container();
+			ctButton.Layout = new BoxLayout(Orientation.Horizontal);
+			ctButton.Padding = new Framework.Drawing.Padding(16);
+
+			ctButton.Controls.Add(new Label(), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+			ctButton.Controls.Add(new Button("Close _without Saving", DialogResult.No), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+			ctButton.Controls.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+			// this.Buttons.Add(new Button("_Don't save"));
+			ctButton.Controls.Add(new Button(ButtonStockType.Save, DialogResult.Yes), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+
+			this.Controls.Add(ctButton, new BoxLayout.Constraints(false, false, 16));
 		}
 
 		public string SaveChangesMultiplePrompt { get; set; }
@@ -93,9 +103,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		public string SaveChangesSinglePrompt { get; set; }
 		public static string DefaultSaveChangesSinglePrompt { get; set; } = "Save the changes to document \"{0}\" before closing?";
-
-		public string SelectPrompt { get; set; } = null;
-		public static string DefaultSelectPrompt { get; set; } = "S_elect the documents you want to save:";
 
 		public string WarningMessage { get; set; } = null;
 		public static string DefaultWarningMessage { get; set; } = "If you don't save, all your changes will be permanently lost.";
@@ -125,15 +132,11 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 				lv.Visible = true;
 
-				lblSelectDocuments.Text = (SelectPrompt == null ? DefaultSelectPrompt : SelectPrompt);
-				lblSelectDocuments.Visible = true;
-
 				this.lblTitle.Text = String.Format((SaveChangesMultiplePrompt == null ? DefaultSaveChangesMultiplePrompt : SaveChangesMultiplePrompt), FileNames.Count);
 			}
 			else if (FileNames.Count == 1)
 			{
 				this.lblTitle.Text = String.Format((SaveChangesSinglePrompt == null ? DefaultSaveChangesSinglePrompt : SaveChangesSinglePrompt), FileNames[0].FileName);
-				lblSelectDocuments.Visible = false;
 				lv.Visible = false;
 			}
 

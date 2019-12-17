@@ -32,9 +32,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_notebook_get_n_pages(IntPtr hNotebook);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_notebook_get_nth_page(IntPtr hNotebook, int n);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_notebook_page_num(IntPtr hNotebook, IntPtr hChild);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_remove_page(IntPtr hNotebook, int page_num);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_tab_reorderable(IntPtr hNotebook, IntPtr hChild, bool reorderable);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_tab_detachable(IntPtr hNotebook, IntPtr hChild, bool detachable);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern string gtk_notebook_get_tab_label_text(IntPtr hNotebook, IntPtr hChild);
+
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_notebook_get_group_name")]
+		private static extern IntPtr gtk_notebook_get_group_name_internal(IntPtr hNotebook);
+
+		public static string gtk_notebook_get_group_name(IntPtr hNotebook)
+		{
+			IntPtr h = gtk_notebook_get_group_name_internal(hNotebook);
+			string value = Marshal.PtrToStringAuto(h);
+			return value;
+		}
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_group_name(IntPtr hNotebook, string value);
 	}
 }
 

@@ -20,6 +20,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			this.Padding = new Padding(13);
 
 			TabContainer tbsTabs = new TabContainer ();
+
 			Button cmdCloseTab = new Button();
 			cmdCloseTab.AlwaysShowImage = true;
 			cmdCloseTab.StockType = ButtonStockType.Close;
@@ -33,6 +34,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			tbsTabs.TabTitleControls.Add(cmdCloseTab);
 
 			TabPage tabGeneral = new TabPage ();
+
 			tabGeneral.Text = "General";
 			tabGeneral.Layout = new BoxLayout(Orientation.Vertical);
 			tabGeneral.Controls.Add(new Label("Test"), new BoxLayout.Constraints(true, true));
@@ -154,6 +156,12 @@ namespace MBS.Framework.UserInterface.TestProject
 			BoxLayout layout = new BoxLayout(Orientation.Vertical);
 			layout.SetControlConstraints (tbsTabs, new BoxLayout.Constraints (true, true));
 			this.Layout = layout;
+
+			for (int i = 0; i < tbsTabs.TabPages.Count; i++)
+			{
+				tbsTabs.TabPages[i].Reorderable = true;
+				tbsTabs.TabPages[i].Detachable = true;
+			}
 
 			/*
 			// FlowLayout layout = new FlowLayout();

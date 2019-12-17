@@ -11,17 +11,23 @@ namespace MBS.Framework.UserInterface.Controls
 
 			protected override void ClearItems ()
 			{
+				for (int i = 0; i < Count; i++)
+				{
+					this[i].Parent = null;
+				}
 				base.ClearItems ();
 				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.ClearTabPages();
 			}
 			protected override void InsertItem (int index, TabPage item)
 			{
 				base.InsertItem (index, item);
+				item.Parent = _parentContainer;
 				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 			protected override void RemoveItem (int index)
 			{
 				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
+				this[index].Parent = null;
 				base.RemoveItem (index);
 			}
 			protected override void SetItem (int index, TabPage item)
@@ -30,6 +36,7 @@ namespace MBS.Framework.UserInterface.Controls
 					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
 				}
 				base.SetItem (index, item);
+				item.Parent = _parentContainer;
 				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 
@@ -46,6 +53,30 @@ namespace MBS.Framework.UserInterface.Controls
 				foreach (Control ctl in controls) {
 					this.Controls.Add (ctl);
 				}
+			}
+		}
+
+		public new TabContainer Parent { get; private set; } = null;
+
+		private bool _Reorderable = false;
+		public bool Reorderable
+		{
+			get { return _Reorderable; }
+			set
+			{
+				((Parent as TabContainer)?.ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabPageReorderable(this, value);
+				_Reorderable = value;
+			}
+		}
+
+		private bool _Detachable = false;
+		public bool Detachable
+		{
+			get { return _Detachable; }
+			set
+			{
+				((Parent as TabContainer)?.ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabPageDetachable(this, value);
+				_Detachable = value;
 			}
 		}
 

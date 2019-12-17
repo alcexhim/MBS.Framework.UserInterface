@@ -9,6 +9,9 @@ namespace MBS.Framework.UserInterface.Controls
 			void InsertTabPage(int index, TabPage item);
 			void RemoveTabPage(TabPage tabPage);
 			void ClearTabPages();
+
+			void SetTabPageReorderable(TabPage page, bool value);
+			void SetTabPageDetachable(TabPage page, bool value);
 		}
 	}
 	public class TabContainer : SystemControl
@@ -22,6 +25,8 @@ namespace MBS.Framework.UserInterface.Controls
 		/// </summary>
 		/// <value>The tab title controls.</value>
 		public Control.ControlCollection TabTitleControls { get { return mvarTabTitleControls; } }
+
+		public string GroupName { get; set; } = null;
 
 		public TabContainer()
 		{

@@ -28,6 +28,12 @@ namespace MBS.Framework.UserInterface.Controls
 
 		public string GroupName { get; set; } = null;
 
+		public event TabPageDetachedEventHandler TabPageDetached;
+		protected virtual void OnTabPageDetached(TabPageDetachedEventArgs e)
+		{
+			TabPageDetached?.Invoke(this, e);
+		}
+
 		public TabContainer()
 		{
 			mvarTabPages = new TabPage.TabPageCollection (this);

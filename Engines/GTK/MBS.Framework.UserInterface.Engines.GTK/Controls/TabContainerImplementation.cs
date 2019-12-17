@@ -1,4 +1,5 @@
 ﻿using System;
+using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;
 using MBS.Framework.UserInterface.Layouts;
@@ -11,7 +12,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public TabContainerImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
-
 		static TabContainerImplementation()
 		{
 			create_window_d = new Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr>(create_window);
@@ -19,7 +19,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		static Random rnd = new Random();
 
-		public static void NotebookAppendPage(Engine engine, TabContainer ctl, IntPtr handle, TabPage page, int indexAfter = -1)
+		private static BidirectionalDictionary<TabPage, IntPtr> _TabPageHandles = new BidirectionalDictionary<TabPage, IntPtr>();
+		private static void RegisterTabPage(TabPage page, IntPtr handle)
+		{
+			_TabPageHandles.Add(page, handle);
+		}
+		private static TabPage GetTabPageByHandle(IntPtr handle)
+		{
+			if (_TabPageHandles.ContainsValue2(handle))
+			{
+				return _TabPageHandles.GetValue1(handle);
+			}
+			return null;
+		}
+
+		public void NotebookAppendPage(TabContainer ctl, IntPtr handle, TabPage page, int indexAfter = -1)
 		{
 			Container tabControlContainer = new Container();
 			tabControlContainer.Layout = new BoxLayout(Orientation.Horizontal, 8);
@@ -37,10 +51,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				tabControlContainer.Controls.Add(ctlTabButton);
 			}
 
-			engine.CreateControl(tabControlContainer);
-			IntPtr hTabLabel = (engine.GetHandleForControl(tabControlContainer) as GTKNativeControl).Handle;
+			Engine.CreateControl(tabControlContainer);
+			IntPtr hTabLabel = (Engine.GetHandleForControl(tabControlContainer) as GTKNativeControl).Handle;
 
-			ContainerImplementation cimpl = new ContainerImplementation(engine, page);
+			ContainerImplementation cimpl = new ContainerImplementation(Engine, page);
 			cimpl.CreateControl(page);
 			IntPtr container = (cimpl.Handle as GTKNativeControl).Handle;
 
@@ -55,6 +69,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				int index = Internal.GTK.Methods.GtkNotebook.gtk_notebook_append_page(handle, container, hTabLabel);
 				IntPtr hTabPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(handle, index);
+				RegisterTabPage(page, hTabPage);
 
 				(ctl.ControlImplementation as TabContainerImplementation).SetTabPageDetachable(handle, hTabPage, page.Detachable);
 				(ctl.ControlImplementation as TabContainerImplementation).SetTabPageReorderable(handle, hTabPage, page.Reorderable);
@@ -106,7 +121,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				return;
 
 			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
-			NotebookAppendPage(Engine, (Control as TabContainer), handle, item, index);
+			NotebookAppendPage((Control as TabContainer), handle, item, index);
 		}
 
 		public void RemoveTabPage(TabPage tabPage)
@@ -117,6 +132,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> create_window_d = null;
 		private static IntPtr /*GtkNotebook*/ create_window(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ page, int x, int y, IntPtr user_data)
 		{
+			TabContainer tbsParent = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabPage tabPage = GetTabPageByHandle(page);
+			if (tbsParent == null) return IntPtr.Zero;
+
+			TabPageDetachedEventArgs ee = new TabPageDetachedEventArgs(tbsParent, tabPage);
+			InvokeMethod(tbsParent, "OnTabPageDetached", new object[] { ee });
+
+			if (ee.Handled)
+			{
+				return IntPtr.Zero; // replace with GetControlHandle...
+			}
+
+
 			string groupName = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_group_name(notebook);
 
 			Window window = new Window();
@@ -126,6 +154,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			window.StartPosition = WindowStartPosition.Manual;
 
 			TabContainer tbs = new TabContainer();
+			tbs.TabPageDetached += tbsOurWindow_TabPageDetached;
 			window.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
 
 			Application.Engine.CreateControl(tbs);
@@ -135,6 +164,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return (Application.Engine.GetHandleForControl(tbs) as GTKNativeControl).Handle;
 		}
 
+		static void tbsOurWindow_TabPageDetached(object sender, TabPageDetachedEventArgs e)
+		{
+			TabContainer parent = (sender as TabContainer);
+			if (parent.TabPages.Count == 0)
+			{
+				parent.ParentWindow.Close();
+			}
+		}
+
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			TabContainer ctl = (control as TabContainer);
@@ -142,7 +181,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			foreach (TabPage tabPage in ctl.TabPages)
 			{
-				NotebookAppendPage(Engine, ctl, handle, tabPage);
+				NotebookAppendPage(ctl, handle, tabPage);
 			}
 
 			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);

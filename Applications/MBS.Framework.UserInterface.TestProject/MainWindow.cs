@@ -24,7 +24,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			Button cmdCloseTab = new Button();
 			cmdCloseTab.AlwaysShowImage = true;
 			cmdCloseTab.StockType = ButtonStockType.Close;
-			cmdCloseTab.BorderStyle = ButtonBorderStyle.Half;
+			cmdCloseTab.BorderStyle = ButtonBorderStyle.None;
 			cmdCloseTab.Click += (sender, e) =>
 			{
 				Button sb = (sender as Button);
@@ -162,6 +162,7 @@ namespace MBS.Framework.UserInterface.TestProject
 				tbsTabs.TabPages[i].Reorderable = true;
 				tbsTabs.TabPages[i].Detachable = true;
 			}
+			tbsTabs.TabPageDetached += tbsTabs_TabPageDetached;
 
 			/*
 			// FlowLayout layout = new FlowLayout();
@@ -347,6 +348,11 @@ namespace MBS.Framework.UserInterface.TestProject
 			base.OnClosed (e);
 
 			Application.Stop ();
+		}
+
+		private void tbsTabs_TabPageDetached(object sender, TabPageDetachedEventArgs e)
+		{
+			// e.Handled = true;
 		}
 
 		private void button2_Click(object sender, EventArgs e)

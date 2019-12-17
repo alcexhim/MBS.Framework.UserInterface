@@ -336,6 +336,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
 					break;
 				}
+				case WindowStartPosition.Manual:
+				{
+					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.None);
+					Internal.GTK.Methods.GtkWindow.gtk_window_move(handle, (int)window.Location.X, (int)window.Location.Y);
+					break;
+				}
 			}
 
 			// HACK: required for Universal Editor splash screen to work

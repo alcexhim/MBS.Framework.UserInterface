@@ -29,7 +29,7 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class ControlImplementation
 	{
-		protected void InvokeMethod (object obj, string meth, params object [] parms)
+		protected static void InvokeMethod (object obj, string meth, params object [] parms)
 		{
 			if (obj == null) {
 				Console.WriteLine ("NativeImplementation::InvokeMethod: obj is null");

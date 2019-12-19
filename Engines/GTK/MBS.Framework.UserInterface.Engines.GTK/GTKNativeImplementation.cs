@@ -81,6 +81,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			base.OnCreated (e);
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
 
 			SetupCommonEvents (FindRealHandle (handle, Control));
 

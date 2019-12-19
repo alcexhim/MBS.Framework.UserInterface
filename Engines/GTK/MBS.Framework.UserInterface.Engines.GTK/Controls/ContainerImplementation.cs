@@ -74,7 +74,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						{
 							Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, false);
 						}
-						if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Horizontal)
+						if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Vertical)
 						{
 							Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, true);
 						}

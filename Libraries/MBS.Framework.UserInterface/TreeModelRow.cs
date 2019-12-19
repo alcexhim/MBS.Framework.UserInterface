@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface
 				Parent = parent;
 			}
 
-			private List<TreeModelRow> _list = new List<TreeModelRow> ();
+			private List<TreeModelRow> _list = new List<TreeModelRow>();
 
 			public void Add(TreeModelRow row)
 			{
@@ -87,7 +87,7 @@ namespace MBS.Framework.UserInterface
 			}
 			public event EventHandler Cleared;
 			protected virtual void OnCleared(EventArgs e)
-			{ 
+			{
 				Cleared?.Invoke(this, e);
 			}
 
@@ -95,10 +95,10 @@ namespace MBS.Framework.UserInterface
 			{
 				TreeModelRowItemRequestedEventArgs e = new TreeModelRowItemRequestedEventArgs(tn, _list.Count, -1);
 				OnItemRequested(e);
-				
+
 				if (e.Cancel) return _list.Contains(tn);
 				if (e.Count == 0 || e.Item == null) return false;
-				
+
 				return (e.Item == tn);
 			}
 
@@ -137,16 +137,18 @@ namespace MBS.Framework.UserInterface
 			{
 				get
 				{
-					if (_itemsByName.ContainsKey (name)) {
-						return _itemsByName [name];
+					if (_itemsByName.ContainsKey(name))
+					{
+						return _itemsByName[name];
 					}
 					return null;
 				}
 			}
 			public bool Contains(string name)
 			{
-				if (String.IsNullOrEmpty (name)) {
-					Console.Error.WriteLine ("uwt: warning: 'name' for TreeModelRow is empty");
+				if (String.IsNullOrEmpty(name))
+				{
+					Console.Error.WriteLine("uwt: warning: 'name' for TreeModelRow is empty");
 					return false;
 				}
 
@@ -216,6 +218,23 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public void ExpandAll()
+		{
+			Expanded = true;
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				Rows[i].ExpandAll();
+			}
+		}
+		public void CollapseAll()
+		{
+			Expanded = false;
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				Rows[i].CollapseAll();
+			}
+		}
+
 		public TreeModelRow.TreeModelRowCollection Rows { get; } = new TreeModelRowCollection();
 
 		private TreeModelRowColumn.TreeModelRowColumnCollection mvarRowColumns = null;
@@ -254,7 +273,7 @@ namespace MBS.Framework.UserInterface
 		{
 			switch (e.Action)
 			{
-				case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+			case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
 				{
 					List<TreeModelRow> list = new List<TreeModelRow>();
 					foreach (TreeModelRow row in e.NewItems)
@@ -269,7 +288,7 @@ namespace MBS.Framework.UserInterface
 					}
 					break;
 				}
-				case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+			case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
 				{
 					List<TreeModelRow> list = new List<TreeModelRow>();
 					foreach (TreeModelRow row in e.NewItems)
@@ -297,12 +316,15 @@ namespace MBS.Framework.UserInterface
 			}
 			set
 			{
-				if (ParentControl == null) {
-					Console.Error.WriteLine ("uwt: TreeModelRow: parent control is NULL");
-				} else if (ParentControl.ControlImplementation == null) {
-					Console.Error.WriteLine ("uwt: TreeModelRow: NativeImplementation is NULL");
+				if (ParentControl == null)
+				{
+					Console.Error.WriteLine("uwt: TreeModelRow: parent control is NULL");
 				}
-				(ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded (this, value);
+				else if (ParentControl.ControlImplementation == null)
+				{
+					Console.Error.WriteLine("uwt: TreeModelRow: NativeImplementation is NULL");
+				}
+				(ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded(this, value);
 				mvarExpanded = value;
 			}
 		}

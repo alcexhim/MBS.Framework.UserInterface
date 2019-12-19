@@ -119,6 +119,22 @@ namespace MBS.Framework.UserInterface
 			}
 			return null;
 		}
+
+		public void ExpandAll()
+		{
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				Rows[i].ExpandAll();
+			}
+		}
+
+		public void CollapseAll()
+		{
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				Rows[i].CollapseAll();
+			}
+		}
 	}
 }
 

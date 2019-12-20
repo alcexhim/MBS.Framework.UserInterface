@@ -36,7 +36,19 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public int VerticalCellSpacing { get; set; } = 4;
 
 		private byte[] mvarData = new byte[4096];
-		public byte[] Data { get { return mvarData; } set { mvarData = value; SelectionStart = SelectionStart; } }
+		public byte[] Data
+		{
+			get { return mvarData; }
+			set
+			{
+				System.ComponentModel.CancelEventArgs ee = new System.ComponentModel.CancelEventArgs();
+				OnChanging(ee);
+				if (ee.Cancel)
+					return;
+				mvarData = value; SelectionStart = SelectionStart;
+				OnChanged(EventArgs.Empty);
+			}
+		}
 
 		public HexEditorHitTestSection SelectedSection { get; private set; } = HexEditorHitTestSection.Hexadecimal;
 
@@ -697,6 +709,11 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			if (next != '\0')
 			{
+				System.ComponentModel.CancelEventArgs ee = new System.ComponentModel.CancelEventArgs();
+				OnChanging(ee);
+				if (ee.Cancel)
+					return;
+
 				if (mvarSelectionStart >= Data.Length)
 				{
 					if (EnableInsert)
@@ -732,6 +749,12 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				OnChanged(EventArgs.Empty);
 				SelectionStart = SelectionStart;
 			}
+		}
+
+		public event System.ComponentModel.CancelEventHandler Changing;
+		protected virtual void OnChanging(System.ComponentModel.CancelEventArgs e)
+		{
+			Changing?.Invoke(this, e);
 		}
 
 		public event EventHandler Changed;

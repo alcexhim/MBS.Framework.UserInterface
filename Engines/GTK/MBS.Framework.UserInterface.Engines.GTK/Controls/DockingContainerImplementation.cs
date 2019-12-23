@@ -1,13 +1,14 @@
 ﻿using System;
 using MBS.Framework.UserInterface.Controls.Docking;
 using System.Collections.Generic;
+using MBS.Framework.UserInterface.Controls.Docking.Native;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
-	[ControlImplementation(typeof(DockingContainer))]
-	public class DockingContainerImplementation : GTKNativeImplementation, MBS.Framework.UserInterface.Controls.Docking.Native.IDockingContainerNativeImplementation
+	// [ControlImplementation(typeof(DockingContainerControl))]
+	public class DockingContainerImplementation : GTKNativeImplementation, IDockingContainerNativeImplementation
 	{
-		public DockingContainerImplementation(Engine engine, DockingContainer control)
+		public DockingContainerImplementation(Engine engine, DockingContainerControl control)
 			: base(engine, control)
 		{
 			DockingItem_Selected_Handler = new Internal.GObject.Delegates.GCallback (DockingItem_Selected);
@@ -34,31 +35,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public void ClearDockingItems()
 		{
 		}
-		private void InsertDockingItem2(IntPtr handle, DockingItem item, int index)
-		{
-			IntPtr childHandle = CreateDockingItem(item);
-
-			// TODO: fix this!
-			if (!Engine.IsControlCreated(item.ChildControl))
-				Engine.CreateControl(item.ChildControl);
-
-			IntPtr childWidget = (item.ChildControl.ControlImplementation.Handle as GTKNativeControl).Handle;
-			if (childWidget != IntPtr.Zero)
-			{
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, childWidget);
-			}
-			else
-			{
-				IntPtr chdhclm = Internal.GTK.Methods.GtkLabel.gtk_label_new("Content not specified");
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, chdhclm);
-			}
-			Internal.GDL.Methods.gdl_dock_add_item(handle, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
-
-			// HACK: until we can figure out how to properly detect when a doc tab is switched
-			mvarCurrentItem = item;
-
-			RegisterDockingItemHandle (item, childHandle);
-		}
 
 
 		private Dictionary<IntPtr, DockingItem> _DockingItemsForHandle = new Dictionary<IntPtr, DockingItem>();
@@ -77,7 +53,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void InsertDockingItem(DockingItem item, int index)
 		{
-			InsertDockingItem2(mvarDockHandle, item, index);
+			InsertDockingItemRecursive(mvarDockHandle, item as DockingWindow, index);
 		}
 		public void RemoveDockingItem(DockingItem item)
 		{
@@ -140,7 +116,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private IntPtr mvarDockHandle = IntPtr.Zero;
 		private IntPtr mvarDockBarHandle = IntPtr.Zero;
 
-		private IntPtr CreateDockingItem(DockingItem item)
+		private IntPtr CreateDockingItem(DockingWindow item)
 		{
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_item_new(item.Name, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
 			Internal.GObject.Methods.g_signal_connect (handle, "selected", DockingItem_Selected_Handler);
@@ -162,28 +138,72 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 		}
 
+		private void InsertDockingItemRecursive(IntPtr hDock, DockingItem item, int position)
+		{
+			if (item is DockingWindow)
+			{
+				DockingWindow dw = (item as DockingWindow);
+				IntPtr childHandle = CreateDockingItem(dw);
+
+				// TODO: fix this!
+				if (!Engine.IsControlCreated(dw.ChildControl))
+					Engine.CreateControl(dw.ChildControl);
+
+				IntPtr childWidget = (dw.ChildControl.ControlImplementation.Handle as GTKNativeControl).Handle;
+				if (childWidget != IntPtr.Zero)
+				{
+					Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, childWidget);
+				}
+				else
+				{
+					IntPtr chdhclm = Internal.GTK.Methods.GtkLabel.gtk_label_new("Content not specified");
+					Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, chdhclm);
+				}
+				Internal.GDL.Methods.gdl_dock_add_item(hDock, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
+				Internal.GDL.Methods.gdl_dock_object_dock(hDock, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
+
+				// HACK: until we can figure out how to properly detect when a doc tab is switched
+				mvarCurrentItem = item;
+
+				RegisterDockingItemHandle(item, childHandle);
+			}	
+			else if (item is DockingContainer)
+			{
+				DockingContainer dcParent = (item as DockingContainer);
+
+				IntPtr hDockParent = Internal.GDL.Methods.gdl_dock_item_new(item.Name, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
+				for (int i = 0; i < dcParent.Items.Count; i++)
+				{
+					InsertDockingItemRecursive(hDockParent, dcParent.Items[i], dcParent.Items.Count - 1);
+				}
+
+				Internal.GDL.Methods.gdl_dock_add_item(hDock, hDockParent, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
+				Internal.GDL.Methods.gdl_dock_object_dock(hDock, hDockParent, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			DockingContainer dock = (control as DockingContainer);
-			IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new (Internal.GTK.Constants.GtkOrientation.Horizontal, false, 0);
+			DockingContainerControl dock = (control as DockingContainerControl);
+			// IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new (Internal.GTK.Constants.GtkOrientation.Horizontal, false, 0);
 
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_new();
 
 			foreach (DockingItem item in dock.Items)
 			{
-				InsertDockingItem2(handle, item, dock.Items.Count - 1);
+				InsertDockingItemRecursive(handle, item, dock.Items.Count - 1);
 			}
 
-			IntPtr hDockBar = Internal.GDL.Methods.gdl_dock_bar_new(handle);
+			// IntPtr hDockBar = Internal.GDL.Methods.gdl_dock_bar_new(handle);
 
-			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hBox, hDockBar, false, false, 0);
-			Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hBox, handle, true, true, 0);
+			// Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hBox, hDockBar, false, false, 0);
+			// Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hBox, handle, true, true, 0);
 
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hBox);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(handle);
 
 			mvarDockHandle = handle;
-			mvarDockBarHandle = hDockBar;
-			return new GTKNativeControl(hBox);
+			// mvarDockBarHandle = hDockBar;
+			return new GTKNativeControl(handle);
 		}
 	}
 }

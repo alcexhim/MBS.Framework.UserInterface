@@ -83,7 +83,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
 
-			SetupCommonEvents (FindRealHandle (handle, Control));
+			SetupCommonEvents (FindEventHandlingHandle ((Handle as GTKNativeControl), Control));
 
 			IntPtr hCtrl = handle;
 			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
@@ -276,13 +276,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		/// <summary>
 		/// Returns the actual control handle (for event signaling) if a control is e.g. surrounded by GtkScrolledWindow
 		/// </summary>
-		private IntPtr FindRealHandle(IntPtr fakeHandle, Control ctl)
+		private IntPtr FindEventHandlingHandle(GTKNativeControl fakeHandle, Control ctl)
 		{
 			if (ctl is ListView)
 			{
-				return GetScrolledWindowChild(fakeHandle);
+				return GetScrolledWindowChild(fakeHandle.Handle);
 			}
-			return fakeHandle;
+			else
+			{
+				IntPtr hEventBox = fakeHandle.GetNamedHandle("EventBox");
+				if (hEventBox != IntPtr.Zero)
+					return hEventBox;
+			}
+			return fakeHandle.Handle;
 		}
 
 		private void gc_show(IntPtr /*GtkWidget*/ widget)

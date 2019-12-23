@@ -109,6 +109,11 @@ namespace MBS.Framework.UserInterface
 		{
 			if (Executed != null) Executed(this, EventArgs.Empty);
 		}
+
+		public override string ToString()
+		{
+			return String.Format("{0} [{1}]", ID, Title);
+		}
 	}
 }
 

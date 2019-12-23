@@ -64,7 +64,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			Internal.GTK.Methods.GtkLabel.gtk_label_set_attributes(handle, hAttrList);
-			return new GTKNativeControl(handle);
+
+			IntPtr hEventBox = Internal.GTK.Methods.GtkEventBox.gtk_event_box_new();
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(hEventBox, handle);
+
+			return new GTKNativeControl(hEventBox, new KeyValuePair<string, IntPtr>[]
+			{
+				new KeyValuePair<string, IntPtr>("EventBox", hEventBox),
+				new KeyValuePair<string, IntPtr>("Control", handle)
+			});
 		}
 	}
 }

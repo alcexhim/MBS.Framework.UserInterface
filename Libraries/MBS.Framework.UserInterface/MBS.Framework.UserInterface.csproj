@@ -124,7 +124,7 @@
     <Compile Include="DialogResult.cs" />
     <Compile Include="Layouts\GridLayout.cs" />
     <Compile Include="Controls\TextBox.cs" />
-    <Compile Include="Controls\Docking\DockingContainer.cs" />
+    <Compile Include="Controls\Docking\DockingContainerControl.cs" />
     <Compile Include="Controls\Docking\DockingItem.cs" />
     <Compile Include="NativeImplementation.cs" />
     <Compile Include="Controls\Docking\DockingItemPlacement.cs" />
@@ -233,6 +233,10 @@
     <Compile Include="CustomDialog.cs" />
     <Compile Include="Dialogs\SaveConfirmationDialog.cs" />
     <Compile Include="TabPageDetachedEvent.cs" />
+    <Compile Include="Controls\Docking\DockingContainer.cs" />
+    <Compile Include="Controls\Docking\DockingWindow.cs" />
+    <Compile Include="Controls\Docking\IDockingItemContainer.cs" />
+    <Compile Include="Controls\Docking\DockingContainerImplementationUWT.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

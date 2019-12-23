@@ -25,10 +25,10 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.Controls
 {
-	[ControlImplementation(typeof(DockingContainer))]
+	[ControlImplementation(typeof(DockingContainerControl))]
 	public class DockingContainerImplementation : WindowsFormsNativeImplementation, IDockingContainerNativeImplementation
 	{
-		public DockingContainerImplementation(Engine engine, DockingContainer control) : base(engine, control)
+		public DockingContainerImplementation(Engine engine, DockingContainerControl control) : base(engine, control)
 		{
 		}
 
@@ -45,6 +45,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 		}
 
 		public void InsertDockingItem(DockingItem item, int index)
+		{
+			if (item is DockingWindow)
+			{
+				InsertDockingWindow(item as DockingWindow, index);
+			}
+		}
+
+		private void InsertDockingWindow(DockingWindow item, int index)
 		{
 			WeifenLuo.WinFormsUI.Docking.DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel);
 
@@ -153,6 +161,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			WeifenLuo.WinFormsUI.Docking.DockPanel panel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
 			panel.Dock = System.Windows.Forms.DockStyle.Fill;
 			return new WindowsFormsNativeControl(panel);
+		}
+
+		public void UpdateDockingItemName(DockingItem item, string text)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void UpdateDockingItemTitle(DockingItem item, string text)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

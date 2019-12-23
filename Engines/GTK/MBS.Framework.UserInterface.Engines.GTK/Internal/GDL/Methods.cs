@@ -16,10 +16,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="item">The item to bind.</param>
 		/// <param name="dock">The GdlDock widget to bind it to. Note that this widget must be a type of GdlDock.</param>
+		/// <param name="item">The item to bind.</param>
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern void gdl_dock_add_item(IntPtr item, IntPtr dock, Constants.GdlDockPlacement placement);
+		public static extern void gdl_dock_add_item(IntPtr /*GdlDock*/ dock, IntPtr /*GdlDockItem*/ item, Constants.GdlDockPlacement placement);
 
 		/// <summary>
 		/// Creates a new dock item widget.
@@ -50,5 +50,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		public static extern void gdl_dock_object_set_name(IntPtr /*GdlDockObject*/ item, string value);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_object_set_long_name(IntPtr /*GdlDockObject*/ item, string value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_object_dock(IntPtr /*GdlDockObject*/ hobject, IntPtr /*GdlDockObject*/ requestor, Constants.GdlDockPlacement position, IntPtr other_data);
 	}
 }

@@ -24,7 +24,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Dictionary<Control, IntPtr> _ctlTextHandles = new Dictionary<Control, IntPtr>();
 		protected override void SetControlTextInternal(Control control, string text)
 		{
-			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).GetNamedHandle("Control");
 
 			// GTK fucks this up by passing a pointer directly to the guts of the GtkLabel
 			// so, we cannot simply implicitly pass strings to and from GTK

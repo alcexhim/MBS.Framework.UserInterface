@@ -280,8 +280,10 @@ namespace MBS.Framework.UserInterface
 
 		private ControlImplementation FindNativeImplementationForControl(Control control)
 		{
-			Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
 			List<Type> possibleHandlers = new List<Type>();
+			// Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
+
+			Type[] ts = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(ControlImplementation) });		
 			foreach (Type t in ts)
 			{
 				if (t.IsSubclassOf(typeof(ControlImplementation)))

@@ -12,12 +12,31 @@ namespace MBS.Framework.UserInterface.Controls
 
 			void SetTabPageReorderable(TabPage page, bool value);
 			void SetTabPageDetachable(TabPage page, bool value);
+
+			void SetSelectedTab(TabPage page);
+			void SetTabText(TabPage page, string text);
 		}
 	}
 	public class TabContainer : SystemControl
 	{
+		public event TabContainerSelectedTabChangedEventHandler SelectedTabChanged;
+		protected void OnSelectedTabChanged(TabContainerSelectedTabChangedEventArgs e)
+		{
+			SelectedTabChanged?.Invoke(this, e);
+		}
+
 		private TabPage.TabPageCollection mvarTabPages = null;
 		public TabPage.TabPageCollection TabPages { get { return mvarTabPages; } }
+
+		private TabPage _SelectedTab = null;
+		public TabPage SelectedTab
+		{
+			get { return _SelectedTab; }
+			set
+			{
+				(ControlImplementation as Native.ITabContainerControlImplementation)?.SetSelectedTab(value);
+			}
+		}
 
 		private Control.ControlCollection mvarTabTitleControls = new Control.ControlCollection();
 		/// <summary>
@@ -32,6 +51,12 @@ namespace MBS.Framework.UserInterface.Controls
 		protected virtual void OnTabPageDetached(TabPageDetachedEventArgs e)
 		{
 			TabPageDetached?.Invoke(this, e);
+		}
+
+		public event BeforeTabContextMenuEventHandler BeforeTabContextMenu;
+		protected virtual void OnBeforeTabContextMenu(BeforeTabContextMenuEventArgs e)
+		{
+			BeforeTabContextMenu?.Invoke(this, e);
 		}
 
 		public TabContainer()

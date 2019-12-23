@@ -58,6 +58,9 @@ namespace MBS.Framework.UserInterface.Controls
 
 		public new TabContainer Parent { get; private set; } = null;
 
+		private string _Text = null;
+		public new string Text { get { return _Text; } set { ((Parent as TabContainer)?.ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabText(this, value); _Text = value; } }
+
 		private bool _Reorderable = false;
 		public bool Reorderable
 		{

@@ -50,6 +50,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			(Control as TabContainer).TabPages.Remove(tabPage);
 		}
 
+		public void SetTabPageDetachable(TabPage page, bool value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetTabPageReorderable(TabPage page, bool value)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			TabContainer ctl = (control as TabContainer);

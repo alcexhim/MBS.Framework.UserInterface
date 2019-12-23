@@ -237,6 +237,8 @@
     <Compile Include="Controls\Docking\DockingWindow.cs" />
     <Compile Include="Controls\Docking\IDockingItemContainer.cs" />
     <Compile Include="Controls\Docking\DockingContainerImplementationUWT.cs" />
+    <Compile Include="TabContainerSelectedTabChangedEvent.cs" />
+    <Compile Include="TabContextMenuEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

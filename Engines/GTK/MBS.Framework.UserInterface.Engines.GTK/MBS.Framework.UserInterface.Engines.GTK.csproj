@@ -199,6 +199,7 @@
     <Compile Include="Dialogs\GenericDialogImplementation.cs" />
     <Compile Include="Dialogs\AppChooserDialogImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkCellRendererToggle.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkEventBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

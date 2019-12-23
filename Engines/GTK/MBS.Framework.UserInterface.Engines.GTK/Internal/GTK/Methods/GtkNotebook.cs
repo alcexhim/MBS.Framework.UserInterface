@@ -30,6 +30,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_notebook_append_page(IntPtr hNotebook, IntPtr hChild, IntPtr hTabLabel);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_notebook_insert_page(IntPtr hNotebook, IntPtr hChild, IntPtr hTabLabel, int position);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_notebook_get_n_pages(IntPtr hNotebook);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_notebook_get_nth_page(IntPtr hNotebook, int n);
@@ -37,12 +39,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern int gtk_notebook_page_num(IntPtr hNotebook, IntPtr hChild);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_remove_page(IntPtr hNotebook, int page_num);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_tab_label_text(IntPtr /*GtkNotebook*/ hNotebook, IntPtr /*GtkWidget*/ hPage, string text);
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_reorderable(IntPtr hNotebook, IntPtr hChild, bool reorderable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_detachable(IntPtr hNotebook, IntPtr hChild, bool detachable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_notebook_get_tab_label_text(IntPtr hNotebook, IntPtr hChild);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_current_page(IntPtr /*GtkNotebook*/ notebook, int page_num);
 
 		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_notebook_get_group_name")]
 		private static extern IntPtr gtk_notebook_get_group_name_internal(IntPtr hNotebook);

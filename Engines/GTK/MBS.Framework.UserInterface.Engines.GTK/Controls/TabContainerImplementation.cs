@@ -15,6 +15,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		static TabContainerImplementation()
 		{
 			create_window_d = new Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr>(create_window);
+			change_current_tab_d = new Func<IntPtr, int, IntPtr, bool>(change_current_tab);
+			switch_page_d = new Action<IntPtr, IntPtr, uint>(switch_page);
 		}
 
 		static Random rnd = new Random();
@@ -33,22 +35,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return null;
 		}
 
+		public void SetTabText(TabPage page, string text)
+		{
+			TabContainer tc = page.Parent;
+			IntPtr hNotebook = (Application.Engine.GetHandleForControl(tc) as GTKNativeControl).Handle;
+
+			IntPtr hPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(hNotebook, tc.TabPages.IndexOf(page));
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_label_text(hNotebook, hPage, text);
+		}
+
 		public void NotebookAppendPage(TabContainer ctl, IntPtr handle, TabPage page, int indexAfter = -1)
 		{
 			Container tabControlContainer = new Container();
-			tabControlContainer.Layout = new BoxLayout(Orientation.Horizontal, 8);
+			tabControlContainer.Layout = new BoxLayout(Orientation.Horizontal, 0);
+			tabControlContainer.BeforeContextMenu += lblTabText_BeforeContextMenu;
 
 			Label lblTabText = new Label(page.Text);
+			// lblTabText.BeforeContextMenu += lblTabText_BeforeContextMenu;
 			lblTabText.WordWrap = WordWrapMode.Never;
 
-			tabControlContainer.Controls.Add(lblTabText, new BoxLayout.Constraints(true, true, 8));
+			tabControlContainer.Controls.Add(lblTabText, new BoxLayout.Constraints(true, true, 0));
 
 			System.Reflection.FieldInfo fiParent = tabControlContainer.GetType().BaseType.GetField("mvarParent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			fiParent.SetValue(tabControlContainer, page);
 
 			foreach (Control ctlTabButton in ctl.TabTitleControls)
 			{
-				tabControlContainer.Controls.Add(ctlTabButton);
+				tabControlContainer.Controls.Add(ctlTabButton, new BoxLayout.Constraints(false, false));
 			}
 
 			Engine.CreateControl(tabControlContainer);
@@ -65,21 +78,55 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_group_name(handle, rndgroupname);
 
+			int index = -1;
 			if (indexAfter == -1)
 			{
-				int index = Internal.GTK.Methods.GtkNotebook.gtk_notebook_append_page(handle, container, hTabLabel);
-				IntPtr hTabPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(handle, index);
-				RegisterTabPage(page, hTabPage);
-
-				(ctl.ControlImplementation as TabContainerImplementation).SetTabPageDetachable(handle, hTabPage, page.Detachable);
-				(ctl.ControlImplementation as TabContainerImplementation).SetTabPageReorderable(handle, hTabPage, page.Reorderable);
-
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hTabLabel);
+				index = Internal.GTK.Methods.GtkNotebook.gtk_notebook_append_page(handle, container, hTabLabel);
 			}
 			else
 			{
+				index = Internal.GTK.Methods.GtkNotebook.gtk_notebook_insert_page(handle, container, hTabLabel, indexAfter);
+			}
+			IntPtr hTabPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(handle, index);
+			RegisterTabPage(page, hTabPage);
+			(Engine as GTKEngine).RegisterControlHandle(page, new GTKNativeControl(hTabPage));
+
+			(ctl.ControlImplementation as TabContainerImplementation).SetTabPageDetachable(handle, hTabPage, page.Detachable);
+			(ctl.ControlImplementation as TabContainerImplementation).SetTabPageReorderable(handle, hTabPage, page.Reorderable);
+
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hTabLabel);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
+		}
+
+		void lblTabText_BeforeContextMenu(object sender, EventArgs e)
+		{
+			Control lbl = (sender as Control);
+
+			TabPage page = (lbl.Parent as TabPage);
+			TabContainer tbs = page.Parent;
+
+			BeforeTabContextMenuEventArgs ee = new BeforeTabContextMenuEventArgs(tbs, page);
+			ee.ContextMenu = lbl.ContextMenu;
+			ee.ContextMenuCommandID = lbl.ContextMenuCommandID;
+			(tbs.ControlImplementation as TabContainerImplementation)?.OnBeforeTabContextMenu(ee);
+
+			if (ee.Cancel) return;
+
+			if (ee.ContextMenu != null)
+			{
+				lbl.ContextMenu = ee.ContextMenu;
+			}
+			else if (ee.ContextMenuCommandID != null)
+			{
+				lbl.ContextMenuCommandID = ee.ContextMenuCommandID;
 			}
 		}
+
+		protected virtual void OnBeforeTabContextMenu(BeforeTabContextMenuEventArgs e)
+		{
+			InvokeMethod((Control as TabContainer), "OnBeforeTabContextMenu", new object[] { e });
+		}
+
 
 		public void ClearTabPages()
 		{
@@ -126,7 +173,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void RemoveTabPage(TabPage tabPage)
 		{
-			throw new NotImplementedException();
+			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_remove_page(handle, (Control as TabContainer).TabPages.IndexOf(tabPage));
 		}
 
 		private static Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> create_window_d = null;
@@ -173,6 +221,44 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
+		public void SetSelectedTab(TabPage page)
+		{
+			TabContainer tc = (Control as TabContainer);
+			IntPtr hTabContainer = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_current_page(hTabContainer, tc.TabPages.IndexOf(page));
+		}
+
+		private static Action<IntPtr, IntPtr, uint> switch_page_d = null;
+		private static Func<IntPtr, int, IntPtr, bool> change_current_tab_d = null;
+
+		private static void switch_page(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ page, uint page_num)
+		{
+			// FIXME: this gets called during a tab detach, apparently, and we haven't yet updated the new TabContainer's TabPages collection yet
+			TabContainer tc = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabPage oldTab = tc.SelectedTab;
+			TabPage newTab = tc.TabPages[(int)page_num];
+
+
+			System.Reflection.FieldInfo fiSelectedTab = Framework.Reflection.GetField(tc.GetType(), "_SelectedTab", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy);
+			fiSelectedTab.SetValue(tc, newTab);
+
+			TabContainerSelectedTabChangedEventArgs ee = new TabContainerSelectedTabChangedEventArgs(oldTab, newTab);
+			InvokeMethod(tc, "OnSelectedTabChanged", new object[] { ee });
+		}
+		private static bool change_current_tab(IntPtr /*GtkNotebook*/ notebook, int index, IntPtr user_data)
+		{
+			GTKNativeControl nc = new GTKNativeControl(notebook);
+			TabContainer tc = (Application.Engine.GetControlByHandle(nc) as TabContainer);
+			TabPage oldTab = tc.SelectedTab;
+			TabPage newTab = tc.TabPages[index];
+
+			TabContainerSelectedTabChangingEventArgs ee = new TabContainerSelectedTabChangingEventArgs(oldTab, newTab);
+			InvokeMethod(tc, "OnSelectedTabChanging", new object[] { ee });
+			if (ee.Cancel) return false;
+
+			return true;
+		}
+
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
@@ -185,6 +271,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
+			Internal.GObject.Methods.g_signal_connect(handle, "change_current_tab", change_current_tab_d, IntPtr.Zero);
+			Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
 
 			return new GTKNativeControl(handle);
 		}

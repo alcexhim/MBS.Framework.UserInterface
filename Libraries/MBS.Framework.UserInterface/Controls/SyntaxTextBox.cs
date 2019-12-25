@@ -22,7 +22,7 @@ using System;
 
 namespace MBS.Framework.UserInterface.Controls
 {
-	public class SyntaxTextBox : Control
+	public class SyntaxTextBox : TextBox
 	{
 	}
 }

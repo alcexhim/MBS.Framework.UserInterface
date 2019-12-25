@@ -63,6 +63,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkPaned.gtk_paned_pack1(handle, (Engine.GetHandleForControl(ct1) as GTKNativeControl).Handle, true, true);
 			Internal.GTK.Methods.GtkPaned.gtk_paned_pack2(handle, (Engine.GetHandleForControl(ct2) as GTKNativeControl).Handle, true, true);
 			Internal.GTK.Methods.GtkPaned.gtk_paned_set_position (handle, ctl.SplitterPosition);
+			Internal.GTK.Methods.GtkPaned.gtk_paned_set_wide_handle (handle, true);
 			return new GTKNativeControl(handle);
 		}
 	}

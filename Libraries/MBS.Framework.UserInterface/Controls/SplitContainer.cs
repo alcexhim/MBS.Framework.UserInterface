@@ -12,13 +12,51 @@ namespace MBS.Framework.UserInterface.Controls
 	}
 	public class SplitContainer : SystemControl
 	{
-		private Container mvarPanel1 = new Container ();
+		private int _OldSplitterPosition = 0;
 
-		public Container Panel1 { get { return mvarPanel1; } }
+		protected internal override void OnResizing(ResizingEventArgs e)
+		{
+			base.OnResizing(e);
+		}
+		public class SplitContainerPanel : Container
+		{
+			public new SplitContainer Parent { get; private set; } = null;
 
-		private Container mvarPanel2 = new Container ();
+			private bool _Expanded = true;
+			public bool Expanded
+			{
+				get { return _Expanded; }
+				set
+				{
+					_Expanded = value;
+					if (_Expanded)
+					{
+						Parent.mvarSplitterPosition = Parent._OldSplitterPosition;
+					}
+					else
+					{
+						Parent._OldSplitterPosition = Parent.mvarSplitterPosition;
+						if (this == Parent.Panel1)
+						{
+							Parent.mvarSplitterPosition = 0;
+						}
+						else if (this == Parent.Panel2)
+						{
+							Parent.mvarSplitterPosition = (int)Parent.Size.Width;
+						}
+					}
+					(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition(Parent.mvarSplitterPosition);
+				}
+			}
 
-		public Container Panel2 { get { return mvarPanel2; } }
+			public SplitContainerPanel(SplitContainer parent)
+			{
+				Parent = parent;
+			}
+		}
+
+		public SplitContainerPanel Panel1 { get; private set; } = null;
+		public SplitContainerPanel Panel2 { get; private set; } = null;
 
 		private Orientation mvarOrientation = Orientation.Horizontal;
 		/// <summary>
@@ -40,10 +78,11 @@ namespace MBS.Framework.UserInterface.Controls
 						mvarSplitterPosition = impl.GetSplitterPosition ();
 					}
 				}
-				return mvarSplitterPosition;
+				return (Panel1.Expanded && Panel2.Expanded ? mvarSplitterPosition : (Panel1.Expanded ? (int)Size.Width : 0));
 			}
 			set
 			{
+				_OldSplitterPosition = value;
 				(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition (value);
 				mvarSplitterPosition = value;
 			}
@@ -52,6 +91,8 @@ namespace MBS.Framework.UserInterface.Controls
 		public SplitContainer (Orientation orientation = Orientation.Horizontal)
 		{
 			mvarOrientation = orientation;
+			Panel1 = new SplitContainerPanel(this);
+			Panel2 = new SplitContainerPanel(this);
 		}
 	}
 }

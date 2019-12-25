@@ -158,7 +158,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 				foreach (Control ctl in container.Controls)
 				{
-					bool ret = Engine.CreateControl(ctl);
+					bool ret = ctl.IsCreated;
+					if (!ret) ret = Engine.CreateControl(ctl);
 					if (!ret) continue;
 
 					ApplyLayout(hContainer, ctl, layout);

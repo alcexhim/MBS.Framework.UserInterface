@@ -167,7 +167,7 @@ namespace MBS.Framework.UserInterface
 			}
 			return false;
 		}
-		public static void ExecuteCommand(string id)
+		public static void ExecuteCommand(string id, KeyValuePair<string, object>[] namedParameters = null)
 		{
 			Command cmd = Commands[id];
 
@@ -177,7 +177,7 @@ namespace MBS.Framework.UserInterface
 				List<EventHandler> c = _CommandEventHandlers[id];
 				for (int i = 0;  i < c.Count; i++)
 				{
-					c[i](cmd, EventArgs.Empty);
+					c[i](cmd, new CommandEventArgs(cmd, namedParameters));
 				}
 				return;
 			}

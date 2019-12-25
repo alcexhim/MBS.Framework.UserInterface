@@ -29,6 +29,14 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			internal DockingSplitContainer scLeftCenterLEFT = null;
 			internal DockingSplitContainer scCenterRightRIGHT = null;
 
+			internal void RefreshPanelVisibility()
+			{
+				scTopCenterTOP.Panel1.Expanded = tbsTopPanel.TabPages.Count > 0;
+				scCenterBottomCENTERBOTTOM.Panel2.Expanded = tbsBottomPanel.TabPages.Count > 0;
+				scCenterRightRIGHT.Panel2.Expanded = tbsRightPanel.TabPages.Count > 0;
+				scLeftCenterLEFT.Panel1.Expanded = tbsLeftPanel.TabPages.Count > 0;
+			}
+
 			private void tbs_SelectedTabChanged(object sender, TabContainerSelectedTabChangedEventArgs e)
 			{
 				(_dcc?.ControlImplementation as DockingContainerImplementationUWT)._CurrentTabPage = e.NewTab;
@@ -39,15 +47,16 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 			private void _DockingContainerContextMenu_Close(object sender, EventArgs e)
 			{
-
+				DockingWindow dw = _DockingContainerContextMenu.GetExtraData<DockingWindow>("dw");
+				Application.ExecuteCommand("DockingContainerContextMenu_Close", new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("Item", dw) });
 			}
 			private void _DockingContainerContextMenu_CloseAllButThis(object sender, EventArgs e)
 			{
-
+				Application.ExecuteCommand("DockingContainerContextMenu_CloseAllButThis");
 			}
 			private void _DockingContainerContextMenu_CloseAll(object sender, EventArgs e)
 			{
-
+				Application.ExecuteCommand("DockingContainerContextMenu_CloseAll");
 			}
 
 			private void tbs_BeforeTabContextMenu(object sender, BeforeTabContextMenuEventArgs e)
@@ -62,6 +71,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 						new CommandMenuItem("C_lose All", null, _DockingContainerContextMenu_CloseAll)
 					});
 				}
+				_DockingContainerContextMenu.SetExtraData<DockingWindow>("dw", e.TabPage.GetExtraData<DockingWindow>("dw"));
 				e.ContextMenu = _DockingContainerContextMenu;
 			}
 
@@ -90,15 +100,15 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 				scTopCenterTOP = new DockingSplitContainer();
 				scTopCenterTOP.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scTopCenterTOP.Panel1.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
+				scTopCenterTOP.Panel1.Controls.Add(new DockingPanelTitleBar(tbsTopPanel), new BoxLayout.Constraints(false, true));
 				scTopCenterTOP.Panel1.Controls.Add(tbsTopPanel, new BoxLayout.Constraints(true, true));
 
 				scCenterBottomCENTERBOTTOM = new DockingSplitContainer();
 				scCenterBottomCENTERBOTTOM.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterBottomCENTERBOTTOM.Panel1.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
+				// scCenterBottomCENTERBOTTOM.Panel1.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
 				scCenterBottomCENTERBOTTOM.Panel1.Controls.Add(tbsCenterPanel, new BoxLayout.Constraints(true, true));
 				scCenterBottomCENTERBOTTOM.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
+				scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(new DockingPanelTitleBar(tbsBottomPanel), new BoxLayout.Constraints(false, true));
 				scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(tbsBottomPanel, new BoxLayout.Constraints(true, true));
 
 				scTopCenterTOP.Panel2.Layout = new BoxLayout(Orientation.Vertical);
@@ -106,7 +116,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 				scLeftCenterLEFT = new DockingSplitContainer();
 				scLeftCenterLEFT.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scLeftCenterLEFT.Panel1.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
+				scLeftCenterLEFT.Panel1.Controls.Add(new DockingPanelTitleBar(tbsLeftPanel), new BoxLayout.Constraints(false, true));
 				scLeftCenterLEFT.Panel1.Controls.Add(tbsLeftPanel, new BoxLayout.Constraints(true, true));
 				scLeftCenterLEFT.Orientation = Orientation.Vertical;
 
@@ -115,7 +125,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				scCenterRightRIGHT.Panel1.Layout = new BoxLayout(Orientation.Vertical);
 				scCenterRightRIGHT.Panel1.Controls.Add(scTopCenterTOP, new BoxLayout.Constraints(true, true));
 				scCenterRightRIGHT.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterRightRIGHT.Panel2.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
+				scCenterRightRIGHT.Panel2.Controls.Add(new DockingPanelTitleBar(tbsRightPanel), new BoxLayout.Constraints(false, true));
 				scCenterRightRIGHT.Panel2.Controls.Add(tbsRightPanel, new BoxLayout.Constraints(true, true));
 
 				scLeftCenterLEFT.Panel2.Layout = new BoxLayout(Orientation.Vertical);
@@ -149,7 +159,9 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			private Button cmdOptions = null;
 			private Button cmdClose = null;
 
-			public DockingPanelTitleBar()
+			private DockingTabContainer _tabContainer = null;
+
+			public DockingPanelTitleBar(DockingTabContainer tabContainer)
 			{
 				this.Layout = new BoxLayout(Orientation.Horizontal);
 
@@ -160,12 +172,17 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				this.Controls.Add(lblTitleBar, new BoxLayout.Constraints(true, true));
 
 				cmdOptions = new Button();
+				cmdOptions.BorderStyle = ButtonBorderStyle.None;
 				cmdOptions.Text = "O";
 				this.Controls.Add(cmdOptions, new BoxLayout.Constraints(false, false));
 
 				cmdClose = new Button();
+				cmdClose.BorderStyle = ButtonBorderStyle.None;
 				cmdClose.Text = "X";
 				this.Controls.Add(cmdClose, new BoxLayout.Constraints(false, false));
+
+				_tabContainer = tabContainer;
+				_tabContainer.SelectedTabChanged += (sender, e) => lblTitleBar.Text = _tabContainer.SelectedTab?.Text;
 			}
 		}
 
@@ -250,6 +267,15 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public void InsertDockingItem(DockingItem item, int index)
 		{
 			InsertDockingItemRecursive(item, index, null);
+			if (_ddc.IsCreated)
+				_ddc.RefreshPanelVisibility();
+		}
+
+		protected internal override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			_ddc.RefreshPanelVisibility();
 		}
 
 		private void InsertDockingItemRecursive(DockingItem item, int index, DockingDockContainer parent = null)
@@ -266,6 +292,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				tab.Controls.Add((item as DockingWindow).ChildControl, new BoxLayout.Constraints(true, true));
 				tab.Detachable = true;
 				tab.Reorderable = true;
+				tab.SetExtraData<DockingWindow>("dw", item as DockingWindow);
 				switch (item.Placement)
 				{
 					case DockingItemPlacement.Center:
@@ -407,7 +434,8 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 		public void SetCurrentItem(DockingItem item)
 		{
-			throw new NotImplementedException();
+			TabPage tab = GetTabPageForDockingItem(item);
+			tab.Parent.SelectedTab = tab;
 		}
 
 		public void UpdateDockingItemName(DockingItem item, string text)

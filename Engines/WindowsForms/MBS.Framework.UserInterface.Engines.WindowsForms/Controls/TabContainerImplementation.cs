@@ -42,7 +42,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 		public void InsertTabPage(int index, TabPage item)
 		{
-			(Control as TabContainer).TabPages.Insert(index, item);
+			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TabControl).TabPages.Insert(index, CreateTabPage(item));
+		}
+
+		private System.Windows.Forms.TabPage CreateTabPage(TabPage item)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void RemoveTabPage(TabPage tabPage)
@@ -53,6 +58,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 		public void SetTabPageDetachable(TabPage page, bool value)
 		{
 			throw new NotImplementedException();
+		}
+
+		public void SetSelectedTab(TabPage page)
+		{
+			TabContainer tc = (Control as TabContainer);
+			if (!tc.TabPages.Contains(page))
+			{
+				return;
+			}
+
+			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TabControl).SelectedTab = GetWFTabForTabPage(page);
+		}
+
+		private System.Collections.Generic.Dictionary<TabPage, System.Windows.Forms.TabPage> _WFTabsForTabPage = new System.Collections.Generic.Dictionary<TabPage, System.Windows.Forms.TabPage>();
+		private System.Windows.Forms.TabPage GetWFTabForTabPage(TabPage page)
+		{
+			if (!_WFTabsForTabPage.ContainsKey(page))
+				return null;
+			return _WFTabsForTabPage[page];
 		}
 
 		public void SetTabPageReorderable(TabPage page, bool value)

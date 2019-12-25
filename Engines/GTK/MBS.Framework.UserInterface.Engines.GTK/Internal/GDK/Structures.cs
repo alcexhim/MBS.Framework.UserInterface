@@ -12,13 +12,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			public double blue;
 			public double alpha;
 		}
-        public struct GdkColor
-        {
-            public uint pixel;
-            public ushort red;
-            public ushort green;
-            public ushort blue;
-        }
+		public struct GdkColor
+		{
+			public uint pixel;
+			public ushort red;
+			public ushort green;
+			public ushort blue;
+		}
 		public struct GdkRectangle
 		{
 			public int x;
@@ -26,8 +26,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			public int width;
 			public int height;
 		}
-		public struct GdkEvent
+		public struct GdkEventButton
 		{
+			#region GdkEventTimed members
+			#region GdkEvent members
 			/// <summary>
 			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
 			/// </summary>
@@ -40,14 +42,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			/// <c>true</c> if the event was sent explicitly.
 			/// </summary>
 			public byte send_event;
+			#endregion
 			/// <summary>
 			/// the time of the event in milliseconds.
 			/// </summary>
 			public uint time;
-		}
-		public struct GdkEventButton
-		{
-			public GdkEvent parent;
+			#endregion
+
 			public double x;
 			public double y;
 			public IntPtr /*double[]*/ axes;
@@ -59,7 +60,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GdkEventMotion
 		{
-			public GdkEvent parent;
+			#region GdkEventTimed members
+			#region GdkEvent members
+			/// <summary>
+			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
+			/// </summary>
+			public Constants.GdkEventType type;
+			/// <summary>
+			/// the window which received the event.
+			/// </summary>
+			public IntPtr /*GdkWindow*/ window;
+			/// <summary>
+			/// <c>true</c> if the event was sent explicitly.
+			/// </summary>
+			public byte send_event;
+			#endregion
+			/// <summary>
+			/// the time of the event in milliseconds.
+			/// </summary>
+			public uint time;
+			#endregion
+
 			public double x;
 			public double y;
 			public IntPtr /*double[]*/ axes;
@@ -75,7 +96,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GdkEventKey
 		{
-			public GdkEvent parent;
+			#region GdkEventTimed members
+			#region GdkEvent members
+			/// <summary>
+			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
+			/// </summary>
+			public Constants.GdkEventType type;
+			/// <summary>
+			/// the window which received the event.
+			/// </summary>
+			public IntPtr /*GdkWindow*/ window;
+			/// <summary>
+			/// <c>true</c> if the event was sent explicitly.
+			/// </summary>
+			public byte send_event;
+			#endregion
+			/// <summary>
+			/// the time of the event in milliseconds.
+			/// </summary>
+			public uint time;
+			#endregion
+
 			/// <summary>
 			/// a bit-mask representing the state of the modifier keys
 			/// (e.g.Control, Shift and Alt) and the pointer buttons.
@@ -117,6 +158,45 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			/// the keyboard group.
 			/// </summary>
 			public byte group;
+		}
+
+		/// <summary>
+		/// Generated when a window size or position has changed.
+		/// </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		public struct GdkEventConfigure
+		{
+			#region GdkEvent members
+			/// <summary>
+			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
+			/// </summary>
+			public Constants.GdkEventType type;
+			/// <summary>
+			/// the window which received the event.
+			/// </summary>
+			public IntPtr /*GdkWindow*/ window;
+			/// <summary>
+			/// <c>true</c> if the event was sent explicitly.
+			/// </summary>
+			public byte send_event;
+			#endregion
+
+			/// <summary>
+			/// the new x coordinate of the window, relative to its parent.
+			/// </summary>
+			public int x;
+			/// <summary>
+			/// the new y coordinate of the window, relative to its parent.
+			/// </summary>
+			// public int y;
+			/// <summary>
+			/// the new width of the window.
+			/// </summary>
+			public int width;
+			/// <summary>
+			/// the new height of the window.
+			/// </summary>
+			public int height;
 		}
 	}
 }

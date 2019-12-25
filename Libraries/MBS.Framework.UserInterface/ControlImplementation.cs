@@ -193,6 +193,15 @@ namespace MBS.Framework.UserInterface
 			Control.OnUnrealize (e);
 		}
 
+		protected internal virtual void OnResizing(ResizingEventArgs e)
+		{
+			Control.OnResizing(e);
+		}
+		protected internal virtual void OnResized(ResizedEventArgs e)
+		{
+			Control.OnResized(e);
+		}
+
 
 		protected virtual void OnBeforeContextMenu(EventArgs e)
 		{

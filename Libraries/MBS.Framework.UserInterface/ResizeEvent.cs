@@ -23,13 +23,25 @@ using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
-	public delegate void ResizeEventHandler(object sender, ResizeEventArgs e);
-	public class ResizeEventArgs : EventArgs
+	public delegate void ResizingEventHandler(object sender, ResizingEventArgs e);
+	public class ResizingEventArgs : System.ComponentModel.CancelEventArgs
 	{
 		public Dimension2D OldSize { get; private set; } = new Dimension2D();
 		public Dimension2D NewSize { get; set; } = new Dimension2D();
 
-		public ResizeEventArgs(Dimension2D oldSize, Dimension2D newSize)
+		public ResizingEventArgs(Dimension2D oldSize, Dimension2D newSize)
+		{
+			OldSize = oldSize;
+			NewSize = newSize;
+		}
+	}
+	public delegate void ResizedEventHandler(object sender, ResizedEventArgs e);
+	public class ResizedEventArgs : EventArgs
+	{
+		public Dimension2D OldSize { get; private set; } = new Dimension2D();
+		public Dimension2D NewSize { get; private set; } = new Dimension2D();
+
+		public ResizedEventArgs(Dimension2D oldSize, Dimension2D newSize)
 		{
 			OldSize = oldSize;
 			NewSize = newSize;

@@ -239,7 +239,39 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_drag_data_get_handler = new Internal.GTK.Delegates.GtkDragDataGetEvent(gc_drag_data_get);
 			gc_destroy_event_handler = new Func<IntPtr, IntPtr, bool>(gc_destroy_event);
 			gc_delete_event_handler = new Func<IntPtr, IntPtr, bool>(gc_delete_event);
+			gc_configure_event_handler = new Func<IntPtr, IntPtr, IntPtr, bool>(gc_configure_event);
 		}
+
+		private Func<IntPtr, IntPtr, IntPtr, bool> gc_configure_event_handler = null;
+		private bool gc_configure_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEvent*/ evt, IntPtr user_data)
+		{
+			// we cannot pass this param explicitly
+			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
+			Internal.GDK.Structures.GdkEventConfigure e = (Internal.GDK.Structures.GdkEventConfigure)System.Runtime.InteropServices.Marshal.PtrToStructure(evt, typeof(Internal.GDK.Structures.GdkEventConfigure));
+
+			Control ctl = (Engine as GTKEngine).GetControlByHandle(widget);
+			if (ctl != null)
+			{
+				if ((int)ctl.Size.Width != e.width || (int)ctl.Size.Height != e.height)
+				{
+					Dimension2D oldSize = ctl.Size;
+					Dimension2D newSize = new Framework.Drawing.Dimension2D(e.width, e.height);
+					ResizingEventArgs ee = new ResizingEventArgs(oldSize, newSize);
+					InvokeMethod(ctl.ControlImplementation, "OnResizing", new object[] { ee });
+
+					if (ee.Cancel)
+						return true;
+
+					MBS.Framework.Reflection.SetField(ctl, "mvarSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy, newSize);
+
+					ResizedEventArgs ee1 = new ResizedEventArgs(oldSize, newSize);
+					InvokeMethod(ctl.ControlImplementation, "OnResized", new object[] { ee1 });
+				}
+			}
+			return false;
+		}
+
+
 		/// <summary>
 		/// Connects the native GTK signals for the base GtkWidget class to the control with the given handle.
 		/// </summary>
@@ -260,6 +292,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "map_event", gc_map_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "destroy_event", gc_destroy_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "delete_event", gc_delete_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "configure_event", gc_configure_event_handler);
 
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_begin", gc_drag_begin_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
@@ -408,7 +441,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTKEngine.GdkEventButtonToMouseEventArgs(e);
-			if (e.parent.type == MBS.Framework.UserInterface.Engines.GTK.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
+			if (e.type == MBS.Framework.UserInterface.Engines.GTK.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
 				_mouse_double_click = true;
 			}
 

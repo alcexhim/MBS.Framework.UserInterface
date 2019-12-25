@@ -468,10 +468,15 @@ namespace MBS.Framework.UserInterface
 			LostFocus?.Invoke(this, e);
 		}
 
-		public event ResizeEventHandler Resizing;
-		protected internal virtual void OnResizing(ResizeEventArgs e)
+		public event ResizingEventHandler Resizing;
+		protected internal virtual void OnResizing(ResizingEventArgs e)
 		{
 			Resizing?.Invoke(this, e);
+		}
+		public event ResizedEventHandler Resized;
+		protected internal virtual void OnResized(ResizedEventArgs e)
+		{
+			Resized?.Invoke(this, e);
 		}
 
 		private bool _ContextMenuCommandIDChanged = false;

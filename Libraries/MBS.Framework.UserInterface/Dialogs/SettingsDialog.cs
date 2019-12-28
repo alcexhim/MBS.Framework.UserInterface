@@ -116,8 +116,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 			// CreateVSLayout();
 			CreateGNOMELayout();
 
-			ctDefault.Visible = false;
-			
 			Label lblNoOptions = new Label ("The selected group has no options available to configure");
 			lblNoOptions.HorizontalAlignment = HorizontalAlignment.Center;
 			lblNoOptions.VerticalAlignment = VerticalAlignment.Middle;
@@ -144,7 +142,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 						LoadOptionIntoGroup(opt, ct, iRow);
 						iRow++;
 					}
-					ct.Visible = false;
 
 					if (sidebar == null) {
 						vpaned.Panel2.Controls.Add (ct, new BoxLayout.Constraints (true, true));

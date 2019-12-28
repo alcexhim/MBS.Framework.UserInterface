@@ -35,6 +35,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return null;
 		}
 
+		internal static Internal.GTK.Constants.GtkPositionType TabPositionToGtkPositionType(TabPosition value)
+		{
+			switch (value)
+			{
+				case TabPosition.Bottom: return Internal.GTK.Constants.GtkPositionType.Bottom;
+				case TabPosition.Left: return Internal.GTK.Constants.GtkPositionType.Left;
+				case TabPosition.Right: return Internal.GTK.Constants.GtkPositionType.Right;
+				case TabPosition.Top: return Internal.GTK.Constants.GtkPositionType.Top;
+			}
+			throw new NotSupportedException();
+		}
+
+		public void SetTabPosition(TabPosition position)
+		{
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_pos((Handle as GTKNativeControl).Handle, TabPositionToGtkPositionType(position));
+		}
+
 		public void SetTabText(TabPage page, string text)
 		{
 			TabContainer tc = page.Parent;
@@ -269,6 +286,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				NotebookAppendPage(ctl, handle, tabPage);
 			}
+
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_pos(handle, TabPositionToGtkPositionType(ctl.TabPosition));
 
 			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
 			Internal.GObject.Methods.g_signal_connect(handle, "change_current_tab", change_current_tab_d, IntPtr.Zero);

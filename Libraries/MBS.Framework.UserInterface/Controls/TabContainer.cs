@@ -15,10 +15,23 @@ namespace MBS.Framework.UserInterface.Controls
 
 			void SetSelectedTab(TabPage page);
 			void SetTabText(TabPage page, string text);
+
+			void SetTabPosition(TabPosition position);
 		}
 	}
 	public class TabContainer : SystemControl
 	{
+		private TabPosition _TabPosition = TabPosition.Top;
+		public TabPosition TabPosition
+		{
+			get { return _TabPosition; }
+			set
+			{
+				_TabPosition = value;
+				(ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabPosition(value);
+			}
+		}
+
 		public event TabContainerSelectedTabChangedEventHandler SelectedTabChanged;
 		protected void OnSelectedTabChanged(TabContainerSelectedTabChangedEventArgs e)
 		{

@@ -44,6 +44,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_notebook_set_tab_label_text(IntPtr /*GtkNotebook*/ hNotebook, IntPtr /*GtkWidget*/ hPage, string text);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_tab_pos(IntPtr handle, Constants.GtkPositionType value);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_reorderable(IntPtr hNotebook, IntPtr hChild, bool reorderable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_detachable(IntPtr hNotebook, IntPtr hChild, bool detachable);

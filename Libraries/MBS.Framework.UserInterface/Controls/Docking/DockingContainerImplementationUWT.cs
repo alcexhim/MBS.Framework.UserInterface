@@ -18,25 +18,6 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 		private class DockingDockContainer : Container
 		{
-			internal DockingTabContainer tbsTopPanel = null;
-			internal DockingTabContainer tbsBottomPanel = null;
-			internal DockingTabContainer tbsLeftPanel = null;
-			internal DockingTabContainer tbsRightPanel = null;
-			internal DockingTabContainer tbsCenterPanel = null;
-
-			internal DockingSplitContainer scTopCenterTOP = null;
-			internal DockingSplitContainer scCenterBottomCENTERBOTTOM = null;
-			internal DockingSplitContainer scLeftCenterLEFT = null;
-			internal DockingSplitContainer scCenterRightRIGHT = null;
-
-			internal void RefreshPanelVisibility()
-			{
-				scTopCenterTOP.Panel1.Expanded = tbsTopPanel.TabPages.Count > 0;
-				scCenterBottomCENTERBOTTOM.Panel2.Expanded = tbsBottomPanel.TabPages.Count > 0;
-				scCenterRightRIGHT.Panel2.Expanded = tbsRightPanel.TabPages.Count > 0;
-				scLeftCenterLEFT.Panel1.Expanded = tbsLeftPanel.TabPages.Count > 0;
-			}
-
 			private void tbs_SelectedTabChanged(object sender, TabContainerSelectedTabChangedEventArgs e)
 			{
 				(_dcc?.ControlImplementation as DockingContainerImplementationUWT)._CurrentTabPage = e.NewTab;
@@ -82,56 +63,11 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				_dcc = dcc;
 				Layout = new BoxLayout(Orientation.Vertical);
 
-				tbsTopPanel = new DockingTabContainer();
-				tbsTopPanel.SelectedTabChanged += tbs_SelectedTabChanged;
-				tbsTopPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
-				tbsBottomPanel = new DockingTabContainer();
-				tbsBottomPanel.SelectedTabChanged += tbs_SelectedTabChanged;
-				tbsBottomPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
-				tbsLeftPanel = new DockingTabContainer();
-				tbsLeftPanel.SelectedTabChanged += tbs_SelectedTabChanged;
-				tbsLeftPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
-				tbsRightPanel = new DockingTabContainer();
-				tbsRightPanel.SelectedTabChanged += tbs_SelectedTabChanged;
-				tbsRightPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
-				tbsCenterPanel = new DockingTabContainer();
+				DockingTabContainer tbsCenterPanel = new DockingTabContainer();
 				tbsCenterPanel.SelectedTabChanged += tbs_SelectedTabChanged;
 				tbsCenterPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
 
-				scTopCenterTOP = new DockingSplitContainer();
-				scTopCenterTOP.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scTopCenterTOP.Panel1.Controls.Add(new DockingPanelTitleBar(tbsTopPanel), new BoxLayout.Constraints(false, true));
-				scTopCenterTOP.Panel1.Controls.Add(tbsTopPanel, new BoxLayout.Constraints(true, true));
-
-				scCenterBottomCENTERBOTTOM = new DockingSplitContainer();
-				scCenterBottomCENTERBOTTOM.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				// scCenterBottomCENTERBOTTOM.Panel1.Controls.Add(new DockingPanelTitleBar(), new BoxLayout.Constraints(false, true));
-				scCenterBottomCENTERBOTTOM.Panel1.Controls.Add(tbsCenterPanel, new BoxLayout.Constraints(true, true));
-				scCenterBottomCENTERBOTTOM.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(new DockingPanelTitleBar(tbsBottomPanel), new BoxLayout.Constraints(false, true));
-				scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(tbsBottomPanel, new BoxLayout.Constraints(true, true));
-
-				scTopCenterTOP.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scTopCenterTOP.Panel2.Controls.Add(scCenterBottomCENTERBOTTOM, new BoxLayout.Constraints(true, true));
-
-				scLeftCenterLEFT = new DockingSplitContainer();
-				scLeftCenterLEFT.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scLeftCenterLEFT.Panel1.Controls.Add(new DockingPanelTitleBar(tbsLeftPanel), new BoxLayout.Constraints(false, true));
-				scLeftCenterLEFT.Panel1.Controls.Add(tbsLeftPanel, new BoxLayout.Constraints(true, true));
-				scLeftCenterLEFT.Orientation = Orientation.Vertical;
-
-				scCenterRightRIGHT = new DockingSplitContainer();
-				scCenterRightRIGHT.Orientation = Orientation.Vertical;
-				scCenterRightRIGHT.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterRightRIGHT.Panel1.Controls.Add(scTopCenterTOP, new BoxLayout.Constraints(true, true));
-				scCenterRightRIGHT.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scCenterRightRIGHT.Panel2.Controls.Add(new DockingPanelTitleBar(tbsRightPanel), new BoxLayout.Constraints(false, true));
-				scCenterRightRIGHT.Panel2.Controls.Add(tbsRightPanel, new BoxLayout.Constraints(true, true));
-
-				scLeftCenterLEFT.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-				scLeftCenterLEFT.Panel2.Controls.Add(scCenterRightRIGHT, new BoxLayout.Constraints(true, true));
-
-				Controls.Add(scLeftCenterLEFT, new BoxLayout.Constraints(true, true));
+				Controls.Add(tbsCenterPanel, new BoxLayout.Constraints(true, true));
 			}
 		}
 		private class DockingTabContainer : TabContainer
@@ -257,25 +193,12 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 		public void ClearDockingItems()
 		{
-			_ddc.tbsTopPanel.TabPages.Clear();
-			_ddc.tbsLeftPanel.TabPages.Clear();
-			_ddc.tbsRightPanel.TabPages.Clear();
-			_ddc.tbsBottomPanel.TabPages.Clear();
-			_ddc.tbsCenterPanel.TabPages.Clear();
+			// _ddc.tbsCenterPanel.TabPages.Clear();
 		}
 
 		public void InsertDockingItem(DockingItem item, int index)
 		{
 			InsertDockingItemRecursive(item, index, null);
-			if (_ddc.IsCreated)
-				_ddc.RefreshPanelVisibility();
-		}
-
-		protected internal override void OnCreated(EventArgs e)
-		{
-			base.OnCreated(e);
-
-			_ddc.RefreshPanelVisibility();
 		}
 
 		private void InsertDockingItemRecursive(DockingItem item, int index, DockingDockContainer parent = null)
@@ -293,34 +216,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				tab.Detachable = true;
 				tab.Reorderable = true;
 				tab.SetExtraData<DockingWindow>("dw", item as DockingWindow);
-				switch (item.Placement)
-				{
-					case DockingItemPlacement.Center:
-					{
-						parent.tbsCenterPanel.TabPages.Add(tab);
-						break;
-					}
-					case DockingItemPlacement.Left:
-					{
-						parent.tbsLeftPanel.TabPages.Add(tab);
-						break;
-					}
-					case DockingItemPlacement.Bottom:
-					{
-						parent.tbsBottomPanel.TabPages.Add(tab);
-						break;
-					}
-					case DockingItemPlacement.Right:
-					{
-						parent.tbsRightPanel.TabPages.Add(tab);
-						break;
-					}
-					case DockingItemPlacement.Top:
-					{
-						parent.tbsTopPanel.TabPages.Add(tab);
-						break;
-					}
-				}
+				FindOrCreateParentControl(tab, parent, item.Placement);
 
 				RegisterDockingItemTabPage(tab, item);
 			}
@@ -337,65 +233,159 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				{
 					case DockingItemPlacement.Center:
 					{
-						DockingTabContainer tbsCenter = (parent.scCenterBottomCENTERBOTTOM.Panel1.Controls[1] as DockingTabContainer);
-
 						TabPage tab = new TabPage();
 						tab.Layout = new BoxLayout(Orientation.Vertical);
 						tab.Text = item.Title;
 						tab.Controls.Add(ddc, new BoxLayout.Constraints(true, true));
-						tbsCenter.TabPages.Add(tab);
-
-						_DockingItemsForTabPage[tab] = item;
+						RegisterDockingItemTabPage(tab, item);
 						break;
 					}
-					case DockingItemPlacement.Left:
+				}
+			}
+		}
+
+		private void FindOrCreateParentControl(TabPage tab, DockingDockContainer parent, DockingItemPlacement placement)
+		{
+			switch (placement)
+			{
+				case DockingItemPlacement.Left:
+				{
+					if (parent.Controls[0] is DockingTabContainer)
 					{
-						DockingTabContainer tbsLeft = (parent.scLeftCenterLEFT.Panel1.Controls[1] as DockingTabContainer);
-						parent.scLeftCenterLEFT.Panel1.Controls.Remove(tbsLeft);
+						DockingTabContainer tbs = (parent.Controls[0] as DockingTabContainer);
+						parent.Controls.Remove(tbs);
 
-						DockingSplitContainer sc = new DockingSplitContainer();
-						sc.Orientation = Orientation.Vertical;
-						sc.Panel1.Controls.Add(tbsLeft, new BoxLayout.Constraints(true, true));
-						sc.Panel2.Controls.Add(ddc, new BoxLayout.Constraints(true, true));
-						parent.scLeftCenterLEFT.Panel1.Controls.Add(sc, new BoxLayout.Constraints(true, true));
-						break;
+						DockingSplitContainer dsc = new DockingSplitContainer();
+						dsc.Orientation = Orientation.Vertical;
+
+						DockingTabContainer tbs1 = new DockingTabContainer();
+						tbs1.TabPosition = TabPosition.Bottom;
+						dsc.Panel1.Controls.Add(new DockingPanelTitleBar(tbs1), new BoxLayout.Constraints(false, true));
+
+						dsc.Panel1.Controls.Add(tbs1, new BoxLayout.Constraints(true, true));
+
+						dsc.Panel2.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
+						parent.Controls.Add(dsc, new BoxLayout.Constraints(true, true));
+						tbs1.TabPages.Add(tab);
 					}
-					case DockingItemPlacement.Bottom:
+					else if (parent.Controls[0] is DockingSplitContainer)
 					{
-						DockingTabContainer tbsLeft = (parent.scCenterBottomCENTERBOTTOM.Panel2.Controls[1] as DockingTabContainer);
-						parent.scCenterBottomCENTERBOTTOM.Panel2.Controls.Remove(tbsLeft);
-
-						DockingSplitContainer sc = new DockingSplitContainer();
-						sc.Orientation = Orientation.Vertical;
-						sc.Panel1.Controls.Add(tbsLeft, new BoxLayout.Constraints(true, true));
-						sc.Panel2.Controls.Add(ddc, new BoxLayout.Constraints(true, true));
-						parent.scCenterBottomCENTERBOTTOM.Panel2.Controls.Add(sc, new BoxLayout.Constraints(true, true));
-						break;
+						DockingSplitContainer dsc = (parent.Controls[0] as DockingSplitContainer);
+						DockingTabContainer tbs1 = (dsc.Panel1.Controls[1] as DockingTabContainer);
+						tbs1.TabPages.Add(tab);
 					}
-					case DockingItemPlacement.Right:
+					break;
+				}
+				case DockingItemPlacement.Bottom:
+				{
+					if (parent.Controls[0] is DockingTabContainer)
 					{
-						DockingTabContainer tbsLeft = (parent.scCenterRightRIGHT.Panel2.Controls[1] as DockingTabContainer);
-						parent.scCenterRightRIGHT.Panel2.Controls.Remove(tbsLeft);
+						DockingTabContainer tbs = (parent.Controls[0] as DockingTabContainer);
+						parent.Controls.Remove(tbs);
 
-						DockingSplitContainer sc = new DockingSplitContainer();
-						sc.Orientation = Orientation.Vertical;
-						sc.Panel1.Controls.Add(tbsLeft, new BoxLayout.Constraints(true, true));
-						sc.Panel2.Controls.Add(ddc, new BoxLayout.Constraints(true, true));
-						parent.scCenterRightRIGHT.Panel2.Controls.Add(sc, new BoxLayout.Constraints(true, true));
-						break;
+						DockingSplitContainer dsc = new DockingSplitContainer();
+						dsc.Orientation = Orientation.Horizontal;
+
+						DockingTabContainer tbs1 = new DockingTabContainer();
+						tbs1.TabPosition = TabPosition.Bottom;
+						dsc.Panel2.Controls.Add(new DockingPanelTitleBar(tbs1), new BoxLayout.Constraints(false, true));
+						dsc.Panel2.Controls.Add(tbs1, new BoxLayout.Constraints(true, true));
+
+						dsc.Panel1.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
+						parent.Controls.Add(dsc, new BoxLayout.Constraints(true, true));
+						tbs1.TabPages.Add(tab);
 					}
-					case DockingItemPlacement.Top:
+					else if (parent.Controls[0] is DockingSplitContainer)
 					{
-						DockingTabContainer tbsLeft = (parent.scTopCenterTOP.Panel1.Controls[1] as DockingTabContainer);
-						parent.scLeftCenterLEFT.Panel1.Controls.Remove(tbsLeft);
+						DockingTabContainer tbs1 = null;
+						DockingSplitContainer dsc = (parent.Controls[0] as DockingSplitContainer);
+						if (dsc.Orientation == Orientation.Vertical)
+						{
+							// huh, we already have a vertical SplitContainer
+							// must be a left- or right-docked item
+							if (dsc.Panel1.Controls[1] is DockingSplitContainer)
+							{
+							}
+							else if (dsc.Panel1.Controls[1] is DockingTabContainer)
+							{
+								// left-docked item
+								if (dsc.Panel2.Controls[0] is DockingTabContainer)
+								{
+									DockingTabContainer tbs = (dsc.Panel2.Controls[0] as DockingTabContainer);
+									dsc.Panel2.Controls.Remove(tbs);
 
-						DockingSplitContainer sc = new DockingSplitContainer();
-						sc.Orientation = Orientation.Vertical;
-						sc.Panel1.Controls.Add(ddc, new BoxLayout.Constraints(true, true));
-						sc.Panel2.Controls.Add(tbsLeft, new BoxLayout.Constraints(true, true));
-						parent.scTopCenterTOP.Panel1.Controls.Add(sc, new BoxLayout.Constraints(true, true));
-						break;
+									DockingSplitContainer dsc1 = new DockingSplitContainer();
+									dsc1.Orientation = Orientation.Horizontal;
+									dsc1.Panel1.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
+
+									tbs1 = new DockingTabContainer();
+									tbs1.TabPosition = TabPosition.Bottom;
+									dsc1.Panel2.Controls.Add(new DockingPanelTitleBar(tbs1), new BoxLayout.Constraints(false, true));
+									dsc1.Panel2.Controls.Add(tbs1, new BoxLayout.Constraints(true, true));
+
+									dsc.Panel2.Controls.Add(dsc1, new BoxLayout.Constraints(true, true));
+								}
+								else if (dsc.Panel2.Controls.Count > 1 && dsc.Panel2.Controls[1] is DockingTabContainer)
+								{
+									tbs1 = (dsc.Panel2.Controls[1] as DockingTabContainer);
+								}
+							}
+							else if (dsc.Panel2.Controls[0] is DockingSplitContainer)
+							{
+								tbs1 = ((dsc.Panel2.Controls[0] as SplitContainer).Panel2.Controls[1] as DockingTabContainer);
+							}
+						}
+						else
+						{
+							tbs1 = (dsc.Panel2.Controls[1] as DockingTabContainer);
+						}
+
+						if (tbs1 != null)
+						{
+							tbs1.TabPages.Add(tab);
+						}
+						else
+						{
+							Console.Error.WriteLine("tbs1 is NULL");
+						}
 					}
+					break;
+				}
+				case DockingItemPlacement.Center:
+				{
+					DockingTabContainer tbs = null;
+					if (parent.Controls[0] is DockingTabContainer)
+					{
+						tbs = (parent.Controls[0] as DockingTabContainer);
+					}
+					else if (parent.Controls[0] is DockingSplitContainer)
+					{
+						DockingSplitContainer dsc = (parent.Controls[0] as DockingSplitContainer);
+						if (dsc.Panel1.Controls[0] is DockingTabContainer)
+						{
+							tbs = (dsc.Panel1.Controls[0] as DockingTabContainer);
+						}
+						else if (dsc.Panel2.Controls[0] is DockingTabContainer)
+						{
+							tbs = (dsc.Panel2.Controls[0] as DockingTabContainer);
+						}
+						else if (dsc.Panel2.Controls[0] is DockingSplitContainer)
+						{
+							DockingSplitContainer dsc1 = dsc.Panel2.Controls[0] as DockingSplitContainer;
+							if (dsc1.Panel1.Controls[0] is DockingTabContainer)
+							{
+								tbs = (dsc1.Panel1.Controls[0] as DockingTabContainer);
+							}
+							else if (dsc1.Panel2.Controls[0] is DockingTabContainer)
+							{
+								tbs = (dsc1.Panel2.Controls[0] as DockingTabContainer);
+							}
+						}
+					}
+
+					if (tbs != null)
+						tbs.TabPages.Add(tab);
+					break;
 				}
 			}
 		}

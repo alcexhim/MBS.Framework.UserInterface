@@ -93,6 +93,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
 
+				text = text.Replace('\0', ' ');
 				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, text, text.Length);
 			}
 			else

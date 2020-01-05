@@ -616,6 +616,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			/// </summary>
 			DropActive = 1 << 12
 		}
+
+		/// <summary>
+		/// Describes a type of line wrapping.
+		/// </summary>
+		public enum GtkWrapMode
+		{
+			/// <summary>
+			/// do not wrap lines; just make the text area wider
+			/// </summary>
+			None,
+			/// <summary>
+			/// wrap text, breaking lines anywhere the cursor can appear (between characters, usually - if you want to be technical, between graphemes, see pango_get_log_attrs())
+			/// </summary>
+			Character,
+			/// <summary>
+			/// wrap text, breaking lines in between words
+			/// </summary>
+			Word,
+			/// <summary>
+			/// wrap text, breaking lines in between words, or if that is not enough, also between graphemes
+			/// </summary>
+			WordCharacter
+		}
 	}
 }
 

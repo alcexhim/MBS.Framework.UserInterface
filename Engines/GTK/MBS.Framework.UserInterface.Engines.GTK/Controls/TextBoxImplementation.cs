@@ -128,7 +128,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					IntPtr hBuffer = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_new(hTextTagTable);
 					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctlText, ctlText.Length);
 					Internal.GTK.Methods.GtkTextView.gtk_text_view_set_buffer(handle, hBuffer);
-
+					Internal.GTK.Methods.GtkTextView.gtk_text_view_set_wrap_mode(handle, Internal.GTK.Constants.GtkWrapMode.Word);
 					_TextBoxForBuffer[hBuffer] = ctl;
 					Internal.GObject.Methods.g_signal_connect(hBuffer, "changed", TextBuffer_Changed_Handler);
 				}

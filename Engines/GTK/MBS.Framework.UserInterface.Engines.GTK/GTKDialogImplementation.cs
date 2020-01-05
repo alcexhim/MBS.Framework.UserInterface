@@ -218,6 +218,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			if (handle != IntPtr.Zero)
 			{
 				Internal.GTK.Methods.GtkWindow.gtk_window_set_transient_for(handle, parentHandle);
+				Internal.GTK.Methods.GtkDialog.gtk_dialog_set_default_response(handle, (int)Internal.GTK.Constants.GtkResponseType.OK);
 				int nativeResult = Internal.GTK.Methods.GtkDialog.gtk_dialog_run(handle);
 
 				switch (nativeResult)
@@ -274,6 +275,59 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 						break;
 					}
 					case (int)Internal.GTK.Constants.GtkResponseType.Yes:
+					{
+						result = DialogResult.Yes;
+						break;
+					}
+
+
+
+					case (int)DialogResult.Abort:
+					{
+						result = DialogResult.Abort;
+						break;
+					}
+					case (int)DialogResult.Cancel:
+					{
+						result = DialogResult.Cancel;
+						break;
+					}
+					case (int)DialogResult.Continue:
+					{
+						result = DialogResult.Continue;
+						break;
+					}
+					case (int)DialogResult.Help:
+					{
+						result = DialogResult.Help;
+						break;
+					}
+					case (int)DialogResult.Ignore:
+					{
+						result = DialogResult.Ignore;
+						break;
+					}
+					case (int)DialogResult.No:
+					{
+						result = DialogResult.No;
+						break;
+					}
+					case (int)DialogResult.OK:
+					{
+						result = DialogResult.OK;
+						break;
+					}
+					case (int)DialogResult.Retry:
+					{
+						result = DialogResult.Retry;
+						break;
+					}
+					case (int)DialogResult.TryAgain:
+					{
+						result = DialogResult.TryAgain;
+						break;
+					}
+					case (int)DialogResult.Yes:
 					{
 						result = DialogResult.Yes;
 						break;

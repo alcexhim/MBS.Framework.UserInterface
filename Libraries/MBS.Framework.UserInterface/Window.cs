@@ -33,6 +33,31 @@ namespace MBS.Framework.UserInterface
 
 		public bool Modal { get; set; } = false;
 
+		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
+		{
+			CommandMenuItem mi = (sender as CommandMenuItem);
+			if (mi == null)
+				return;
+
+			Application.ExecuteCommand(mi.Name);
+		}
+
+		protected void InitializeMainMenu()
+		{
+			foreach (CommandItem ci in Application.MainMenu.Items)
+			{
+				MBS.Framework.UserInterface.MenuItem mi = MBS.Framework.UserInterface.MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+				if (mi == null)
+					continue;
+
+				if (mi.Name == "Help")
+				{
+					mi.HorizontalAlignment = MenuItemHorizontalAlignment.Right;
+				}
+				this.MenuBar.Items.Add(mi);
+			}
+		}
+
 		internal protected override void OnCreating (EventArgs e)
 		{
 			switch (CommandDisplayMode) {

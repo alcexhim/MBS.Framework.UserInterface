@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alignment.cs" />
@@ -241,6 +242,9 @@
     <Compile Include="TabContextMenuEvent.cs" />
     <Compile Include="CommandEvent.cs" />
     <Compile Include="TabPosition.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="CommandBar.cs" />
+    <Compile Include="ApplicationMainMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

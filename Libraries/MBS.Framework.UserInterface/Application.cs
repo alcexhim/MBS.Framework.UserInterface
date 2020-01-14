@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using MBS.Framework.UserInterface.Input.Keyboard;
+using UniversalEditor;
+using UniversalEditor.Accessors;
+using UniversalEditor.DataFormats.Markup.XML;
+using UniversalEditor.ObjectModels.Markup;
 
 namespace MBS.Framework.UserInterface
 {
@@ -23,12 +28,516 @@ namespace MBS.Framework.UserInterface
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
 
+		private static string mvarBasePath = null;
+		public static string BasePath
+		{
+			get
+			{
+				if (mvarBasePath == null)
+				{
+					// Set up the base path for the current application. Should this be able to be
+					// overridden with a switch (/basepath:...) ?
+					mvarBasePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				}
+				return mvarBasePath;
+			}
+		}
+
+		private static string mvarDataPath = null;
+		public static string DataPath
+		{
+			get
+			{
+				if (mvarDataPath == null)
+				{
+					mvarDataPath = String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+					{
+						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+						BasePath,
+						"Universal Editor"
+					});
+				}
+				return mvarDataPath;
+			}
+		}
+
+		public static string[] EnumerateDataPaths()
+		{
+			return new string[]
+			{
+				// first look in the application root directory since this will be overridden by everything else
+				BasePath,
+				// then look in /usr/share/universal-editor or C:\ProgramData\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData),
+					ShortName
+				}),
+				// then look in ~/.local/share/universal-editor or C:\Users\USERNAME\AppData\Local\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+					ShortName
+				}),
+				// then look in ~/.universal-editor or C:\Users\USERNAME\AppData\Roaming\Mike Becker's Software\Universal Editor
+				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
+				{
+					System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+					ShortName
+				})
+			};
+		}
+		public static string[] EnumerateDataFiles(string filter)
+		{
+			List<String> xmlFilesList = new List<String>();
+
+			// TODO: change "universal-editor" string to platform-dependent "universal-editor" on *nix or "Mike Becker's Software/Universal Editor" on Windowds
+			string[] paths = EnumerateDataPaths();
+
+			foreach (string path in paths)
+			{
+				// skip this one if the path doesn't exist
+				if (!System.IO.Directory.Exists(path)) continue;
+
+				string[] xmlfilesPath = System.IO.Directory.GetFiles(path, filter, System.IO.SearchOption.AllDirectories);
+				foreach (string s in xmlfilesPath)
+				{
+					xmlFilesList.Add(s);
+				}
+			}
+			return xmlFilesList.ToArray();
+		}
+
+		/// <summary>
+		/// The aggregated raw markup of all the various XML files loaded in the current search path.
+		/// </summary>
+		private static MarkupObjectModel mvarRawMarkup = new MarkupObjectModel();
+		public static MarkupObjectModel RawMarkup { get { return mvarRawMarkup; } }
+
+		private static Language mvarDefaultLanguage = null;
+		/// <summary>
+		/// The default <see cref="Language"/> used to display translatable text in this application.
+		/// </summary>
+		public static Language DefaultLanguage { get { return mvarDefaultLanguage; } set { mvarDefaultLanguage = value; } }
+
+		private static Language.LanguageCollection mvarLanguages = new Language.LanguageCollection();
+		/// <summary>
+		/// The languages defined for this application. Translations can be added through XML files in the ~/Languages folder.
+		/// </summary>
+		public static Language.LanguageCollection Languages { get { return mvarLanguages; } }
+
+		private static CommandBar.CommandBarCollection mvarCommandBars = new CommandBar.CommandBarCollection();
+		/// <summary>
+		/// The command bars loaded in this application, which can each hold multiple <see cref="CommandItem"/>s.
+		/// </summary>
+		public static CommandBar.CommandBarCollection CommandBars { get { return mvarCommandBars; } }
+
+
+		private static void InitializeCommandBar(MarkupTagElement tag)
+		{
+			MarkupAttribute attID = tag.Attributes["ID"];
+			if (attID == null) return;
+
+			CommandBar cb = new CommandBar();
+			cb.ID = attID.Value;
+
+			MarkupAttribute attTitle = tag.Attributes["Title"];
+			if (attTitle != null)
+			{
+				cb.Title = attTitle.Value;
+			}
+			else
+			{
+				cb.Title = cb.ID;
+			}
+
+			MarkupTagElement tagItems = tag.Elements["Items"] as MarkupTagElement;
+			if (tagItems != null)
+			{
+				foreach (MarkupElement elItem in tagItems.Elements)
+				{
+					MarkupTagElement tagItem = (elItem as MarkupTagElement);
+					if (tagItem == null) continue;
+
+					InitializeCommandBarItem(tagItem, null, cb);
+				}
+			}
+
+			mvarCommandBars.Add(cb);
+		}
+
+		private static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
+		{
+			CommandItem item = null;
+			switch (tag.FullName)
+			{
+				case "CommandReference":
+				{
+					MarkupAttribute attCommandID = tag.Attributes["CommandID"];
+					if (attCommandID != null)
+					{
+						item = new CommandReferenceCommandItem(attCommandID.Value);
+					}
+					break;
+				}
+				case "CommandPlaceholder":
+				{
+					MarkupAttribute attPlaceholderID = tag.Attributes["PlaceholderID"];
+					if (attPlaceholderID != null)
+					{
+						item = new CommandPlaceholderCommandItem(attPlaceholderID.Value);
+					}
+					break;
+				}
+				case "Separator":
+				{
+					item = new SeparatorCommandItem();
+					break;
+				}
+			}
+			
+			if (item != null)
+			{
+				if (parent == null)
+				{
+					if (parentCommandBar != null)
+					{
+						parentCommandBar.Items.Add(item);
+					}
+					else
+					{
+						mvarMainMenu.Items.Add(item);
+					}
+				}
+				else
+				{
+					parent.Items.Add(item);
+				}
+			}
+		}
+
+		private static ApplicationMainMenu mvarMainMenu = new ApplicationMainMenu();
+		/// <summary>
+		/// The main menu of this application, which can hold multiple <see cref="CommandItem"/>s.
+		/// </summary>
+		public static ApplicationMainMenu MainMenu { get { return mvarMainMenu; } }
+
+		private static void UpdateSplashScreenStatus(string value, int u = 0, int v = 0, int total = 0)
+		{
+			// TODO: implement this
+		}
+
+		public static string ConfigurationFileNameFilter { get; set; } = null;
+
+		/// <summary>
+		/// Enumerates and loads the XML configuration files for the application. Blatantly stolen^W^WAdapted from Universal Editor.
+		/// </summary>
+		private static void InitializeXMLConfiguration()
+		{
+			OnBeforeConfigurationLoaded(EventArgs.Empty);
+
+			#region Load the XML files
+			string configurationFileNameFilter = ConfigurationFileNameFilter; 
+			if (configurationFileNameFilter == null) configurationFileNameFilter = System.Configuration.ConfigurationManager.AppSettings["ApplicationFramework.Configuration.ConfigurationFileNameFilter"];
+			if (configurationFileNameFilter == null) configurationFileNameFilter = "*.xml";
+
+			string[] xmlfiles = EnumerateDataFiles(configurationFileNameFilter);
+
+			UpdateSplashScreenStatus("Loading XML configuration files", 0, 0, xmlfiles.Length);
+
+			XMLDataFormat xdf = new XMLDataFormat();
+			foreach (string xmlfile in xmlfiles)
+			{
+				MarkupObjectModel markup = new MarkupObjectModel();
+				Document doc = new Document(markup, xdf, new FileAccessor(xmlfile));
+				doc.Accessor.DefaultEncoding = UniversalEditor.IO.Encoding.UTF8;
+
+				doc.Accessor.Open();
+				doc.Load();
+				doc.Close();
+
+				markup.CopyTo(mvarRawMarkup);
+
+				// UpdateSplashScreenStatus("Loading XML configuration files", Array.IndexOf(xmlfiles, xmlfile) + 1);
+			}
+
+			#endregion
+
+			#region Initialize the configuration with the loaded data
+			#region Commands
+			UpdateSplashScreenStatus("Loading available commands");
+			MarkupTagElement tagCommands = (mvarRawMarkup.FindElement("ApplicationFramework", "Commands") as MarkupTagElement);
+			if (tagCommands != null)
+			{
+				foreach (MarkupElement elCommand in tagCommands.Elements)
+				{
+					MarkupTagElement tagCommand = (elCommand as MarkupTagElement);
+					if (tagCommand == null) continue;
+					if (tagCommand.FullName != "Command") continue;
+
+					MarkupAttribute attID = tagCommand.Attributes["ID"];
+					if (attID == null) continue;
+
+					Command cmd = new Command();
+					cmd.ID = attID.Value;
+
+					MarkupAttribute attDefaultCommandID = tagCommand.Attributes["DefaultCommandID"];
+					if (attDefaultCommandID != null)
+					{
+						cmd.DefaultCommandID = attDefaultCommandID.Value;
+					}
+
+					MarkupAttribute attCommandStockType = tagCommand.Attributes["StockType"];
+					if (attCommandStockType != null)
+					{
+						StockType stockType = StockType.None;
+						string[] names = Enum.GetNames(typeof(StockType));
+						int[] values = (int[])Enum.GetValues(typeof(StockType));
+						for (int i = 0; i < names.Length; i++)
+						{
+							if (names[i].Equals(attCommandStockType.Value))
+							{
+								stockType = (StockType)values[i];
+								break;
+							}
+						}
+						cmd.StockType = stockType;
+					}
+
+					MarkupAttribute attTitle = tagCommand.Attributes["Title"];
+					if (attTitle != null)
+					{
+						cmd.Title = attTitle.Value;
+					}
+					else
+					{
+						cmd.Title = cmd.ID;
+					}
+
+					MarkupTagElement tagShortcut = (tagCommand.Elements["Shortcut"] as MarkupTagElement);
+					if (tagShortcut != null)
+					{
+						MarkupAttribute attModifiers = tagShortcut.Attributes["Modifiers"];
+						MarkupAttribute attKey = tagShortcut.Attributes["Key"];
+						if (attKey != null)
+						{
+							KeyboardModifierKey modifiers = KeyboardModifierKey.None;
+							if (attModifiers != null)
+							{
+								string[] strModifiers = attModifiers.Value.Split(new char[] { ',' });
+								foreach (string strModifier in strModifiers)
+								{
+									switch (strModifier.Trim().ToLower())
+									{
+										case "alt":
+										{
+											modifiers |= KeyboardModifierKey.Alt;
+											break;
+										}
+										case "control":
+										{
+											modifiers |= KeyboardModifierKey.Control;
+											break;
+										}
+										case "meta":
+										{
+											modifiers |= KeyboardModifierKey.Meta;
+											break;
+										}
+										case "shift":
+										{
+											modifiers |= KeyboardModifierKey.Shift;
+											break;
+										}
+										case "super":
+										{
+											modifiers |= KeyboardModifierKey.Super;
+											break;
+										}
+									}
+								}
+							}
+
+							KeyboardKey value = KeyboardKey.None;
+							if (!Enum.TryParse<KeyboardKey>(attKey.Value, out value))
+							{
+								Console.WriteLine("ue: ui: unable to parse keyboard key '{0}'", attKey.Value);
+							}
+
+							cmd.Shortcut = new Shortcut(value, modifiers);
+						}
+					}
+
+					MarkupTagElement tagItems = (tagCommand.Elements["Items"] as MarkupTagElement);
+					if (tagItems != null)
+					{
+						foreach (MarkupElement el in tagItems.Elements)
+						{
+							MarkupTagElement tag = (el as MarkupTagElement);
+							if (tag == null) continue;
+
+							InitializeCommandBarItem(tag, cmd, null);
+						}
+					}
+
+					Application.Commands.Add(cmd);
+				}
+			}
+			#endregion
+			#region Main Menu Items
+			UpdateSplashScreenStatus("Loading main menu items");
+
+			MarkupTagElement tagMainMenuItems = (mvarRawMarkup.FindElement("ApplicationFramework", "MainMenu", "Items") as MarkupTagElement);
+			if (tagMainMenuItems != null)
+			{
+				foreach (MarkupElement elItem in tagMainMenuItems.Elements)
+				{
+					MarkupTagElement tagItem = (elItem as MarkupTagElement);
+					if (tagItem == null) continue;
+					InitializeCommandBarItem(tagItem, null, null);
+				}
+			}
+
+			UpdateSplashScreenStatus("Loading command bars");
+
+			MarkupTagElement tagCommandBars = (mvarRawMarkup.FindElement("ApplicationFramework", "CommandBars") as MarkupTagElement);
+			if (tagCommandBars != null)
+			{
+				foreach (MarkupElement elCommandBar in tagCommandBars.Elements)
+				{
+					MarkupTagElement tagCommandBar = (elCommandBar as MarkupTagElement);
+					if (tagCommandBar == null) continue;
+					if (tagCommandBar.FullName != "CommandBar") continue;
+					InitializeCommandBar(tagCommandBar);
+				}
+			}
+			#endregion
+			#region Languages
+			UpdateSplashScreenStatus("Loading languages and translations");
+
+			MarkupTagElement tagLanguages = (mvarRawMarkup.FindElement("ApplicationFramework", "Languages") as MarkupTagElement);
+			if (tagLanguages != null)
+			{
+				foreach (MarkupElement elLanguage in tagLanguages.Elements)
+				{
+					MarkupTagElement tagLanguage = (elLanguage as MarkupTagElement);
+					if (tagLanguage == null) continue;
+					if (tagLanguage.FullName != "Language") continue;
+					InitializeLanguage(tagLanguage);
+				}
+
+				MarkupAttribute attDefaultLanguageID = tagLanguages.Attributes["DefaultLanguageID"];
+				if (attDefaultLanguageID != null)
+				{
+					mvarDefaultLanguage = mvarLanguages[attDefaultLanguageID.Value];
+				}
+			}
+
+			UpdateSplashScreenStatus("Setting language");
+
+			if (mvarDefaultLanguage == null)
+			{
+				mvarDefaultLanguage = new Language();
+			}
+			else
+			{
+				foreach (Command cmd in Application.Commands)
+				{
+					cmd.Title = mvarDefaultLanguage.GetCommandTitle(cmd.ID, cmd.ID);
+				}
+			}
+			#endregion
+
+			// UpdateSplashScreenStatus("Finalizing configuration");
+			// ConfigurationManager.Load();
+			#endregion
+
+			OnAfterConfigurationLoaded(EventArgs.Empty);
+		}
+
+		private static void InitializeLanguage(MarkupTagElement tag)
+		{
+			MarkupAttribute attID = tag.Attributes["ID"];
+			if (attID == null) return;
+
+			Language lang = mvarLanguages[attID.Value];
+			if (lang == null)
+			{
+				lang = new Language();
+				lang.ID = attID.Value;
+				mvarLanguages.Add(lang);
+			}
+
+			MarkupAttribute attTitle = tag.Attributes["Title"];
+			if (attTitle != null)
+			{
+				lang.Title = attTitle.Value;
+			}
+			else
+			{
+				lang.Title = lang.ID;
+			}
+
+			MarkupTagElement tagStringTable = (tag.Elements["StringTable"] as MarkupTagElement);
+			if (tagStringTable != null)
+			{
+				foreach (MarkupElement elStringTableEntry in tagStringTable.Elements)
+				{
+					MarkupTagElement tagStringTableEntry = (elStringTableEntry as MarkupTagElement);
+					if (tagStringTableEntry == null) continue;
+					if (tagStringTableEntry.FullName != "StringTableEntry") continue;
+
+					MarkupAttribute attStringTableEntryID = tagStringTableEntry.Attributes["ID"];
+					if (attStringTableEntryID == null) continue;
+
+					MarkupAttribute attStringTableEntryValue = tagStringTableEntry.Attributes["Value"];
+					if (attStringTableEntryValue == null) continue;
+
+					lang.SetStringTableEntry(attStringTableEntryID.Value, attStringTableEntryValue.Value);
+				}
+			}
+
+			MarkupTagElement tagCommands = (tag.Elements["Commands"] as MarkupTagElement);
+			if (tagCommands != null)
+			{
+				foreach (MarkupElement elCommand in tagCommands.Elements)
+				{
+					MarkupTagElement tagCommand = (elCommand as MarkupTagElement);
+					if (tagCommand == null) continue;
+					if (tagCommand.FullName != "Command") continue;
+
+					MarkupAttribute attCommandID = tagCommand.Attributes["ID"];
+					if (attCommandID == null) continue;
+
+					MarkupAttribute attCommandTitle = tagCommand.Attributes["Title"];
+					if (attCommandTitle == null) continue;
+
+					lang.SetCommandTitle(attCommandID.Value, attCommandTitle.Value);
+				}
+			}
+		}
+
+		public static event EventHandler BeforeConfigurationLoaded;
+		private static void OnBeforeConfigurationLoaded(EventArgs e)
+		{
+			AfterConfigurationLoaded?.Invoke(typeof(Application), e);
+			BeforeConfigurationLoaded?.Invoke(typeof(Application), e);
+		}
+
+		public static event EventHandler AfterConfigurationLoaded;
+		private static void OnAfterConfigurationLoaded(EventArgs e)
+		{
+			AfterConfigurationLoaded?.Invoke(typeof(Application), e);
+		}
+
 		/// <summary>
 		/// The event that is called the first time an applicati
 		/// </summary>
 		public static event EventHandler Startup;
 		private static void OnStartup(EventArgs e)
 		{
+			InitializeXMLConfiguration();
+
 			Startup?.Invoke(typeof(Application), e);
 		}
 
@@ -193,34 +702,6 @@ namespace MBS.Framework.UserInterface
 				return;
 
 			cmd.Execute ();
-		}
-		
-		public static string[] EnumerateDataPaths()
-		{
-			string basePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-			return new string[]
-			{
-				// first look in the application root directory since this will be overridden by everything else
-				basePath,
-				// then look in /usr/share/universal-editor or C:\ProgramData\Mike Becker's Software\Universal Editor
-				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
-				{
-					System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData),
-					Application.ShortName
-				}),
-				// then look in ~/.local/share/universal-editor or C:\Users\USERNAME\AppData\Local\Mike Becker's Software\Universal Editor
-				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
-				{
-					System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
-					Application.ShortName
-				}),
-				// then look in ~/.universal-editor or C:\Users\USERNAME\AppData\Roaming\Mike Becker's Software\Universal Editor
-				String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
-				{
-					System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
-					Application.ShortName
-				})
-			};
 		}
 
 		public static string ExpandRelativePath(string relativePath)

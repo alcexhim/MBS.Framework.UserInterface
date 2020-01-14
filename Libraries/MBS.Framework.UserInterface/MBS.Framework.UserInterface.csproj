@@ -245,6 +245,7 @@
     <Compile Include="Language.cs" />
     <Compile Include="CommandBar.cs" />
     <Compile Include="ApplicationMainMenu.cs" />
+    <Compile Include="SplashScreenWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

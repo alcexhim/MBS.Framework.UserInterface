@@ -536,15 +536,62 @@ namespace MBS.Framework.UserInterface
 		public static event EventHandler Startup;
 		private static void OnStartup(EventArgs e)
 		{
-			InitializeXMLConfiguration();
-
 			Startup?.Invoke(typeof(Application), e);
 		}
+
+		private static SplashScreenWindow splasher = null;
+		private static System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+		private static void ShowSplashScreen()
+		{
+			sw.Reset();
+			sw.Start();
+			// if (LocalConfiguration.SplashScreen.Enabled)
+			// {
+			splasher = new SplashScreenWindow();
+			splasher.Show();
+			// }
+		}
+		internal static void HideSplashScreen()
+		{
+			while (splasher == null)
+			{
+				System.Threading.Thread.Sleep(500);
+			}
+			splasher.Hide();
+			splasher = null;
+
+			sw.Stop();
+			Console.WriteLine("stopwatch: went from rip to ready in {0}", sw.Elapsed);
+		}
+
 
 		public static event ApplicationActivatedEventHandler Activated;
 		private static void OnActivated(ApplicationActivatedEventArgs e)
 		{
+			if (e.FirstRun)
+			{
+				ShowSplashScreen();
+				Application.DoEvents();
+
+				System.Threading.Thread t = new System.Threading.Thread(t_threadStart);
+				t.Start();
+
+				while (splasher != null)
+				{
+					Application.DoEvents();
+					System.Threading.Thread.Sleep(500);
+				}
+			}
+
 			Activated?.Invoke(typeof(Application), e);
+		}
+
+		private static void t_threadStart(object obj)
+		{
+			InitializeXMLConfiguration();
+
+			HideSplashScreen();
 		}
 
 		/// <summary>

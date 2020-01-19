@@ -79,6 +79,52 @@ namespace MBS.Framework.UserInterface
 			};
 		}
 
+		private TreeModelRow RecursiveCreateTreeModelRow(TreeModelColumn displayColumn, string[] titles, TreeModelRowColumn[] additionalColumns, TreeModelRow parent, int titleIndex)
+		{
+			TreeModelRow theRow = null;
+			TreeModelRow.TreeModelRowCollection coll = null;
+			if (parent == null)
+			{
+				coll = Rows;
+			}
+			else
+			{
+				coll = parent.Rows;
+			}
+
+			for (int i = 0; i < coll.Count; i++)
+			{
+				if (coll[i].RowColumns[displayColumn].Value.Equals(titles[titleIndex]))
+				{
+					theRow = coll[i];
+					break;
+				}
+			}
+
+			if (theRow == null)
+			{
+				theRow = new TreeModelRow(new TreeModelRowColumn[]
+				{
+					new TreeModelRowColumn(displayColumn, titles[titleIndex])
+				});
+
+				for (int i = 0; i < additionalColumns.Length; i++)
+					theRow.RowColumns.Add(additionalColumns[i]);
+
+				coll.Add(theRow);
+			}
+
+			if (titleIndex == titles.Length - 1)
+			{
+				return theRow;
+			}
+			return RecursiveCreateTreeModelRow(displayColumn, titles, additionalColumns, theRow, titleIndex + 1);
+		}
+		public TreeModelRow RecursiveCreateTreeModelRow(TreeModelColumn displayColumn, string[] titles, TreeModelRowColumn[] additionalColumns = null)
+		{
+			return RecursiveCreateTreeModelRow(displayColumn, titles, additionalColumns, null, 0);
+		}
+
 		public event TreeModelChangedEventHandler TreeModelChanged;
 		protected virtual void OnTreeModelChanged(object sender, TreeModelChangedEventArgs e)
 		{

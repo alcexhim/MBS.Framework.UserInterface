@@ -113,8 +113,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 		{
 			base.OnCreating (e);
 
-			// CreateVSLayout();
-			CreateGNOMELayout();
+			CreateVSLayout();
+			// CreateGNOMELayout();
 
 			Label lblNoOptions = new Label ("The selected group has no options available to configure");
 			lblNoOptions.HorizontalAlignment = HorizontalAlignment.Center;

@@ -40,7 +40,14 @@ namespace MBS.Framework.UserInterface
 
 		private void InitContainerLayout(ContainerLayoutAttribute wla)
 		{
-			this.LoadFromMarkup(Application.ExpandRelativePath(wla.PathName), wla.ClassName);
+			string fileName = Application.ExpandRelativePath(wla.PathName);
+			if (fileName == null)
+			{
+				Console.WriteLine("container layout file not found: '{0}'", wla.PathName);
+				return;
+			}
+
+			this.LoadFromMarkup(fileName, wla.ClassName);
 
 			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)

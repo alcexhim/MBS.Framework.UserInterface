@@ -245,12 +245,23 @@ namespace MBS.Framework.UserInterface.Controls
 		}
 
 		private DefaultTreeModel mvarModel = null;
-		public DefaultTreeModel Model { get { return mvarModel; } set { mvarModel = value; mvarModel.TreeModelChanged += MvarModel_TreeModelChanged;
-				foreach (TreeModelRow row in mvarModel.Rows) {
-					RecursiveSetControlParent (row);
+		public DefaultTreeModel Model
+		{
+			get { return mvarModel; }
+			set
+			{
+				mvarModel = value;
+				if (mvarModel != null)
+				{
+					mvarModel.TreeModelChanged += MvarModel_TreeModelChanged;
+					foreach (TreeModelRow row in mvarModel.Rows)
+					{
+						RecursiveSetControlParent(row);
+					}
 				}
-		(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel (); } }
-
+				(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel();
+			}
+		}
 
 		public ListViewHitTestInfo LastHitTest { get; private set; } = new ListViewHitTestInfo(null, null);
 		protected internal override void OnMouseDown(MouseEventArgs e)

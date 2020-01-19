@@ -200,6 +200,10 @@
     <Compile Include="Dialogs\AppChooserDialogImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkCellRendererToggle.cs" />
     <Compile Include="Internal\GTK\Methods\GtkEventBox.cs" />
+    <Compile Include="Controls\GroupBoxImplementation.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkFrame.cs" />
+    <Compile Include="Controls\NumericTextBoxImplementation.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkSpinButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -168,32 +168,37 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private void LoadOptionIntoGroup(Setting opt, Container ct, int iRow)
 		{
-			if (opt is TextSetting) {
+			if (opt is TextSetting)
+			{
 				TextSetting o = (opt as TextSetting);
 
-				Label lbl = new Label ();
+				Label lbl = new Label();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
 				lbl.Text = o.Title + ": ";
-				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
-				TextBox txt = new TextBox ();
-				txt.Text = o.GetValue<string> ();
-				txt.SetExtraData<Setting> ("setting", o);
-				ct.Controls.Add (txt, new GridLayout.Constraints (iRow, 1));
-			} else if (opt is BooleanSetting) {
+				ct.Controls.Add(lbl, new GridLayout.Constraints(iRow, 0, 1, 1));
+				TextBox txt = new TextBox();
+				txt.Text = o.GetValue<string>();
+				txt.SetExtraData<Setting>("setting", o);
+				ct.Controls.Add(txt, new GridLayout.Constraints(iRow, 1, 1, 1, ExpandMode.Horizontal));
+			}
+			else if (opt is BooleanSetting)
+			{
 				BooleanSetting o = (opt as BooleanSetting);
-				CheckBox chk = new CheckBox ();
+				CheckBox chk = new CheckBox();
 				chk.Text = o.Title;
 				chk.Checked = o.GetValue<bool>();
-				chk.SetExtraData<Setting> ("setting", o);
-				ct.Controls.Add (chk, new GridLayout.Constraints (iRow, 0, 1, 2));
-			} else if (opt is ChoiceSetting) {
+				chk.SetExtraData<Setting>("setting", o);
+				ct.Controls.Add(chk, new GridLayout.Constraints(iRow, 0, 1, 2, ExpandMode.Horizontal));
+			}
+			else if (opt is ChoiceSetting)
+			{
 				ChoiceSetting o = (opt as ChoiceSetting);
 
-				Label lbl = new Label ();
+				Label lbl = new Label();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
 				lbl.Text = o.Title;
-				ct.Controls.Add (lbl, new GridLayout.Constraints (iRow, 0));
-				ComboBox cbo = new ComboBox ();
+				ct.Controls.Add(lbl, new GridLayout.Constraints(iRow, 0));
+				ComboBox cbo = new ComboBox();
 				cbo.ReadOnly = true; // o.RequireSelectionFromList;
 				DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(string) });
 				foreach (ChoiceSetting.ChoiceSettingValue value in o.ValidValues)
@@ -204,12 +209,38 @@ namespace MBS.Framework.UserInterface.Dialogs
 					}));
 				}
 				cbo.Model = tm;
-				cbo.Text = o.GetValue<string> ();
-				cbo.SetExtraData<Setting> ("setting", o);
-				ct.Controls.Add (cbo, new GridLayout.Constraints (iRow, 1));
-			} else if (opt is GroupSetting) {
+				cbo.Text = o.GetValue<string>();
+				cbo.SetExtraData<Setting>("setting", o);
+				ct.Controls.Add(cbo, new GridLayout.Constraints(iRow, 1, 1, 1, ExpandMode.Horizontal));
+			}
+			else if (opt is GroupSetting)
+			{
 				GroupSetting o = (opt as GroupSetting);
 
+				GroupBox ct1 = new GroupBox();
+				ct1.Text = opt.Title;
+				ct1.Layout = new GridLayout();
+				for (int j = 0; j < o.Options.Count; j++)
+				{
+					LoadOptionIntoGroup(((GroupSetting)opt).Options[j], ct1, j);
+				}
+
+				ct.Controls.Add(ct1, new GridLayout.Constraints(iRow, 0, 1, 2, ExpandMode.Horizontal));
+			}
+			else if (opt is RangeSetting)
+			{
+				RangeSetting o = (opt as RangeSetting);
+
+				Label lbl = new Label();
+				lbl.HorizontalAlignment = HorizontalAlignment.Left;
+				lbl.Text = o.Title;
+				ct.Controls.Add(lbl, new GridLayout.Constraints(iRow, 0));
+
+				NumericTextBox txt = new NumericTextBox();
+				txt.Minimum = o.MinimumValue;
+				txt.Maximum = o.MaximumValue;
+				txt.Value = o.GetValue<double>();
+				ct.Controls.Add(txt, new GridLayout.Constraints(iRow, 1, 1, 1, ExpandMode.Horizontal));
 			}
 		}
 

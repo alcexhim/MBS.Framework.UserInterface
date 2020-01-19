@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace MBS.Framework.UserInterface
 {
 	public class TreeModelRowColumn
@@ -12,19 +14,38 @@ namespace MBS.Framework.UserInterface
 				_parent = parent;
 			}
 
+			private Dictionary<TreeModelColumn, TreeModelRowColumn> _ItemsByColumn = new Dictionary<TreeModelColumn, TreeModelRowColumn>();
+			public TreeModelRowColumn this[TreeModelColumn c]
+			{
+				get
+				{
+					if (_ItemsByColumn.ContainsKey(c))
+						return _ItemsByColumn[c];
+					return null;
+				}
+			}
+
 			protected override void ClearItems()
 			{
 				for (int i = 0; i < Count; i++)
 					this[i].Parent = null;
+
+				_ItemsByColumn.Clear();
 				base.ClearItems();
 			}
 			protected override void InsertItem(int index, TreeModelRowColumn item)
 			{
 				base.InsertItem(index, item);
 				item.Parent = _parent;
+
+				if (item.Column != null)
+					_ItemsByColumn[item.Column] = item;
 			}
 			protected override void RemoveItem(int index)
 			{
+				if (this[index].Column != null)
+					_ItemsByColumn[this[index].Column] = null;
+
 				this[index].Parent = null;
 				base.RemoveItem(index);
 			}

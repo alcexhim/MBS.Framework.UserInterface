@@ -6,6 +6,18 @@ namespace MBS.Framework.UserInterface
 		public class CommandItemCollection
 			: System.Collections.ObjectModel.Collection<CommandItem>
 		{
+			public int IndexOf(string value)
+			{
+				for (int i = 0; i < Count; i++)
+				{
+					if (this[i] is CommandReferenceCommandItem)
+					{
+						if ((this[i] as CommandReferenceCommandItem).CommandID.Equals(value))
+							return i;
+					}
+				}
+				return -1;
+			}
 		}
 	}
 	public class CommandReferenceCommandItem : CommandItem

@@ -169,6 +169,10 @@ namespace MBS.Framework.UserInterface
 		private static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
 		{
 			CommandItem item = null;
+
+			MarkupAttribute attInsertAfter = tag.Attributes["InsertAfter"];
+			MarkupAttribute attInsertBefore = tag.Attributes["InsertBefore"];
+
 			switch (tag.FullName)
 			{
 				case "CommandReference":
@@ -195,23 +199,46 @@ namespace MBS.Framework.UserInterface
 					break;
 				}
 			}
-			
+
+			CommandItem.CommandItemCollection coll = null;
 			if (item != null)
 			{
 				if (parent == null)
 				{
 					if (parentCommandBar != null)
 					{
-						parentCommandBar.Items.Add(item);
+						coll = parentCommandBar.Items;
 					}
 					else
 					{
-						mvarMainMenu.Items.Add(item);
+						coll = mvarMainMenu.Items;
 					}
 				}
 				else
 				{
-					parent.Items.Add(item);
+					coll = parent.Items;
+				}
+			}
+
+			if (coll != null)
+			{
+				int insertIndex = -1;
+				if (attInsertAfter != null)
+				{
+					insertIndex = coll.IndexOf(attInsertAfter.Value) + 1;
+				}
+				else if (attInsertBefore != null)
+				{
+					insertIndex = coll.IndexOf(attInsertBefore.Value);
+				}
+
+				if (insertIndex != -1)
+				{
+					coll.Insert(insertIndex, item);
+				}
+				else
+				{
+					coll.Add(item);
 				}
 			}
 		}
@@ -1006,5 +1033,5 @@ namespace MBS.Framework.UserInterface
 				group.Settings [realName].SetValue (value);
 			}
 		}
-    }
+	}
 }

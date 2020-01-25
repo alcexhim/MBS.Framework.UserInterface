@@ -24,24 +24,43 @@ using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.Drawing;
+using System.Text;
 
 namespace MBS.Framework.UserInterface
 {
 	public abstract class ControlImplementation
 	{
-		protected static void InvokeMethod (object obj, string meth, params object [] parms)
+		protected static void InvokeMethod(object obj, string meth, params object[] parms)
 		{
-			if (obj == null) {
-				Console.WriteLine ("NativeImplementation::InvokeMethod: obj is null");
+			if (obj == null)
+			{
+				Console.WriteLine("NativeImplementation::InvokeMethod: obj is null");
 				return;
 			}
 
-			Type t = obj.GetType ();
-			System.Reflection.MethodInfo mi = t.GetMethod (meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-			if (mi != null) {
-				mi.Invoke (obj, parms);
-			} else {
-				Console.WriteLine ("NativeImplementation::InvokeMethod: not found '" + meth + "' on '" + t.FullName + "'");
+			Type t = obj.GetType();
+			System.Reflection.MethodInfo mi = t.GetMethod(meth, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			if (mi != null)
+			{
+				mi.Invoke(obj, parms);
+			}
+			else
+			{
+				StringBuilder methSig = new StringBuilder();
+				for (int i = 0; i < parms.Length; i++)
+				{
+					if (parms[i] == null)
+					{
+						methSig.Append("null");
+					}
+					else
+					{
+						methSig.Append(parms[i].GetType().FullName);
+					}
+					if (i < parms.Length - 1)
+						methSig.Append(", ");
+				}
+				Console.WriteLine("NativeImplementation::InvokeMethod: not found '{0}({1})' on '{2}'", meth, methSig.ToString(), t.FullName);
 			}
 		}
 

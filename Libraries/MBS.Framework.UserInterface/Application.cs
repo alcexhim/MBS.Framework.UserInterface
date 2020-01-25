@@ -1062,5 +1062,22 @@ namespace MBS.Framework.UserInterface
 				group.Settings [realName].SetValue (value);
 			}
 		}
+
+		public static Process Launch(Uri uri)
+		{
+			return Launch(uri.ToString());
+		}
+		/// <summary>
+		/// Launch the application represented by the given path.
+		/// </summary>
+		/// <param name="path">Path.</param>
+		public static Process Launch(string path)
+		{
+			Process p = new Process();
+			p.StartInfo.FileName = path;
+			p.Start();
+
+			return p;
+		}
 	}
 }

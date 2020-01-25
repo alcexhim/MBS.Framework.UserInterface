@@ -225,10 +225,12 @@ namespace MBS.Framework.UserInterface
 				int insertIndex = -1;
 				if (attInsertAfter != null)
 				{
+					item.InsertAfterID = attInsertAfter.Value;
 					insertIndex = coll.IndexOf(attInsertAfter.Value) + 1;
 				}
 				else if (attInsertBefore != null)
 				{
+					item.InsertBeforeID = attInsertAfter.Value;
 					insertIndex = coll.IndexOf(attInsertBefore.Value);
 				}
 
@@ -696,7 +698,24 @@ namespace MBS.Framework.UserInterface
 				_listContextMenuItems[ctx].Add(mi);
 				foreach (Window w in Application.Windows)
 				{
-					w.MenuBar.Items.Add(mi);
+					int insertIndex = -1;
+					if (ci.InsertAfterID != null)
+					{
+						insertIndex = w.MenuBar.Items.IndexOf(w.MenuBar.Items[ci.InsertAfterID]) + 1;
+					}
+					else if (ci.InsertBeforeID != null)
+					{
+						insertIndex = w.MenuBar.Items.IndexOf(w.MenuBar.Items[ci.InsertBeforeID]);
+					}
+
+					if (insertIndex != -1)
+					{
+						w.MenuBar.Items.Insert(insertIndex, mi);
+					}
+					else
+					{
+						w.MenuBar.Items.Add(mi);
+					}
 				}
 			}
 

@@ -3,6 +3,9 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class CommandItem
 	{
+		public string InsertAfterID { get; set; } = null;
+		public string InsertBeforeID { get; set; } = null;
+
 		public class CommandItemCollection
 			: System.Collections.ObjectModel.Collection<CommandItem>
 		{

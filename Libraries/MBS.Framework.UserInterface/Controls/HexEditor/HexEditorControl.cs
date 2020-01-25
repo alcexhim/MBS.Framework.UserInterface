@@ -238,6 +238,12 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			}
 		}
 
+		private bool ShouldBackspaceDelete(KeyboardModifierKey modifierKeys)
+		{
+			return ((BackspaceDeletes && ((modifierKeys & KeyboardModifierKey.Shift) != KeyboardModifierKey.Shift))
+				|| (BackspaceDeletes && ((modifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)));
+		}
+
 		protected internal override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
@@ -274,7 +280,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						// ASCII section ALWAYS erases a whole byte
 						if (mvarSelectionStart > 0)
 						{
-							if (BackspaceDeletes)
+							if (ShouldBackspaceDelete(e.ModifierKeys))
 							{
 								if (mvarSelectionLength == 0)
 								{
@@ -307,10 +313,18 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						{
 							string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');
 							Data[mvarSelectionStart - 1] = Byte.Parse(curhex.Substring(0, 1) + '0', System.Globalization.NumberStyles.HexNumber);
-							ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
+
+							if (ShouldBackspaceDelete(e.ModifierKeys))
+							{
+								ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
+								selectedNybble = 0;
+							}
+							else
+							{
+								selectedNybble = 1;
+							}
 
 							mvarSelectionStart--;
-							selectedNybble = 1;
 						}
 						else if (selectedNybble == 1)
 						{

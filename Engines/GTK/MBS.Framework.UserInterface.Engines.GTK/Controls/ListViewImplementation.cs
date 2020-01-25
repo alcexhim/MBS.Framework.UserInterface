@@ -199,9 +199,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 				if (tv == null) return;
 
-				if (tv.SelectedRows.Count != 1) return;
+				ListViewHitTestInfo lvhi = tv.HitTest(e.X, e.Y);
+				if (lvhi?.Row == null) return;
 
-				tv.SelectedRows [0].Expanded = !tv.SelectedRows [0].Expanded;
+				lvhi.Row.Expanded = !lvhi.Row.Expanded;
 			}
 		}
 		private TreeModelRow prevSelectedRow = null;

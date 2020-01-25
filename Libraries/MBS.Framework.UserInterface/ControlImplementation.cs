@@ -167,6 +167,11 @@ namespace MBS.Framework.UserInterface
 		{
 			Control.OnClick (e);
 		}
+
+		protected internal virtual void OnMouseEnter(MouseEventArgs e)
+		{
+			Control.OnMouseEnter(e);
+		}
 		protected internal virtual void OnMouseDown (MouseEventArgs e)
 		{
 			Control.OnMouseDown (e);
@@ -182,6 +187,10 @@ namespace MBS.Framework.UserInterface
 		protected internal virtual void OnMouseDoubleClick (MouseEventArgs e)
 		{
 			Control.OnMouseDoubleClick (e);
+		}
+		protected internal virtual void OnMouseLeave(MouseEventArgs e)
+		{
+			Control.OnMouseLeave(e);
 		}
 
 		protected internal virtual void OnRealize (EventArgs e)

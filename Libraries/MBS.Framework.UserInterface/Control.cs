@@ -355,6 +355,11 @@ namespace MBS.Framework.UserInterface
 
 		#endregion
 		#region Mouse Events
+		public event MouseEventHandler MouseEnter;
+		protected internal virtual void OnMouseEnter(MouseEventArgs e)
+		{
+			MouseEnter?.Invoke(this, e);
+		}
 		public event MouseEventHandler MouseDown;
 		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
@@ -369,6 +374,11 @@ namespace MBS.Framework.UserInterface
 		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
 			MouseUp?.Invoke(this, e);
+		}
+		public event MouseEventHandler MouseLeave;
+		protected internal virtual void OnMouseLeave(MouseEventArgs e)
+		{
+			MouseLeave?.Invoke(this, e);
 		}
 
 		public event MouseEventHandler MouseDoubleClick;

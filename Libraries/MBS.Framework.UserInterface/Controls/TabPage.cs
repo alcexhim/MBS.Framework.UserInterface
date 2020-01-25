@@ -16,32 +16,54 @@ namespace MBS.Framework.UserInterface.Controls
 					this[i].Parent = null;
 				}
 				base.ClearItems ();
-				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.ClearTabPages();
+
+				if (!_reordering)
+					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.ClearTabPages();
 			}
 			protected override void InsertItem (int index, TabPage item)
 			{
 				base.InsertItem (index, item);
 				item.Parent = _parentContainer;
-				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
+
+				if (!_reordering)
+					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 			protected override void RemoveItem (int index)
 			{
-				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
+				if (!_reordering)
+					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
+
 				this[index].Parent = null;
 				base.RemoveItem (index);
 			}
 			protected override void SetItem (int index, TabPage item)
 			{
 				if (index >= 0 && index < this.Count) {
-					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
+					if (!_reordering)
+						(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.RemoveTabPage(this[index]);
 				}
 				base.SetItem (index, item);
 				item.Parent = _parentContainer;
-				(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
+
+				if (!_reordering)
+					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 
 			public TabPageCollection(TabContainer parentContainer) {
 				_parentContainer = parentContainer;
+			}
+
+			private bool _reordering = false;
+			public void Reorder(int oldIndex, int newIndex)
+			{
+				_reordering = true;
+
+				TabPage oldItem = this[oldIndex];
+
+				base.Items.Remove(oldItem);
+				base.Items.Insert(newIndex, oldItem);
+
+				_reordering = false;
 			}
 		}
 

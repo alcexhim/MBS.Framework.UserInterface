@@ -15,6 +15,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		static TabContainerImplementation()
 		{
 			create_window_d = new Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr>(create_window);
+			page_reordered_d = new Action<IntPtr, IntPtr, uint>(page_reordered);
 			change_current_tab_d = new Func<IntPtr, int, IntPtr, bool>(change_current_tab);
 			switch_page_d = new Action<IntPtr, IntPtr, uint>(switch_page);
 		}
@@ -24,6 +25,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static BidirectionalDictionary<TabPage, IntPtr> _TabPageHandles = new BidirectionalDictionary<TabPage, IntPtr>();
 		private static void RegisterTabPage(TabPage page, IntPtr handle)
 		{
+			if (_TabPageHandles.ContainsValue1(page))
+			{
+				Console.WriteLine("TabContainer: unregistering TabPage {0} with handle {1}", page, _TabPageHandles.GetValue2(page));
+				_TabPageHandles.RemoveByValue1(page);
+			}
+
+			Console.WriteLine("TabContainer: registering TabPage {0} with handle {1}", page, handle);
 			_TabPageHandles.Add(page, handle);
 		}
 		private static TabPage GetTabPageByHandle(IntPtr handle)
@@ -194,6 +202,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_remove_page(handle, (Control as TabContainer).TabPages.IndexOf(tabPage));
 		}
 
+		private static Action<IntPtr /*GtkNotebook*/, IntPtr /*GtkWidget*/, uint> page_reordered_d = null;
+		private static void page_reordered(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ child, uint page_num)
+		{
+			TabContainer tbsParent = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabPage tabPage = GetTabPageByHandle(child);
+
+			if (tbsParent == null) return;
+
+			int oldIndex = tbsParent.TabPages.IndexOf(tabPage);
+			int newIndex = (int)page_num;
+
+			Application.DoEvents();
+
+			tbsParent.TabPages.Reorder(oldIndex, newIndex);
+		}
+
+
 		private static Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> create_window_d = null;
 		private static IntPtr /*GtkNotebook*/ create_window(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ page, int x, int y, IntPtr user_data)
 		{
@@ -290,6 +315,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_pos(handle, TabPositionToGtkPositionType(ctl.TabPosition));
 
 			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
+			Internal.GObject.Methods.g_signal_connect(handle, "page_reordered", page_reordered_d, IntPtr.Zero);
 			Internal.GObject.Methods.g_signal_connect(handle, "change_current_tab", change_current_tab_d, IntPtr.Zero);
 			Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
 

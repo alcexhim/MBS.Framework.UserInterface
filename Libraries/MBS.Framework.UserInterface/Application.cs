@@ -52,9 +52,9 @@ namespace MBS.Framework.UserInterface
 				{
 					mvarDataPath = String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), new string[]
 					{
+						// The directory that serves as a common repository for application-specific data for the current roaming user.
 						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-						BasePath,
-						"Universal Editor"
+						ShortName
 					});
 				}
 				return mvarDataPath;
@@ -99,7 +99,17 @@ namespace MBS.Framework.UserInterface
 				// skip this one if the path doesn't exist
 				if (!System.IO.Directory.Exists(path)) continue;
 
-				string[] xmlfilesPath = System.IO.Directory.GetFiles(path, filter, System.IO.SearchOption.AllDirectories);
+				string[] xmlfilesPath = null;
+				try
+				{
+					xmlfilesPath = System.IO.Directory.GetFiles(path, filter, System.IO.SearchOption.AllDirectories);
+				}
+				catch (UnauthorizedAccessException ex)
+				{
+					Console.WriteLine("UE: warning: access to data path {0} denied", path);
+					continue;
+				}
+
 				foreach (string s in xmlfilesPath)
 				{
 					xmlFilesList.Add(s);

@@ -101,7 +101,7 @@ namespace MBS.Framework.UserInterface.Controls
 				impl?.SetSelectedItem(value);
 				mvarSelectedItem = value;
 
-				if (changed)
+				if (changed && IsCreated)
 					OnChanged(EventArgs.Empty);
 			}
 		}

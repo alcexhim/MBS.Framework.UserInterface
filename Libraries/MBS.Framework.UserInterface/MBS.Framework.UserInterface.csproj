@@ -248,6 +248,7 @@
     <Compile Include="SplashScreenWindow.cs" />
     <Compile Include="Controls\GroupBox.cs" />
     <Compile Include="Controls\NumericTextBox.cs" />
+    <Compile Include="Theming\ControlState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

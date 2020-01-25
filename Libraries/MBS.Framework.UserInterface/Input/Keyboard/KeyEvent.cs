@@ -27,6 +27,18 @@ namespace MBS.Framework.UserInterface.Input.Keyboard
 	{
 		private const ulong KEYS_MODIFIER_MASK = 0xFFFFFFFFFFFF0000;
 
+		public KeyEventArgs()
+		{
+
+		}
+		public KeyEventArgs(KeyboardKey key, KeyboardModifierKey modifierKeys, int keyCode, int hardwareKeyCode)
+		{
+			Key = key;
+			ModifierKeys = modifierKeys;
+			KeyCode = keyCode;
+			HardwareKeyCode = hardwareKeyCode;
+		}
+
 		public KeyboardKey Key { get; set; }
 		public KeyboardModifierKey ModifierKeys { get; set; }
 

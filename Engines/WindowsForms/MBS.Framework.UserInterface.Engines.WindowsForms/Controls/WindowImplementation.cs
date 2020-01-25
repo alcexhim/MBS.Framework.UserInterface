@@ -56,6 +56,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			}
+			form.Location = new Point((int)window.Location.X, (int)window.Location.Y);
 			form.Size = new System.Drawing.Size((int)window.Size.Width, (int)window.Size.Height);
 			form.StartPosition = WindowStartPositionToFormStartPosition(window.StartPosition);
 			form.Shown += form_Shown;
@@ -74,16 +75,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
+			mb.Text = "Menu Bar";
 			mb.Visible = window.MenuBar.Visible && (mb.Items.Count > 0);
 
 			System.Windows.Forms.StatusStrip sb = new System.Windows.Forms.StatusStrip();
 			sb.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
 			tsc.BottomToolStripPanel.Controls.Add(sb);
 
+			sb.Text = "Status Bar";
 			// sb.Visible = window.StatusBar.Visible;
 
 			WindowsFormsNativeControl ncContainer = (base.CreateControlInternal(control) as WindowsFormsNativeControl);
 			ncContainer.Handle.Dock = System.Windows.Forms.DockStyle.Fill;
+
+			tsc.TopToolStripPanel.Text = "MSOCommandBarTop";
+			tsc.LeftToolStripPanel.Text = "MSOCommandBarLeft";
+			tsc.BottomToolStripPanel.Text = "MSOCommandBarBottom";
+			tsc.RightToolStripPanel.Text = "MSOCommandBarRight";
 			tsc.ContentPanel.Controls.Add(ncContainer.Handle);
 
 			tsc.Dock = System.Windows.Forms.DockStyle.Fill;

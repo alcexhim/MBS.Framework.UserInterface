@@ -25,6 +25,7 @@ using MBS.Framework.UserInterface.Controls.Native;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
+	[ControlImplementation(typeof(Button))]
 	public class ButtonImplementation : WindowsFormsNativeImplementation, IButtonControlImplementation
 	{
 		public ButtonImplementation(Engine engine, Button control) : base(engine, control)
@@ -70,6 +71,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			Button button = (control as Button);
 
 			System.Windows.Forms.Button btn = new System.Windows.Forms.Button();
+			btn.Text = button.Text?.Replace('_', '&');
+			btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			btn.AutoSize = true;
 
 			WindowsFormsNativeControl nc = new WindowsFormsNativeControl(btn);
 			return nc;

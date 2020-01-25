@@ -20,7 +20,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override Dimension2D GetControlSizeInternal()
 		{
-			throw new NotImplementedException();
+			return new Framework.Drawing.Dimension2D((Handle as WindowsFormsNativeControl).Handle.Size.Width, ((Handle as WindowsFormsNativeControl).Handle.Size.Height));
 		}
 
 		protected override Cursor GetCursorInternal()
@@ -84,5 +84,81 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			throw new NotImplementedException();
 		}
+
+		protected override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			SetupCommonEvents();
+		}
+
+		private void SetupCommonEvents()
+		{
+			System.Windows.Forms.Control ctl = ((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.Control);
+			if (ctl == null)
+				return;
+
+			ctl.Click += ctl_Click;
+			ctl.MouseDown += ctl_MouseDown;
+			ctl.MouseMove += ctl_MouseMove;
+			ctl.MouseUp += ctl_MouseUp;
+			ctl.MouseEnter += ctl_MouseEnter;
+			ctl.MouseLeave += ctl_MouseLeave;
+			ctl.KeyUp += ctl_KeyUp;
+			ctl.KeyDown += ctl_KeyDown;
+		}
+
+		void ctl_Click(object sender, EventArgs e)
+		{
+			InvokeMethod(this, "OnClick", new object[] { e });
+		}
+		void ctl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(e.X, e.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(e.Button), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
+			InvokeMethod(this, "OnMouseDown", new object[] { ee });
+		}
+		void ctl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(e.X, e.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(e.Button), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
+			InvokeMethod(this, "OnMouseMove", new object[] { ee });
+		}
+		void ctl_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(e.X, e.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(e.Button), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
+			InvokeMethod(this, "OnMouseUp", new object[] { ee });
+		}
+		void ctl_MouseEnter(object sender, EventArgs e)
+		{
+			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(System.Windows.Forms.Control.MouseButtons), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
+			InvokeMethod(this, "OnMouseEnter", new object[] { ee });
+		}
+		void ctl_MouseLeave(object sender, EventArgs e)
+		{
+			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(System.Windows.Forms.Control.MouseButtons), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
+			InvokeMethod(this, "OnMouseLeave", new object[] { ee });
+		}
+		void ctl_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+		{
+			Input.Keyboard.KeyEventArgs ee = WindowsFormsEngine.SWFKeyEventArgsToKeyEventArgs(e);
+			InvokeMethod(this, "OnKeyDown", new object[] { ee });
+
+			if (ee.Cancel)
+			{
+				e.Handled = true;
+				e.SuppressKeyPress = true;
+			}
+		}
+		void ctl_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+		{
+			Input.Keyboard.KeyEventArgs ee = WindowsFormsEngine.SWFKeyEventArgsToKeyEventArgs(e);
+			InvokeMethod(this, "OnKeyUp", new object[] { ee });
+
+			if (ee.Cancel)
+			{
+				e.Handled = true;
+				e.SuppressKeyPress = true;
+			}
+		}
+
 	}
 }

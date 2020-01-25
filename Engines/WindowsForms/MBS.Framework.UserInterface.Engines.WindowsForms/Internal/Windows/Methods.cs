@@ -28,6 +28,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 		public const string LIBRARY_FILENAME_USER32 = "user32";
 
 		[DllImport(LIBRARY_FILENAME_USER32)]
+		public static extern int MessageBox(IntPtr /*HWND*/ hWnd, string lpText, string lpCaption, uint uType);
+
+		[DllImport(LIBRARY_FILENAME_USER32)]
 		public static extern bool EnumWindows(Delegates.EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
 		[DllImport(LIBRARY_FILENAME_USER32)]

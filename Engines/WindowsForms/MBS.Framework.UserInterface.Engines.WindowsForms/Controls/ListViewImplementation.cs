@@ -288,22 +288,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					case ImplementedAsType.ListView:
 					{
-						System.Windows.Forms.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView);
+						System.Windows.Forms.ListView lv = (handle as System.Windows.Forms.ListView);
 
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
-							if (tv.Model != null)
-							{
-								lv.Columns.Add(tvc.Title);
-								SetColumnEditable(tvc, tvc.Editable);
-							}
+
+							lv.Columns.Add(tvc.Title);
+							SetColumnEditable(tvc, tvc.Editable);
 						}
 						break;
 					}
 					case ImplementedAsType.TreeView:
 					{
-						System.Windows.Forms.TreeView natv = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TreeView);
+						System.Windows.Forms.TreeView natv = (handle as System.Windows.Forms.TreeView);
 
 						for (int i = 0; i < tv.Model.Rows.Count; i++)
 						{

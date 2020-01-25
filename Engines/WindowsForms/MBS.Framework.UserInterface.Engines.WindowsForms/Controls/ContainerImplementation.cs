@@ -7,6 +7,7 @@ using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
+	[ControlImplementation(typeof(Container))]
 	public class ContainerImplementation : WindowsFormsNativeImplementation
 	{
 		public ContainerImplementation(Engine engine, Container control) : base(engine, control)
@@ -25,6 +26,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				BoxLayout box = (layout as BoxLayout);
 				hContainer = new System.Windows.Forms.TableLayoutPanel();
+
+				switch (box.Orientation)
+				{
+					case Orientation.Horizontal:
+					{
+						(hContainer as System.Windows.Forms.TableLayoutPanel).RowCount = 1;
+						(hContainer as System.Windows.Forms.TableLayoutPanel).ColumnCount = container.Controls.Count;
+						break;
+					}
+					case Orientation.Vertical:
+					{
+						(hContainer as System.Windows.Forms.TableLayoutPanel).RowCount = container.Controls.Count;
+						(hContainer as System.Windows.Forms.TableLayoutPanel).ColumnCount = 1;
+						break;
+					}
+				}
 			}
 			else if (layout is AbsoluteLayout)
 			{
@@ -42,6 +59,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (hContainer != null)
 			{
+				hContainer.Text = String.Format("<{0}>", layout.GetType().Name);
+
 				foreach (Control ctl in container.Controls)
 				{
 					bool ret = Engine.CreateControl(ctl);
@@ -49,6 +68,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 					ApplyLayout(hContainer, ctl, layout);
 				}
+			}
+			else
+			{
+				Console.WriteLine("uwt: wf: error: could not create a container for layout type '{0}'", layout.GetType().Name);
 			}
 
 			return new WindowsFormsNativeControl(hContainer);
@@ -82,11 +105,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						}
 						if (c.Fill)
 						{
-							anchor |= System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
+							anchor |= System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
 						}
 						ctlNative.Anchor = anchor;
 
-						(hContainer as System.Windows.Forms.TableLayoutPanel).Controls.Add(ctlNative, 0, 0);
+						switch (box.Orientation)
+						{
+							case Orientation.Horizontal:
+							{
+								(hContainer as System.Windows.Forms.TableLayoutPanel).Controls.Add(ctlNative, (hContainer as System.Windows.Forms.TableLayoutPanel).Controls.Count, 0);
+								break;
+							}
+							case Orientation.Vertical:
+							{
+								(hContainer as System.Windows.Forms.TableLayoutPanel).Controls.Add(ctlNative, 0, (hContainer as System.Windows.Forms.TableLayoutPanel).Controls.Count);
+								break;
+							}
+						}
 						// (hContainer as System.Windows.Forms.TableLayoutPanel).SetRowSpan(ctl
 						break;
 					}
@@ -109,9 +144,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(hContainer as System.Windows.Forms.TableLayoutPanel).SetColumnSpan(ctlNative, constraints.ColumnSpan);
 					(hContainer as System.Windows.Forms.TableLayoutPanel).SetRowSpan(ctlNative, constraints.RowSpan);
 
-					switch (constraints.Expand)
-					{
-					}
+					System.Windows.Forms.AnchorStyles anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
+					if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal) anchor |= System.Windows.Forms.AnchorStyles.Right;
+					if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Vertical) anchor |= System.Windows.Forms.AnchorStyles.Bottom;
+					ctlNative.Anchor = anchor;
 				}
 			}
 			else if (layout is FlowLayout)
@@ -122,14 +158,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				hContainer.Controls.Add(ctlNative);
 			}
-		}
-
-
-
-
-		protected override Dimension2D GetControlSizeInternal()
-		{
-			throw new System.NotImplementedException();
 		}
 
 		protected override Cursor GetCursorInternal()

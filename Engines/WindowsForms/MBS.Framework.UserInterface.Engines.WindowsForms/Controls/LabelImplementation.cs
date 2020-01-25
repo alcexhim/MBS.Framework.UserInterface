@@ -20,7 +20,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			Label ctl = (control as Label);
 
 			System.Windows.Forms.Label handle = new System.Windows.Forms.Label();
-			handle.Text = ctl.Text;
+			handle.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			handle.Text = ctl.Text?.Replace('_', '&');
 			handle.UseMnemonic = ctl.UseMnemonic;
 			handle.TextAlign = WindowsFormsEngine.HorizontalVerticalAlignmentToContentAlignment(ctl.HorizontalAlignment, ctl.VerticalAlignment);
 

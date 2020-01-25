@@ -6,6 +6,8 @@ using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.WindowsForms.Printing;
+using MBS.Framework.UserInterface.Input.Keyboard;
+using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Printing;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms
@@ -16,7 +18,26 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void DestroyControlInternal(Control control)
 		{
-			throw new NotImplementedException();
+			if (control is Window)
+			{
+				((control.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();
+			}
+		}
+
+		public static DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult dialogResult)
+		{
+			switch (dialogResult)
+			{
+				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+			}
+			return DialogResult.None;
 		}
 
 		protected override void UpdateSystemColorsInternal()
@@ -28,6 +49,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		public static System.Drawing.ContentAlignment HorizontalVerticalAlignmentToContentAlignment(HorizontalAlignment ha, VerticalAlignment va)
 		{
+			if (ha == HorizontalAlignment.Default) ha = HorizontalAlignment.Left;
+			if (va == VerticalAlignment.Default) va = VerticalAlignment.Middle;
+
 			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Bottom) return System.Drawing.ContentAlignment.BottomCenter;
 			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Middle) return System.Drawing.ContentAlignment.MiddleCenter;
 			if (ha == HorizontalAlignment.Center && va == VerticalAlignment.Top) return System.Drawing.ContentAlignment.TopCenter;
@@ -37,6 +61,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Bottom) return System.Drawing.ContentAlignment.BottomRight;
 			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Middle) return System.Drawing.ContentAlignment.MiddleRight;
 			if (ha == HorizontalAlignment.Right && va == VerticalAlignment.Top) return System.Drawing.ContentAlignment.TopRight;
+
 			throw new NotSupportedException();
 		}
 
@@ -57,6 +82,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
 			}
 			throw new NotSupportedException();
+		}
+
+		internal static Input.Mouse.MouseButtons SWFMouseButtonsToMouseButtons(System.Windows.Forms.MouseButtons button)
+		{
+			Input.Mouse.MouseButtons buttons = Input.Mouse.MouseButtons.None;
+			if ((button & System.Windows.Forms.MouseButtons.Left) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.Primary;
+			if ((button & System.Windows.Forms.MouseButtons.Right) == System.Windows.Forms.MouseButtons.Right) buttons |= Input.Mouse.MouseButtons.Secondary;
+			if ((button & System.Windows.Forms.MouseButtons.Middle) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.Wheel;
+			if ((button & System.Windows.Forms.MouseButtons.XButton1) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.XButton1;
+			if ((button & System.Windows.Forms.MouseButtons.XButton2) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.XButton2;
+			return buttons;
 		}
 
 		public void UpdateSystemColor(SystemColor color, System.Drawing.Color value)
@@ -102,6 +138,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			System.IO.MemoryStream ms = new System.IO.MemoryStream(filedata);
 			System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
 			return new WindowsFormsNativeImage(image);
+		}
+
+		internal static Input.Keyboard.KeyEventArgs SWFKeyEventArgsToKeyEventArgs(System.Windows.Forms.KeyEventArgs e)
+		{
+			return new Input.Keyboard.KeyEventArgs(SWFKeysToKeyboardKey(e.KeyCode), SWFKeysToKeyboardModifierKey(e.KeyCode), e.KeyValue, e.KeyValue);
 		}
 
 		protected override Image LoadImage(string filename, string type = null)
@@ -155,6 +196,48 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
+			Console.WriteLine("dialog is {0}");
+			System.Windows.Forms.IWin32Window parentHandle = null;
+			if (parent == null)
+			{
+				if (dialog.Parent != null)
+				{
+					parentHandle = (GetHandleForControl(dialog.Parent) as WindowsFormsNativeControl)?.Handle;
+				}
+			}
+			else
+			{
+				parentHandle = (GetHandleForControl(parent) as WindowsFormsNativeControl)?.Handle;
+			}
+			Type[] types = Reflection.GetAvailableTypes(new Type[] { typeof(WindowsFormsDialogImplementation) });
+			for (int i = 0; i < types.Length; i++)
+			{
+				if (types[i].IsAbstract) continue;
+
+				object[] atts = (types[i].GetCustomAttributes(typeof(ControlImplementationAttribute), false));
+				if (atts.Length > 0)
+				{
+					ControlImplementationAttribute cia = (atts[0] as ControlImplementationAttribute);
+					if (cia != null)
+					{
+						// yeah... that's a hack right ---------------------------------->there
+						// it can be fixed, but we'd have to figure out the best way to implement CustomDialog vs. CommonDialog without
+						// having the GenericDialogImplementation hijack the CommonDialog stuff if it comes up first in the list
+						if (dialog.GetType().IsSubclassOf(cia.ControlType) || dialog.GetType() == cia.ControlType || (dialog.GetType().BaseType == typeof(Dialog) && cia.ControlType.BaseType == typeof(Dialog)))
+						{
+							WindowsFormsDialogImplementation di = (types[i].Assembly.CreateInstance(types[i].FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, dialog }, System.Globalization.CultureInfo.CurrentCulture, null) as WindowsFormsDialogImplementation);
+							WindowsFormsNativeDialog nc = (di.CreateControl(dialog) as WindowsFormsNativeDialog);
+							DialogResult result1 = di.Run(parentHandle);
+							return result1;
+						}
+					}
+				}
+			}
+			return DialogResult.None;
+
+			/*
+
+
 			if (dialog is FileDialog)
 			{
 				FileDialog fd = (dialog as FileDialog);
@@ -195,69 +278,67 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 			else
 			{
-				System.Windows.Forms.Form f = new System.Windows.Forms.Form();
-				System.Windows.Forms.Panel pnl = CreateContainer(dialog);
+				if (!dialog.IsCreated)
+					CreateControl(dialog);
+
+				NativeControl nc = GetHandleForControl(dialog);
+				if (nc == null)
+				{
+					Console.WriteLine("uwt: wf: error: dialog container did not get created");
+					return DialogResult.None;
+				}
+
+				WindowsFormsNativeControl wfnc = (nc as WindowsFormsNativeControl);
+				if (wfnc == null)
+				{
+					Console.WriteLine("uwt: wf: error: dialog container handle is not a WindowsFormsNativeControl");
+					return DialogResult.None;
+				}
+
+				System.Windows.Forms.Form pnl = wfnc.Handle as System.Windows.Forms.Form;
+				if (pnl == null)
+				{
+					Console.WriteLine("uwt: wf: error: wfnc.Handle is NULL or not a System.Windows.Forms.Form ({0})", wfnc.Handle?.GetType()?.FullName);
+					return DialogResult.None;
+				}
+
 				System.Windows.Forms.Panel pnlButtons = new System.Windows.Forms.Panel();
-				pnl.Dock = System.Windows.Forms.DockStyle.Fill;
-				f.Controls.Add(pnl);
-
+				pnlButtons.Text = "<ButtonBox>";
 				pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-				f.Controls.Add(pnlButtons);
+				for (int i = 0; i < dialog.Buttons.Count; i++)
+				{
+					CreateControl(dialog.Buttons[i]);
 
-				System.Windows.Forms.DialogResult result = f.ShowDialog();
+					WindowsFormsNativeControl ncButton = (GetHandleForControl(dialog.Buttons[i]) as WindowsFormsNativeControl);
+					if (ncButton == null)
+					{
+						Console.WriteLine("uwt: wf: error: button not registered '{0}'", dialog.Buttons[i].Text);
+						continue;
+					}
+					pnlButtons.Controls.Add(ncButton.Handle);
+				}
+				pnl.Controls.Add(pnlButtons);
+				pnl.Font = System.Drawing.SystemFonts.MenuFont;
+
+				System.Windows.Forms.DialogResult result = pnl.ShowDialog();
 				return SWFDialogResultToDialogResult(result);
 			}
 			throw new NotImplementedException();
+			*/		
 		}
 
-		private System.Windows.Forms.Panel CreateContainer(Container container)
+		internal static KeyboardKey SWFKeysToKeyboardKey(System.Windows.Forms.Keys keys)
 		{
-			System.Windows.Forms.Panel pnl = null;
-			if (container.Layout is Layouts.AbsoluteLayout || container.Layout is Layouts.BoxLayout)
-			{
-				pnl = new System.Windows.Forms.Panel();
-			}
-			else if (container.Layout is Layouts.FlowLayout)
-			{
-				pnl = new System.Windows.Forms.FlowLayoutPanel();
-			}
-			else if (container.Layout is Layouts.GridLayout)
-			{
-				pnl = new System.Windows.Forms.TableLayoutPanel();
-			}
-			if (pnl != null)
-			{
-				foreach (Control ctl in container.Controls)
-				{
-					if (!ctl.IsCreated)
-						CreateControl(ctl);
-
-					WindowsFormsNativeControl nc = (GetHandleForControl(ctl) as WindowsFormsNativeControl);
-					if (nc != null)
-						pnl.Controls.Add(nc.Handle);
-				}
-			}
-			else
-			{
-				Console.Error.WriteLine("uwt: wf: failed to create System.Windows.Forms.Panel for layout {0}", container.GetType().FullName);
-			}
-			return pnl;
+			// we should be able to do this...
+			return (KeyboardKey)((int)keys);
 		}
-
-		internal DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult result)
+		internal static KeyboardModifierKey SWFKeysToKeyboardModifierKey(System.Windows.Forms.Keys keys)
 		{
-			switch (result)
-			{
-			case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
-			case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
-			case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
-			case System.Windows.Forms.DialogResult.No: return DialogResult.No;
-			case System.Windows.Forms.DialogResult.None: return DialogResult.None;
-			case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
-			case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
-			case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
-			}
-			return (DialogResult)((int)result);
+			KeyboardModifierKey modifiers = KeyboardModifierKey.None;
+			if ((keys & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift) modifiers |= KeyboardModifierKey.Shift;
+			if ((keys & System.Windows.Forms.Keys.Menu) == System.Windows.Forms.Keys.Menu) modifiers |= KeyboardModifierKey.Alt;
+			if ((keys & System.Windows.Forms.Keys.Control) == System.Windows.Forms.Keys.Control) modifiers |= KeyboardModifierKey.Control;
+			return modifiers;
 		}
 
 		private List<Window> _GetToplevelWindowsRetval = null;
@@ -369,7 +450,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void SetControlEnabledInternal(Control control, bool value)
 		{
-			throw new NotImplementedException();
+			if (handlesByControl[control] is Win32NativeControl)
+			{
+				// this is exactly why this should be handled by the ControlImplementation and not the Engine >.>
+				// Internal.Windows.Methods.EnableWindow((handlesByControl[control] as Win32NativeControl).Handle, value ? 1 : 0);
+			}
+			else
+			{
+				(handlesByControl[control] as WindowsFormsNativeControl).Handle.Enabled = value;
+			}
 		}
 
 		protected override Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point)
@@ -444,6 +533,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+			System.Windows.Forms.ToolStripManager.Renderer = new CBRenderer();
 			return true;
 		}
 
@@ -484,7 +575,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		void Doc_BeginPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
 		{
 		}
-
+ 
 		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
 		{
 			return new WindowsFormsNativeTreeModel();

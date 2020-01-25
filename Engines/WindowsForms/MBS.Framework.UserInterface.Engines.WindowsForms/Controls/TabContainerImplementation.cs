@@ -91,5 +91,27 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			System.Windows.Forms.TabControl tbs = new System.Windows.Forms.TabControl();
 			return new WindowsFormsNativeControl(tbs);
 		}
+
+		public void SetTabText(TabPage page, string text)
+		{
+			GetWFTabForTabPage(page).Text = text;
+		}
+
+		public void SetTabPosition(TabPosition position)
+		{
+			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TabControl).Alignment = TabPositionToWFTabAlignment(position);
+		}
+
+		public static System.Windows.Forms.TabAlignment TabPositionToWFTabAlignment(TabPosition position)
+		{
+			switch (position)
+			{
+				case TabPosition.Bottom: return System.Windows.Forms.TabAlignment.Bottom;
+				case TabPosition.Left: return System.Windows.Forms.TabAlignment.Left;
+				case TabPosition.Right: return System.Windows.Forms.TabAlignment.Right;
+				case TabPosition.Top: return System.Windows.Forms.TabAlignment.Top;
+			}
+			throw new NotSupportedException();
+		}
 	}
 }

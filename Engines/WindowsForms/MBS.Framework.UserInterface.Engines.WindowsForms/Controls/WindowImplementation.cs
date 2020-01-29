@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
@@ -15,12 +16,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		protected override void DestroyInternal()
+		{
+			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();
+		}
+
 		public bool GetStatusBarVisible()
 		{
-			return false;
+			if (sb != null)
+				return sb.Visible;
+			return true;
 		}
 		public void SetStatusBarVisible(bool value)
 		{
+			if (sb != null)
+				sb.Visible = value;
 		}
 
 		public System.Windows.Forms.FormStartPosition WindowStartPositionToFormStartPosition(WindowStartPosition value)
@@ -36,11 +46,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			throw new NotSupportedException();
 		}
 
+		private System.Windows.Forms.StatusStrip sb = null;
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			Window window = (control as Window);
 
 			System.Windows.Forms.Form form = new System.Windows.Forms.Form ();
+
 			if (window.Decorated)
 			{
 				if (true) // window.Resizable)
@@ -75,10 +88,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
+
+			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
+			{
+				foreach (CommandBar cb in Application.CommandBars)
+				{
+					Toolbar tbCommandBar = window.LoadCommandBar(cb);
+					if (!tbCommandBar.IsCreated)
+					{
+						Engine.CreateControl(tbCommandBar);
+					}
+					System.Windows.Forms.ToolStrip ts = ((tbCommandBar.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ToolStrip);
+					tsc.TopToolStripPanel.Controls.Add(ts);
+				}
+			}
+
 			mb.Text = "Menu Bar";
 			mb.Visible = window.MenuBar.Visible && (mb.Items.Count > 0);
 
-			System.Windows.Forms.StatusStrip sb = new System.Windows.Forms.StatusStrip();
+			sb = new System.Windows.Forms.StatusStrip();
 			sb.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
 			tsc.BottomToolStripPanel.Controls.Add(sb);
 

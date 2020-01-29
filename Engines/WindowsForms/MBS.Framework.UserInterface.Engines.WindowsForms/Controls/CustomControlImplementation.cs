@@ -12,9 +12,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		private class BufferedUserControl : System.Windows.Forms.UserControl
+		{
+			public BufferedUserControl()
+			{
+				DoubleBuffered = true;
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			System.Windows.Forms.UserControl handle = new System.Windows.Forms.UserControl();
+			BufferedUserControl handle = new BufferedUserControl();
 			handle.Paint += handle_Paint;
 			return new WindowsFormsNativeControl(handle);
 		}

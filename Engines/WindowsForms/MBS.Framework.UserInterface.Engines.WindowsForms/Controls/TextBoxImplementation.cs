@@ -36,6 +36,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			TextBox ctl = (control as TextBox);
 
 			System.Windows.Forms.TextBox handle = new System.Windows.Forms.TextBox();
+
+			// we don't use any auto complete source by default, but as Raymond Chen suggests, it automagically grants us proper ctrl+backspace behavior
+			handle.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			handle.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+
 			handle.Multiline = ctl.Multiline;
 			handle.TextChanged += handle_TextChanged;
 			handle.Text = ctl.Text;

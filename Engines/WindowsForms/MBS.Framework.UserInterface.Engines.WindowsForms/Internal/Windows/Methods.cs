@@ -40,5 +40,27 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 		public static extern IntPtr GetActiveWindow();
 		[DllImport(LIBRARY_FILENAME_USER32)]
 		public static extern bool ShowWindow(IntPtr /*HWND*/ hWnd, Constants.ShowWindowCommand nCmdShow);
+
+		[DllImport(LIBRARY_FILENAME_USER32)]
+		private static extern IntPtr GetWindowLongPtrW(IntPtr /*HWND*/ hWnd, Constants.WindowLong nIndex);
+		[DllImport(LIBRARY_FILENAME_USER32)]
+		private static extern int GetWindowLong(IntPtr /*HWND*/ hWnd, Constants.WindowLong nIndex);
+
+		public static IntPtr GetWindowLongPtr(IntPtr /*HWND*/ hWnd, Constants.WindowLong nIndex)
+		{
+			if (Environment.Is64BitProcess)
+			{
+				return GetWindowLongPtrW(hWnd, nIndex);
+			}
+			int val = GetWindowLong(hWnd, nIndex);
+			return new IntPtr(val);
+		}
+
+
+		// TaskDialog
+		[DllImport("comctl32.dll", CharSet = CharSet.Unicode)]
+		public static extern int TaskDialog(IntPtr hwndParent, IntPtr hInstance, string pszWindowTitle, string pszMainInstruction, string pszContent, int dwCommonButtons, IntPtr pszIcon, out int pnButton);
+		[DllImport("comctl32.dll", CharSet = CharSet.Unicode)]
+		public static extern uint /*HRESULT*/ TaskDialogIndirect(ref Structures.TASKDIALOGCONFIG pTaskConfig, out int pnButton, out int pnRadioButton, [MarshalAs(UnmanagedType.Bool)] out bool pfVerificationFlagChecked);
 	}
 }

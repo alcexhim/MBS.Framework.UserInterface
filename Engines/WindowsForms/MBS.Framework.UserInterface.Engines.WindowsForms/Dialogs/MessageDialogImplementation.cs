@@ -139,7 +139,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			{
 				try
 				{
-					Internal.Windows.Methods.MessageBox((parentHandle?.Handle).GetValueOrDefault(IntPtr.Zero), dlg.Content, dlg.Text, (uint)(6 | 0x00002000L | (uint)messageType));
+					WindowsForms.Internal.Windows.Methods.MessageBox((parentHandle?.Handle).GetValueOrDefault(IntPtr.Zero), dlg.Content, dlg.Text, (uint)(6 | 0x00002000L | (uint)messageType));
 					return DialogResult.None;
 				}
 				catch (Exception ex)

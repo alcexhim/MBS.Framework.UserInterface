@@ -32,6 +32,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 		{
 		}
 
+		protected override void DestroyInternal()
+		{
+			if ((Handle as WindowsFormsNativeDialog).Form != null)
+			{
+				(Handle as WindowsFormsNativeDialog).Form.Close();
+			}
+		}
+
 		protected override bool AcceptInternal()
 		{
 			return true;
@@ -64,10 +72,29 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			System.Windows.Forms.Control ctl = (hContainer as WindowsFormsNativeControl).Handle;
 			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+
+			f.BackColor = System.Drawing.SystemColors.Window;
+
 			ctl.Dock = System.Windows.Forms.DockStyle.Fill;
 			f.Controls.Add(ctl);
 
-			WindowsFormsNativeDialog nc = new WindowsFormsNativeDialog(new __wmG(dialog, f));
+			System.Windows.Forms.FlowLayoutPanel pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
+			pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+			for (int i = 0; i < dialog.Buttons.Count; i++)
+			{
+				if (!dialog.Buttons[i].IsCreated)
+					Engine.CreateControl(dialog.Buttons[i]);
+
+				System.Windows.Forms.Button btn = ((Engine.GetHandleForControl(dialog.Buttons[i]) as WindowsFormsNativeControl).Handle as System.Windows.Forms.Button);
+				pnlButtons.Controls.Add(btn);
+			}
+			pnlButtons.BackColor = System.Drawing.SystemColors.Control;
+			pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+			f.Controls.Add(pnlButtons);
+
+			f.Font = System.Drawing.SystemFonts.MenuFont;
+
+			WindowsFormsNativeDialog nc = new WindowsFormsNativeDialog(new __wmG(dialog, f), f);
 			Engine.RegisterControlHandle(dialog, nc);
 			return nc;
 		}

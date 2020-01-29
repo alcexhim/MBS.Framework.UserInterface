@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using MBS.Framework.UserInterface.Controls.Docking;
 using MBS.Framework.UserInterface.Controls.Docking.Native;
 using WeifenLuo.WinFormsUI.Docking;
@@ -41,20 +42,45 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 		public DockingItem GetCurrentItem()
 		{
 			// throw new NotImplementedException();
+
+			WeifenLuo.WinFormsUI.Docking.DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel);
+			IDockContent idc = dp.ActiveDocument;
+			if (_DockingItemForIDockContent.ContainsKey(idc))
+				return _DockingItemForIDockContent[idc];
+
 			return null;
 		}
 
+		private Dictionary<IDockContent, DockingItem> _DockingItemForIDockContent = new Dictionary<IDockContent, DockingItem>();
+
 		public void InsertDockingItem(DockingItem item, int index)
+		{
+			InsertDockingItem(item, index, null);
+		}
+		private void InsertDockingItem(DockingItem item, int index, DockPanel parent)
 		{
 			if (item is DockingWindow)
 			{
-				InsertDockingWindow(item as DockingWindow, index);
+				InsertDockingWindow(item as DockingWindow, index, parent);
+			}
+			else if (item is DockingContainer)
+			{
+				InsertDockingContainer(item as DockingContainer, index, parent);
 			}
 		}
 
-		private void InsertDockingWindow(DockingWindow item, int index)
+		private void InsertDockingContainer(DockingContainer item, int index, DockPanel parent)
 		{
-			WeifenLuo.WinFormsUI.Docking.DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel);
+			for (int i = 0;  i < item.Items.Count; i++)
+			{
+				InsertDockingItem(item.Items[i], index, parent);
+			}
+		}
+
+		private void InsertDockingWindow(DockingWindow item, int index, DockPanel parent)
+		{
+			if (parent == null)
+				parent = (Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel;
 
 			if (!item.ChildControl.IsCreated)
 			{
@@ -67,13 +93,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			NativeControl ncChild = (Engine.GetHandleForControl(item.ChildControl) as NativeControl);
 			if (ncChild is WindowsFormsNativeControl)
 			{
+				Console.WriteLine("adding dockpanel item");
+
 				System.Windows.Forms.Control wfcChild = (ncChild as WindowsFormsNativeControl).Handle;
+
 				DockContent dcontent = new DockContent();
 				dcontent.Text = item.Title;
+				wfcChild.Dock = System.Windows.Forms.DockStyle.Fill;
 				dcontent.Controls.Add(wfcChild);
 
-				DockPane dpane = new DockPane(dcontent, DockingItemPlacementToDockState(item.Placement, item.AutoHide), true);
-				dp.AddPane(dpane);
+				_DockingItemForIDockContent[dcontent] = item;
+
+				dcontent.Show(parent, DockState.Document);
 			}
 		}
 
@@ -158,8 +189,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
+			DockingContainerControl dcc = (control as DockingContainerControl);
+
 			WeifenLuo.WinFormsUI.Docking.DockPanel panel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+			panel.Theme = new VS2015LightTheme();
+			panel.DocumentStyle = DocumentStyle.DockingWindow;
+			panel.Text = "EZMdiTabs";
 			panel.Dock = System.Windows.Forms.DockStyle.Fill;
+			for (int i = 0; i < dcc.Items.Count; i++)
+			{
+				InsertDockingItem(dcc.Items[i], i, panel);
+			}
+
 			return new WindowsFormsNativeControl(panel);
 		}
 

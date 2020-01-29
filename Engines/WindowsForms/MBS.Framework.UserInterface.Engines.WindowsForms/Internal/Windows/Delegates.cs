@@ -26,5 +26,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 	internal static class Delegates
 	{
 		public delegate bool EnumWindowsProc([In] IntPtr hWnd, [In] IntPtr lParam);
+
+		public delegate IntPtr /*HRESULT*/ PFTASKDIALOGCALLBACK(IntPtr /*HWND*/ hwnd, uint msg, IntPtr /*WPARAM*/ wParam, IntPtr /*LPARAM*/ lParam, IntPtr /*LONG_PTR*/ lpRefData);
 	}
 }

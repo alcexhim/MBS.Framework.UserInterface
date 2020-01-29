@@ -13,6 +13,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		protected override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+			(Handle as WindowsFormsNativeControl).Handle.Text = Control.Text?.Replace('_', '&');
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control is Label);
@@ -21,7 +27,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			System.Windows.Forms.Label handle = new System.Windows.Forms.Label();
 			handle.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			handle.Text = ctl.Text?.Replace('_', '&');
 			handle.UseMnemonic = ctl.UseMnemonic;
 			handle.TextAlign = WindowsFormsEngine.HorizontalVerticalAlignmentToContentAlignment(ctl.HorizontalAlignment, ctl.VerticalAlignment);
 

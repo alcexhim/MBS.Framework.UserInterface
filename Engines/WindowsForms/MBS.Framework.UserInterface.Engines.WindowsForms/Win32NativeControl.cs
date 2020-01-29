@@ -28,5 +28,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			Handle = handle;
 		}
+
+		public override string ToString()
+		{
+			return Handle.ToString();
+		}
 	}
 }

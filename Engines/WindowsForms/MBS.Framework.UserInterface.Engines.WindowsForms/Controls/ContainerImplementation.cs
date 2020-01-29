@@ -107,6 +107,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						{
 							anchor |= System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
 						}
+
+						if (c.Expand && c.Fill)
+						{
+							ctlNative.Dock = System.Windows.Forms.DockStyle.Fill;
+						}
 						ctlNative.Anchor = anchor;
 
 						switch (box.Orientation)
@@ -158,6 +163,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				hContainer.Controls.Add(ctlNative);
 			}
+
+			hContainer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			hContainer.AutoSize = true;
 		}
 
 		protected override Cursor GetCursorInternal()

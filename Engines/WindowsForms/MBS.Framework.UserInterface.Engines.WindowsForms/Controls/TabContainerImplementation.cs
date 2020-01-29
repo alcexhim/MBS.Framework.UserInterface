@@ -26,8 +26,9 @@ using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 
-namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.Controls
+namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
+	[ControlImplementation(typeof(TabContainer))]
 	public class TabContainerImplementation : WindowsFormsNativeImplementation, ITabContainerControlImplementation
 	{
 		public TabContainerImplementation(Engine engine, TabContainer control)
@@ -47,7 +48,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 		private System.Windows.Forms.TabPage CreateTabPage(TabPage item)
 		{
-			throw new NotImplementedException();
+			System.Windows.Forms.TabPage tab = new System.Windows.Forms.TabPage();
+			tab.UseVisualStyleBackColor = true;
+			tab.Text = item.Text;
+
+			NativeControl nc = (new ContainerImplementation(Engine, item)).CreateControl(item);
+			System.Windows.Forms.Control tabCtl = (nc as WindowsFormsNativeControl).Handle;
+			tabCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+			tab.Controls.Add(tabCtl);
+
+			return tab;
 		}
 
 		public void RemoveTabPage(TabPage tabPage)
@@ -89,6 +99,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			TabContainer ctl = (control as TabContainer);
 
 			System.Windows.Forms.TabControl tbs = new System.Windows.Forms.TabControl();
+			for (int i = 0; i < ctl.TabPages.Count; i++)
+			{
+				System.Windows.Forms.TabPage tab = CreateTabPage(ctl.TabPages[i]);
+				tbs.TabPages.Add(tab);
+			}
 			return new WindowsFormsNativeControl(tbs);
 		}
 

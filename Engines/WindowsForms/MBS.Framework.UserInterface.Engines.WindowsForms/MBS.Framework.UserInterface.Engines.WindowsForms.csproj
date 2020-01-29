@@ -42,6 +42,12 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\..\dockpanelsuite\WinFormsUI\bin\Debug\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>..\..\..\..\dockpanelsuite\WinFormsUI\bin\Debug\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WindowsFormsEngine.cs" />
@@ -74,107 +80,6 @@
     <Compile Include="Controls\CustomControlImplementation.cs" />
     <Compile Include="Controls\DockingContainerImplementation.cs" />
     <Compile Include="Controls\DropDownButtonImplementation.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\AutoHideStripBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Configuration\PatchSection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockAreasEditor.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockContent.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockContentCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockContentEventArgs.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockContentHandler.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockOutlineBase.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPane.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPane.SplitterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPaneCaptionBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPaneCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.Appearance.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.AutoHideWindow.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.DockDragHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.DragHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.FocusManager.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.MdiClientController.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.Persistor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanel.SplitterDragHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanelColorPalette.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanelExtender.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPanelSkin.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockPaneStripBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockWindow.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DockWindowCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DragForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DrawingRoutines.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\DummyControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Enums.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\FloatWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\FloatWindowCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Helpers\DockHelper.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Helpers\DrawHelper.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Helpers\ResourceHelper.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Helpers\Win32Helper.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\IImageService.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\InertButtonBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Interfaces.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\IPaintingService.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\LayoutUtils.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Localization.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Measures.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\NestedDockingStatus.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\NestedPaneCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\PatchController.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\SplitterBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Strings.Designer.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\ThemeBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\VisibleNestedPaneCollection.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\VisualStudioColorTable.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripExtender.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripExtender.Designer.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\VisualStudioToolStripRenderer.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Win32\Enums.cs" />
-    <Compile Include="Controls\Internal\Docking\DockPanelSuite\Win32\NativeMethods.cs" />
     <Compile Include="Controls\LabelImplementation.cs" />
     <Compile Include="Controls\ListViewImplementation.cs" />
     <Compile Include="Controls\PictureFrameImplementation.cs" />
@@ -201,6 +106,20 @@
     <Compile Include="Dialogs\MessageDialogImplementation.cs" />
     <Compile Include="WindowsFormsDialogImplementation.cs" />
     <Compile Include="Dialogs\GenericDialogImplementation.cs" />
+    <Compile Include="Dialogs\TaskDialogImplementation.cs" />
+    <Compile Include="Internal\Windows\Structures.cs" />
+    <Compile Include="Win32Window.cs" />
+    <Compile Include="Dialogs\ColorDialogImplementation.cs" />
+    <Compile Include="Dialogs\FileDialogImplementation.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V1\FolderBrowserDialogOld.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V1\Constants.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V1\Methods.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V1\Structures.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V1\Delegates.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V2\Reflector.cs" />
+    <Compile Include="Dialogs\Internal\FolderBrowserDialog\V2\FolderSelectDialog.cs" />
+    <Compile Include="Dialogs\PrintDialogImplementation.cs" />
+    <Compile Include="Dialogs\FontDialogImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -228,6 +147,7 @@
     <Folder Include="Theming\" />
     <Folder Include="Theming\BuiltinThemes\" />
     <Folder Include="Dialogs\" />
+    <Folder Include="Dialogs\Internal\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

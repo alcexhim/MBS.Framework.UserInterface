@@ -19,9 +19,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.UserInterface.Controls;
+
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.Controls
 {
-	public class CheckBoxImplementation
+	[ControlImplementation(typeof(CheckBox))]
+	public class CheckBoxImplementation : WindowsFormsNativeImplementation
 	{
+		public CheckBoxImplementation(Engine engine, Control control) : base(engine, control)
+		{
+		}
+
+		protected override NativeControl CreateControlInternal(Control control)
+		{
+			CheckBox ctl = (control as CheckBox);
+
+			System.Windows.Forms.CheckBox chk = new System.Windows.Forms.CheckBox();
+
+			return new WindowsFormsNativeControl(chk);
+		}
 	}
 }

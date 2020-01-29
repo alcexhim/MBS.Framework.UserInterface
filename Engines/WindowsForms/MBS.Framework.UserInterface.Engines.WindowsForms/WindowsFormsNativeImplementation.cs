@@ -13,6 +13,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
+		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		{
+			if (Handle is WindowsFormsNativeControl)
+				(Handle as WindowsFormsNativeControl).Handle.Invalidate(new System.Drawing.Rectangle(x, y, width, height));
+		}
+
+		protected override void DestroyInternal()
+		{
+			Console.WriteLine("destroying control using implementation {0}", GetType().FullName);
+			(Handle as WindowsFormsNativeControl).Handle.Dispose();
+		}
+
+		protected override bool SupportsEngine(Type engineType)
+		{
+			return (engineType == typeof(WindowsFormsEngine));
+		}
+
 		protected override bool HasFocusInternal()
 		{
 			return ((Handle as WindowsFormsNativeControl).Handle).Focused;
@@ -72,12 +89,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void SetCursorInternal(Cursor value)
 		{
-			throw new NotImplementedException();
+			// TODO: Implement cursors
+			// System.Windows.Forms.Cursor.Current = _HCursors[value];
 		}
 
 		protected override void SetFocusInternal()
 		{
-			throw new NotImplementedException();
+			if (Handle is WindowsFormsNativeControl)
+			{
+				(Handle as WindowsFormsNativeControl).Handle.Focus();
+			}
 		}
 
 		protected override void SetTooltipTextInternal(string value)
@@ -98,6 +119,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if (ctl == null)
 				return;
 
+			ctl.Text = Control.Text;
+
 			ctl.Click += ctl_Click;
 			ctl.MouseDown += ctl_MouseDown;
 			ctl.MouseMove += ctl_MouseMove;
@@ -106,6 +129,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			ctl.MouseLeave += ctl_MouseLeave;
 			ctl.KeyUp += ctl_KeyUp;
 			ctl.KeyDown += ctl_KeyDown;
+		}
+
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			if (text == null) text = String.Empty;
+			if (Control.IsCreated)
+			{
+				if ((Handle as WindowsFormsNativeControl).Handle != null)
+				{
+					(Handle as WindowsFormsNativeControl).Handle.Text = text.Replace('_', '&');
+				}
+			}
 		}
 
 		void ctl_Click(object sender, EventArgs e)

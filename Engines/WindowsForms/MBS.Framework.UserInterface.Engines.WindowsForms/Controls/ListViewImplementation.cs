@@ -140,13 +140,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (handle is System.Windows.Forms.ListView)
 			{
 				System.Windows.Forms.ListViewHitTestInfo info = (handle as System.Windows.Forms.ListView).HitTest((int)x, (int)y);
-				if (info != null)
+				if (info?.Item != null)
 				{
-					if (info.Item != null)
+					row = (info.Item.Tag as TreeModelRow);
+				}
+				if (info?.SubItem != null)
+				{
+					if (info.SubItem.Tag is TreeModelRow)
 					{
-						row = (info.Item.Tag as TreeModelRow);
 					}
-					if (info.SubItem != null)
+					else if (info.SubItem.Tag is TreeModelRowColumn)
 					{
 						column = (info.SubItem.Tag as TreeModelRowColumn).Column;
 					}
@@ -155,12 +158,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			else if (handle is System.Windows.Forms.TreeView)
 			{
 				System.Windows.Forms.TreeViewHitTestInfo info = (handle as System.Windows.Forms.TreeView).HitTest((int)x, (int)y);
-				if (info != null)
+				if (info?.Node != null)
 				{
-					if (info.Node != null)
-					{
-						row = (info.Node.Tag as TreeModelRow);
-					}
+					row = (info.Node.Tag as TreeModelRow);
 				}
 			}
 			return new ListViewHitTestInfo(row, column);
@@ -284,6 +284,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (tv.Model != null)
 			{
+				tv.Model.TreeModelChanged += Model_TreeModelChanged;
+
 				switch (ImplementedAs(tv))
 				{
 					case ImplementedAsType.ListView:
@@ -293,9 +295,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
-
-							lv.Columns.Add(tvc.Title);
+							lv.Columns.Add(tvc.Title).Tag = c;
 							SetColumnEditable(tvc, tvc.Editable);
+						}
+
+						for (int i = 0; i < tv.Model.Rows.Count; i++)
+						{
+							System.Windows.Forms.ListViewItem lvi = TreeModelRowToListViewItem(tv.Model.Rows[i]);
+							lv.Items.Add(lvi);
 						}
 						break;
 					}
@@ -368,6 +375,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
+			if (tv.Model != null)
+			{
+				if (!TreeModelAssociatedControls.ContainsKey(tv.Model))
+				{
+					TreeModelAssociatedControls.Add(tv.Model, new List<System.Windows.Forms.Control>());
+				}
+			}
 			switch (ImplementedAs (tv))
 			{
 				case ImplementedAsType.TreeView:
@@ -378,6 +392,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(handle as System.Windows.Forms.TreeView).NodeMouseDoubleClick += tv_NodeMouseDoubleClick;
 					(handle as System.Windows.Forms.TreeView).BeforeSelect += tv_BeforeSelect;
 					(handle as System.Windows.Forms.TreeView).AfterSelect += tv_AfterSelect;
+
+					if (tv.Model != null)
+						TreeModelAssociatedControls[tv.Model].Add(handle);
 					break;
 				}
 				case ImplementedAsType.ListView:
@@ -386,11 +403,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(handle as System.Windows.Forms.ListView).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
 					(handle as System.Windows.Forms.ListView).ItemActivate += lv_ItemActivate;
 					(handle as System.Windows.Forms.ListView).ItemSelectionChanged += lv_ItemSelectionChanged;
+					(handle as System.Windows.Forms.ListView).FullRowSelect = true;
+					(handle as System.Windows.Forms.ListView).View = System.Windows.Forms.View.Details;
+
+					if (tv.Model != null)
+						TreeModelAssociatedControls[tv.Model].Add(handle);
 					break;
 				}
 			}
 
-			UpdateTreeModel (handle);
+			if (tv.Model != null)
+				UpdateTreeModel (handle);
 
 			SetSelectionModeInternal(handle, tv, tv.SelectionMode);
 			
@@ -399,6 +422,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void lv_ItemSelectionChanged(object sender, System.Windows.Forms.ListViewItemSelectionChangedEventArgs e)
 		{
+			System.Windows.Forms.ListView _lv = (sender as System.Windows.Forms.ListView);
+			ListView lv = (Control as ListView);
+
+			Console.WriteLine("selected rows: {0}", lv.SelectedRows.Count);
+			InvokeMethod(lv, "OnSelectionChanged", new object[] { e });
 		}
 
 
@@ -484,7 +512,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 							e.Count = lv.SelectedItems.Count;
 							if (e.Count > 0 && e.Index > -1)
 							{
-								TreeModelRow row = null;  // engine.GetTreeModelRowForGtkTreeIter(iter);
+								TreeModelRow row = (lv.SelectedItems[e.Index].Tag as TreeModelRow);
 								e.Item = row;
 							}
 							else if (e.Count > 0 && e.Index == -1 && e.Item != null)
@@ -748,7 +776,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, System.Windows.Forms.TreeView parentView, System.Windows.Forms.TreeNode parentNode, int position = -1)
 		{
 			System.Windows.Forms.TreeNode tn = TreeModelRowToTreeNode(row);
-
 			if (parentNode == null)
 			{
 				if (position == -1)

@@ -24,9 +24,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	public class WindowsFormsNativeDialog : NativeControl
 	{
 		public System.Windows.Forms.CommonDialog Handle { get; private set; }
-		public WindowsFormsNativeDialog(System.Windows.Forms.CommonDialog handle)
+		public System.Windows.Forms.Form Form { get; private set; }
+		public WindowsFormsNativeDialog(System.Windows.Forms.CommonDialog handle, System.Windows.Forms.Form form = null)
 		{
 			Handle = handle;
+			Form = form;
 		}
 	}
 }

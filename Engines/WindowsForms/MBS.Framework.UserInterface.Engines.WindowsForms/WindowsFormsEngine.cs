@@ -16,14 +16,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
 
-		protected override void DestroyControlInternal(Control control)
-		{
-			if (control is Window)
-			{
-				((control.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();
-			}
-		}
-
 		public static DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult dialogResult)
 		{
 			switch (dialogResult)
@@ -181,6 +173,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 						{
 							hWnd = (nc as WindowsFormsNativeControl).Handle.Handle;
 						}
+						Console.WriteLine("does window {0} have focus? {1} == {2} : {3}", window, hWnd, hWndActive, (hWnd.Equals(hWndActive)));
 						return hWnd.Equals(hWndActive);
 					}
 					break;
@@ -189,20 +182,35 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return false;
 		}
 
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		protected override Window GetFocusedToplevelWindowInternal()
 		{
-			throw new NotImplementedException();
+			IntPtr hWnd = Internal.Windows.Methods.GetActiveWindow();
+			Win32NativeControl nc = new Win32NativeControl(hWnd);
+
+			Window w = new Window();
+			RegisterControlHandle(w, nc, true);
+			return w;
 		}
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
-			Console.WriteLine("dialog is {0}");
+			Console.WriteLine("dialog is {0}", dialog);
 			System.Windows.Forms.IWin32Window parentHandle = null;
+			parent = null;
 			if (parent == null)
 			{
+				Console.WriteLine("uwt: wf: warning: ShowDialogInternal called with NULL parent, please fix!");
+
 				if (dialog.Parent != null)
 				{
 					parentHandle = (GetHandleForControl(dialog.Parent) as WindowsFormsNativeControl)?.Handle;
+				}
+				else
+				{
+					Window focusedTopLevelWindow = GetFocusedToplevelWindow();
+					Console.WriteLine("focusedTopLevelWindow is {0}", focusedTopLevelWindow);
+
+					parentHandle = new Win32Window ((GetHandleForControl(focusedTopLevelWindow) as Win32NativeControl).Handle);
 				}
 			}
 			else
@@ -400,7 +408,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if (_GetToplevelWindowsRetval != null)
 			{
 				Window window = new Window();
-				RegisterControlHandle(window, new Win32NativeControl(hWnd));
+				RegisterControlHandle(window, new Win32NativeControl(hWnd), true);
 
 				_GetToplevelWindowsRetval.Add(window);
 			}

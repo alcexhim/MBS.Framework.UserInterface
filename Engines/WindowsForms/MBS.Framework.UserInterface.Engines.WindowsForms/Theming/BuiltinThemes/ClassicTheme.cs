@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using MBS.Framework.UserInterface.Theming;
 
-namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
+namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 {
 	public class ClassicTheme : Theme
 	{
@@ -58,6 +58,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 			ColorTable.ListViewColumnHeaderArrowNormal = Color.FromKnownColor(KnownColor.ControlDarkDark);
 		}
+
 		public override void DrawCommandBarBorder (Graphics graphics, System.Windows.Forms.ToolStrip toolStrip, Rectangle connectedArea)
 		{
 			Rectangle rect = new Rectangle (0, 0, toolStrip.Bounds.Width - 1, toolStrip.Bounds.Height - 1);
@@ -71,7 +72,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 				graphics.DrawRectangle (new Pen (ColorTable.CommandBarMenuBorder), rect);
 			}
 		}
-		public override void DrawCommandBarBackground (Graphics graphics, System.Windows.Forms.ToolStrip parent)
+		public override void DrawCommandBarBackground (Graphics graphics, Rectangle rectangle, Orientation orientation, System.Windows.Forms.ToolStrip parent)
 		{
 			if (parent is System.Windows.Forms.ToolStripDropDown)
 			{

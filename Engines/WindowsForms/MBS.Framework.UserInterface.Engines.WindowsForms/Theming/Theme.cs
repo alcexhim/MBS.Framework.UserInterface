@@ -192,7 +192,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			InitRibbonColors();
 		}
 
-		private static Theme mvarCurrentTheme = new BuiltinThemes.SystemTheme();
+		private static Theme mvarCurrentTheme = new BuiltinThemes.VisualStudio2010Theme();
 		public static Theme CurrentTheme { get { return mvarCurrentTheme; } set { mvarCurrentTheme = value; } }
 
 		private ColorTable mvarColorTable = new ColorTable();
@@ -349,7 +349,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		}
 
 		#region CommandBars
-		public virtual void DrawCommandBarBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStrip parent)
+		public virtual void DrawCommandBarBackground(System.Drawing.Graphics graphics, Rectangle rectangle, Orientation orientation, System.Windows.Forms.ToolStrip parent)
 		{
 		}
 		public virtual void DrawCommandButtonBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStripButton item, System.Windows.Forms.ToolStrip parent)
@@ -431,7 +431,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		public virtual void DrawDropDownButtonBackground(Graphics graphics, ToolStripDropDownButton item, ToolStrip parent)
 		{
 		}
-		public virtual void DrawGrip(Graphics graphics, Rectangle gripBounds, ToolStrip toolStrip)
+		public virtual void DrawGrip(Graphics graphics, Rectangle gripBounds, Orientation orientation, bool rtl)
 		{
 		}
 		public virtual void DrawImageMargin(Graphics graphics, Rectangle affectedBounds, ToolStrip toolStrip)

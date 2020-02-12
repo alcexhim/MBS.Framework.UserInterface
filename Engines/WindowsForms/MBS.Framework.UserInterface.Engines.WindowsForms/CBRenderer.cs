@@ -56,7 +56,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			if (Theming.Theme.CurrentTheme != null)
 			{
-				Theming.Theme.CurrentTheme.DrawGrip(e.Graphics, e.GripBounds, e.ToolStrip);
+				Theming.Theme.CurrentTheme.DrawGrip(e.Graphics, e.GripBounds, e.ToolStrip.Orientation == System.Windows.Forms.Orientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical, e.ToolStrip.RightToLeft == System.Windows.Forms.RightToLeft.Yes);
 			}
 		}
 		protected override void OnRenderImageMargin(System.Windows.Forms.ToolStripRenderEventArgs e)
@@ -109,7 +109,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		protected override void OnRenderToolStripBackground(System.Windows.Forms.ToolStripRenderEventArgs e)
 		{
-			if (Theming.Theme.CurrentTheme != null) Theming.Theme.CurrentTheme.DrawCommandBarBackground(e.Graphics, e.ToolStrip);
+			if (Theming.Theme.CurrentTheme != null) Theming.Theme.CurrentTheme.DrawCommandBarBackground(e.Graphics, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), e.ToolStrip.Bounds.Size), e.ToolStrip.Orientation == System.Windows.Forms.Orientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical, e.ToolStrip);
 		}
 		protected override void OnRenderToolStripBorder(System.Windows.Forms.ToolStripRenderEventArgs e)
 		{

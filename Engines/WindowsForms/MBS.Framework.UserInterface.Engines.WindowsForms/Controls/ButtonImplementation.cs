@@ -66,12 +66,37 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return;
 		}
 
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			if (!Control.IsCreated)
+				return;
+
+			Button button = (control as Button);
+			System.Windows.Forms.Button btn = (Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Button;
+
+			if (button.StockType != ButtonStockType.None)
+			{
+				btn.Text = Engine.StockTypeToLabel(button.StockType).Replace('_', '&');
+			}
+			else
+			{
+				base.SetControlTextInternal(control, text);
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Button button = (control as Button);
-
 			System.Windows.Forms.Button btn = new System.Windows.Forms.Button();
-			btn.Text = button.Text?.Replace('_', '&');
+
+			if (button.StockType != ButtonStockType.None)
+			{
+				btn.Text = Engine.StockTypeToLabel(button.StockType).Replace('_', '&');
+			}
+			else
+			{
+				btn.Text = button.Text?.Replace('_', '&');
+			}
 			btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			btn.AutoSize = true;
 

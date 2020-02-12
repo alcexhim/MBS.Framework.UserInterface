@@ -120,6 +120,25 @@
     <Compile Include="Dialogs\Internal\FolderBrowserDialog\V2\FolderSelectDialog.cs" />
     <Compile Include="Dialogs\PrintDialogImplementation.cs" />
     <Compile Include="Dialogs\FontDialogImplementation.cs" />
+    <Compile Include="Controls\Internal\CommandBars\AllowedBorders.cs" />
+    <Compile Include="Controls\Internal\CommandBars\DockLocation.cs" />
+    <Compile Include="Controls\Internal\CommandBars\ToolBarDockArea.cs" />
+    <Compile Include="Controls\Internal\CommandBars\ToolBarDockHolder.cs" />
+    <Compile Include="Controls\Internal\CommandBars\ToolBarManager.cs" />
+    <Compile Include="Controls\Internal\CommandBars\AllowedDockLocation.cs" />
+    <Compile Include="Theming\BuiltinThemes\Office2007Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\Office2003Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\OfficeXPTheme.cs" />
+    <Compile Include="Theming\BuiltinThemes\Office2000Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\VisualStudio2005Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\VisualStudio2008Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\VisualStudio2010Theme.cs" />
+    <Compile Include="Theming\BuiltinThemes\VisualStudio2012Theme.cs" />
+    <Compile Include="Dialogs\Internal\AboutDialog\AboutDialog.cs" />
+    <Compile Include="Dialogs\Internal\AboutDialog\AboutDialog.Designer.cs" />
+    <Compile Include="Dialogs\AboutDialogImplementation.cs" />
+    <Compile Include="Controls\GroupBoxImplementation.cs" />
+    <Compile Include="Controls\NumericTextBoxImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -148,6 +167,12 @@
     <Folder Include="Theming\BuiltinThemes\" />
     <Folder Include="Dialogs\" />
     <Folder Include="Dialogs\Internal\" />
+    <Folder Include="Controls\Internal\" />
+    <Folder Include="Controls\Internal\CommandBars\" />
+    <Folder Include="Dialogs\Internal\AboutDialog\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Internal\AboutDialog\AboutDialog.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

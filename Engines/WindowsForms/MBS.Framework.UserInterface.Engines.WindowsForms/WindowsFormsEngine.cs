@@ -401,6 +401,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		public WindowsFormsEngine()
 		{
 			W32_GetToplevelWindowsCallback = new Internal.Windows.Delegates.EnumWindowsProc(W32_GetToplevelWindowsCallbackFunc);
+
+			RegisterStockType(StockType.OK, "ok", "_OK");
 		}
 
 		private bool W32_GetToplevelWindowsCallbackFunc(IntPtr hWnd, IntPtr lParam)

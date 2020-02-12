@@ -517,7 +517,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
             return ThemeComponentStateGuids.None;
         }
 
-		public override void DrawCommandBarBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStrip parent)
+		public override void DrawCommandBarBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle, Orientation orientation, System.Windows.Forms.ToolStrip parent)
 		{
 			if (parent is System.Windows.Forms.MenuStrip)
 			{

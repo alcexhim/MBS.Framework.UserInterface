@@ -206,6 +206,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.ListViewItemSelectedForeground = Color.FromKnownColor(KnownColor.ControlText);
 		}
 
+		public override void DrawGrip(Graphics graphics, Rectangle gripBounds, Orientation orientation, bool rtl)
+		{
+			switch (orientation)
+			{
+				case Orientation.Horizontal:
+				{
+					VisualStyleRenderer vsr = new VisualStyleRenderer(VisualStyleElement.Rebar.GripperVertical.Normal);
+					vsr.DrawBackground(graphics, gripBounds);
+					break;
+				}
+				case Orientation.Vertical:
+				{
+					VisualStyleRenderer vsr = new VisualStyleRenderer(VisualStyleElement.Rebar.Gripper.Normal);
+					vsr.DrawBackground(graphics, gripBounds);
+					break;
+				}
+			}
+		}
+
 		public override void DrawContentAreaBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle)
 		{
 			graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.AppWorkspace)), rectangle);
@@ -242,11 +261,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				return;
 			}
 		}
-		public override void DrawCommandBarBackground (System.Drawing.Graphics graphics, System.Windows.Forms.ToolStrip parent)
+		public override void DrawCommandBarBackground (System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle, Orientation orientation, System.Windows.Forms.ToolStrip parent)
 		{
 			if (!VisualStyleInformation.IsEnabledByUser)
 			{
-				base.DrawCommandBarBackground(graphics, parent);
+				base.DrawCommandBarBackground(graphics, rectangle, orientation, parent);
 				return;
 			}
 
@@ -289,7 +308,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			}
 			else
 			{
-				base.DrawCommandBarBackground(graphics, parent);
+				base.DrawCommandBarBackground(graphics, rectangle, orientation, parent);
 				return;
 			}
 		}

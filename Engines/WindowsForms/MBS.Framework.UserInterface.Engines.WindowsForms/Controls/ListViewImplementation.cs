@@ -218,6 +218,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (_IsColumnReorderableSet == null)
 			{
+				/*
 				bool reorderable = lv.AllowColumnReorder, oops = false;
 				for (int i = 0; i < lv.Columns.Count; i++)
 				{
@@ -236,6 +237,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					_IsColumnReorderableSet = false;
 				}
+				*/
 			}
 
 			if (_IsColumnReorderableSet == true)
@@ -246,8 +248,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 		public void SetColumnReorderable(ListViewColumn column, bool value)
 		{
+			Console.WriteLine("SetColumnReorderable: in function");
 			System.Windows.Forms.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView);
+			if (lv == null)
+				return;
 
+			Console.WriteLine("lv is a ListView");
 			bool reorderable = lv.AllowColumnReorder, oops = false;
 			for (int i = 0; i < lv.Columns.Count; i++)
 			{
@@ -260,11 +266,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (oops)
 			{
+				Console.WriteLine("oops");
 				_IsColumnReorderableSet = true;
 				_IsColumnReorderable[column] = value;
 			}
 			else
 			{
+				Console.WriteLine("ok");
 				lv.AllowColumnReorder = value;
 			}
 		}
@@ -295,7 +303,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
-							lv.Columns.Add(tvc.Title).Tag = c;
+							lv.Columns.Add(tvc.Title).Tag = tvc;
 							SetColumnEditable(tvc, tvc.Editable);
 						}
 

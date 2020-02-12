@@ -22,7 +22,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		protected override void DestroyInternal()
 		{
 			Console.WriteLine("destroying control using implementation {0}", GetType().FullName);
-			(Handle as WindowsFormsNativeControl).Handle.Dispose();
+			Console.WriteLine("handle is {0}", Handle?.GetType());
+
+			if (Handle is WindowsFormsNativeDialog)
+			{
+				if ((Handle as WindowsFormsNativeDialog)?.Form != null)
+				{
+					(Handle as WindowsFormsNativeDialog)?.Form.Dispose();
+				}
+				else if ((Handle as WindowsFormsNativeDialog)?.Handle != null)
+				{
+					(Handle as WindowsFormsNativeDialog)?.Handle.Dispose();
+				}
+			}
+			else
+			{
+				(Handle as WindowsFormsNativeControl).Handle.Dispose();
+			}
 		}
 
 		protected override bool SupportsEngine(Type engineType)

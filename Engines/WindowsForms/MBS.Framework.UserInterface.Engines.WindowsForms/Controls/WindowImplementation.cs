@@ -74,13 +74,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.StartPosition = WindowStartPositionToFormStartPosition(window.StartPosition);
 			form.Shown += form_Shown;
 
-			System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
-			tsc.Dock = System.Windows.Forms.DockStyle.Fill;
+			Internal.CommandBars.ToolBarManager tbm = new Internal.CommandBars.ToolBarManager(form, form);
+
+			// System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
+			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 
 			System.Windows.Forms.MenuStrip mb = new System.Windows.Forms.MenuStrip();
-			mb.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+			// mb.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
 			mb.Stretch = true;
-			tsc.TopToolStripPanel.Controls.Add(mb);
+			tbm.AddControl(mb);
+
+			// tsc.TopToolStripPanel.Controls.Add(mb);
 
 			foreach (MenuItem m in window.MenuBar.Items)
 			{
@@ -99,7 +103,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						Engine.CreateControl(tbCommandBar);
 					}
 					System.Windows.Forms.ToolStrip ts = ((tbCommandBar.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ToolStrip);
-					tsc.TopToolStripPanel.Controls.Add(ts);
+					ts.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+					ts.Text = cb.Title;
+
+					// tsc.TopToolStripPanel.Controls.Add(ts);
+					tbm.AddControl(ts);
 				}
 			}
 
@@ -108,22 +116,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			sb = new System.Windows.Forms.StatusStrip();
 			sb.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-			tsc.BottomToolStripPanel.Controls.Add(sb);
+			// tsc.BottomToolStripPanel.Controls.Add(sb);
 
 			sb.Text = "Status Bar";
 			// sb.Visible = window.StatusBar.Visible;
 
-			WindowsFormsNativeControl ncContainer = (base.CreateControlInternal(control) as WindowsFormsNativeControl);
+			Container container = new Container();
+			for (int i = 0; i < window.Controls.Count; i++)
+			{
+				container.Controls.Add(window.Controls[i]);
+			}
+			Engine.CreateControl(container);
+
+			WindowsFormsNativeControl ncContainer = (Engine.GetHandleForControl(container) as WindowsFormsNativeControl);
+			// WindowsFormsNativeControl ncContainer = (base.CreateControlInternal(control) as WindowsFormsNativeControl);
+
 			ncContainer.Handle.Dock = System.Windows.Forms.DockStyle.Fill;
 
-			tsc.TopToolStripPanel.Text = "MSOCommandBarTop";
-			tsc.LeftToolStripPanel.Text = "MSOCommandBarLeft";
-			tsc.BottomToolStripPanel.Text = "MSOCommandBarBottom";
-			tsc.RightToolStripPanel.Text = "MSOCommandBarRight";
-			tsc.ContentPanel.Controls.Add(ncContainer.Handle);
+			// tsc.TopToolStripPanel.Text = "MSOCommandBarTop";
+			// tsc.LeftToolStripPanel.Text = "MSOCommandBarLeft";
+			// tsc.BottomToolStripPanel.Text = "MSOCommandBarBottom";
+			// tsc.RightToolStripPanel.Text = "MSOCommandBarRight";
+			// tsc.ContentPanel.Controls.Add(ncContainer.Handle);
+			form.Controls.Add(ncContainer.Handle);
+			ncContainer.Handle.BringToFront();
 
-			tsc.Dock = System.Windows.Forms.DockStyle.Fill;
-			form.Controls.Add(tsc);
+			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
+			// form.Controls.Add(tsc);
+			form.Controls.Add(sb);
 			form.Text = window.Text;
 			form.AutoSize = true;
 			return new WindowsFormsNativeControl (form);

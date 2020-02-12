@@ -312,10 +312,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			int right = x + width;
 			int bottom = y + height;
 
-			graphics.DrawLine(pen, x + radiusTopLeft, y, right - radiusTopRight, y);
+			// top line
+			graphics.DrawLine(pen, x + radiusTopLeft, y, right - radiusTopRight - 1, y);
+			// top-left connector
 			graphics.DrawLine(pen, x, y + radiusTopLeft, x + radiusTopLeft, y); //added
-			graphics.DrawLine(pen, x, y + radiusTopLeft, x, bottom - radiusBottomRight);
-
+			// left line
+			graphics.DrawLine(pen, x, y + radiusTopLeft, x, bottom - radiusBottomRight - 1);
+			// bottom line
 			graphics.DrawLine(pen, x + radiusTopLeft, bottom - radiusBottomLeft, right - radiusBottomRight, bottom - radiusBottomLeft);
 			graphics.DrawLine(pen, right - radiusTopRight - 1, y, right - 1, y + radiusTopRight); //added
 			graphics.DrawLine(pen, right - radiusBottomRight, y + radiusTopLeft, right - radiusBottomRight, bottom - radiusBottomRight);

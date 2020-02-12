@@ -7,6 +7,7 @@ using MBS.Framework.UserInterface.Native;
 using System.Runtime.InteropServices;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Input.Mouse;
+using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
@@ -294,6 +295,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			#endregion
 
+			#region Toolbars
+			for (int i = 0; i < Application.CommandBars.Count; i++)
+			{
+				Toolbar tb = window.LoadCommandBar(Application.CommandBars[i]);
+				Engine.CreateControl(tb);
+
+				IntPtr hToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl).Handle;
+				bool showGrip = false; // tb.GripStyle == GripStyle.Visible;
+
+				if (showGrip)
+				{
+					IntPtr hGripBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
+					Internal.GTK.Methods.GtkContainer.gtk_container_add(hGripBox, hToolbar);
+
+					Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hGripBox, false, true, 0);
+
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hGripBox);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hToolbar, false, true, 0);
+				}
+			}
+			#endregion
+
 			IntPtr hStatusBar = IntPtr.Zero;
 
 			if (hContainer != IntPtr.Zero)
@@ -341,6 +367,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.None);
 					Internal.GTK.Methods.GtkWindow.gtk_window_move(handle, (int)window.Location.X, (int)window.Location.Y);
 					break;
+				}
+			}
+
+			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
+			{
+				foreach (CommandBar cb in Application.CommandBars)
+				{
+					window.Controls.Add(window.LoadCommandBar(cb));
 				}
 			}
 

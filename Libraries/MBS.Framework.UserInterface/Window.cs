@@ -6,6 +6,7 @@ using System.Text;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Controls.Ribbon;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface
 {
@@ -32,6 +33,63 @@ namespace MBS.Framework.UserInterface
 		public RibbonControl Ribbon { get { return mvarRibbon; } }
 
 		public bool Modal { get; set; } = false;
+
+		private void tsbCommand_Click(object sender, EventArgs e)
+		{
+			ToolbarItemButton tsb = (sender as ToolbarItemButton);
+			CommandReferenceCommandItem crci = tsb.GetExtraData<CommandReferenceCommandItem>("crci");
+			Command cmd = Application.Commands[crci.CommandID];
+			cmd.Execute();
+		}
+
+		public ToolbarItem[] LoadCommandBarItem(CommandItem ci)
+		{
+			System.Diagnostics.Contracts.Contract.Assert(ci != null);
+
+			if (ci is SeparatorCommandItem)
+			{
+				return new ToolbarItem[] { new ToolbarItemSeparator() };
+			}
+			else if (ci is CommandReferenceCommandItem)
+			{
+				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
+				Command cmd = Application.Commands[crci.CommandID];
+				if (cmd == null) return null;
+
+				ToolbarItemButton tsb = new ToolbarItemButton(cmd.ID, (StockType)cmd.StockType);
+				tsb.SetExtraData<CommandReferenceCommandItem>("crci", crci);
+				tsb.Click += tsbCommand_Click;
+				tsb.Title = cmd.Title;
+				return new ToolbarItem[] { tsb };
+			}
+			else if (ci is GroupCommandItem)
+			{
+				GroupCommandItem gci = (ci as GroupCommandItem);
+				List<ToolbarItem> list = new List<ToolbarItem>();
+				for (int i = 0; i < gci.Items.Count; i++)
+				{
+					ToolbarItem[] items = LoadCommandBarItem(gci.Items[i]);
+					list.AddRange(items);
+				}
+				return list.ToArray();
+			}
+			throw new NotImplementedException(String.Format("type of CommandItem '{0}' not implemented", ci.GetType()));
+		}
+
+		public Toolbar LoadCommandBar(CommandBar cb)
+		{
+			Toolbar tb = new Toolbar();
+			for (int i = 0; i < cb.Items.Count; i++)
+			{
+				ToolbarItem[] items = LoadCommandBarItem(cb.Items[i]);
+				if (items != null && items.Length > 0)
+				{
+					for (int j = 0; j < items.Length; j++)
+						tb.Items.Add(items[j]);
+				}
+			}
+			return tb;
+		}
 
 		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
 		{

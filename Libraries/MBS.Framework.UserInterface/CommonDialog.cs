@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MBS.Framework.UserInterface
 {
-	public class CommonDialog : Dialog
+	public abstract class CommonDialog : Dialog
 	{
 	}
 }

@@ -178,37 +178,7 @@ namespace MBS.Framework.UserInterface
 
 		private static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
 		{
-			CommandItem item = null;
-
-			MarkupAttribute attInsertAfter = tag.Attributes["InsertAfter"];
-			MarkupAttribute attInsertBefore = tag.Attributes["InsertBefore"];
-
-			switch (tag.FullName)
-			{
-				case "CommandReference":
-				{
-					MarkupAttribute attCommandID = tag.Attributes["CommandID"];
-					if (attCommandID != null)
-					{
-						item = new CommandReferenceCommandItem(attCommandID.Value);
-					}
-					break;
-				}
-				case "CommandPlaceholder":
-				{
-					MarkupAttribute attPlaceholderID = tag.Attributes["PlaceholderID"];
-					if (attPlaceholderID != null)
-					{
-						item = new CommandPlaceholderCommandItem(attPlaceholderID.Value);
-					}
-					break;
-				}
-				case "Separator":
-				{
-					item = new SeparatorCommandItem();
-					break;
-				}
-			}
+			CommandItem item = CommandItem.FromMarkup(tag);
 
 			CommandItem.CommandItemCollection coll = null;
 			if (item != null)
@@ -233,15 +203,13 @@ namespace MBS.Framework.UserInterface
 			if (coll != null)
 			{
 				int insertIndex = -1;
-				if (attInsertAfter != null)
+				if (item.InsertAfterID != null)
 				{
-					item.InsertAfterID = attInsertAfter.Value;
-					insertIndex = coll.IndexOf(attInsertAfter.Value) + 1;
+					insertIndex = coll.IndexOf(item.InsertAfterID) + 1;
 				}
-				else if (attInsertBefore != null)
+				else if (item.InsertBeforeID != null)
 				{
-					item.InsertBeforeID = attInsertAfter.Value;
-					insertIndex = coll.IndexOf(attInsertBefore.Value);
+					insertIndex = coll.IndexOf(item.InsertBeforeID);
 				}
 
 				if (insertIndex != -1)

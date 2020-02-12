@@ -104,15 +104,18 @@ namespace MBS.Framework.UserInterface
 		{
 			foreach (CommandItem ci in Application.MainMenu.Items)
 			{
-				MBS.Framework.UserInterface.MenuItem mi = MBS.Framework.UserInterface.MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
-				if (mi == null)
+				MBS.Framework.UserInterface.MenuItem[] mi = MBS.Framework.UserInterface.MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+				if (mi == null || mi.Length == 0)
 					continue;
 
-				if (mi.Name == "Help")
+				for (int i = 0; i < mi.Length; i++)
 				{
-					mi.HorizontalAlignment = MenuItemHorizontalAlignment.Right;
+					if (mi[i].Name == "Help")
+					{
+						mi[i].HorizontalAlignment = MenuItemHorizontalAlignment.Right;
+					}
+					this.MenuBar.Items.Add(mi[i]);
 				}
-				this.MenuBar.Items.Add(mi);
 			}
 		}
 

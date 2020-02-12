@@ -672,8 +672,7 @@ namespace MBS.Framework.UserInterface
 
 			foreach (CommandItem ci in ctx.MenuItems)
 			{
-				MenuItem mi = MenuItem.LoadMenuItem(ci, Application_MenuBar_Item_Click);
-				_listContextMenuItems[ctx].Add(mi);
+				MenuItem[] mi = MenuItem.LoadMenuItem(ci, Application_MenuBar_Item_Click);
 				foreach (Window w in Application.Windows)
 				{
 					int insertIndex = -1;
@@ -686,13 +685,19 @@ namespace MBS.Framework.UserInterface
 						insertIndex = w.MenuBar.Items.IndexOf(w.MenuBar.Items[ci.InsertBeforeID]);
 					}
 
-					if (insertIndex != -1)
+					for (int i = 0; i < mi.Length; i++)
 					{
-						w.MenuBar.Items.Insert(insertIndex, mi);
-					}
-					else
-					{
-						w.MenuBar.Items.Add(mi);
+						_listContextMenuItems[ctx].Add(mi[i]);
+
+						if (insertIndex != -1)
+						{
+							w.MenuBar.Items.Insert(insertIndex, mi[i]);
+						}
+						else
+						{
+							w.MenuBar.Items.Add(mi[i]);
+						}
+						insertIndex++;
 					}
 				}
 			}

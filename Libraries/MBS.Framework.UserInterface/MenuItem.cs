@@ -84,8 +84,10 @@ namespace MBS.Framework.UserInterface
 		private bool _Visible = true;
 		public bool Visible { get { return _Visible; } set { _Visible = value; Application.Engine.SetMenuItemVisibility(this, value); } }
 
-		public static MenuItem LoadMenuItem(CommandItem ci, EventHandler onclick = null)
+		public static MenuItem[] LoadMenuItem(CommandItem ci, EventHandler onclick = null)
 		{
+			System.Diagnostics.Contracts.Contract.Assert(ci != null);
+
 			if (ci is CommandReferenceCommandItem)
 			{
 				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
@@ -100,8 +102,11 @@ namespace MBS.Framework.UserInterface
 					{
 						foreach (CommandItem ci1 in cmd.Items)
 						{
-							MBS.Framework.UserInterface.MenuItem mi1 = LoadMenuItem(ci1, onclick);
-							mi.Items.Add(mi1);
+							MBS.Framework.UserInterface.MenuItem[] mi1 = LoadMenuItem(ci1, onclick);
+							if (mi1 == null) continue;
+
+							for (int i = 0; i < mi1.Length; i++)
+								mi.Items.Add(mi1[i]);
 						}
 					}
 					else
@@ -109,7 +114,7 @@ namespace MBS.Framework.UserInterface
 						if (onclick != null)
 							mi.Click += onclick;
 					}
-					return mi;
+					return new MenuItem[] { mi };
 				}
 				else
 				{
@@ -119,7 +124,29 @@ namespace MBS.Framework.UserInterface
 			}
 			else if (ci is SeparatorCommandItem)
 			{
-				return new MBS.Framework.UserInterface.SeparatorMenuItem();
+				return new MenuItem[] { new MBS.Framework.UserInterface.SeparatorMenuItem() };
+			}
+			else if (ci is CommandPlaceholderCommandItem)
+			{
+
+			}
+			else if (ci is GroupCommandItem)
+			{
+				GroupCommandItem gci = (ci as GroupCommandItem);
+				List<MenuItem> list = new List<MenuItem>();
+				for (int i = 0; i < gci.Items.Count; i++)
+				{
+					MenuItem[] mis = LoadMenuItem(gci.Items[i], onclick);
+					list.AddRange(mis);
+				}
+				return list.ToArray();
+			}
+			else
+			{
+				if (System.Diagnostics.Debugger.IsAttached)
+				{
+					throw new NotImplementedException(String.Format("CommandItem type '{0}' not implemented", ci.GetType().FullName));
+				}
 			}
 			return null;
 		}

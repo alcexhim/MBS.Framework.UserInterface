@@ -539,11 +539,12 @@ namespace MBS.Framework.UserInterface
 				_ContextMenu = new Menu();
 				foreach (CommandItem ci in cmd.Items)
 				{
-					MenuItem mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
-					if (mi == null)
+					MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+					if (mi == null || mi.Length == 0)
 						continue;
 
-					_ContextMenu.Items.Add(mi);
+					for (int i = 0; i < mi.Length; i++)
+						_ContextMenu.Items.Add(mi[i]);
 				}
 			}
 		}

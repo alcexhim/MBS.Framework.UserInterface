@@ -1052,5 +1052,13 @@ namespace MBS.Framework.UserInterface
 
 			return p;
 		}
+
+		/// <summary>
+		/// Displays the application's Help in the system native Help viewer, navigating to the appropriate <see cref="HelpTopic" /> if specified.
+		/// </summary>
+		public static void ShowHelp(HelpTopic topic = null)
+		{
+			Engine.ShowHelp(topic);
+		}
 	}
 }

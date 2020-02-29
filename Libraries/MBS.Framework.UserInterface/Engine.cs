@@ -313,6 +313,7 @@ namespace MBS.Framework.UserInterface
 					// holy shit this actually works
 					possibleHandlers.Sort(runtimeTypeComparer);
 				}
+
 				Type t = possibleHandlers[0];
 				return (t.Assembly.CreateInstance(t.FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, control }, null, null) as ControlImplementation);
 			}
@@ -591,6 +592,12 @@ namespace MBS.Framework.UserInterface
 		public bool IsTreeModelCreated(TreeModel model)
 		{
 			return _HandleForTreeModel.ContainsKey(model);
+		}
+
+		protected abstract void ShowHelpInternal(HelpTopic topic);
+		internal void ShowHelp(HelpTopic topic)
+		{
+			ShowHelpInternal(topic);
 		}
 	}
 }

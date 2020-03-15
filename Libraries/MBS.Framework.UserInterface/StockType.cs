@@ -8,6 +8,13 @@ namespace MBS.Framework.UserInterface
 		About,
 		Add,
 		Apply,
+
+		// these four do not have gtk-stock equivalents
+		ArrowDown,
+		ArrowLeft,
+		ArrowRight,
+		ArrowUp,
+
 		Bold,
 		Cancel,
 		CapsLockWarning,			// not for buttons

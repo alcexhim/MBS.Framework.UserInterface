@@ -76,6 +76,28 @@ namespace MBS.Framework.UserInterface
 			mvarControl = control;
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ControlImplementation" /> supports the <see cref="Engine" /> represented by the given type.
+		/// </summary>
+		/// <returns><c>true</c>, if engine was supportsed, <c>false</c> otherwise.</returns>
+		/// <param name="engineType">Engine type.</param>
+		protected abstract bool SupportsEngineInternal(Type engineType);
+
+		protected abstract void InvalidateInternal(int x, int y, int width, int height);
+		public void Invalidate(int x, int y, int width, int height)
+		{
+			InvalidateInternal(x, y, width, height);
+		}
+
+		protected abstract void DestroyInternal();
+		/// <summary>
+		/// Destroys the handle associated with this <see cref="ControlImplementation"/>'s <see cref="Control" />.
+		/// </summary>
+		public void Destroy()
+		{
+			DestroyInternal();
+		}
+
 		private Dictionary<Control, string> _controlText = new Dictionary<Control, string> ();
 		protected virtual string GetControlTextInternal (Control control)
 		{

@@ -401,15 +401,6 @@ namespace MBS.Framework.UserInterface
 			return true;
 		}
 
-		protected abstract void DestroyControlInternal(Control control);
-		/// <summary>
-		/// Destroys the handle associated with the specified <see cref="Control" />.
-		/// </summary>
-		public void DestroyControl(Control control)
-		{
-			DestroyControlInternal(control);
-		}
-
 		public Window GetFocusedToplevelWindow()
 		{
 			// In GTK+, this lists all toplevel windows in the system
@@ -474,15 +465,6 @@ namespace MBS.Framework.UserInterface
 		public bool SetProperty<T>(string propertyName, T value)
 		{
 			return SetProperty(propertyName, (object)value);
-		}
-
-		protected abstract void InvalidateControlInternal(Control control, int x, int y, int width, int height);
-		public void InvalidateControl(Control control, int x, int y, int width, int height)
-		{
-			if (!IsControlCreated(control))
-				return;
-
-			InvalidateControlInternal(control, x, y, width, height);
 		}
 
 		protected abstract void UpdateControlLayoutInternal(Control control);

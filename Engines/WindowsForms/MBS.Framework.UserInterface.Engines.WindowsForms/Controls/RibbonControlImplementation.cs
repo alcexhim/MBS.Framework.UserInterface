@@ -41,8 +41,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			tbs.Destroy();
 		}
 
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		protected override void InvalidateInternal(int x, int y, int width, int height)
 		{
+			tbs.Invalidate(x, y, width, height);
 		}
 
 		protected override Dimension2D GetControlSizeInternal()

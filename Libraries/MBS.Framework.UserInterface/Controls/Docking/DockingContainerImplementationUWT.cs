@@ -16,6 +16,16 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		{
 		}
 
+		protected override void InvalidateInternal(int x, int y, int width, int height)
+		{
+			(Handle as CustomNativeControl).Handle.Invalidate(x, y, width, height);
+		}
+
+		protected override void DestroyInternal()
+		{
+			(Handle as CustomNativeControl).Handle.Destroy();
+		}
+
 		private class DockingDockContainer : Container
 		{
 			private void tbs_SelectedTabChanged(object sender, TabContainerSelectedTabChangedEventArgs e)

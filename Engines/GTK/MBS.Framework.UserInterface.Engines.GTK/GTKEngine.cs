@@ -589,19 +589,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.ZoomOut, "gtk-zoom-out");
 		}
 
-		protected override void DestroyControlInternal(Control control)
-		{
-			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			if (control is Dialog)
-			{
-				// this way is recommended per GTK3.0 docs:
-				// "destroying the dialog during gtk_dialog_run() is a very bad idea, because your post-run code won't know whether the dialog was destroyed or not"
-				Internal.GTK.Methods.GtkDialog.gtk_dialog_response(handle, Internal.GTK.Constants.GtkResponseType.None);
-				return;
-			}
-			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
-		}
-
 		internal static KeyEventArgs GdkEventKeyToKeyEventArgs(Internal.GDK.Structures.GdkEventKey e)
 		{
 			uint keyCode = e.keyval;
@@ -952,15 +939,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			if (value == Internal.GTK.Constants.GtkPrintOperationResult.Cancel) return DialogResult.Cancel;
 			return DialogResult.OK;
-		}
-
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
-		{
-			if (!IsControlCreated(control))
-				throw new NullReferenceException("Control handle not found");
-
-			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 
 		#region Common Dialog

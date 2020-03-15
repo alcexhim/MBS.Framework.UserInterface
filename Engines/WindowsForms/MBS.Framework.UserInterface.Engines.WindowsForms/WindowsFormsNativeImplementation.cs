@@ -13,7 +13,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		protected override void InvalidateInternal(int x, int y, int width, int height)
 		{
 			if (Handle is WindowsFormsNativeControl)
 				(Handle as WindowsFormsNativeControl).Handle.Invalidate(new System.Drawing.Rectangle(x, y, width, height));

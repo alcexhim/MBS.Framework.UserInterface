@@ -307,7 +307,7 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public void Destroy()
 		{
-			Application.Engine.DestroyControl(this);
+			ControlImplementation?.Destroy();
 		}
 
 		public void Focus()
@@ -576,7 +576,7 @@ namespace MBS.Framework.UserInterface
 		}
 		public void Invalidate(int x, int y, int width, int height)
 		{
-			Application.Engine.InvalidateControl(this, x, y, width, height);
+			ControlImplementation?.Invalidate(x, y, width, height);
 		}
 		public void Refresh()
 		{

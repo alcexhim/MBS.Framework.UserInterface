@@ -160,7 +160,7 @@ namespace MBS.Framework.UserInterface
 					}
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
-						(ctl as Button).StockType = (ButtonStockType) Application.Engine.StockTypeFromString(item.Properties["label"].Value);
+						(ctl as Button).StockType = (StockType) Application.Engine.StockTypeFromString(item.Properties["label"].Value);
 					}
 					break;
 				}

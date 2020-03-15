@@ -49,13 +49,13 @@ namespace MBS.Framework.UserInterface.Controls
 			this.Text = text;
 			mvarResponseValue = responseValue;
 		}
-		public Button(ButtonStockType type, DialogResult responseValue)
+		public Button(StockType type, DialogResult responseValue)
 			: this(type, (int)responseValue)
 		{
 		}
-		public Button(ButtonStockType type, int responseValue = (int)DialogResult.None)
+		public Button(StockType type, int responseValue = (int)DialogResult.None)
 		{
-			mvarStockType = type;
+			StockType = type;
 			mvarResponseValue = responseValue;
 		}
 
@@ -93,8 +93,7 @@ namespace MBS.Framework.UserInterface.Controls
 		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
 		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }
 
-		private ButtonStockType mvarStockType = ButtonStockType.None;
-		public ButtonStockType StockType { get { return mvarStockType; } set { mvarStockType = value; } }
+		public StockType StockType { get; set; } = StockType.None;
 
 		private int mvarResponseValue = 0;
 		/// <summary>

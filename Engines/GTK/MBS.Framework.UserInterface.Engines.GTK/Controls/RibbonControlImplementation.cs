@@ -100,7 +100,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 							if (cmd.StockType == StockType.None) {
 								btn = new Button (cmd.Title);
 							} else {
-								btn = new Button ((ButtonStockType)cmd.StockType);
+								btn = new Button ((StockType)cmd.StockType);
 							}
 							btn.FocusOnClick = false;
 							btn.AlwaysShowImage = true; // .DisplayStyle = ButtonDisplayStyle.ImageAndText;

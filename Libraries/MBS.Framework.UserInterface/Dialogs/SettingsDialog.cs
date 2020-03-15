@@ -24,8 +24,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.Layout = new BoxLayout(Orientation.Vertical);
 
-			this.Buttons.Add(new Button(ButtonStockType.OK, DialogResult.OK));
-			this.Buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
+			this.Buttons.Add(new Button(StockType.OK, DialogResult.OK));
+			this.Buttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 
 			this.Buttons[0].Click += cmdOK_Click;
 

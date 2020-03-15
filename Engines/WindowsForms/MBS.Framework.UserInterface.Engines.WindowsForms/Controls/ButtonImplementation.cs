@@ -74,7 +74,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			Button button = (control as Button);
 			System.Windows.Forms.Button btn = (Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Button;
 
-			if (button.StockType != ButtonStockType.None)
+			if (button.StockType != StockType.None)
 			{
 				btn.Text = Engine.StockTypeToLabel(button.StockType).Replace('_', '&');
 			}
@@ -89,7 +89,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			Button button = (control as Button);
 			System.Windows.Forms.Button btn = new System.Windows.Forms.Button();
 
-			if (button.StockType != ButtonStockType.None)
+			if (button.StockType != StockType.None)
 			{
 				btn.Text = Engine.StockTypeToLabel(button.StockType).Replace('_', '&');
 			}

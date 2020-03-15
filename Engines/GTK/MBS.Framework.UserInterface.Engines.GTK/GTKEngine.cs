@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -1216,7 +1216,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					// Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, text);
 				}
 
-				if (button.StockType != ButtonStockType.None)
+				if (button.StockType != StockType.None)
 				{
 					control.ControlImplementation.SetControlText (control, StockTypeToString ((StockType)button.StockType));
 					Internal.GTK.Methods.GtkButton.gtk_button_set_use_stock(handle, true);

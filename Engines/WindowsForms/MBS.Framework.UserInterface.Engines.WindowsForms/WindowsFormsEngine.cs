@@ -182,16 +182,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return false;
 		}
 
-		protected override Window GetFocusedToplevelWindowInternal()
-		{
-			IntPtr hWnd = Internal.Windows.Methods.GetActiveWindow();
-			Win32NativeControl nc = new Win32NativeControl(hWnd);
-
-			Window w = new Window();
-			RegisterControlHandle(w, nc, true);
-			return w;
-		}
-
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
 			Console.WriteLine("dialog is {0}", dialog);

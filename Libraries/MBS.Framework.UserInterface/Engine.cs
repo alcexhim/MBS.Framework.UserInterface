@@ -222,16 +222,30 @@ namespace MBS.Framework.UserInterface
 		}
 
 
-		private static BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection> mvarStockIDs = new BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection>();
-		public void RegisterStockType(StockType stockType, string name)
+		private BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection> mvarStockIDs = new BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection>();
+		private Dictionary<StockType, string> mvarStockLabels = new Dictionary<StockType, string>();
+		public void RegisterStockType(StockType stockType, string name, string label = null)
 		{
 			if (!mvarStockIDs.ContainsValue1(stockType))
 			{
 				mvarStockIDs.Add(stockType, new System.Collections.Specialized.StringCollection());
 			}
 			mvarStockIDs.GetValue2(stockType).Add(name);
+
+			if (label == null) label = name;
+			mvarStockLabels.Add(stockType, label);
 		}
 
+		public string StockTypeToLabel(StockType stockType, bool useMnemonic = false)
+		{
+			string retval = String.Empty;
+			if (mvarStockLabels.ContainsKey(stockType))
+				retval = mvarStockLabels[stockType];
+
+			if (!useMnemonic)
+				retval = retval.Replace("_", String.Empty);
+			return retval;
+		}
 		public string StockTypeToString(StockType stockType)
 		{
 			if (mvarStockIDs.ContainsValue1(stockType))

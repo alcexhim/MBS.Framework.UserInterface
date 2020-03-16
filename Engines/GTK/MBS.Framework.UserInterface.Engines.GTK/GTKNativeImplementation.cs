@@ -57,15 +57,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override void DestroyInternal()
 		{
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			if (Control is Dialog)
 			{
+				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("dialog");
 				// this way is recommended per GTK3.0 docs:
 				// "destroying the dialog during gtk_dialog_run() is a very bad idea, because your post-run code won't know whether the dialog was destroyed or not"
-				Internal.GTK.Methods.GtkDialog.gtk_dialog_response(handle, Internal.GTK.Constants.GtkResponseType.None);
-				return;
+				Internal.GTK.Methods.GtkDialog.gtk_dialog_response(handle, GTKEngine.DialogResultToGtkResponseType((Control as Dialog).DialogResult));
 			}
-			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
+			else
+			{
+				IntPtr handle = (Handle as GTKNativeControl).Handle;
+				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
+			}
 		}
 
 		internal virtual void RegisterDragSourceGTK(IntPtr handle, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)

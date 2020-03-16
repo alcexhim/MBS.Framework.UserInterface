@@ -55,6 +55,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 			GTKNativeControl nc = new GTKNativeControl(handle);
 			(Engine as GTKEngine).RegisterControlHandle(dialog, nc);
+			(hContainer as GTKNativeControl).SetNamedHandle("dialog", handle);
 			return nc;
 		}
 	}

@@ -20,6 +20,12 @@ namespace MBS.Framework.UserInterface.Controls
 	}
 	public class NumericTextBox : SystemControl
 	{
+		public event EventHandler Changed;
+		protected virtual void OnChanged(EventArgs e)
+		{
+			Changed?.Invoke(this, e);
+		}
+		
 		private double _Minimum = 0.0;
 		public double Minimum
 		{

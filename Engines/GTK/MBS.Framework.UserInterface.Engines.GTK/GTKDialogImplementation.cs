@@ -32,6 +32,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_delete_event_handler = new Func<IntPtr, IntPtr, bool>(gc_delete_event);
 		}
 
+		protected virtual bool UseCustomButtonImplementation { get; } = false;
+
 		protected abstract bool AcceptInternal();
 		public bool Accept()
 		{
@@ -62,8 +64,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleCtx, "suggested-action");
 				}
 			}
-
-			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_button (handle, button.StockType == ButtonStockType.Connect ? "Connect" : "Cancel", button.ResponseValue);
 
 			int nativeResponseValue = button.ResponseValue;
 			switch (button.ResponseValue)

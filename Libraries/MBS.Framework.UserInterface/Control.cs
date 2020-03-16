@@ -246,6 +246,8 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public bool UseMarkup { get; set; } = false;
+
 		private string mvarText = null;
 		public string Text
 		{

@@ -59,6 +59,8 @@ namespace MBS.Framework.UserInterface.Controls
 			mvarResponseValue = responseValue;
 		}
 
+		public MBS.Framework.UserInterface.Drawing.Image Image { get; set; } = null;
+
 		private bool mvarAlwaysShowImage = false;
 		public bool AlwaysShowImage {  get { return mvarAlwaysShowImage;  } set { mvarAlwaysShowImage = value; } }
 

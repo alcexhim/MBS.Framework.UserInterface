@@ -27,6 +27,11 @@ namespace MBS.Framework.UserInterface
 		public CustomImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
+
+		protected override bool SupportsEngineInternal(Type engineType)
+		{
+			return true;
+		}
 	}
 }
 

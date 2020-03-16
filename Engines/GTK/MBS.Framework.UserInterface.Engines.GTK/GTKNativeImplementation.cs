@@ -49,6 +49,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
+		protected override bool SupportsEngineInternal(Type engineType)
+		{
+			return (engineType == typeof(GTKEngine));
+		}
+
 		protected override void InvalidateInternal(int x, int y, int width, int height)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;

@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 		}
 
-		protected override bool SupportsEngine(Type engineType)
+		protected override bool SupportsEngineInternal(Type engineType)
 		{
 			return (engineType == typeof(WindowsFormsEngine));
 		}

@@ -180,6 +180,9 @@ namespace MBS.Framework.UserInterface
 				return;
 			}
 
+			if (!handlesByControl.ContainsKey(ctl))
+				return;
+
 			NativeControl nc = handlesByControl[ctl];
 
 			handlesByControl.Remove(ctl);

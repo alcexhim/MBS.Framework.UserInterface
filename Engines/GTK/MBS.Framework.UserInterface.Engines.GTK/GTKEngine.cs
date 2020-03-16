@@ -282,6 +282,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return button;
 		}
 
+		internal static Internal.GTK.Constants.GtkResponseType DialogResultToGtkResponseType(DialogResult value)
+		{
+			switch (value)
+			{
+				case DialogResult.OK: return Constants.GtkResponseType.OK;
+				case DialogResult.Cancel: return Constants.GtkResponseType.Cancel;
+				case DialogResult.Help: return Constants.GtkResponseType.Help;
+				case DialogResult.No: return Constants.GtkResponseType.No;
+				case DialogResult.None: return Constants.GtkResponseType.None;
+				case DialogResult.Yes: return Constants.GtkResponseType.Yes;
+			}
+			return Constants.GtkResponseType.None;
+		}
 		internal static DialogResult GtkResponseTypeToDialogResult(Internal.GTK.Constants.GtkResponseType value)
 		{
 			DialogResult result = DialogResult.None;

@@ -151,8 +151,15 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public void RegisterControlHandle(Control control, NativeControl handle)
+		public void RegisterControlHandle(Control control, NativeControl handle, bool fDeleteOld = false)
 		{
+			if (fDeleteOld)
+			{
+				if (controlsByHandle.ContainsKey(handle))
+					controlsByHandle.Remove(handle);
+				if (handlesByControl.ContainsKey(control))
+					handlesByControl.Remove(control);
+			}
 			controlsByHandle[handle] = control;
 			handlesByControl[control] = handle;
 			Console.WriteLine("registered control handle {0} for {1} ({2} handles registered)", handle, control.GetType(), controlsByHandle.Count);

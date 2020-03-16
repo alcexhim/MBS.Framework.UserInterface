@@ -611,5 +611,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
+		protected override bool ShowHelpInternal(HelpTopic topic)
+		{
+			return false;
+		}
+
 	}
 }

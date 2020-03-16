@@ -8,6 +8,7 @@ using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Printing;
 using System.Diagnostics.Contracts;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Dialogs;
 
 namespace MBS.Framework.UserInterface
 {
@@ -600,10 +601,14 @@ namespace MBS.Framework.UserInterface
 			return _HandleForTreeModel.ContainsKey(model);
 		}
 
-		protected abstract void ShowHelpInternal(HelpTopic topic);
+		protected abstract bool ShowHelpInternal(HelpTopic topic);
 		internal void ShowHelp(HelpTopic topic)
 		{
-			ShowHelpInternal(topic);
+			bool retval = ShowHelpInternal(topic);
+			if (!retval)
+			{
+				MessageDialog.ShowDialog("Unable to launch the operating system's default Help viewer.", "Error", MessageDialogButtons.OK, MessageDialogIcon.Error);
+			}
 		}
 	}
 }

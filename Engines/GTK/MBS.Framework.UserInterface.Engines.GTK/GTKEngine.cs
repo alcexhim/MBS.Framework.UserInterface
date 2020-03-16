@@ -1850,6 +1850,36 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
 			UpdateSystemColor(SystemColor.HighlightForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 		}
+
+		protected override bool ShowHelpInternal(HelpTopic topic)
+		{
+			// apparently, a System.ComponentModel.Win32Exception means "file not found".
+			// In this case we could try khelpcenter, or something else, but there's just so many of them
+			// that it's difficult to come up with an all-inclusive solution. Any suggestions?
+			if (topic != null)
+			{
+				try
+				{
+					Process.Start("yelp", Application.ShortName + "/" + topic.Name);
+					return true;
+				}
+				catch (System.ComponentModel.Win32Exception ex)
+				{
+				}
+			}
+			else
+			{
+				try
+				{
+					Process.Start("yelp", Application.ShortName);
+					return true;
+				}
+				catch (System.ComponentModel.Win32Exception ex)
+				{
+				}
+			}
+			return false;
+		}
 	}
 }
 

@@ -395,6 +395,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				case ImplementedAsType.TreeView:
 				{
 					handle = new System.Windows.Forms.TreeView();
+					handle.Tag = tv;
 					(handle as System.Windows.Forms.TreeView).AfterLabelEdit += tv_AfterLabelEdit;
 
 					(handle as System.Windows.Forms.TreeView).NodeMouseDoubleClick += tv_NodeMouseDoubleClick;
@@ -408,6 +409,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				case ImplementedAsType.ListView:
 				{
 					handle = new System.Windows.Forms.ListView();
+					handle.Tag = tv;
 					(handle as System.Windows.Forms.ListView).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
 					(handle as System.Windows.Forms.ListView).ItemActivate += lv_ItemActivate;
 					(handle as System.Windows.Forms.ListView).ItemSelectionChanged += lv_ItemSelectionChanged;

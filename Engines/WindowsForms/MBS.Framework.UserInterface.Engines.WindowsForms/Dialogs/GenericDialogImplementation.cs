@@ -72,6 +72,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			System.Windows.Forms.Control ctl = (hContainer as WindowsFormsNativeControl).Handle;
 			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+			(hContainer as WindowsFormsNativeControl).SetNamedHandle("dialog", f);
 
 			f.BackColor = System.Drawing.SystemColors.Window;
 

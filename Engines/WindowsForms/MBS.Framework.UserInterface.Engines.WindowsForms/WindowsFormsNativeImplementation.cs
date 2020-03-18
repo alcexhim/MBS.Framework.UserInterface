@@ -24,7 +24,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			Console.WriteLine("destroying control using implementation {0}", GetType().FullName);
 			Console.WriteLine("handle is {0}", Handle?.GetType());
 
-			if (Handle is WindowsFormsNativeDialog)
+			if (Control is Dialog)
+			{
+				System.Windows.Forms.Form handle = ((Handle as WindowsFormsNativeControl).GetNamedHandle("dialog") as System.Windows.Forms.Form);
+				handle.Close();
+			}
+			else if (Handle is WindowsFormsNativeDialog)
 			{
 				if ((Handle as WindowsFormsNativeDialog)?.Form != null)
 				{

@@ -782,12 +782,13 @@ namespace MBS.Framework.UserInterface
 
 		public static string ExpandRelativePath(string relativePath)
 		{
-			if (relativePath.StartsWith("~/"))
+			if (relativePath == null) relativePath = String.Empty;
+			if (relativePath.StartsWith("~" + System.IO.Path.DirectorySeparatorChar.ToString()) || relativePath.StartsWith("~" + System.IO.Path.AltDirectorySeparatorChar.ToString()))
 			{
 				string[] potentialFileNames = EnumerateDataPaths();
 				for (int i = potentialFileNames.Length - 1; i >= 0; i--)
 				{
-					potentialFileNames[i] = potentialFileNames[i] + '/' + relativePath.Substring(2);
+					potentialFileNames[i] = potentialFileNames[i] + System.IO.Path.DirectorySeparatorChar.ToString() + relativePath.Substring(2);
 					Console.WriteLine("Looking for " + potentialFileNames[i]);
 
 					if (System.IO.File.Exists(potentialFileNames[i]))

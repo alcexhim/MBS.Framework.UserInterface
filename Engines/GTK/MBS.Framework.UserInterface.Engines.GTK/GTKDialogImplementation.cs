@@ -40,7 +40,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return AcceptInternal();
 		}
 		
-		private IntPtr Dialog_AddButton(IntPtr handle, Button button)
+		private IntPtr Dialog_AddButton(Dialog dialog, IntPtr handle, Button button)
 		{
 			/*
 			if (button.ResponseValue == (int)DialogResult.Cancel)
@@ -53,7 +53,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			buttonHandle = ((Engine as GTKEngine).GetHandleForControl(button) as GTKNativeControl).Handle;
 
-			if (IsSuggestedResponse(button.ResponseValue))
+			if (IsSuggestedButton(dialog, button))
 			{
 				if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
 				{
@@ -100,19 +100,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return buttonHandle;
 		}
 
+		private bool IsSuggestedButton(Dialog dialog, Button button)
+		{
+			return dialog.DefaultButton == button || IsSuggestedResponse(button.ResponseValue);
+		}
+
 		private bool IsSuggestedResponse(int responseValue)
 		{
 			return (responseValue == (int)DialogResult.OK || responseValue == (int)DialogResult.Yes || responseValue == (int)DialogResult.Continue || responseValue == (int)DialogResult.Retry);
 		}
 
-		private IntPtr[] Dialog_AddButtons(IntPtr handle, List<Button> buttons, bool autoAlign)
+		private IntPtr[] Dialog_AddButtons(Dialog dialog, IntPtr handle, List<Button> buttons, bool autoAlign)
 		{
 			List<IntPtr> list = new List<IntPtr>();
 			if (!autoAlign)
 			{
 				for (int i = 0; i < buttons.Count; i++)
 				{
-					IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
+					IntPtr hButton = Dialog_AddButton(dialog, handle, buttons[i]);
 					list.Add(hButton);
 				}
 				return list.ToArray();
@@ -124,7 +129,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					for (int i = buttons.Count - 1; i > -1; i--)
 					{
-						IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
+						IntPtr hButton = Dialog_AddButton(dialog, handle, buttons[i]);
 						if (hButton == IntPtr.Zero)
 							continue;
 						list.Add(hButton);
@@ -139,7 +144,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					for (int i = 0; i < buttons.Count; i++)
 					{
-						IntPtr hButton = Dialog_AddButton(handle, buttons[i]);
+						IntPtr hButton = Dialog_AddButton(dialog, handle, buttons[i]);
 						list.Add(hButton);
 					}
 					break;
@@ -184,7 +189,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				buttons.Add(button);
 			}
 
-			IntPtr[] hButtons = Dialog_AddButtons(handle, buttons, dialog.AutoAlignButtons);
+			IntPtr[] hButtons = Dialog_AddButtons(dialog, handle, buttons, dialog.AutoAlignButtons);
 			if (dialog.DefaultButton != null)
 			{
 				IntPtr hButtonDefault = ((Engine as GTKEngine).GetHandleForControl(dialog.DefaultButton) as GTKNativeControl).Handle;

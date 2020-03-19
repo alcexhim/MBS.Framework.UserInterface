@@ -19,6 +19,11 @@ namespace MBS.Framework.UserInterface
 		public Container()
 		{
 			mvarControls = new ControlCollection(this);
+		}
+
+		protected internal override void OnCreating(EventArgs e)
+		{
+			base.OnCreating(e);
 
 			bool foundContainerAttribute = false;
 			object[] atts = this.GetType().GetCustomAttributes(typeof(ContainerLayoutAttribute), false);
@@ -33,7 +38,8 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			if (!foundContainerAttribute) {
+			if (!foundContainerAttribute)
+			{
 				// Console.Error.WriteLine("uwt: warning: ContainerLayout works better [{0}]", this.GetType().FullName);
 			}
 		}

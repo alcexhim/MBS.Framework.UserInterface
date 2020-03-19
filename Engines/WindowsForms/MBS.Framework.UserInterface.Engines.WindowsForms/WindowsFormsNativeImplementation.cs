@@ -20,9 +20,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void DestroyInternal()
 		{
-			Console.WriteLine("destroying control using implementation {0}", GetType().FullName);
-			Console.WriteLine("handle is {0}", Handle?.GetType());
-
 			if (Control is Dialog)
 			{
 				System.Windows.Forms.Form handle = ((Handle as WindowsFormsNativeControl).GetNamedHandle("dialog") as System.Windows.Forms.Form);
@@ -32,7 +29,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			{
 				if ((Handle as WindowsFormsNativeDialog)?.Form != null)
 				{
-					(Handle as WindowsFormsNativeDialog)?.Form.Dispose();
+					(Handle as WindowsFormsNativeDialog)?.Form.Close();
 				}
 				else if ((Handle as WindowsFormsNativeDialog)?.Handle != null)
 				{
@@ -41,7 +38,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 			else
 			{
-				(Handle as WindowsFormsNativeControl).Handle.Dispose();
+				if ((Handle as WindowsFormsNativeControl).Handle is System.Windows.Forms.Form)
+				{
+					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();
+				}
+				else
+				{
+					(Handle as WindowsFormsNativeControl).Handle.Dispose();
+				}
 			}
 		}
 

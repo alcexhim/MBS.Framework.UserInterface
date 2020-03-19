@@ -206,11 +206,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
-			throw new NotImplementedException();
 		}
 		protected override void UpdateControlPropertiesInternal(Control control, NativeControl handle)
 		{
-			throw new NotImplementedException();
 		}
 		protected override void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu)
 		{
@@ -285,7 +283,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 						{
 							hWnd = (nc as WindowsFormsNativeControl).Handle.Handle;
 						}
-						Console.WriteLine("does window {0} have focus? {1} == {2} : {3}", window, hWnd, hWndActive, (hWnd.Equals(hWndActive)));
 						return hWnd.Equals(hWndActive);
 					}
 					break;

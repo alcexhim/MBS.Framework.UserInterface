@@ -906,8 +906,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
-			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
-
 			IntPtr parentHandle = IntPtr.Zero;
 			if (parent == null)
 			{

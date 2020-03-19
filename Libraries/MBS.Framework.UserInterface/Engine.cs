@@ -456,6 +456,8 @@ namespace MBS.Framework.UserInterface
 				// find the appropriate parent window
 				parent = GetFocusedToplevelWindow();
 			}
+
+			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
 			return ShowDialogInternal(dialog, parent);
 		}
 

@@ -420,7 +420,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			return false;
 		}
 
-		class MyMenuItem : System.Windows.Forms.MenuItem
+		class MyMenuItem : System.Windows.Forms.ToolStripMenuItem
 		{
 			public System.Windows.Forms.Control Control;
 		}
@@ -428,7 +428,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		// Added by mav
 		public virtual void ShowContextMenu(Point ptScreen) 
 		{
-			System.Windows.Forms.ContextMenu cm = new System.Windows.Forms.ContextMenu();
+			System.Windows.Forms.ContextMenuStrip cm = new System.Windows.Forms.ContextMenuStrip();
 			ArrayList al = new ArrayList();
 			al.AddRange(_holders);
 			al.Sort(new HolderSorter());
@@ -443,7 +443,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 				items[i].Text = holder.ToolbarTitle;
 				items[i].Click += new EventHandler(MenuClickEventHandler);
 				items[i].Control = c;
-				cm.MenuItems.Add(items[i]);
+				cm.Items.Add(items[i]);
 			}
 			cm.Show(DockStation, DockStation.PointToClient(ptScreen));
 		}

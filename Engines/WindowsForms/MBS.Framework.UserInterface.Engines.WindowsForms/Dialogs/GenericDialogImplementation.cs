@@ -74,6 +74,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			System.Windows.Forms.Control ctl = (hContainer as WindowsFormsNativeControl).Handle;
 			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+			f.Text = dialog.Text;
+
+			if (dialog.Decorated)
+			{
+				f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			}
+			else
+			{
+				f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			}
+
 			f.FormClosing += F_FormClosing;
 			(hContainer as WindowsFormsNativeControl).SetNamedHandle("dialog", f);
 

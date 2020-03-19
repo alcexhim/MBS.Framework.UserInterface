@@ -383,13 +383,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
-			if (tv.Model != null)
+			if (tv.Model != null && !TreeModelAssociatedControls.ContainsKey(tv.Model))
 			{
-				if (!TreeModelAssociatedControls.ContainsKey(tv.Model))
-				{
-					TreeModelAssociatedControls.Add(tv.Model, new List<System.Windows.Forms.Control>());
-				}
+				TreeModelAssociatedControls.Add(tv.Model, new List<System.Windows.Forms.Control>());
 			}
+
 			switch (ImplementedAs (tv))
 			{
 				case ImplementedAsType.TreeView:
@@ -402,8 +400,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(handle as System.Windows.Forms.TreeView).BeforeSelect += tv_BeforeSelect;
 					(handle as System.Windows.Forms.TreeView).AfterSelect += tv_AfterSelect;
 
-					if (tv.Model != null)
+					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
+					{
 						TreeModelAssociatedControls[tv.Model].Add(handle);
+					}
 					break;
 				}
 				case ImplementedAsType.ListView:
@@ -416,8 +416,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(handle as System.Windows.Forms.ListView).FullRowSelect = true;
 					(handle as System.Windows.Forms.ListView).View = System.Windows.Forms.View.Details;
 
-					if (tv.Model != null)
+					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
+					{
 						TreeModelAssociatedControls[tv.Model].Add(handle);
+					}
 					break;
 				}
 			}

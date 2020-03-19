@@ -191,7 +191,7 @@ namespace MBS.Framework.UserInterface
 		private Container mvarParent = null;
 		public Container Parent {
 			get { return mvarParent; }
-			private set {
+			internal set {
 				mvarParent = value;
 				Application.Engine.UpdateControlLayout (this);
 			}

@@ -25,6 +25,28 @@ namespace MBS.Framework.UserInterface.Controls
 		public class ButtonCollection
 			: System.Collections.ObjectModel.Collection<Button>
 		{
+			private Container _parent = null;
+			public ButtonCollection(Container parent)
+			{
+				_parent = parent;
+			}
+
+			protected override void ClearItems()
+			{
+				for (int i = 0; i < Count; i++)
+					Items[i].Parent = null;
+				base.ClearItems();
+			}
+			protected override void InsertItem(int index, Button item)
+			{
+				base.InsertItem(index, item);
+				item.Parent = _parent;
+			}
+			protected override void RemoveItem(int index)
+			{
+				this[index].Parent = null;
+				base.RemoveItem(index);
+			}
 		}
 
 		public Button()

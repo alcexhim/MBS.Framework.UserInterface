@@ -3,6 +3,7 @@ using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
+	[ControlImplementation(typeof(NumericTextBox))]
 	public class NumericTextBoxImplementation : WindowsFormsNativeImplementation, MBS.Framework.UserInterface.Controls.Native.INumericTextBoxControlImplementation
 	{
 		public NumericTextBoxImplementation(Engine engine, Control control) : base(engine, control)

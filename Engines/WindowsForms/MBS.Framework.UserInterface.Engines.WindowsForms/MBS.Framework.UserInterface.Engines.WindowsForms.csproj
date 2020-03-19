@@ -42,12 +42,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\..\..\..\dockpanelsuite\WinFormsUI\bin\Debug\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
-      <HintPath>..\..\..\..\dockpanelsuite\WinFormsUI\bin\Debug\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WindowsFormsEngine.cs" />
@@ -139,6 +135,89 @@
     <Compile Include="Dialogs\AboutDialogImplementation.cs" />
     <Compile Include="Controls\GroupBoxImplementation.cs" />
     <Compile Include="Controls\NumericTextBoxImplementation.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.DockDragHandler.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\SplitterBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockContentHandler.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\IImageService.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPaneStripBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.Appearance.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Measures.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.AutoHideWindow.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Enums.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockAreasEditor.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockContentCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockContentEventArgs.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\NestedDockingStatus.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPane.SplitterControl.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\PatchController.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Interfaces.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanelExtender.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockWindow.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Strings.Designer.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DummyControl.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.Persistor.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DragForm.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\ThemeBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\FloatWindow.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.FocusManager.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.MdiClientController.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPane.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Localization.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\AutoHideStripBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanelSkin.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\InertButtonBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanelColorPalette.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockOutlineBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.DragHandler.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\FloatWindowCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\NestedPaneCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockContent.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\IPaintingService.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.SplitterDragHandler.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\VisualStudioColorTable.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPaneCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPanel.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\VisibleNestedPaneCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockWindowCollection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DockPaneCaptionBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\DrawingRoutines.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\LayoutUtils.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Configuration\PatchSection.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Helpers\Win32Helper.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Helpers\DrawHelper.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Helpers\ResourceHelper.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Helpers\DockHelper.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Win32\NativeMethods.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Docking\Win32\Enums.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012PaneIndicatorFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockOutlineFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockIndicatorFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\ImageService.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012SplitterControl.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneCaptionFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\PaintingService.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012PaletteFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\Strings.Designer.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012PanelIndicatorFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneCaption.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneStripFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneCaptionInertButton.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012ThemeBase.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012WindowSplitterControlFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneStrip.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideWindowFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockWindowFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012BlueTheme.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012WindowSplitterControl.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockWindow.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\Resources.Designer.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideStripFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneSplitterControlFactory.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideWindowControl.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideStrip.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012LightTheme.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DarkTheme.cs" />
+    <Compile Include="WindowsFormsNativeMenuItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -170,9 +249,16 @@
     <Folder Include="Controls\Internal\" />
     <Folder Include="Controls\Internal\CommandBars\" />
     <Folder Include="Dialogs\Internal\AboutDialog\" />
+    <Folder Include="Controls\Internal\WinFormsUI\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\Internal\AboutDialog\AboutDialog.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Controls\Internal\WinFormsUI\Docking\Strings.resx" />
+    <None Include="Controls\Internal\WinFormsUI\Docking\DockPanel.bmp" />
+    <None Include="Controls\Internal\WinFormsUI\Theming\Strings.resx" />
+    <None Include="Controls\Internal\WinFormsUI\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

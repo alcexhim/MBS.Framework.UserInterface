@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
@@ -73,12 +72,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void RegisterDragSourceInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			throw new NotImplementedException();
 		}
 
 		protected override void RegisterDropTargetInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			throw new NotImplementedException();
 		}
 
 		protected override void SetControlVisibilityInternal(bool visible)
@@ -172,6 +169,47 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(e.X, e.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(e.Button), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
 			InvokeMethod(this, "OnMouseDown", new object[] { ee });
+
+			if (ee.Handled)
+				return;
+
+			if (ee.Buttons == MouseButtons.Secondary)
+			{
+				// default implementation - display a context menu if we have one set
+				// moved this up here to give us a chance to add a context menu if we don't have one associated yet
+				OnBeforeContextMenu(ee);
+
+				if (Control.ContextMenu != null)
+				{
+					System.Windows.Forms.ContextMenuStrip hMenu = (Engine as WindowsFormsEngine).BuildContextMenuStrip(Control.ContextMenu);
+
+					foreach (MenuItem mi in Control.ContextMenu.Items)
+					{
+						RecursiveApplyMenuItemVisibility(mi);
+					}
+					hMenu.Show(System.Windows.Forms.Cursor.Position);
+
+					OnAfterContextMenu(ee);
+				}
+			}
+		}
+
+		private void RecursiveApplyMenuItemVisibility(MenuItem mi)
+		{
+			if (mi == null)
+				return;
+
+			System.Windows.Forms.ToolStripItem hMi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(mi) as WindowsFormsNativeMenuItem).Handle as System.Windows.Forms.ToolStripItem;
+			// hMi.Enabled = mi.Enabled;
+			hMi.Visible = mi.Visible;
+
+			if (mi is CommandMenuItem)
+			{
+				foreach (MenuItem mi1 in (mi as CommandMenuItem).Items)
+				{
+					RecursiveApplyMenuItemVisibility(mi1);
+				}
+			}
 		}
 		void ctl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
 		{

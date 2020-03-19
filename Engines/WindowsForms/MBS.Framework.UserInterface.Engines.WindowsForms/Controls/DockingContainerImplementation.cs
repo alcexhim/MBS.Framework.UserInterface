@@ -35,15 +35,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 		public void ClearDockingItems()
 		{
-			WeifenLuo.WinFormsUI.Docking.DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel);
+			DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as DockPanel);
 
 		}
 
 		public DockingItem GetCurrentItem()
 		{
-			// throw new NotImplementedException();
-
-			WeifenLuo.WinFormsUI.Docking.DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel);
+			DockPanel dp = ((Handle as WindowsFormsNativeControl).Handle as DockPanel);
 			IDockContent idc = dp.ActiveDocument;
 			if (_DockingItemForIDockContent.ContainsKey(idc))
 				return _DockingItemForIDockContent[idc];
@@ -52,6 +50,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 		}
 
 		private Dictionary<IDockContent, DockingItem> _DockingItemForIDockContent = new Dictionary<IDockContent, DockingItem>();
+		private Dictionary<DockingItem, DockContent> _DockContentForDockingItem = new Dictionary<DockingItem, DockContent>();
+		private void RegisterDockContent(DockingItem item, DockContent content)
+		{
+			_DockingItemForIDockContent[content] = item;
+			_DockContentForDockingItem[item] = content;
+		}
 
 		public void InsertDockingItem(DockingItem item, int index)
 		{
@@ -77,6 +81,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			}
 		}
 
+		private System.Windows.Forms.ContextMenuStrip CreateDockingWindowTabPageContextMenuStrip(DockingItem item)
+		{
+			System.Windows.Forms.ContextMenuStrip menu = new System.Windows.Forms.ContextMenuStrip();
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Close"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Close _All But This"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Float"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Doc_k"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Doc_k"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Dock as _Tabbed Document"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Auto Hide"));
+			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Hide"));
+			return menu;
+		}
+
 		private void InsertDockingWindow(DockingWindow item, int index, DockPanel parent)
 		{
 			if (parent == null)
@@ -98,13 +117,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 				System.Windows.Forms.Control wfcChild = (ncChild as WindowsFormsNativeControl).Handle;
 
 				DockContent dcontent = new DockContent();
+				dcontent.TabPageContextMenuStrip = CreateDockingWindowTabPageContextMenuStrip(item);
 				dcontent.Text = item.Title;
 				wfcChild.Dock = System.Windows.Forms.DockStyle.Fill;
 				dcontent.Controls.Add(wfcChild);
 
-				_DockingItemForIDockContent[dcontent] = item;
+				RegisterDockContent(item, dcontent);
 
-				dcontent.Show(parent, DockState.Document);
+				dcontent.Show(parent, DockingItemPlacementToDockState(item.Placement, item.AutoHide));
 			}
 		}
 
@@ -192,7 +212,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			DockingContainerControl dcc = (control as DockingContainerControl);
 
 			WeifenLuo.WinFormsUI.Docking.DockPanel panel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-			panel.Theme = new VS2015LightTheme();
+			panel.Theme = new VS2012DarkTheme();
 			panel.DocumentStyle = DocumentStyle.DockingWindow;
 			panel.Text = "EZMdiTabs";
 			panel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -206,12 +226,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 		public void UpdateDockingItemName(DockingItem item, string text)
 		{
-			throw new NotImplementedException();
+			_DockContentForDockingItem[item].Name = text;
 		}
 
 		public void UpdateDockingItemTitle(DockingItem item, string text)
 		{
-			throw new NotImplementedException();
+			_DockContentForDockingItem[item].Text = text;
 		}
 	}
 }

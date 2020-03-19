@@ -192,7 +192,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			InitRibbonColors();
 		}
 
-		private static Theme mvarCurrentTheme = new BuiltinThemes.VisualStudio2010Theme();
+		private static Theme mvarCurrentTheme = new BuiltinThemes.VisualStudio2012Theme(BuiltinThemes.VisualStudio2012Theme.ColorMode.Dark);
 		public static Theme CurrentTheme { get { return mvarCurrentTheme; } set { mvarCurrentTheme = value; } }
 
 		private ColorTable mvarColorTable = new ColorTable();

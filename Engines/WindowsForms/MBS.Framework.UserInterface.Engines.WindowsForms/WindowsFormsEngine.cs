@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Windows.Forms;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
@@ -16,18 +17,33 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
 
+		public static System.Windows.Forms.DialogResult DialogResultToSWFDialogResult(DialogResult dialogResult)
+		{
+			switch (dialogResult)
+			{
+			case DialogResult.Abort: return System.Windows.Forms.DialogResult.Abort;
+			case DialogResult.Cancel: return System.Windows.Forms.DialogResult.Cancel;
+			case DialogResult.Ignore: return System.Windows.Forms.DialogResult.Ignore;
+			case DialogResult.No: return System.Windows.Forms.DialogResult.No;
+			case DialogResult.None: return System.Windows.Forms.DialogResult.None;
+			case DialogResult.OK: return System.Windows.Forms.DialogResult.OK;
+			case DialogResult.Retry: return System.Windows.Forms.DialogResult.Retry;
+			case DialogResult.Yes: return System.Windows.Forms.DialogResult.Yes;
+			}
+			return System.Windows.Forms.DialogResult.None;
+		}
 		public static DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult dialogResult)
 		{
 			switch (dialogResult)
 			{
-				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
-				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
-				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
-				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
-				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
-				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
-				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
-				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+			case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+			case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+			case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+			case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+			case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+			case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+			case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+			case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
 			}
 			return DialogResult.None;
 		}
@@ -61,8 +77,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-				case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
-				case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
+			case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
+			case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -70,8 +86,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-				case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
-				case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
+			case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
+			case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -85,6 +101,102 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if ((button & System.Windows.Forms.MouseButtons.XButton1) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.XButton1;
 			if ((button & System.Windows.Forms.MouseButtons.XButton2) == System.Windows.Forms.MouseButtons.Left) buttons |= Input.Mouse.MouseButtons.XButton2;
 			return buttons;
+		}
+
+		internal ToolStripItem InitMenuItem(MenuItem menuItem, string accelPath = null)
+		{
+			if (menuItem is CommandMenuItem)
+			{
+				CommandMenuItem cmi = (menuItem as CommandMenuItem);
+				if (accelPath != null)
+				{
+
+					string cmiName = cmi.Name;
+					if (String.IsNullOrEmpty(cmiName))
+					{
+						cmiName = cmi.Text;
+					}
+
+					// clear out the possible mnemonic definitions
+					cmiName = cmiName.Replace("_", String.Empty);
+
+					accelPath += "/" + cmiName;
+					if (cmi.Shortcut != null)
+					{
+
+					}
+				}
+
+				System.Windows.Forms.ToolStripMenuItem hMenuFile = new ToolStripMenuItem();
+				hMenuFile.Tag = cmi;
+				hMenuFile.Text = cmi.Text.Replace('_', '&');
+				hMenuFile.Enabled = cmi.Enabled;
+				hMenuFile.Click += HMenuFile_Click;
+
+				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
+				{
+					hMenuFile.Alignment = ToolStripItemAlignment.Right;
+				}
+
+				if (cmi.Items.Count > 0)
+				{
+					for (int i = 0; i < cmi.Items.Count; i++)
+					{
+						hMenuFile.DropDownItems.Add(InitMenuItem(cmi.Items[i]));
+					}
+				}
+
+				RegisterMenuItemHandle(cmi, new WindowsFormsNativeMenuItem(hMenuFile));
+				return hMenuFile;
+			}
+			else if (menuItem is SeparatorMenuItem)
+			{
+				System.Windows.Forms.ToolStripSeparator hMenuFile = new ToolStripSeparator();
+				RegisterMenuItemHandle(menuItem, new WindowsFormsNativeMenuItem(hMenuFile));
+				return hMenuFile;
+			}
+			return null;
+		}
+
+		void HMenuFile_Click(object sender, EventArgs e)
+		{
+			((sender as ToolStripMenuItem).Tag as CommandMenuItem).OnClick(e);
+		}
+
+
+		public ContextMenuStrip BuildContextMenuStrip(Menu menu, string accelPath = null)
+		{
+			System.Windows.Forms.ContextMenuStrip hMenuFileMenu = new ContextMenuStrip();
+			if (menu.EnableTearoff)
+			{
+				// TODO: Implement this for Windows Forms
+			}
+
+			if (accelPath != null)
+			{
+			}
+
+			foreach (MenuItem menuItem1 in menu.Items)
+			{
+				System.Windows.Forms.ToolStripItem hMenuItem = InitMenuItem(menuItem1, accelPath);
+				hMenuFileMenu.Items.Add(hMenuItem);
+			}
+			return hMenuFileMenu;
+		}
+		public ContextMenuStrip BuildContextMenuStrip(CommandMenuItem cmi, IntPtr hMenuFile, string accelPath = null)
+		{
+			ContextMenuStrip hMenuFileMenu = new ContextMenuStrip();
+			if (cmi.EnableTearoff)
+			{
+				// TODO: implement this for Windows Forms
+			}
+
+			foreach (MenuItem menuItem1 in cmi.Items)
+			{
+				ToolStripItem hMenuItem = InitMenuItem(menuItem1, accelPath);
+				hMenuFileMenu.Items.Add(hMenuItem);
+			}
+			return hMenuFileMenu;
 		}
 
 		public void UpdateSystemColor(SystemColor color, System.Drawing.Color value)
@@ -147,7 +259,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-				case PlatformID.Win32NT:
+			case PlatformID.Win32NT:
 				{
 					IntPtr hWndActive = Internal.Windows.Methods.GetActiveWindow();
 					if (window.ControlImplementation != null)
@@ -200,7 +312,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					Window focusedTopLevelWindow = GetFocusedToplevelWindow();
 					Console.WriteLine("focusedTopLevelWindow is {0}", focusedTopLevelWindow);
 
-					parentHandle = new Win32Window ((GetHandleForControl(focusedTopLevelWindow) as Win32NativeControl).Handle);
+					parentHandle = new Win32Window((GetHandleForControl(focusedTopLevelWindow) as Win32NativeControl).Handle);
 				}
 			}
 			else
@@ -322,7 +434,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				return SWFDialogResultToDialogResult(result);
 			}
 			throw new NotImplementedException();
-			*/		
+			*/
 		}
 
 		internal static KeyboardKey SWFKeysToKeyboardKey(System.Windows.Forms.Keys keys)
@@ -552,9 +664,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (headerStyle)
 			{
-				case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
-				case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-				case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
+			case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
+			case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
 			}
 			throw new NotSupportedException();
 		}
@@ -575,7 +687,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		void Doc_BeginPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
 		{
 		}
- 
+
 		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
 		{
 			return new WindowsFormsNativeTreeModel();

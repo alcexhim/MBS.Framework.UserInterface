@@ -60,9 +60,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			protected override bool RunDialog(IntPtr hwndOwner)
 			{
-				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-					return true;
-				return false;
+				System.Windows.Forms.DialogResult result = f.ShowDialog();
+				f.DialogResult = result;
+				if (result == System.Windows.Forms.DialogResult.Cancel)
+					return false;
+				return true;
 			}
 		}
 
@@ -72,6 +74,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			System.Windows.Forms.Control ctl = (hContainer as WindowsFormsNativeControl).Handle;
 			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+			f.FormClosing += F_FormClosing;
 			(hContainer as WindowsFormsNativeControl).SetNamedHandle("dialog", f);
 
 			f.BackColor = System.Drawing.SystemColors.Window;
@@ -99,5 +102,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			Engine.RegisterControlHandle(dialog, nc);
 			return nc;
 		}
+
+		void F_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+		{
+			(sender as System.Windows.Forms.Form).DialogResult = WindowsFormsEngine.DialogResultToSWFDialogResult((this.Control as Dialog).DialogResult);
+		}
+
 	}
 }

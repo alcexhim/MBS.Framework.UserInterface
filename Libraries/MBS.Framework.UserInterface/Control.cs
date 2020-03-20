@@ -506,14 +506,6 @@ namespace MBS.Framework.UserInterface
 			}
 			set { _ContextMenu = value; }
 		}
-		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
-		{
-			CommandMenuItem mi = (sender as CommandMenuItem);
-			if (mi == null)
-				return;
-
-			Application.ExecuteCommand(mi.Name);
-		}
 
 		private string _ContextMenuCommandID = null;
 		public string ContextMenuCommandID
@@ -538,16 +530,7 @@ namespace MBS.Framework.UserInterface
 			}
 			else
 			{
-				_ContextMenu = new Menu();
-				foreach (CommandItem ci in cmd.Items)
-				{
-					MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
-					if (mi == null || mi.Length == 0)
-						continue;
-
-					for (int i = 0; i < mi.Length; i++)
-						_ContextMenu.Items.Add(mi[i]);
-				}
+				_ContextMenu = Menu.FromCommand(cmd);
 			}
 		}
 

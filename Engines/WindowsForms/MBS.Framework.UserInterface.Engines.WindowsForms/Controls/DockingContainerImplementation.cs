@@ -81,21 +81,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			}
 		}
 
-		private System.Windows.Forms.ContextMenuStrip CreateDockingWindowTabPageContextMenuStrip(DockingItem item)
-		{
-			System.Windows.Forms.ContextMenuStrip menu = new System.Windows.Forms.ContextMenuStrip();
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Close"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Close _All But This"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Float"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Doc_k"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Doc_k"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("Dock as _Tabbed Document"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Auto Hide"));
-			menu.Items.Add(new System.Windows.Forms.ToolStripMenuItem("_Hide"));
-			return menu;
-		}
-
 		private void InsertDockingWindow(DockingWindow item, int index, DockPanel parent)
 		{
 			if (parent == null)
@@ -117,7 +102,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 				System.Windows.Forms.Control wfcChild = (ncChild as WindowsFormsNativeControl).Handle;
 
 				DockContent dcontent = new DockContent();
-				dcontent.TabPageContextMenuStrip = CreateDockingWindowTabPageContextMenuStrip(item);
+				dcontent.TabPageContextMenuStrip = (Application.Engine as WindowsFormsEngine).BuildContextMenuStrip(Menu.FromCommand(Application.Commands["DockingWindowTabPageContextMenu"]));
 				dcontent.Text = item.Title;
 				wfcChild.Dock = System.Windows.Forms.DockStyle.Fill;
 				dcontent.Controls.Add(wfcChild);

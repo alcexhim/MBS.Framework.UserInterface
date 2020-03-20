@@ -63,6 +63,30 @@ namespace MBS.Framework.UserInterface
 			_Parent = parent;
 			Items = new MenuItem.MenuItemCollection(this);
 		}
+
+		private static void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
+		{
+			CommandMenuItem mi = (sender as CommandMenuItem);
+			if (mi == null)
+				return;
+
+			Application.ExecuteCommand(mi.Name);
+		}
+
+		public static Menu FromCommand(Command cmd)
+		{
+			Menu menu = new Menu();
+			foreach (CommandItem ci in cmd.Items)
+			{
+				MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+				if (mi == null || mi.Length == 0)
+					continue;
+
+				for (int i = 0; i < mi.Length; i++)
+					menu.Items.Add(mi[i]);
+			}
+			return menu;
+		}
 	}
 }
 

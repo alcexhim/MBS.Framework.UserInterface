@@ -94,6 +94,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			f.Controls.Add(ctl);
 
 			System.Windows.Forms.FlowLayoutPanel pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
+			pnlButtons.AutoSize = true;
+			pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			pnlButtons.Padding = new System.Windows.Forms.Padding(6, 12, 6, 12);
 			pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			for (int i = 0; i < dialog.Buttons.Count; i++)
 			{
@@ -105,6 +108,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			}
 			pnlButtons.BackColor = System.Drawing.SystemColors.Control;
 			pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+			pnlButtons.Visible = (dialog.Buttons.Count > 0);
 			f.Controls.Add(pnlButtons);
 
 			f.Font = System.Drawing.SystemFonts.MenuFont;

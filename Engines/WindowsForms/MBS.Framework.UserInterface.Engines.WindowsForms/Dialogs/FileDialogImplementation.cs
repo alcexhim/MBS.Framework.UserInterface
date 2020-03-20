@@ -72,6 +72,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			if (fd is System.Windows.Forms.FileDialog)
 			{
 				System.Windows.Forms.FileDialog _fd = (fd as System.Windows.Forms.FileDialog);
+				if (_fd is System.Windows.Forms.OpenFileDialog)
+				{
+					(_fd as System.Windows.Forms.OpenFileDialog).Multiselect = dlg.MultiSelect;
+				}
 				_fd.Title = dlg.Text;
 				if (dlg.SelectedFileNames.Count > 0)
 					_fd.FileName = dlg.SelectedFileNames[dlg.SelectedFileNames.Count - 1];

@@ -210,23 +210,18 @@ namespace MBS.Framework.UserInterface
 		public static Engine[] Get()
 		{
 			List<Engine> list = new List<Engine>();
-			Type[] engineTypes = Reflection.GetAvailableTypes(new Type[] { typeof(Engine) });
 
-			foreach (Type type in engineTypes)
+			Plugin[] enginePlugins = Plugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
+			for (int i = 0; i < enginePlugins.Length; i++)
 			{
-				Engine engine = null;
-				try
+				if (enginePlugins[i] is EnginePlugin)
 				{
-					engine = (Engine)type.Assembly.CreateInstance(type.FullName);
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine("unable to load engine '{0}' : ({1}) {2}", type.FullName, ex.GetType().Name, ex.Message);
-				}
-
-				if (engine != null)
+					Type type = (enginePlugins[i] as EnginePlugin).EngineType;
+					Engine engine = (Engine)type.Assembly.CreateInstance(type.FullName);
 					list.Add(engine);
+				}
 			}
+
 			list.Sort(new Comparison<Engine>((x, y) => x.Priority.CompareTo(y.Priority)));
 			list.Reverse();
 			return list.ToArray();

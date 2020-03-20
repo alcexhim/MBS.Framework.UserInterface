@@ -250,6 +250,9 @@
     <Compile Include="Theming\ControlState.cs" />
     <Compile Include="Dialogs\TaskDialog.cs" />
     <Compile Include="HelpTopic.cs" />
+    <Compile Include="Feature.cs" />
+    <Compile Include="KnownFeatures.cs" />
+    <Compile Include="EnginePlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\UniversalEditor\CSharp\Libraries\UniversalEditor.Core\UniversalEditor.Core.csproj">

@@ -1,10 +1,10 @@
 ﻿//
-//  OptionProvider.cs
+//  Feature.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,41 +19,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-
 namespace MBS.Framework.UserInterface
 {
-	public abstract class SettingsProvider
+	public class Feature
 	{
-		public class SettingsProviderCollection
-			: System.Collections.ObjectModel.Collection<SettingsProvider>
+		public class FeatureCollection
+			: System.Collections.ObjectModel.Collection<Feature>
 		{
 		}
 
-		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
+		public string Title { get; private set; } = null;
 
-		protected virtual void InitializeInternal()
+		public Feature(string title)
 		{
-		}
-		public void Initialize()
-		{
-			InitializeInternal();
-		}
-
-		protected virtual void LoadSettingsInternal()
-		{
-		}
-		public void LoadSettings()
-		{
-			LoadSettingsInternal ();
-		}
-
-		protected virtual void SaveSettingsInternal()
-		{
-		}
-		public void SaveSettings()
-		{
-			SaveSettingsInternal ();
+			Title = title;
 		}
 	}
 }
-

@@ -18,6 +18,8 @@ namespace MBS.Framework.UserInterface
 
 		public static CommandLine CommandLine { get; private set; } = null;
 
+		public static Feature.FeatureCollection Features { get; } = new Feature.FeatureCollection();
+
 		public static DefaultSettingsProvider DefaultSettingsProvider { get; } = new DefaultSettingsProvider();
 		public static SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
@@ -916,6 +918,14 @@ namespace MBS.Framework.UserInterface
 			// ID = Guid.NewGuid();
 			// sv = sv + ID.ToString().Replace("-", String.Empty);
 			UniqueName = sv;
+
+			// configure UWT-provided features
+			pis = typeof(KnownFeatures).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			for (int i = 0; i < pis.Length; i++)
+			{
+				Feature feature = (Feature)pis[i].GetValue(null, null);
+				Features.Add(feature);
+			}
 
 			// configure UWT-provided settings
 			Application.SettingsProviders.Add(Application.DefaultSettingsProvider);

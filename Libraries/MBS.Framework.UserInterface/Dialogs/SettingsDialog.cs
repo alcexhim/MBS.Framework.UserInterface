@@ -128,6 +128,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup> ();
 			foreach (SettingsProvider provider in SettingsProviders) {
+				provider.Initialize();
 				foreach (SettingsGroup grp in provider.SettingsGroups) {
 					if (grps.Contains (grp))
 						continue;

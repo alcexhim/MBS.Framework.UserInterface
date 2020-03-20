@@ -1,10 +1,10 @@
 ﻿//
-//  OptionProvider.cs
+//  WindowsFormsPlugin.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,41 +19,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-
-namespace MBS.Framework.UserInterface
+namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
-	public abstract class SettingsProvider
+	public class WindowsFormsPlugin : EnginePlugin
 	{
-		public class SettingsProviderCollection
-			: System.Collections.ObjectModel.Collection<SettingsProvider>
+		public override Type EngineType => typeof(WindowsFormsEngine);
+
+		public override string Title => "Windows Forms";
+
+		public WindowsFormsPlugin()
 		{
+			ProvidedFeatures.Add(KnownFeatures.UWTPlatform);
 		}
 
-		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
-
-		protected virtual void InitializeInternal()
+		protected override bool IsSupportedInternal()
 		{
-		}
-		public void Initialize()
-		{
-			InitializeInternal();
-		}
-
-		protected virtual void LoadSettingsInternal()
-		{
-		}
-		public void LoadSettings()
-		{
-			LoadSettingsInternal ();
-		}
-
-		protected virtual void SaveSettingsInternal()
-		{
-		}
-		public void SaveSettings()
-		{
-			SaveSettingsInternal ();
+			// we do not support WinForms on linux coexisting with GTK, because it uses GTK2 and the GTKEngine uses GTK3
+			return Environment.OSVersion.Platform == PlatformID.Win32NT;
 		}
 	}
 }
-

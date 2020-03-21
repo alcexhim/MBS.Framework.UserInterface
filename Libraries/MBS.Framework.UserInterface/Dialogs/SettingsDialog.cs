@@ -280,19 +280,30 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private void tv_SelectionChanged(object sender, EventArgs e)
 		{
 			ctDefault.Visible = false;
-			foreach (Control ctl in vpaned.Panel2.Controls) {
+			foreach (Control ctl in vpaned.Panel2.Controls)
+			{
 				ctl.Visible = false;
 			}
 
-			SettingsGroup thegrp = tv.SelectedRows [0].GetExtraData<SettingsGroup> ("group");
-			if (thegrp == null) {
+			if (tv.SelectedRows.Count < 1)
+			{
 				ctDefault.Visible = true;
 				return;
 			}
-			
-			if (optionGroupContainers.ContainsKey (thegrp)) {
-				optionGroupContainers [thegrp].Visible = true;
-			} else {
+
+			SettingsGroup thegrp = tv.SelectedRows[0].GetExtraData<SettingsGroup>("group");
+			if (thegrp == null)
+			{
+				ctDefault.Visible = true;
+				return;
+			}
+
+			if (optionGroupContainers.ContainsKey(thegrp))
+			{
+				optionGroupContainers[thegrp].Visible = true;
+			}
+			else
+			{
 				ctDefault.Visible = true;
 			}
 		}

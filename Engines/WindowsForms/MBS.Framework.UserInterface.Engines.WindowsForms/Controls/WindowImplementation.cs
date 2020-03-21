@@ -149,6 +149,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.Text = window.Text;
 			form.AutoSize = true;
 			form.Tag = window;
+			form.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
 			return new WindowsFormsNativeControl (form);
 		}
 

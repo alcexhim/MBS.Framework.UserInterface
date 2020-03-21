@@ -364,14 +364,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			
 			if (selected)
 			{
-				if (focused)
+				if (!focused)
 				{
-					DrawingTools.FillWithShinyGradient(g, ColorTable.DocumentTabInactiveBackgroundSelectedGradientBegin, ColorTable.DocumentTabInactiveBackgroundSelectedGradientMiddle, ColorTable.DocumentTabInactiveBackgroundSelectedGradientEnd, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Horizontal);
+					DrawingTools.FillWithDoubleGradient(ColorTable.DocumentTabInactiveBackgroundSelectedGradientBegin, ColorTable.DocumentTabInactiveBackgroundSelectedGradientMiddle, ColorTable.DocumentTabInactiveBackgroundSelectedGradientEnd, g, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Vertical, false);
 					g.DrawRoundedRectangle(new System.Drawing.Pen(ColorTable.DocumentTabInactiveBorderSelected), rectTab, 0, 1, 0, 1);
 				}
 				else
 				{
-					DrawingTools.FillWithShinyGradient(g, ColorTable.DocumentTabBackgroundSelectedGradientBegin, ColorTable.DocumentTabBackgroundSelectedGradientMiddle, ColorTable.DocumentTabBackgroundSelectedGradientEnd, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Horizontal);
+					DrawingTools.FillWithDoubleGradient(ColorTable.DocumentTabBackgroundSelectedGradientBegin, ColorTable.DocumentTabBackgroundSelectedGradientMiddle, ColorTable.DocumentTabBackgroundSelectedGradientEnd, g, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Vertical, false);
 					g.DrawRoundedRectangle(new System.Drawing.Pen(ColorTable.DocumentTabBorderSelected), rectTab, 0, 1, 0, 1);
 				}
 				return;
@@ -417,7 +417,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		{
 			if (focused)
 			{
-				DrawingTools.FillWithDoubleGradient(ColorTable.DockingWindowActiveTabBackgroundNormalGradientBegin, ColorTable.DockingWindowActiveTabBackgroundNormalGradientMiddle, ColorTable.DockingWindowActiveTabBackgroundNormalGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Horizontal, false);
+				DrawingTools.FillWithDoubleGradient(ColorTable.DockingWindowActiveTabBackgroundNormalGradientBegin, ColorTable.DockingWindowActiveTabBackgroundNormalGradientMiddle, ColorTable.DockingWindowActiveTabBackgroundNormalGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Vertical, false);
 			}
 			else
 			{

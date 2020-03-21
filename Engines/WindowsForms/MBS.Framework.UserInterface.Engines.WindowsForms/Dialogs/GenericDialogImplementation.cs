@@ -78,7 +78,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			if (dialog.Decorated)
 			{
-				f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				if (dialog.Resizable)
+				{
+					f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				}
+				else
+				{
+					f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				}
 			}
 			else
 			{
@@ -88,7 +95,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			f.FormClosing += F_FormClosing;
 			(hContainer as WindowsFormsNativeControl).SetNamedHandle("dialog", f);
 
-			f.BackColor = System.Drawing.SystemColors.Window;
+			f.BackColor = Theming.Theme.CurrentTheme.ColorTable.DialogBackground;
 
 			ctl.Dock = System.Windows.Forms.DockStyle.Fill;
 			f.Controls.Add(ctl);
@@ -97,6 +104,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			pnlButtons.AutoSize = true;
 			pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			pnlButtons.Padding = new System.Windows.Forms.Padding(6, 12, 6, 12);
+			pnlButtons.Paint += PnlButtons_Paint;
 			pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			for (int i = 0; i < dialog.Buttons.Count; i++)
 			{
@@ -105,6 +113,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 				System.Windows.Forms.Button btn = ((Engine.GetHandleForControl(dialog.Buttons[i]) as WindowsFormsNativeControl).Handle as System.Windows.Forms.Button);
 				pnlButtons.Controls.Add(btn);
+
+				if (IsSuggestedResponse(dialog.Buttons[i].ResponseValue) || dialog.DefaultButton == dialog.Buttons[i])
+				{
+					f.AcceptButton = btn;
+				}
+				if (dialog.Buttons[i].ResponseValue == (int)DialogResult.Cancel)
+				{
+					f.CancelButton = btn;
+				}
 			}
 			pnlButtons.BackColor = System.Drawing.SystemColors.Control;
 			pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -117,6 +134,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			Engine.RegisterControlHandle(dialog, nc);
 			return nc;
 		}
+
+		private bool IsSuggestedResponse(int responseValue)
+		{
+			return (
+				(responseValue == (int)DialogResult.OK) ||
+				(responseValue == (int)DialogResult.Yes) ||
+				(responseValue == (int)DialogResult.Retry)
+			);
+		}
+
+		void PnlButtons_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+		{
+			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawContentAreaBackground(e.Graphics, ((System.Windows.Forms.Control)sender).ClientRectangle);
+		}
+
 
 		void F_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
 		{

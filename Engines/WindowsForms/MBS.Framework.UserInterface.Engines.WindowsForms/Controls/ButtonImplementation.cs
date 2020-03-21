@@ -98,6 +98,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				btn.Text = button.Text?.Replace('_', '&');
 			}
 			btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			btn.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			btn.MinimumSize = new System.Drawing.Size(75, 23);
 			btn.AutoSize = true;
 
 			WindowsFormsNativeControl nc = new WindowsFormsNativeControl(btn);

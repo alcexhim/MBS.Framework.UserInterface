@@ -91,8 +91,15 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 			set
 			{
-				_Value = value;
-				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetValue(value);
+				if (value >= _Minimum && value <= _Maximum)
+				{
+					_Value = value;
+					(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetValue(value);
+				}
+				else
+				{
+					_Value = _Minimum;
+				}
 			}
 		}
 

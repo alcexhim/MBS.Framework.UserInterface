@@ -29,6 +29,7 @@ namespace MBS.Framework.UserInterface
 		public static Guid ID { get; set; } = Guid.Empty;
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
+		public static string Title { get; set; } = String.Empty;
 
 		private static string mvarBasePath = null;
 		public static string BasePath
@@ -460,6 +461,8 @@ namespace MBS.Framework.UserInterface
 			// UpdateSplashScreenStatus("Finalizing configuration");
 			// ConfigurationManager.Load();
 			#endregion
+
+			Application.Title = DefaultLanguage?.GetStringTableEntry("Application.Title", Application.Title);
 
 			OnAfterConfigurationLoaded(EventArgs.Empty);
 		}

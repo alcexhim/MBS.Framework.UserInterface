@@ -72,6 +72,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.Location = new Point((int)window.Location.X, (int)window.Location.Y);
 			form.Size = new System.Drawing.Size((int)window.Size.Width, (int)window.Size.Height);
 			form.StartPosition = WindowStartPositionToFormStartPosition(window.StartPosition);
+			form.FormClosing += Form_FormClosing;
+			form.FormClosed += Form_FormClosed;
 			form.Shown += form_Shown;
 
 			Internal.CommandBars.ToolBarManager tbm = new Internal.CommandBars.ToolBarManager(form, form);
@@ -146,7 +148,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.Controls.Add(sb);
 			form.Text = window.Text;
 			form.AutoSize = true;
+			form.Tag = window;
 			return new WindowsFormsNativeControl (form);
+		}
+
+		void Form_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+		{
+			InvokeMethod((((System.Windows.Forms.Form)sender).Tag as Window), "OnClosed", e);
+		}
+
+		void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+		{
+			System.ComponentModel.CancelEventArgs ce = new System.ComponentModel.CancelEventArgs();
+			InvokeMethod((((System.Windows.Forms.Form)sender).Tag as Window), "OnClosing", ce);
+			e.Cancel = ce.Cancel;
 		}
 
 		private System.Windows.Forms.ToolStripItem CreateToolStripItem(MenuItem m)

@@ -192,7 +192,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			InitRibbonColors();
 		}
 
-		private static Theme mvarCurrentTheme = new BuiltinThemes.VisualStudio2012Theme(BuiltinThemes.VisualStudio2012Theme.ColorMode.Dark);
+		private bool _InitAeroColors = false;
+		private void InitAeroColors()
+		{
+			if (_InitAeroColors)
+				return;
+			InitAeroColorsInternal();
+		}
+
+		private static Theme mvarCurrentTheme = new BuiltinThemes.VisualStudio2010Theme(); // BuiltinThemes.VisualStudio2012Theme(BuiltinThemes.VisualStudio2012Theme.ColorMode.Dark);
 		public static Theme CurrentTheme { get { return mvarCurrentTheme; } set { mvarCurrentTheme = value; } }
 
 		private ColorTable mvarColorTable = new ColorTable();
@@ -495,7 +503,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		protected virtual void InitSilverLunaColors()
 		{
 		}
-		protected virtual void InitAeroColors()
+		protected virtual void InitAeroColorsInternal()
 		{
 			InitSystemColors();
 			ColorTable.UseSystemColors = true;

@@ -191,13 +191,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarMenuControlTextPressed = Color.FromKnownColor(KnownColor.HighlightText);
 		}
 
-		protected override void InitAeroColors()
+		protected override void InitAeroColorsInternal()
 		{
-			base.InitAeroColors();
+			base.InitAeroColorsInternal();
 
 			ColorTable.CommandBarControlText = System.Drawing.Color.FromKnownColor(KnownColor.ControlText);
 			ColorTable.CommandBarControlTextHover = ColorTable.CommandBarControlText;
-			Console.WriteLine("CommandBarControlTextHover: {0}", ColorTable.CommandBarControlTextHover);
 
 			ColorTable.CommandBarMenuControlTextHighlight = ColorTable.CommandBarControlText;
 			ColorTable.CommandBarControlTextPressed = ColorTable.CommandBarControlText;
@@ -266,6 +265,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			if (!VisualStyleInformation.IsEnabledByUser)
 			{
 				base.DrawCommandBarBackground(graphics, rectangle, orientation, parent);
+				return;
+			}
+
+			if (parent == null)
+			{
 				return;
 			}
 
@@ -615,6 +619,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		}
 		public override void DrawDockPanelTitleBarBackground(Graphics g, Rectangle rect, bool focused)
 		{
+			if (!VisualStyleInformation.IsEnabledByUser)
+			{
+				base.DrawDockPanelTitleBarBackground(g, rect, focused);
+				return;
+			}
+			/*
+			if (System.Environment.OSVersion.Version.Major > 5)
+			{
+				// Windows Vista changed the names of the Visual Style classes, and they're not supported
+				// by .NET VisualStyleRenderer either
+				VisualStyleRenderer vsr = new VisualStyleRenderer(VisualStyleElement.CreateElement("MENU", 7, 1));
+				vsr.DrawBackground(g, rect);
+				return;
+			}
+			*/
 			if (focused)
 			{
 				g.FillRectangle(new System.Drawing.SolidBrush(ColorTable.DockingWindowActiveTabBackgroundNormalGradientBegin), rect);

@@ -25,9 +25,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		private static Size onePix = new Size(1, 1);
 
 		#region Color Setup
-		protected override void InitAeroColors()
+		protected override void InitAeroColorsInternal()
 		{
-			base.InitAeroColors();
+			base.InitAeroColorsInternal();
 		}
 		protected override void InitCommonColors()
 		{

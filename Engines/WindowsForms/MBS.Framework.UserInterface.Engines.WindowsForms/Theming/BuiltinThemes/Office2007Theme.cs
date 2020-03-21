@@ -52,9 +52,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarControlBackgroundSelectedGradientBegin = Color.FromArgb(255, 243, 199);
 			ColorTable.CommandBarControlBackgroundSelectedGradientEnd = Color.FromArgb(255, 217, 123);
 		}
-		protected override void InitAeroColors()
+		protected override void InitAeroColorsInternal()
 		{
-			base.InitAeroColors();
+			base.InitAeroColorsInternal();
 
 			InitBlueLunaColors();
 		}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
+using MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 {
@@ -55,6 +56,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 		{
 			return new WindowsFormsNativeDialog(null);
 		}
+
+		private static Random rnd = new Random();
 		public override DialogResult Run(System.Windows.Forms.IWin32Window parentHandle)
 		{
 			TaskDialog dlg = (Control as TaskDialog);
@@ -124,10 +127,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 				{
 					tdc.dwCommonButtons = WindowsForms.Internal.Windows.Constants.TaskDialogCommonButtonFlags.OK;
 				}
+				if (dlg.EnableHyperlinks)
+				{
+					flags |= WindowsForms.Internal.Windows.Constants.TaskDialogFlags.EnableHyperlinks;
+				}
 
 				tdc.dwFlags = flags;
 				tdc.hInstance = IntPtr.Zero;
                 tdc.hwndParent = IntPtr.Zero;
+				tdc.pfCallback += Tdc_PfCallback;
 
 				if (parentHandle != null)
 				{
@@ -141,20 +149,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 				}
                 tdc.hInstance = WindowsForms.Internal.Windows.Methods.GetWindowLongPtr(tdc.hwndParent, WindowsForms.Internal.Windows.Constants.WindowLong.HInstance);
 
-                // tdc.hMainIcon = new IntPtr((int)dlg.Icon);
-                // tdc.pszMainInstruction = Marshal.StringToHGlobalAuto(dlg.Prompt);
-                // tdc.pszWindowTitle = Marshal.StringToHGlobalAuto(dlg.Text);
-                // tdc.pszContent = Marshal.StringToHGlobalAuto(dlg.Content);
-                // tdc.pszVerificationText = Marshal.StringToHGlobalAuto(dlg.VerificationText);
+				// tdc.hMainIcon = new IntPtr((int)dlg.Icon);
+				// tdc.pszMainInstruction = Marshal.StringToHGlobalAuto(dlg.Prompt);
+				// tdc.pszWindowTitle = Marshal.StringToHGlobalAuto(dlg.Text);
+				// tdc.pszContent = Marshal.StringToHGlobalAuto(dlg.Content);
+				// tdc.pszVerificationText = Marshal.StringToHGlobalAuto(dlg.VerificationText);
                 tdc.pszMainInstruction = dlg.Prompt;
                 tdc.pszWindowTitle = dlg.Text;
                 tdc.pszContent = dlg.Content;
                 tdc.pszVerificationText = dlg.VerificationText;
+				tdc.pszFooter = dlg.Footer;
 
                 tdc.cbSize = (uint)Marshal.SizeOf(tdc);
 
+				int num = rnd.Next();
+				tdc.lpCallbackData = new IntPtr(num);
+
 				// retval = Internal.Windows.Methods.TaskDialog((parentHandle?.Handle).GetValueOrDefault(IntPtr.Zero), IntPtr.Zero, dlg.Text, dlg.Prompt, dlg.Content, (int)dlg.ButtonsPreset, new IntPtr((int)dlg.Icon), out pnButton);
 
+				RegisterTaskDialogHandle(dlg, num);
 				uint ptr = WindowsForms.Internal.Windows.Methods.TaskDialogIndirect(ref tdc, out pnButton, out pnRadioButton, out pfVerificationFlagChecked);
 				// if (ptr.ToInt64() == 0x80070057)
 				// 	throw new ArgumentException();
@@ -242,5 +255,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			}
 			return base.Run(parentHandle);
 		}
+
+		private Dictionary<TaskDialog, int> _TaskDialogHandles = new Dictionary<TaskDialog, int>();
+		private Dictionary<int, TaskDialog> _TaskDialogsByHandle = new Dictionary<int, TaskDialog>();
+		private void RegisterTaskDialogHandle(TaskDialog dlg, int tdc)
+		{
+			_TaskDialogHandles[dlg] = tdc;
+			_TaskDialogsByHandle[tdc] = dlg;
+		}
+
+		int /*HRESULT*/ Tdc_PfCallback(IntPtr hwnd, uint msg, UIntPtr wParam, IntPtr lParam, IntPtr lpRefData)
+		{
+			switch ((Constants.TaskDialogNotification)msg)
+			{
+				case Constants.TaskDialogNotification.HyperlinkClicked:
+				{
+					int num = lpRefData.ToInt32();
+					if (_TaskDialogsByHandle.ContainsKey(num))
+					{
+						InvokeMethod(_TaskDialogsByHandle[num], "OnHyperlinkClicked", new object[]
+						{
+							new TaskDialogHyperlinkClickedEventArgs()
+						});
+					}
+					break;
+				}
+			}
+			return 0;
+		}
+
 	}
 }

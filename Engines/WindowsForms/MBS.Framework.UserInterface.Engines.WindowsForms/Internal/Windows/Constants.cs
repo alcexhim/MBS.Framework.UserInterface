@@ -226,5 +226,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			Style = -16,
 			ExtendedStyle = -20
 		}
+
+		public enum TaskDialogNotification
+		{
+			Created = 0,
+			Navigated = 1,
+			ButtonClicked = 2,
+			HyperlinkClicked = 3,
+			Timer = 4,
+			Destroyed = 5,
+			RadioButtonClicked = 6,
+			DialogConstructed = 7,
+			VerificationClicked = 8,
+			Help = 9,
+			ExpandoButtonClicked = 10
+		}
 	}
 }

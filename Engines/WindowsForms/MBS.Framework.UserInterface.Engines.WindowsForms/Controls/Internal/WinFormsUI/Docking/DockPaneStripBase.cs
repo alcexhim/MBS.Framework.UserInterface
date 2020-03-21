@@ -12,16 +12,16 @@ namespace WeifenLuo.WinFormsUI.Docking
     public abstract class DockPaneStripBase : Control
     {
         [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]        
-        protected internal class Tab : IDisposable
+        protected internal class DockPaneStripTabBase : IDisposable
         {
             private IDockContent m_content;
 
-            public Tab(IDockContent content)
+            public DockPaneStripTabBase(IDockContent content)
             {
                 m_content = content;
             }
 
-            ~Tab()
+            ~DockPaneStripTabBase()
             {
                 Dispose(false);
             }
@@ -68,10 +68,10 @@ namespace WeifenLuo.WinFormsUI.Docking
         }
 
         [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]        
-        protected sealed class TabCollection : IEnumerable<Tab>
+        protected sealed class TabCollection : IEnumerable<DockPaneStripTabBase>
         {
             #region IEnumerable Members
-            IEnumerator<Tab> IEnumerable<Tab>.GetEnumerator()
+            IEnumerator<DockPaneStripTabBase> IEnumerable<DockPaneStripTabBase>.GetEnumerator()
             {
                 for (int i = 0; i < Count; i++)
                     yield return this[i];
@@ -100,7 +100,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 get { return DockPane.DisplayingContents.Count; }
             }
 
-            public Tab this[int index]
+            public DockPaneStripTabBase this[int index]
             {
                 get
                 {
@@ -111,7 +111,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 }
             }
 
-            public bool Contains(Tab tab)
+            public bool Contains(DockPaneStripTabBase tab)
             {
                 return (IndexOf(tab) != -1);
             }
@@ -121,7 +121,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return (IndexOf(content) != -1);
             }
 
-            public int IndexOf(Tab tab)
+            public int IndexOf(DockPaneStripTabBase tab)
             {
                 if (tab == null)
                     return -1;
@@ -195,9 +195,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         public abstract GraphicsPath GetOutline(int index);
 
-        protected internal virtual Tab CreateTab(IDockContent content)
+        protected internal virtual DockPaneStripTabBase CreateTab(IDockContent content)
         {
-            return new Tab(content);
+            return new DockPaneStripTabBase(content);
         }
 
         private Rectangle _dragBox = Rectangle.Empty;
@@ -334,7 +334,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        protected abstract Rectangle GetTabBounds(Tab tab);
+        protected abstract Rectangle GetTabBounds(DockPaneStripTabBase tab);
 
         internal static Rectangle ToScreen(Rectangle rectangle, Control parent)
         {
@@ -380,7 +380,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             public override AccessibleObject HitTest(int x, int y)
             {
                 Point point = new Point(x, y);
-                foreach (Tab tab in _strip.Tabs)
+                foreach (DockPaneStripTabBase tab in _strip.Tabs)
                 {
                     Rectangle rectangle = _strip.GetTabBounds(tab);
                     if (ToScreen(rectangle, _strip).Contains(point))
@@ -394,11 +394,11 @@ namespace WeifenLuo.WinFormsUI.Docking
         protected class DockPaneStripTabAccessibleObject : AccessibleObject
         {
             private DockPaneStripBase _strip;
-            private Tab _tab;
+            private DockPaneStripTabBase _tab;
 
             private AccessibleObject _parent;
 
-            internal DockPaneStripTabAccessibleObject(DockPaneStripBase strip, Tab tab, AccessibleObject parent)
+            internal DockPaneStripTabAccessibleObject(DockPaneStripBase strip, DockPaneStripTabBase tab, AccessibleObject parent)
             {
                 _strip = strip;
                 _tab = tab;

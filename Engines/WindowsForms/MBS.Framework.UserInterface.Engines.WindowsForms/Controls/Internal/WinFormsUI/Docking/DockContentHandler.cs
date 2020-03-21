@@ -1021,8 +1021,8 @@ namespace WeifenLuo.WinFormsUI.Docking
                 dockPanel.ResumeLayout(true, true);
         }
 
-        private DockPaneStripBase.Tab m_tab = null;
-        internal DockPaneStripBase.Tab GetTab(DockPaneStripBase dockPaneStrip)
+        private DockPaneStripBase.DockPaneStripTabBase m_tab = null;
+        internal DockPaneStripBase.DockPaneStripTabBase GetTab(DockPaneStripBase dockPaneStrip)
         {
             if (m_tab == null)
                 m_tab = dockPaneStrip.CreateTab(Content);

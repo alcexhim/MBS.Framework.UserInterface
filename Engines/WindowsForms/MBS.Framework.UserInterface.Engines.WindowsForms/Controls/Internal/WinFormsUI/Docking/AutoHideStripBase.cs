@@ -11,16 +11,16 @@ namespace WeifenLuo.WinFormsUI.Docking
     public abstract class AutoHideStripBase : Control
     {
         [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        protected class Tab : IDisposable
+        protected class AutoHideStripTabBase : IDisposable
         {
             private IDockContent m_content;
 
-            protected internal Tab(IDockContent content)
+            protected internal AutoHideStripTabBase(IDockContent content)
             {
                 m_content = content;
             }
 
-            ~Tab()
+            ~AutoHideStripTabBase()
             {
                 Dispose(false);
             }
@@ -42,10 +42,10 @@ namespace WeifenLuo.WinFormsUI.Docking
         }
 
         [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        protected sealed class TabCollection : IEnumerable<Tab>
+        protected sealed class TabCollection : IEnumerable<AutoHideStripTabBase>
         {
             #region IEnumerable Members
-            IEnumerator<Tab> IEnumerable<Tab>.GetEnumerator()
+            IEnumerator<AutoHideStripTabBase> IEnumerable<AutoHideStripTabBase>.GetEnumerator()
             {
                 for (int i = 0; i < Count; i++)
                     yield return this[i];
@@ -79,7 +79,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 get { return DockPane.DisplayingContents.Count; }
             }
 
-            public Tab this[int index]
+            public AutoHideStripTabBase this[int index]
             {
                 get
                 {
@@ -88,11 +88,11 @@ namespace WeifenLuo.WinFormsUI.Docking
                         throw new ArgumentOutOfRangeException(nameof(index));
                     if (content.DockHandler.AutoHideTab == null)
                         content.DockHandler.AutoHideTab = (DockPanel.AutoHideStripControl.CreateTab(content));
-                    return content.DockHandler.AutoHideTab as Tab;
+                    return content.DockHandler.AutoHideTab as AutoHideStripTabBase;
                 }
             }
 
-            public bool Contains(Tab tab)
+            public bool Contains(AutoHideStripTabBase tab)
             {
                 return (IndexOf(tab) != -1);
             }
@@ -102,7 +102,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return (IndexOf(content) != -1);
             }
 
-            public int IndexOf(Tab tab)
+            public int IndexOf(AutoHideStripTabBase tab)
             {
                 if (tab == null)
                     return -1;
@@ -542,9 +542,9 @@ namespace WeifenLuo.WinFormsUI.Docking
             return HitTest(ptMouse);
         }
 
-        protected virtual Tab CreateTab(IDockContent content)
+        protected virtual AutoHideStripTabBase CreateTab(IDockContent content)
         {
-            return new Tab(content);
+            return new AutoHideStripTabBase(content);
         }
 
         protected virtual Pane CreatePane(DockPane dockPane)
@@ -559,7 +559,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return new AutoHideStripsAccessibleObject(this);
         }
 
-        protected abstract Rectangle GetTabBounds(Tab tab);
+        protected abstract Rectangle GetTabBounds(AutoHideStripTabBase tab);
 
         internal static Rectangle ToScreen(Rectangle rectangle, Control parent)
         {
@@ -671,7 +671,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             public override AccessibleObject GetChild(int index)
             {
-                List<Tab> tabs = new List<Tab>();
+                List<AutoHideStripTabBase> tabs = new List<AutoHideStripTabBase>();
                 foreach (Pane pane in _strip.GetPanes(_state))
                 {
                     tabs.AddRange(pane.AutoHideTabs);
@@ -693,11 +693,11 @@ namespace WeifenLuo.WinFormsUI.Docking
         protected class AutoHideStripTabAccessibleObject : AccessibleObject
         {
             private AutoHideStripBase _strip;
-            private Tab _tab;
+            private AutoHideStripTabBase _tab;
 
             private AccessibleObject _parent;
 
-            internal AutoHideStripTabAccessibleObject(AutoHideStripBase strip, Tab tab, AccessibleObject parent)
+            internal AutoHideStripTabAccessibleObject(AutoHideStripBase strip, AutoHideStripTabBase tab, AccessibleObject parent)
             {
                 _strip = strip;
                 _tab = tab;

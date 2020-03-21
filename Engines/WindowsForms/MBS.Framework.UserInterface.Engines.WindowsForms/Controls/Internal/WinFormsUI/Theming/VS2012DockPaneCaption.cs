@@ -205,7 +205,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawDockPanelTitleBarBackground(g, ClientRectangle, DockPane.IsActivePane);
 
             Rectangle rect = ClientRectangle;
-            Color captionColor;
+			Color captionColor;
 
             if (DockPane.IsActivePane)
                 captionColor = DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionActive.Background;
@@ -229,13 +229,14 @@ namespace WeifenLuo.WinFormsUI.Docking
             rectCaptionText.Height -= TextGapTop + TextGapBottom;
 
             Color colorText;
-            if (DockPane.IsActivated)
-                colorText = DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionActive.Text;
+			if (DockPane.IsActivated)
+				colorText = MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.ColorTable.DockingWindowActiveTabTextNormal; // DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionActive.Text;
             else
-                colorText = DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionInactive.Text;
+                colorText = MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.ColorTable.DockingWindowInactiveTabText; // DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionInactive.Text;
 
             TextRenderer.DrawText(g, DockPane.CaptionText, TextFont, DrawHelper.RtlTransform(this, rectCaptionText), colorText, TextFormat);
 
+			/*
             Rectangle rectDotsStrip = rectCaptionText;
             int textLength = (int)g.MeasureString(DockPane.CaptionText, TextFont).Width + TextGapLeft;
             rectDotsStrip.X += textLength;
@@ -249,6 +250,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 dotsColor = DockPane.DockPanel.Theme.ColorPalette.ToolWindowCaptionInactive.Grip;
 
             DrawDotsStrip(g, rectDotsStrip, dotsColor);
+            */		
         }
 
         protected void DrawDotsStrip(Graphics g, Rectangle rectStrip, Color colorDots)

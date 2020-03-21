@@ -29,10 +29,10 @@ namespace WeifenLuo.WinFormsUI.Docking
                 set
                 {
                     m_alignment = value;
-                    if (m_alignment == DockAlignment.Left || m_alignment == DockAlignment.Right)
-                        Cursor = Cursors.VSplit;
-                    else if (m_alignment == DockAlignment.Top || m_alignment == DockAlignment.Bottom)
-                        Cursor = Cursors.HSplit;
+					if (m_alignment == DockAlignment.Left || m_alignment == DockAlignment.Right)
+						Cursor = Cursors.VSplit; // SizeWE in VS2010 (WPF)
+					else if (m_alignment == DockAlignment.Top || m_alignment == DockAlignment.Bottom)
+						Cursor = Cursors.HSplit; // SizeNS in VS2010 (WPF)
                     else
                         Cursor = Cursors.Default;
 

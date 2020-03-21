@@ -6,7 +6,7 @@ namespace WeifenLuo.WinFormsUI.Theming
     {
         public AutoHideStripBase CreateAutoHideStrip(DockPanel panel)
         {
-            return new VS2012AutoHideStrip(panel);
+            return new ThemedAutoHideStrip(panel);
         }
     }
 }

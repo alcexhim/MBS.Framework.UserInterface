@@ -738,6 +738,9 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             base.OnPaint(e);
 
+			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawContentAreaBackground(e.Graphics, ClientRectangle);
+			return;
+
             if (DockBackColor.ToArgb() == BackColor.ToArgb())
                 return;
 

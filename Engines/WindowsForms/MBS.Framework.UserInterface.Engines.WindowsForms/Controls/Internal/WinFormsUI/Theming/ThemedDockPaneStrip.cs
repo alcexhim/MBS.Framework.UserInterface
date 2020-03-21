@@ -6,14 +6,12 @@ using System.ComponentModel;
 
 namespace WeifenLuo.WinFormsUI.Docking
 {
-    using WeifenLuo.WinFormsUI.Theming;
-
     [ToolboxItem(false)]
-    internal class VS2012DockPaneStrip : DockPaneStripBase
+    internal class ThemedDockPaneStrip : DockPaneStripBase
     {
-        private class TabVS2012 : Tab
+        private class ThemedDockPaneStripTab : DockPaneStripTabBase
         {
-            public TabVS2012(IDockContent content)
+            public ThemedDockPaneStripTab(IDockContent content)
                 : base(content)
             {
             }
@@ -47,9 +45,9 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
         }
 
-        protected internal override Tab CreateTab(IDockContent content)
+        protected internal override DockPaneStripTabBase CreateTab(IDockContent content)
         {
-            return new TabVS2012(content);
+            return new ThemedDockPaneStripTab(content);
         }
 
         [ToolboxItem(false)]
@@ -240,7 +238,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         private static GraphicsPath GraphicsPath
         {
-            get { return VS2012AutoHideStrip.GraphicsPath; }
+            get { return ThemedAutoHideStrip.GraphicsPath; }
         }
 
         private IContainer Components
@@ -501,7 +499,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
         #endregion
 
-        public VS2012DockPaneStrip(DockPane pane)
+        public ThemedDockPaneStrip(DockPane pane)
             : base(pane)
         {
             SetStyle(ControlStyles.ResizeRedraw |
@@ -655,7 +653,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // Calculate tab widths
             int countTabs = Tabs.Count;
-            foreach (TabVS2012 tab in Tabs)
+            foreach (ThemedDockPaneStripTab tab in Tabs)
             {
                 tab.MaxWidth = GetMaxTabWidth(Tabs.IndexOf(tab));
                 tab.Flag = false;
@@ -670,7 +668,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             for (anyWidthWithinAverage = true; anyWidthWithinAverage && remainedTabs > 0;)
             {
                 anyWidthWithinAverage = false;
-                foreach (TabVS2012 tab in Tabs)
+                foreach (ThemedDockPaneStripTab tab in Tabs)
                 {
                     if (tab.Flag)
                         continue;
@@ -692,7 +690,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (remainedTabs > 0)
             {
                 int roundUpWidth = (totalWidth - totalAllocatedWidth) - (averageWidth * remainedTabs);
-                foreach (TabVS2012 tab in Tabs)
+                foreach (ThemedDockPaneStripTab tab in Tabs)
                 {
                     if (tab.Flag)
                         continue;
@@ -710,7 +708,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 
             // Set the X position of the tabs
             int x = rectTabStrip.X + ToolWindowStripGapLeft;
-            foreach (TabVS2012 tab in Tabs)
+            foreach (ThemedDockPaneStripTab tab in Tabs)
             {
                 tab.TabX = x;
                 x += tab.TabWidth;
@@ -721,7 +719,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             bool overflow = false;
 
-            var tab = Tabs[index] as TabVS2012;
+            var tab = Tabs[index] as ThemedDockPaneStripTab;
             tab.MaxWidth = GetMaxTabWidth(index);
             int width = Math.Min(tab.MaxWidth, DocumentTabMaxWidth);
             if (x + width < rectTabStrip.Right || index == StartDisplayingTab)
@@ -762,7 +760,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (m_startDisplayingTab > 0)
             {
                 int tempX = x;
-                var tab = Tabs[m_startDisplayingTab] as TabVS2012;
+                var tab = Tabs[m_startDisplayingTab] as ThemedDockPaneStripTab;
                 tab.MaxWidth = GetMaxTabWidth(m_startDisplayingTab);
 
                 // Add the active tab and tabs to the left
@@ -800,7 +798,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 m_startDisplayingTab = 0;
                 FirstDisplayingTab = 0;
                 x = rectTabStrip.X;// +rectTabStrip.Height / 2;
-                foreach (TabVS2012 tab in Tabs)
+                foreach (ThemedDockPaneStripTab tab in Tabs)
                 {
                     tab.TabX = x;
                     x += tab.TabWidth;
@@ -825,7 +823,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (index == -1) // TODO: should prevent it from being -1;
                 return false;
 
-            var tab = Tabs[index] as TabVS2012;
+            var tab = Tabs[index] as ThemedDockPaneStripTab;
             if (tab.TabWidth != 0)
                 return false;
 
@@ -874,7 +872,8 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             // IMPORTANT: fill background.
             Rectangle rectTabStrip = TabStripRectangle;
-            g.FillRectangle(DockPane.DockPanel.Theme.PaintingService.GetBrush(DockPane.DockPanel.Theme.ColorPalette.MainWindowActive.Background), rectTabStrip);
+			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawContentAreaBackground(g, ClientRectangle);
+            // g.FillRectangle(DockPane.DockPanel.Theme.PaintingService.GetBrush(DockPane.DockPanel.Theme.ColorPalette.MainWindowActive.Background), rectTabStrip);
 
             if (Appearance == DockPane.AppearanceStyle.Document)
                 DrawTabStrip_Document(g);
@@ -894,21 +893,21 @@ namespace WeifenLuo.WinFormsUI.Docking
             // Draw the tabs
             Rectangle rectTabOnly = TabsRectangle;
             Rectangle rectTab = Rectangle.Empty;
-            TabVS2012 tabActive = null;
+            ThemedDockPaneStripTab tabActive = null;
             g.SetClip(DrawHelper.RtlTransform(this, rectTabOnly));
             for (int i = 0; i < count; i++)
             {
                 rectTab = GetTabRectangle(i);
                 if (Tabs[i].Content == DockPane.ActiveContent)
                 {
-                    tabActive = Tabs[i] as TabVS2012;
+                    tabActive = Tabs[i] as ThemedDockPaneStripTab;
                     tabActive.Rectangle = rectTab;
                     continue;
                 }
 
                 if (rectTab.IntersectsWith(rectTabOnly))
                 {
-                    var tab = Tabs[i] as TabVS2012;
+                    var tab = Tabs[i] as ThemedDockPaneStripTab;
                     tab.Rectangle = rectTab;
                     DrawTab(g, tab, false);
                 }
@@ -947,7 +946,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             for (int i = 0; i < Tabs.Count; i++)
             {
-                var tab = Tabs[i] as TabVS2012;
+                var tab = Tabs[i] as ThemedDockPaneStripTab;
                 tab.Rectangle = GetTabRectangle(i);
                 DrawTab(g, tab, i == Tabs.Count - 1);
             }
@@ -965,14 +964,14 @@ namespace WeifenLuo.WinFormsUI.Docking
         {
             Rectangle rectTabStrip = TabStripRectangle;
 
-            TabVS2012 tab = (TabVS2012)(Tabs[index]);
+            ThemedDockPaneStripTab tab = (ThemedDockPaneStripTab)(Tabs[index]);
             return new Rectangle(tab.TabX, rectTabStrip.Y, tab.TabWidth, rectTabStrip.Height);
         }
 
         private Rectangle GetTabRectangle_Document(int index)
         {
             Rectangle rectTabStrip = TabStripRectangle;
-            var tab = (TabVS2012)Tabs[index];
+            var tab = (ThemedDockPaneStripTab)Tabs[index];
 
             Rectangle rect = new Rectangle();
             rect.X = tab.TabX;
@@ -987,15 +986,15 @@ namespace WeifenLuo.WinFormsUI.Docking
             return rect;
         }
 
-        private void DrawTab(Graphics g, TabVS2012 tab, bool last)
+        private void DrawTab(Graphics g, ThemedDockPaneStripTab tab, bool last)
         {
-            if (Appearance == DockPane.AppearanceStyle.ToolWindow)
-                DrawTab_ToolWindow(g, tab, last);
-            else
-                DrawTab_Document(g, tab);
+			if (Appearance == DockPane.AppearanceStyle.ToolWindow)
+				DrawTab_ToolWindow(g, tab, last);
+			else
+				DrawTab_Document(g, tab);
         }
 
-        private GraphicsPath GetTabOutline(Tab tab, bool rtlTransform, bool toScreen)
+        private GraphicsPath GetTabOutline(DockPaneStripTabBase tab, bool rtlTransform, bool toScreen)
         {
             if (Appearance == DockPane.AppearanceStyle.ToolWindow)
                 return GetTabOutline_ToolWindow(tab, rtlTransform, toScreen);
@@ -1003,7 +1002,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return GetTabOutline_Document(tab, rtlTransform, toScreen, false);
         }
 
-        private GraphicsPath GetTabOutline_ToolWindow(Tab tab, bool rtlTransform, bool toScreen)
+        private GraphicsPath GetTabOutline_ToolWindow(DockPaneStripTabBase tab, bool rtlTransform, bool toScreen)
         {
             Rectangle rect = GetTabRectangle(Tabs.IndexOf(tab));
             if (rtlTransform)
@@ -1015,7 +1014,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return GraphicsPath;
         }
 
-        private GraphicsPath GetTabOutline_Document(Tab tab, bool rtlTransform, bool toScreen, bool full)
+        private GraphicsPath GetTabOutline_Document(DockPaneStripTabBase tab, bool rtlTransform, bool toScreen, bool full)
         {
             GraphicsPath.Reset();
             Rectangle rect = GetTabRectangle(Tabs.IndexOf(tab));
@@ -1033,7 +1032,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return GraphicsPath;
         }
 
-        private void DrawTab_ToolWindow(Graphics g, TabVS2012 tab, bool last)
+        private void DrawTab_ToolWindow(Graphics g, ThemedDockPaneStripTab tab, bool last)
         {
             var rect = tab.Rectangle.Value;
             rect.Y += 1;
@@ -1102,7 +1101,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 g.DrawIcon(tab.Content.DockHandler.Icon, rectIcon);
         }
 
-        private void DrawTab_Document(Graphics g, TabVS2012 tab)
+        private void DrawTab_Document(Graphics g, ThemedDockPaneStripTab tab)
         {
             var rect = tab.Rectangle.Value;
             if (tab.TabWidth == 0)
@@ -1193,8 +1192,12 @@ namespace WeifenLuo.WinFormsUI.Docking
                 }
             }
 
-            g.FillRectangle(DockPane.DockPanel.Theme.PaintingService.GetBrush(paint), rect);
-            TextRenderer.DrawText(g, tab.Content.DockHandler.TabText, TextFont, rectText, text, DocumentTextFormat);
+			// g.FillRectangle(DockPane.DockPanel.Theme.PaintingService.GetBrush(paint), rect);
+
+			bool selected = tab.Content.DockHandler.DockPanel.ActiveDocument == tab.Content;
+			bool focused = tab.Content.DockHandler.Pane.IsActivePane;
+			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawDocumentTabBackground(g, rectTab, MBS.Framework.UserInterface.Theming.ControlState.Normal, MBS.Framework.UserInterface.Controls.Docking.DockingItemPlacement.Top, selected, focused);
+			TextRenderer.DrawText(g, tab.Content.DockHandler.TabText, TextFont, rectText, selected ? MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.ColorTable.DockingWindowActiveTabTextNormal : MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.ColorTable.DockingWindowInactiveTabText, DocumentTextFormat);
             if (image != null)
                 g.DrawImage(image, rectCloseButton);
 
@@ -1244,7 +1247,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             bool buttonUpdate = false;
             if (index != -1)
             {
-                var tab = Tabs[index] as TabVS2012;
+                var tab = Tabs[index] as ThemedDockPaneStripTab;
                 if (Appearance == DockPane.AppearanceStyle.ToolWindow || Appearance == DockPane.AppearanceStyle.Document)
                 {
                     tabUpdate = SetMouseOverTab(tab.Content == DockPane.ActiveContent ? null : tab.Content);
@@ -1312,7 +1315,7 @@ namespace WeifenLuo.WinFormsUI.Docking
         private void WindowList_Click(object sender, EventArgs e)
         {
             SelectMenu.Items.Clear();
-            foreach (TabVS2012 tab in Tabs)
+            foreach (ThemedDockPaneStripTab tab in Tabs)
             {
                 IDockContent content = tab.Content;
                 ToolStripItem item = SelectMenu.Items.Add(content.DockHandler.TabText, content.DockHandler.Icon.ToBitmap());
@@ -1427,7 +1430,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (!TabsRectangle.Contains(point))
                 return -1;
 
-            foreach (Tab tab in Tabs)
+            foreach (DockPaneStripTabBase tab in Tabs)
             {
                 GraphicsPath path = GetTabOutline(tab, true, false);
                 if (path.IsVisible(point))
@@ -1459,7 +1462,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             return result;
         }
 
-        protected override Rectangle GetTabBounds(Tab tab)
+        protected override Rectangle GetTabBounds(DockPaneStripTabBase tab)
         {
             GraphicsPath path = GetTabOutline(tab, true, false);
             RectangleF rectangle = path.GetBounds();

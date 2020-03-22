@@ -204,7 +204,7 @@
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneCaptionInertButton.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012ThemeBase.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012WindowSplitterControlFactory.cs" />
-    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneStrip.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\ThemedDockPaneStrip.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideWindowFactory.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockWindowFactory.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012BlueTheme.cs" />
@@ -214,7 +214,7 @@
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideStripFactory.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DockPaneSplitterControlFactory.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideWindowControl.cs" />
-    <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012AutoHideStrip.cs" />
+    <Compile Include="Controls\Internal\WinFormsUI\Theming\ThemedAutoHideStrip.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012LightTheme.cs" />
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DarkTheme.cs" />
     <Compile Include="WindowsFormsNativeMenuItem.cs" />

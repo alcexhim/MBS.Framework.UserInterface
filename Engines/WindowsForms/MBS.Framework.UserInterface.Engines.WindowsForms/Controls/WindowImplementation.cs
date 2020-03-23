@@ -47,6 +47,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 
 		private System.Windows.Forms.StatusStrip sb = null;
+		private System.Windows.Forms.MenuStrip mb = null;
 
 		protected override NativeControl CreateControlInternal (Control control)
 		{
@@ -81,10 +82,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
 			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 
-			System.Windows.Forms.MenuStrip mb = new System.Windows.Forms.MenuStrip();
+			mb = new System.Windows.Forms.MenuStrip();
 			// mb.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
 			mb.Stretch = true;
-			tbm.AddControl(mb);
 
 			// tsc.TopToolStripPanel.Controls.Add(mb);
 
@@ -94,6 +94,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
+
+			if (mb.Items.Count > 0 && window.MenuBar.Visible && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
+				tbm.AddControl(mb);
 
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
@@ -148,6 +151,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.Controls.Add(sb);
 			form.Text = window.Text;
 			form.AutoSize = true;
+
 			form.Tag = window;
 			form.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
 			return new WindowsFormsNativeControl (form);
@@ -371,17 +375,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		public void InsertMenuItem(int index, MenuItem item)
 		{
-			throw new NotImplementedException();
+			System.Windows.Forms.ToolStripItem tsi = (Engine as WindowsFormsEngine).InitMenuItem(item);
+			mb.Items.Insert(index, tsi);
 		}
 
 		public void ClearMenuItems()
 		{
-			throw new NotImplementedException();
+			mb.Items.Clear();
 		}
 
 		public void RemoveMenuItem(MenuItem item)
 		{
-			throw new NotImplementedException();
+			System.Windows.Forms.ToolStripItem tsi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle;
+			mb.Items.Remove(tsi);
 		}
 	}
 }

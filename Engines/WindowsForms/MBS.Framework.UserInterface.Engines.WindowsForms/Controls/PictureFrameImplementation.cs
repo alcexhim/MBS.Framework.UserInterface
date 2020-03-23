@@ -48,6 +48,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			PictureFrame ctl = (control as PictureFrame);
 			System.Windows.Forms.PictureBox handle = new System.Windows.Forms.PictureBox();
+			handle.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			if (ctl.Image != null)
 			{
 				System.Drawing.Image hpixbuf = (ctl.Image as WindowsFormsNativeImage).Handle;

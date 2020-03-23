@@ -106,7 +106,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			pnlButtons.Padding = new System.Windows.Forms.Padding(6, 12, 6, 12);
 			pnlButtons.Paint += PnlButtons_Paint;
 			pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			for (int i = 0; i < dialog.Buttons.Count; i++)
+			for (int i = dialog.Buttons.Count - 1; i >= 0; i--)
 			{
 				if (!dialog.Buttons[i].IsCreated)
 					Engine.CreateControl(dialog.Buttons[i]);

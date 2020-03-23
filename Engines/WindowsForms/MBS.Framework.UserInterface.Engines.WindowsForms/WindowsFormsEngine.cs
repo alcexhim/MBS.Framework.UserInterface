@@ -707,7 +707,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void SetMenuItemVisibilityInternal(MenuItem item, bool visible)
 		{
-			throw new NotImplementedException();
+			(GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle.Visible = visible;
 		}
 
 		protected override bool ShowHelpInternal(HelpTopic topic)

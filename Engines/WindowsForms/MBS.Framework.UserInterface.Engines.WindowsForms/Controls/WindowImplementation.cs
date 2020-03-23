@@ -124,7 +124,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// tsc.BottomToolStripPanel.Controls.Add(sb);
 
 			sb.Text = "Status Bar";
-			// sb.Visible = window.StatusBar.Visible;
+			sb.Visible = window.StatusBar.Visible;
 
 			Container container = new Container();
 			for (int i = 0; i < window.Controls.Count; i++)

@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
@@ -129,6 +130,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			f.Controls.Add(pnlButtons);
 
 			f.Font = System.Drawing.SystemFonts.MenuFont;
+
+			f.MinimumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.MinimumSize);
+			f.MaximumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.MaximumSize);
+			f.Size = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.Size);
+			if (dialog.Size != Dimension2D.Empty)
+				f.AutoSize = true;
 
 			WindowsFormsNativeDialog nc = new WindowsFormsNativeDialog(new __wmG(dialog, f), f);
 			Engine.RegisterControlHandle(dialog, nc);

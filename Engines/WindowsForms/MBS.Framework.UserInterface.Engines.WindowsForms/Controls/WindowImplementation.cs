@@ -150,7 +150,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// form.Controls.Add(tsc);
 			form.Controls.Add(sb);
 			form.Text = window.Text;
-			form.AutoSize = true;
+			form.MinimumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MinimumSize);
+			form.MaximumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MaximumSize);
+			form.Size = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.Size);
+			if (window.Size != Dimension2D.Empty)
+				form.AutoSize = true;
 
 			form.Tag = window;
 			form.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);

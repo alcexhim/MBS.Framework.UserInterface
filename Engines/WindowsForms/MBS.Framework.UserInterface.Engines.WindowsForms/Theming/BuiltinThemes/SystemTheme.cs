@@ -735,21 +735,27 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				return;
 			}
 
-			switch (state)
+			VisualStyleRenderer vsr = null;
+
+			if (expanded)
 			{
-				default:
+				vsr = VisualStyleRenderers.TreeView.Glyph.Opened.Normal;
+			}
+			else
+			{
+				vsr = VisualStyleRenderers.TreeView.Glyph.Closed.Normal;
+			}
+
+			if (System.Environment.OSVersion.Version.Major >= 6)
+			{	
+				if (state == ControlState.Hover)
 				{
-					if (expanded)
-					{
-						VisualStyleRenderers.TreeView.Glyph.Opened.Normal.DrawBackground(g, rect);
-					}
-					else
-					{
-						VisualStyleRenderers.TreeView.Glyph.Closed.Normal.DrawBackground(g, rect);
-					}
-					break;
+					vsr = new VisualStyleRenderer(vsr.Class, 4, vsr.State);
 				}
 			}
+
+			if (vsr != null)
+				vsr.DrawBackground(g, rect);
 		}
 		public override void DrawListItemBackground(Graphics g, Rectangle rect, ControlState state, bool selected, bool focused)
 		{

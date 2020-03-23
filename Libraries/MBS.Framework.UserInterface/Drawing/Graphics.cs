@@ -35,21 +35,45 @@ namespace MBS.Framework.UserInterface.Drawing
 		protected abstract void DrawRectangleInternal(Pen pen, double x, double y, double width, double height);
 		public void DrawRectangle(Pen pen, double x, double y, double width, double height)
 		{
-			DrawRectangleInternal(pen, x, y, width, height);
+			Rectangle rect2 = NormalizeRectangle(new Rectangle(x, y, width, height));
+			DrawRectangleInternal(pen, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
 		public void DrawRectangle(Pen pen, Rectangle rect)
 		{
-			DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
+			Rectangle rect2 = NormalizeRectangle(rect);
+			DrawRectangle(pen, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
 
 		protected abstract void FillRectangleInternal(Brush brush, double x, double y, double width, double height);
 		public void FillRectangle(Brush brush, double x, double y, double width, double height)
 		{
-			FillRectangleInternal(brush, x, y, width, height);
+			Rectangle rect2 = NormalizeRectangle(new Rectangle(x, y, width, height));
+			FillRectangleInternal(brush, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
 		public void FillRectangle(Brush brush, Rectangle rect)
 		{
-			FillRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height);
+			Rectangle rect2 = NormalizeRectangle(rect);
+			FillRectangle(brush, rect2.X, rect2.Y, rect2.Width, rect2.Height);
+		}
+
+		private Rectangle NormalizeRectangle(Rectangle input)
+		{
+			double x = input.X;
+			double y = input.Y;
+			double width = input.Width;
+			double height = input.Height;
+
+			if (width < 0)
+			{
+				x = x + width;
+				width = -width;
+			}
+			if (height < 0)
+			{
+				y = y + height;
+				height = -height;
+			}
+			return new Rectangle(x, y, width, height);
 		}
 
 		public void Clear(Color color)

@@ -218,6 +218,24 @@
     <Compile Include="Controls\Internal\WinFormsUI\Theming\VS2012DarkTheme.cs" />
     <Compile Include="WindowsFormsNativeMenuItem.cs" />
     <Compile Include="WindowsFormsPlugin.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewColumn.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewColumnAutoResizeMode.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewColumnBehavior.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewControl.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewControl.Designer.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewDetail.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewHitTestInfo.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItem.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItemBounds.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItemDragEvent.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItemLabelEditEvent.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItemSelectionChangingEvent.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewMode.cs" />
+    <Compile Include="Controls\Internal\CommandBars\ToolStripItemExtensions.cs" />
+    <Compile Include="TimerMethods.cs" />
+    <Compile Include="Controls\Internal\CustomListView\ListViewItemSelectionChangedEvent.cs" />
+    <Compile Include="Controls\Internal\TreeView\ExplorerTreeView.cs" />
+    <Compile Include="Controls\Internal\ListView\ListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -250,6 +268,9 @@
     <Folder Include="Controls\Internal\CommandBars\" />
     <Folder Include="Dialogs\Internal\AboutDialog\" />
     <Folder Include="Controls\Internal\WinFormsUI\" />
+    <Folder Include="Controls\Internal\CustomListView\" />
+    <Folder Include="Controls\Internal\TreeView\" />
+    <Folder Include="Controls\Internal\ListView\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\Internal\AboutDialog\AboutDialog.resx" />

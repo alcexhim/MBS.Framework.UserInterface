@@ -88,6 +88,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		private System.Drawing.Font FontToNativeFont(Font font)
 		{
+			if (font == null) return System.Drawing.SystemFonts.DialogFont;
 			return new System.Drawing.Font(font.FamilyName, (float)font.Size);
 		}
 		private System.Drawing.Brush BrushToNativeBrush(Brush brush)

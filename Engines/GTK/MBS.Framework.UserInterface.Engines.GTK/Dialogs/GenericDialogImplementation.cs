@@ -51,7 +51,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			// NativeControl hContainer = CreateContainer (dlg);
 
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hDialogContent);
+
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hDialogContent);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show((hContainer as GTKNativeControl).Handle);
 
 			GTKNativeControl nc = new GTKNativeControl(handle);
 			(Engine as GTKEngine).RegisterControlHandle(dialog, nc);

@@ -61,6 +61,9 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			get
 			{
+				if (!IsCreated)
+					return mvarEditable;
+
 				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
 				if (impl != null)
 					mvarEditable = impl.IsEditable();
@@ -69,7 +72,9 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 			set
 			{
-				(ControlImplementation as ITextBoxImplementation)?.SetEditable(value);
+				if (IsCreated)
+					(ControlImplementation as ITextBoxImplementation)?.SetEditable(value);
+
 				mvarEditable = value;
 			}
 		}

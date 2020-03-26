@@ -86,5 +86,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).SelectedText = text;
 		}
+
+		public bool IsEditable()
+		{
+			return !((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).ReadOnly;
+		}
+		public void SetEditable(bool value)
+		{
+			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).ReadOnly = !value;
+		}
 	}
 }

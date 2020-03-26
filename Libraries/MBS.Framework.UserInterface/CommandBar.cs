@@ -4,15 +4,23 @@ using System.Linq;
 using System.Text;
 
 using MBS.Framework.UserInterface;
+using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface
 {
 	public class CommandBar
 	{
-		public class CommandBarCollection 
+		public class CommandBarCollection
 			: System.Collections.ObjectModel.Collection<CommandBar>
 		{
-
+			public CommandBar Add(string id, string title)
+			{
+				CommandBar cb = new CommandBar();
+				cb.ID = id;
+				cb.Title = title;
+				Add(cb);
+				return cb;
+			}
 		}
 
 		private string mvarID = String.Empty;

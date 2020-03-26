@@ -190,6 +190,9 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		/// <value><c>true</c> if decorated; otherwise, <c>false</c>.</value>
 		public bool Decorated { get; set; } = true;
+
+		public bool Resizable { get; set; } = true;
+
 		public Rectangle Bounds { get; set; } = Rectangle.Empty;
 
 		public bool HasFocus => Application.Engine.WindowHasFocus(this);

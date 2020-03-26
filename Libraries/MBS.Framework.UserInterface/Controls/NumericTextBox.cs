@@ -43,7 +43,7 @@ namespace MBS.Framework.UserInterface.Controls
 				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetMinimum(value);
 			}
 		}
-		private double _Maximum = 0.0;
+		private double _Maximum = Double.MaxValue;
 		public double Maximum
 		{
 			get

@@ -154,6 +154,43 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 				}
 				item.Items.Add(columns);
 			}
+			MarkupTagElement tagData = tag.Elements["data"] as MarkupTagElement;
+			if (tagData != null)
+			{
+				LayoutItem data = new LayoutItem();
+				data.ClassName = "data";
+				foreach (MarkupElement elRow in tagData.Elements)
+				{
+					MarkupTagElement tagRow = (elRow as MarkupTagElement);
+					if (tagRow == null) continue;
+					if (tagRow.FullName != "row") continue;
+
+					LayoutItem row = new LayoutItem();
+					row.ClassName = "row";
+
+					for (int i = 0; i < tagRow.Elements.Count; i++)
+					{
+						MarkupTagElement tagCol = tagRow.Elements[i] as MarkupTagElement;
+						if (tagCol == null) continue;
+						if (tagCol.FullName != "col") continue;
+
+						LayoutItem col = new LayoutItem();
+						col.ClassName = "col";
+
+						MarkupAttribute id = tagCol.Attributes["id"];
+						if (id != null)
+						{
+							col.Attributes.Add("id", id.Value);
+						}
+						col.Value = tagCol.Value;
+
+						row.Items.Add(col);
+					}
+
+					data.Items.Add(row);
+				}
+				item.Items.Add(data);
+			}
 			return item;
 		}
 		

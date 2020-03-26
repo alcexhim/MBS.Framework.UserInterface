@@ -41,6 +41,19 @@ namespace MBS.Framework.UserInterface.ObjectModels.Layout
 				}
 				return null;
 			}
+
+			public LayoutItem this[string id, string className = null]
+			{
+				get
+				{
+					foreach (LayoutItem item in this)
+					{
+						if (item.ID == id && (className == null || className == item.ClassName))
+							return item;
+					}
+					return null;
+				}
+			}
 		}
 
 		public string ClassName { get; set; }
@@ -49,6 +62,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Layout
 		public LayoutItemProperty.LayoutItemPropertyCollection Attributes { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
 		public LayoutItemProperty.LayoutItemPropertyCollection Properties { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
 		public LayoutItemProperty.LayoutItemPropertyCollection PackingProperties { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
+		public string Value { get; set; }
 
 		public object Clone()
 		{

@@ -140,7 +140,7 @@ namespace MBS.Framework.UserInterface
 			return HitTest(point.X, point.Y);
 		}
 
-		private Control RecursiveLoadControl(LayoutItem item)
+		private Control RecursiveLoadControl(LayoutObjectModel layout, LayoutItem item)
 		{
 			Control ctl = null;
 			switch (item.ClassName)
@@ -149,12 +149,34 @@ namespace MBS.Framework.UserInterface
 				{
 					if (item.Items.Count > 0)
 					{
-						ctl = RecursiveLoadControl(item.Items[0]);
+						ctl = RecursiveLoadControl(layout, item.Items[0]);
 					}
 					break;
 				}
 				case "GtkButtonBox":
 				{
+					break;
+				}
+				case "GtkComboBox":
+				{
+					ctl = new ComboBox();
+					if (item.Properties["has_entry"] != null)
+					{
+						(ctl as ComboBox).ReadOnly = item.Properties["has_entry"].Value != "True";
+					}
+					else
+					{
+						(ctl as ComboBox).ReadOnly = true;
+					}
+					if (item.Properties["model"] != null)
+					{
+						(ctl as ComboBox).Model = GetPropertyOrLocalRef(item.Properties["model"].Value) as TreeModel;
+					}
+					break;
+				}
+				case "GtkSpinButton":
+				{
+					ctl = new NumericTextBox();
 					break;
 				}
 				case "GtkButton":
@@ -174,6 +196,11 @@ namespace MBS.Framework.UserInterface
 				case "GtkEntry":
 				{
 					ctl = new TextBox();
+
+					if (item.Properties["editable"] != null)
+					{
+						(ctl as TextBox).Editable = (item.Properties["editable"].Value == "True");
+					}
 					break;
 				}
 				case "GtkLabel":
@@ -188,6 +215,19 @@ namespace MBS.Framework.UserInterface
 					if (item.Attributes["scale"] != null)
 					{
 						ctl.Attributes.Add("scale", Double.Parse(item.Attributes["scale"].Value));
+					}
+					if (item.Attributes["weight"] != null)
+					{
+						double weight = 400;
+						if (!Double.TryParse(item.Attributes["weight"].Value, out weight))
+						{
+							switch (item.Attributes["weight"].Value)
+							{
+								case "bold": weight = 700; break;
+								default: Console.WriteLine("uwt: containerlayout: warning: value '{0}' for font-weight not supported", item.Attributes["weight"].Value); break;
+							}
+						}
+						ctl.Attributes.Add("weight", weight);
 					}
 					if (item.Properties["wrap"] != null)
 					{
@@ -240,11 +280,11 @@ namespace MBS.Framework.UserInterface
 					// only two children here
 					if (item.Items.Count > 0)
 					{
-						RecursiveLoadContainer(item.Items[0], (ctl as SplitContainer).Panel1);
+						RecursiveLoadContainer(layout, item.Items[0], (ctl as SplitContainer).Panel1);
 					}
 					if (item.Items.Count > 1)
 					{
-						RecursiveLoadContainer(item.Items[1], (ctl as SplitContainer).Panel2);
+						RecursiveLoadContainer(layout, item.Items[1], (ctl as SplitContainer).Panel2);
 					}
 					break;
 				}
@@ -262,7 +302,7 @@ namespace MBS.Framework.UserInterface
 							{
 								tabPage.Text = itemTab.Properties["label"].Value;
 							}
-							RecursiveLoadContainer(itemContent, tabPage);
+							RecursiveLoadContainer(layout, itemContent, tabPage);
 							(ctl as TabContainer).TabPages.Add(tabPage);
 						}
 					}
@@ -290,13 +330,13 @@ namespace MBS.Framework.UserInterface
 				case "GtkBox":
 				{
 					ctl = new Container();
-					RecursiveLoadContainer(item, (ctl as Container));
+					RecursiveLoadContainer(layout, item, (ctl as Container));
 					break;
 				}
 				case "GtkGrid":
 				{
 					ctl = new Container();
-					RecursiveLoadContainer(item, (ctl as Container));
+					RecursiveLoadContainer(layout, item, (ctl as Container));
 					break;
 				}
 			}
@@ -311,7 +351,10 @@ namespace MBS.Framework.UserInterface
 			}
 			return ctl;
 		}
-		private void RecursiveLoadContainer(LayoutItem item, Container container)
+
+		private Dictionary<string, object> _localRefs = new Dictionary<string, object>();
+
+		private void RecursiveLoadContainer(LayoutObjectModel layout, LayoutItem item, Container container)
 		{
 			double width = 0.0, height = 0.0;
 			if (item.Properties["default_width"] != null)
@@ -352,13 +395,13 @@ namespace MBS.Framework.UserInterface
 
 			foreach (LayoutItem item2 in item.Items)
 			{
-				Control control = RecursiveLoadControl(item2);
+				Control control = RecursiveLoadControl(layout, item2);
 
 				if (container is Dialog && item2.ClassName == "GtkButtonBox")
 				{
 					foreach (LayoutItem itemButton in item2.Items)
 					{
-						Button button = (RecursiveLoadControl(itemButton) as Button);
+						Button button = (RecursiveLoadControl(layout, itemButton) as Button);
 						if (button != null)
 						{
 							(container as Dialog).Buttons.Add(button);
@@ -394,7 +437,15 @@ namespace MBS.Framework.UserInterface
 						int top_attach = 0;
 						if (propTopAttach != null) Int32.TryParse(propTopAttach.Value, out top_attach);
 
-						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new GridLayout.Constraints(top_attach, left_attach));
+						LayoutItemProperty propWidth = item2.PackingProperties["width"];
+						int width_attach = 1;
+						if (propWidth != null) Int32.TryParse(propWidth.Value, out width_attach);
+
+						LayoutItemProperty propHeight = item2.PackingProperties["height"];
+						int height_attach = 1;
+						if (propHeight != null) Int32.TryParse(propHeight.Value, out height_attach);
+
+						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new GridLayout.Constraints(top_attach, left_attach, height_attach, width_attach));
 					}
 				}
 				else
@@ -442,46 +493,9 @@ namespace MBS.Framework.UserInterface
 
 			foreach (LayoutItem item in layout.Items)
 			{
-				if (item.ClassName == "GtkTreeStore")
+				if (item.ClassName == "GtkTreeStore" || item.ClassName == "GtkListStore")
 				{
-					// ugh... copypasta
-					System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-					foreach (System.Reflection.FieldInfo fi in fis)
-					{
-						if (fi.FieldType.IsSubclassOf(typeof(TreeModel)))
-						{
-							// see if we have a control by that name in the list
-							if (fi.Name == item.ID)
-							{
-								List<Type> types = new List<Type>();
-								for (int i = 0; i < item.Items.Count; i++)
-								{
-									if (item.Items[i].ClassName == "columns")
-									{
-										for (int j = 0; j < item.Items[i].Items.Count; j++)
-										{
-											switch (item.Items[i].Items[j].ClassName)
-											{
-												case "gboolean": types.Add(typeof(bool)); break;
-												case "gint": types.Add(typeof(int)); break;
-												case "guint": types.Add(typeof(uint)); break;
-												case "glong": types.Add(typeof(long)); break;
-												case "gulong": types.Add(typeof(ulong)); break;
-												case "gint64": types.Add(typeof(long)); break;
-												case "guint64": types.Add(typeof(ulong)); break;
-												case "gfloat": types.Add(typeof(float)); break;
-												case "gdouble": types.Add(typeof(double)); break;
-												case "gchararray": types.Add(typeof(string)); break;
-												case "gpointer": types.Add(typeof(IntPtr)); break;
-												default: types.Add(typeof(string)); break;
-											}
-										}
-									}
-								}
-								fi.SetValue(this, new DefaultTreeModel(types.ToArray()));
-							}
-						}
-					}
+					CreateTreeModelForPropertyOrLocalRef(item);
 				}
 
 				if (className != null && (item.ClassName != className)) continue;
@@ -493,8 +507,100 @@ namespace MBS.Framework.UserInterface
 					Console.WriteLine("warning: layout designer did not specify a container; using GtkBox");
 					itemBox = item;
 				}
-				RecursiveLoadContainer(itemBox, this);
+				RecursiveLoadContainer(layout, itemBox, this);
 			}
+		}
+
+		private object GetPropertyOrLocalRef(string id)
+		{
+			// ugh... copypasta
+			bool found = false;
+			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			foreach (System.Reflection.FieldInfo fi in fis)
+			{
+				// see if we have a control by that name in the list
+				if (fi.Name == id)
+				{
+					object obj = fi.GetValue(this);
+					return obj;
+				}
+			}
+
+			if (!found)
+			{
+				if (_localRefs.ContainsKey(id))
+					return _localRefs[id];
+			}
+			return null;
+		}
+		private void CreateTreeModelForPropertyOrLocalRef(LayoutItem item)
+		{
+			// ugh... copypasta
+			bool found = false;
+			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			foreach (System.Reflection.FieldInfo fi in fis)
+			{
+				if (fi.FieldType.IsSubclassOf(typeof(TreeModel)))
+				{
+					// see if we have a control by that name in the list
+					if (fi.Name == item.ID)
+					{
+						fi.SetValue(this, CreateTreeModel(item));
+						found = true;
+					}
+				}
+			}
+
+			if (!found)
+			{
+				_localRefs[item.ID] = CreateTreeModel(item);
+			}
+		}
+
+		private DefaultTreeModel CreateTreeModel(LayoutItem item)
+		{
+			List<Type> types = new List<Type>();
+
+			LayoutItem columns = item.Items.FirstOfClassName("columns");
+			LayoutItem rows = item.Items.FirstOfClassName("data");
+
+			for (int j = 0; j < columns.Items.Count; j++)
+			{
+				switch (columns.Items[j].ClassName)
+				{
+					case "gboolean": types.Add(typeof(bool)); break;
+					case "gint": types.Add(typeof(int)); break;
+					case "guint": types.Add(typeof(uint)); break;
+					case "glong": types.Add(typeof(long)); break;
+					case "gulong": types.Add(typeof(ulong)); break;
+					case "gint64": types.Add(typeof(long)); break;
+					case "guint64": types.Add(typeof(ulong)); break;
+					case "gfloat": types.Add(typeof(float)); break;
+					case "gdouble": types.Add(typeof(double)); break;
+					case "gchararray": types.Add(typeof(string)); break;
+					case "gpointer": types.Add(typeof(IntPtr)); break;
+					default: types.Add(typeof(string)); break;
+				}
+			}
+
+			DefaultTreeModel dtm = new DefaultTreeModel(types.ToArray());
+			if (rows != null)
+			{
+				for (int j = 0; j < rows.Items.Count; j++)
+				{
+					// rows
+					TreeModelRow row = new TreeModelRow();
+					for (int k = 0; k < rows.Items[j].Items.Count; k++)
+					{
+						// cols
+						// oh god make it stop
+						LayoutItem col = rows.Items[j].Items[k];
+						row.RowColumns.Add(new TreeModelRowColumn(dtm.Columns[Int32.Parse(col.Attributes["id"].Value)], col.Value));
+					}
+					dtm.Rows.Add(row);
+				}
+			}
+			return dtm;
 		}
 	}
 }

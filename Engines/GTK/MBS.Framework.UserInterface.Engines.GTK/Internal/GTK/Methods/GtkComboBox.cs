@@ -44,6 +44,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_combo_box_get_active_iter(IntPtr /*GtkComboBox*/ handle, ref Structures.GtkTreeIter iter);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_combo_box_set_active_iter(IntPtr /*GtkComboBox*/ handle, ref Structures.GtkTreeIter iter);
 	}
 }
 

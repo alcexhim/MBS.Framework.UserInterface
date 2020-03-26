@@ -34,6 +34,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			gc_Changed_Handler = new Action<IntPtr>(gc_Changed);
 		}
 
+		protected override string GetControlTextInternal(Control control)
+		{
+			ComboBox cbo = (control as ComboBox);
+			if (cbo.SelectedItem != null)
+			{
+				if (cbo.SelectedItem.RowColumns.Count > 0)
+				{
+					return cbo.SelectedItem.RowColumns[0 /*cbo.DisplayIndex*/].Value?.ToString();
+				}
+			}
+			return null;
+		}
+
 		public TreeModel GetModel()
 		{
 			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
@@ -79,7 +92,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void SetSelectedItem(TreeModelRow value)
 		{
-
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(value);
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_active_iter(handle, ref hIter);
 		}
 
 		private Action<IntPtr> gc_Changed_Handler = null;

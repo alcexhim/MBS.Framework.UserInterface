@@ -80,6 +80,12 @@ namespace MBS.Framework.UserInterface.Controls
 			StockType = type;
 			mvarResponseValue = responseValue;
 		}
+		public Button(StockType type, EventHandler onClick)
+		{
+			StockType = type;
+			if (onClick != null)
+				Click += onClick;
+		}
 
 		public MBS.Framework.UserInterface.Drawing.Image Image { get; set; } = null;
 

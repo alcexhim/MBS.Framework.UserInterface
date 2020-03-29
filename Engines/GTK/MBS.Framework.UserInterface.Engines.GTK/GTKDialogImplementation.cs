@@ -159,7 +159,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(widget) as Window);
 			if (window != null)
 			{
-				System.ComponentModel.CancelEventArgs e = new System.ComponentModel.CancelEventArgs();
+				WindowClosingEventArgs e = new WindowClosingEventArgs(WindowCloseReason.UserClosing);
 				InvokeMethod(window, "OnClosing", e);
 				if (e.Cancel)
 					return true;

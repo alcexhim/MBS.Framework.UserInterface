@@ -209,8 +209,8 @@ namespace MBS.Framework.UserInterface
 			if (Deactivate != null) Deactivate (this, e);
 		}
 
-		public event CancelEventHandler Closing;
-		protected virtual void OnClosing(CancelEventArgs e)
+		public event WindowClosingEventHandler Closing;
+		protected virtual void OnClosing(WindowClosingEventArgs e)
 		{
 			if (Closing != null) Closing(this, e);
 		}

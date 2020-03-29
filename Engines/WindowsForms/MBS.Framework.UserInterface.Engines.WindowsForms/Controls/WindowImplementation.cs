@@ -168,9 +168,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
 		{
-			System.ComponentModel.CancelEventArgs ce = new System.ComponentModel.CancelEventArgs();
+			WindowClosingEventArgs ce = new WindowClosingEventArgs(CloseReasonToWindowCloseReason(e.CloseReason));
 			InvokeMethod((((System.Windows.Forms.Form)sender).Tag as Window), "OnClosing", ce);
 			e.Cancel = ce.Cancel;
+		}
+
+		private static WindowCloseReason CloseReasonToWindowCloseReason(System.Windows.Forms.CloseReason closeReason)
+		{
+			switch (closeReason)
+			{
+				case System.Windows.Forms.CloseReason.ApplicationExitCall: return WindowCloseReason.ApplicationStop;
+				case System.Windows.Forms.CloseReason.FormOwnerClosing: return WindowCloseReason.OwnerClosing;
+				case System.Windows.Forms.CloseReason.MdiFormClosing: return WindowCloseReason.MdiParentClosing;
+				case System.Windows.Forms.CloseReason.None: return WindowCloseReason.None;
+				case System.Windows.Forms.CloseReason.TaskManagerClosing: return WindowCloseReason.ForcedClosing;
+				case System.Windows.Forms.CloseReason.UserClosing: return WindowCloseReason.UserClosing;
+				case System.Windows.Forms.CloseReason.WindowsShutDown: return WindowCloseReason.SystemShutdown;
+			}
+			return WindowCloseReason.Unknown;
 		}
 
 		private System.Windows.Forms.ToolStripItem CreateToolStripItem(MenuItem m)

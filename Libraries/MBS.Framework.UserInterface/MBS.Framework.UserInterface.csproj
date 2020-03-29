@@ -253,6 +253,8 @@
     <Compile Include="Feature.cs" />
     <Compile Include="KnownFeatures.cs" />
     <Compile Include="EnginePlugin.cs" />
+    <Compile Include="WindowCloseReason.cs" />
+    <Compile Include="WindowClosingEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

@@ -57,7 +57,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 			}
 		}
 
-		private LayoutItem LoadLayoutItem(MarkupTagElement tag, MarkupTagElement tagPacking = null)
+		private LayoutItem LoadLayoutItem(MarkupTagElement tag, MarkupTagElement tagPacking = null, MarkupTagElement tagAttributes = null)
 		{
 			LayoutItem item = new LayoutItem();
 
@@ -78,9 +78,10 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					{
 						MarkupTagElement tagObject = (tag1.Elements["object"] as MarkupTagElement);
 						MarkupTagElement tagPacking1 = (tag1.Elements["packing"] as MarkupTagElement);
+						MarkupTagElement tagAttributes1 = (tag1.Elements["attributes"] as MarkupTagElement);
 						if (tagObject != null)
 						{
-							LayoutItem itemChild = LoadLayoutItem(tagObject, tagPacking1);
+							LayoutItem itemChild = LoadLayoutItem(tagObject, tagPacking1, tagAttributes1);
 							item.Items.Add(itemChild);
 						}
 						break;
@@ -98,7 +99,14 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 							if (attName == null) continue;
 
 							string value = null;
-							if (attValue != null) value = attValue.Value;
+							if (attValue != null)
+							{
+								value = attValue.Value;
+							}
+							else
+							{
+								value = tagAttr.Value;
+							}
 
 							item.Attributes.Add(attName.Value, value);
 						}
@@ -128,6 +136,31 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					if (attName == null) continue;
 
 					item.PackingProperties.Add(attName.Value, tagPackingProperty.Value);
+				}
+			}
+			if (tagAttributes != null)
+			{
+				foreach (MarkupElement elAttr in tagAttributes.Elements)
+				{
+					MarkupTagElement tagAttr = (elAttr as MarkupTagElement);
+					if (tagAttr == null) continue;
+
+					MarkupAttribute attName = tagAttr.Attributes["name"];
+					MarkupAttribute attValue = tagAttr.Attributes["value"];
+
+					if (attName == null) continue;
+
+					string value = null;
+					if (attValue != null)
+					{
+						value = attValue.Value;
+					}
+					else
+					{
+						value = tagAttr.Value;
+					}
+
+					item.Attributes.Add(attName.Value, value);
 				}
 			}
 

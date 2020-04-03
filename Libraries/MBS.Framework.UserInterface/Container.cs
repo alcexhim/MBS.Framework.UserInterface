@@ -145,6 +145,14 @@ namespace MBS.Framework.UserInterface
 			Control ctl = null;
 			switch (item.ClassName)
 			{
+				case "GtkFrame":
+				{
+					ctl = new GroupBox();
+					RecursiveLoadContainer(layout, item.Items[0], ctl as Container);
+					ctl.Text = item.Items[1].Properties["label"].Value;
+					break;
+				}
+				case "GtkAlignment":
 				case "GtkScrolledWindow":
 				{
 					if (item.Items.Count > 0)
@@ -317,11 +325,25 @@ namespace MBS.Framework.UserInterface
 				case "GtkTreeView":
 				{
 					ctl = new ListView();
+					if (item.Properties["model"] != null)
+					{
+						DefaultTreeModel tm = GetPropertyOrLocalRef(item.Properties["model"].Value) as DefaultTreeModel;
+						(ctl as ListView).Model = tm;
+					}
 					foreach (LayoutItem item2 in item.Items)
 					{
 						if (item2.ClassName == "GtkTreeViewColumn")
 						{
-							ListViewColumn ch = new ListViewColumnText(null, item2.Properties["title"]?.Value);
+							TreeModelColumn col = null;
+							if (item2.Items.Count > 0)
+							{
+								if (item2.Items[0].Attributes["text"] != null)
+								{
+									int colindex = Int32.Parse(item2.Items[0].Attributes["text"].Value);
+									col = (ctl as ListView).Model?.Columns[colindex];
+								}
+							}
+							ListViewColumn ch = new ListViewColumnText(col, item2.Properties["title"]?.Value);
 							(ctl as ListView).Columns.Add(ch);
 						}
 					}
@@ -343,7 +365,8 @@ namespace MBS.Framework.UserInterface
 
 			if (ctl != null)
 			{
-				ctl.Name = item.ID;
+				if (item.ID != null)
+					ctl.Name = item.ID;
 			}
 			else
 			{
@@ -418,7 +441,13 @@ namespace MBS.Framework.UserInterface
 					{
 						control.Padding = new Padding(Int32.Parse(propPadding.Value));
 					}
-					if (container.Layout is BoxLayout)
+
+					if (container.Layout == null)
+					{
+						container.Layout = new BoxLayout(Orientation.Vertical);
+						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(true, true));
+					}
+					else if (container.Layout is BoxLayout)
 					{
 						LayoutItemProperty propExpand = item2.PackingProperties["expand"];
 						bool expand = (propExpand != null && propExpand.Value == "True");
@@ -464,18 +493,19 @@ namespace MBS.Framework.UserInterface
 			foreach (Control ctl in this.Controls)
 			{
 				if (ctl.Name == ID) return ctl;
-			}
-			if (recurse)
-			{
-				foreach (Control ctl in this.Controls)
+				if (recurse)
 				{
-					if (ctl is Container) {
-						Control ctl2 = (ctl as Container).GetControlByID (ID, recurse);
+					if (ctl is Container)
+					{
+						Control ctl2 = (ctl as Container).GetControlByID(ID, recurse);
 						if (ctl2 != null) return ctl2;
-					} else if (ctl is TabContainer) {
+					}
+					else if (ctl is TabContainer)
+					{
 						TabContainer tbs = (ctl as TabContainer);
-						foreach (TabPage page in tbs.TabPages) {
-							Control ctl2 = (page as Container).GetControlByID (ID, recurse);
+						foreach (TabPage page in tbs.TabPages)
+						{
+							Control ctl2 = (page as Container).GetControlByID(ID, recurse);
 							if (ctl2 != null) return ctl2;
 						}
 					}
@@ -496,6 +526,7 @@ namespace MBS.Framework.UserInterface
 				if (item.ClassName == "GtkTreeStore" || item.ClassName == "GtkListStore")
 				{
 					CreateTreeModelForPropertyOrLocalRef(item);
+					continue;
 				}
 
 				if (className != null && (item.ClassName != className)) continue;

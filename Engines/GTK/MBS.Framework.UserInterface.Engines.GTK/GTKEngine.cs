@@ -1841,7 +1841,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			IntPtr hctrl = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
 			IntPtr hCtxTextBox = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hctrl);
-			// IntPtr hCtxTextBox = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
+			IntPtr hCtxDefault = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
 
 			IntPtr hPathTextBox = Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_new();
 			Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_append_type(hPathTextBox, Internal.GTK.Methods.GtkEntry.gtk_entry_get_type());
@@ -1849,13 +1849,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_set_path(hCtxTextBox, hPathTextBox);
 
 			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
+			UpdateSystemColor(SystemColor.WindowBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
-			UpdateSystemColor(SystemColor.TextBoxForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			UpdateSystemColor(SystemColor.WindowForeground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
-			UpdateSystemColor(SystemColor.HighlightBackgroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
-			UpdateSystemColor(SystemColor.HighlightForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_bg_color", ref rgba);
+			UpdateSystemColor(SystemColor.HighlightBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 		}
 
 		protected override bool ShowHelpInternal(HelpTopic topic)

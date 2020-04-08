@@ -50,9 +50,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void UpdateSystemColorsInternal()
 		{
-			UpdateSystemColor(SystemColor.HighlightBackgroundColor, System.Drawing.SystemColors.Highlight);
-			UpdateSystemColor(SystemColor.HighlightForegroundColor, System.Drawing.SystemColors.HighlightText);
-			UpdateSystemColor(SystemColor.TextBoxForegroundColor, System.Drawing.SystemColors.WindowText);
+			UpdateSystemColor(SystemColor.HighlightBackground, System.Drawing.SystemColors.Highlight);
+			UpdateSystemColor(SystemColor.HighlightForeground, System.Drawing.SystemColors.HighlightText);
+			UpdateSystemColor(SystemColor.WindowForeground, System.Drawing.SystemColors.WindowText);
 		}
 
 		public static System.Drawing.ContentAlignment HorizontalVerticalAlignmentToContentAlignment(HorizontalAlignment ha, VerticalAlignment va)

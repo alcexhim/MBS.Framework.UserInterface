@@ -25,8 +25,9 @@ namespace MBS.Framework.UserInterface
 {
 	public sealed class SystemColors
 	{
-		public static Color HighlightBackgroundColor { get { return Application.Engine.GetSystemColor(SystemColor.HighlightBackgroundColor); } }
-		public static Color HighlightForegroundColor { get { return Application.Engine.GetSystemColor(SystemColor.HighlightForegroundColor); } }
-		public static Color TextBoxForegroundColor { get { return Application.Engine.GetSystemColor(SystemColor.TextBoxForegroundColor); } }
+		public static Color HighlightBackground { get { return Application.Engine.GetSystemColor(SystemColor.HighlightBackground); } }
+		public static Color HighlightForeground { get { return Application.Engine.GetSystemColor(SystemColor.HighlightForeground); } }
+		public static Color WindowBackground { get { return Application.Engine.GetSystemColor(SystemColor.WindowBackground); } }
+		public static Color WindowForeground { get { return Application.Engine.GetSystemColor(SystemColor.WindowForeground); } }
 	}
 }

@@ -64,6 +64,17 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		protected abstract double GetAdjustmentValueInternal(Orientation orientation);
+		public double GetAdjustmentValue(Orientation orientation)
+		{
+			return GetAdjustmentValueInternal(orientation);
+		}
+		protected abstract void SetAdjustmentValueInternal(Orientation orientation, double value);
+		public void SetAdjustmentValue(Orientation orientation, double value)
+		{
+			SetAdjustmentValueInternal(orientation, value);
+		}
+
 		private Control mvarControl = null;
 		public Control Control { get { return mvarControl; } }
 
@@ -74,6 +85,17 @@ namespace MBS.Framework.UserInterface
 		{
 			mvarEngine = engine;
 			mvarControl = control;
+		}
+
+		protected abstract Dimension2D GetScrollBoundsInternal();
+		public Dimension2D GetScrollBounds()
+		{
+			return GetScrollBoundsInternal();
+		}
+		protected abstract void SetScrollBoundsInternal(Dimension2D value);
+		public void SetScrollBounds(Dimension2D value)
+		{
+			SetScrollBoundsInternal(value);
 		}
 
 		/// <summary>

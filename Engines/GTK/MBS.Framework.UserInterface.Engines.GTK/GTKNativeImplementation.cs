@@ -187,7 +187,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override void SetFocusInternal ()
 		{
-			IntPtr hCtrl = (Handle as GTKNativeControl).Handle;
+			IntPtr hCtrl = (Handle as GTKNativeControl).EventHandle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_grab_focus (hCtrl);
 		}
 
@@ -348,7 +348,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				if (hEventBox != IntPtr.Zero)
 					return hEventBox;
 			}
-			return fakeHandle.Handle;
+			return fakeHandle.EventHandle;
 		}
 
 		private void gc_show(IntPtr /*GtkWidget*/ widget)
@@ -608,6 +608,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				isFocus = isFocus || isFocus2;
 			}
 			return hasFocus || isFocus;
+		}
+
+		protected override double GetAdjustmentValueInternal(Orientation orientation)
+		{
+			// FIXME: only implemented for certain controls
+			return 0.0;
+		}
+		protected override void SetAdjustmentValueInternal(Orientation orientation, double value)
+		{
+			// FIXME: only implemented for certain controls
+		}
+		protected override Dimension2D GetScrollBoundsInternal()
+		{
+			// FIXME: only implemented for certain controls
+			return Dimension2D.Empty;
+		}
+		protected override void SetScrollBoundsInternal(Dimension2D value)
+		{
+			// FIXME: only implemented for certain controls
 		}
 
 	}

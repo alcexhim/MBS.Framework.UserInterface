@@ -44,6 +44,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkPixbuf*/ gdk_pixbuf_loader_get_pixbuf(IntPtr /*GdkPixbufLoader*/ loader);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*cairo_t*/ gdk_drawing_context_get_cairo_context(IntPtr /*GdkDrawingContext*/ context);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*cairo_t*/ gdk_cairo_create(IntPtr /*GdkWindow*/ window);
 	}
 }
 

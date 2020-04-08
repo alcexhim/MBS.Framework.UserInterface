@@ -64,6 +64,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_show_page(IntPtr /*cairo_t*/ cr);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_translate(IntPtr cr, double x, double y);
+
 		#region Line
 		/// <summary>
 		/// Sets the current line width within the cairo context. The line width value specifies the diameter of a pen that is circular in user space, (though device-space pen may be an ellipse in general due to scaling/shear/rotation of the CTM).

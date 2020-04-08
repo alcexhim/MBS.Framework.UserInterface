@@ -6,6 +6,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 	public class GTKNativeControl : NativeControl
 	{
 		public IntPtr Handle { get; private set; } = IntPtr.Zero;
+		public IntPtr EventHandle { get; private set; } = IntPtr.Zero;
+
 		public IntPtr[] AdditionalHandles
 		{
 			get
@@ -33,6 +35,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		public GTKNativeControl(IntPtr handle, params KeyValuePair<string, IntPtr>[] namedHandles)
 		{
 			this.Handle = handle;
+			this.EventHandle = handle;
+			foreach (KeyValuePair<string, IntPtr> kvp in namedHandles)
+			{
+				SetNamedHandle(kvp.Key, kvp.Value);
+			}
+		}
+		public GTKNativeControl(IntPtr handle, IntPtr eventHandle, params KeyValuePair<string, IntPtr>[] namedHandles)
+		{
+			this.Handle = handle;
+			this.EventHandle = eventHandle;
 			foreach (KeyValuePair<string, IntPtr> kvp in namedHandles)
 			{
 				SetNamedHandle(kvp.Key, kvp.Value);

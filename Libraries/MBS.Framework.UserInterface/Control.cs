@@ -95,7 +95,45 @@ namespace MBS.Framework.UserInterface
 				return Parent.Layout.GetControlBounds(this);
 			}
 		}
-		
+
+		private Dimension2D _ScrollBounds = Dimension2D.Empty;
+		public Dimension2D ScrollBounds
+		{
+			get
+			{
+				return ControlImplementation?.GetScrollBounds();
+			}
+			set
+			{
+				if (_ScrollBounds != value)
+				{
+					// only notify ControlImplementation if the property has changed
+					// otherwise, at least for GTKEngine ("draw" signal),
+					// calling this in OnPaint results in infinite loop of calling OnPaint for whatever reason
+					ControlImplementation.SetScrollBounds(value);
+				}
+				_ScrollBounds = value;
+			}
+		}
+
+		private Adjustment _HorizontalAdjustment = null;
+		public Adjustment HorizontalAdjustment
+		{
+			get
+			{
+				if (_HorizontalAdjustment == null) _HorizontalAdjustment = new Adjustment(this, Orientation.Horizontal);
+				return _HorizontalAdjustment;
+			}
+		}
+		private Adjustment _VerticalAdjustment = null;
+		public Adjustment VerticalAdjustment
+		{
+			get
+			{
+				if (_VerticalAdjustment == null) _VerticalAdjustment = new Adjustment(this, Orientation.Vertical);
+				return _VerticalAdjustment;
+			}
+		}
 
 		private Vector2D mvarLocation = new Vector2D(0, 0);
 		public Vector2D Location { get { return mvarLocation; } set { mvarLocation = value; } }

@@ -1,10 +1,10 @@
 ﻿//
-//  CustomImplementation.cs
+//  Adjustment.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,38 +19,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using MBS.Framework.Drawing;
-
 namespace MBS.Framework.UserInterface
 {
-	public abstract class CustomImplementation : ControlImplementation
+	public class Adjustment
 	{
-		public CustomImplementation(Engine engine, Control control) : base(engine, control)
+		private Control _parent = null;
+		private Orientation _orientation = Orientation.Horizontal;
+		internal Adjustment(Control parent, Orientation orientation)
 		{
+			_parent = parent;
+			_orientation = orientation;
 		}
 
-		protected override Dimension2D GetScrollBoundsInternal()
+		public double Value
 		{
-			return Dimension2D.Empty;
-		}
-		protected override void SetScrollBoundsInternal(Dimension2D value)
-		{
-		}
-
-		protected override double GetAdjustmentValueInternal(Orientation orientation)
-		{
-			// FIXME: not implemented
-			return 0.0;
-		}
-		protected override void SetAdjustmentValueInternal(Orientation orientation, double value)
-		{
-			// FIXME: not implemented
-		}
-
-		protected override bool SupportsEngineInternal(Type engineType)
-		{
-			return true;
+			get
+			{
+				return (_parent.ControlImplementation?.GetAdjustmentValue(_orientation)).GetValueOrDefault();
+			}
+			set
+			{
+				_parent.ControlImplementation?.SetAdjustmentValue(_orientation, value);
+			}
 		}
 	}
 }
-

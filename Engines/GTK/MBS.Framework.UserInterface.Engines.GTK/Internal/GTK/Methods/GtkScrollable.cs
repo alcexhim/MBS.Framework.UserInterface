@@ -1,10 +1,10 @@
 ﻿//
-//  GtkLayout.cs
+//  GtkScrollable.cs
 //
 //  Author:
 //       Mike Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,15 +23,16 @@ using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
-	internal static class GtkLayout
+	internal class GtkScrollable
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GtkLayout*/ gtk_layout_new(IntPtr /*GtkAdjustment*/ hadjustment, IntPtr /*GtkAdjustment*/ vadjustment);
+		public static extern IntPtr /*GtkAdjustment*/ gtk_scrollable_get_hadjustment(IntPtr /*GtkScrollable*/ scrollable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_layout_set_size(IntPtr /*GtkLayout*/ layout, uint width, uint height);
+		public static extern void gtk_scrollable_set_hadjustment(IntPtr /*GtkScrollable*/ scrollable, IntPtr /*GtkAdjustment*/ hadjustment);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_layout_get_size(IntPtr /*GtkLayout*/ layout, out uint width, out uint height);
+		public static extern IntPtr /*GtkAdjustment*/ gtk_scrollable_get_vadjustment(IntPtr /*GtkScrollable*/ scrollable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr /*GdkWindow*/ gtk_layout_get_bin_window(IntPtr /*GtkLayout*/ layout);
+		public static extern void gtk_scrollable_set_vadjustment(IntPtr /*GtkScrollable*/ scrollable, IntPtr /*GtkAdjustment*/ vadjustment);
+
 	}
 }

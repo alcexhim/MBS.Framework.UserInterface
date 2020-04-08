@@ -206,6 +206,7 @@
     <Compile Include="Internal\GTK\Methods\GtkSpinButton.cs" />
     <Compile Include="Dialogs\TaskDialogImplementation.cs" />
     <Compile Include="GTKPlugin.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkScrollable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

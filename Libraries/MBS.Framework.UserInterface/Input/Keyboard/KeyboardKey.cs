@@ -68,7 +68,7 @@ namespace MBS.Framework.UserInterface.Input.Keyboard
 		Delete = 0x2E,
 		Divide = 0x6F,
 		End = 0x23,
-		Enter = 0xD,
+		Enter = 0xD, // this value is same as KeyboardKey.Return but on some platforms it returns (pun intended?) a different key code
 		EraseEof = 0xF9,
 		Escape = 0x1B,
 		Execute = 0x2B,

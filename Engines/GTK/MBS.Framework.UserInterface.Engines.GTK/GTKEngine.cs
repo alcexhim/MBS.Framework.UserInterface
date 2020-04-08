@@ -660,7 +660,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 92: key = KeyboardKey.Backslash; break;
 				case 124: key = KeyboardKey.Pipe; break;
 				case 63: key = KeyboardKey.Question; modifierKeys |= KeyboardModifierKey.Shift; break;
-				case 65293: key = KeyboardKey.Enter; break;
+				case 65293: key = KeyboardKey.Return; break;
 				case 65505: key = KeyboardKey.LShiftKey; break;
 				case 65506: key = KeyboardKey.RShiftKey; break;
 				case 65507: key = KeyboardKey.LControlKey; break;
@@ -687,6 +687,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 65307: key = KeyboardKey.Escape; break;
 				case 65288: key = KeyboardKey.Back; break;
 				case 65289: key = KeyboardKey.Tab; break;
+
+				case 65407: key = KeyboardKey.NumLock; break;
+				case 65421: key = KeyboardKey.Enter; break;
+				case 65450: key = KeyboardKey.Multiply; break;
+				case 65451: key = KeyboardKey.Add; break;
+				case 65453: key = KeyboardKey.Subtract; break;
+				case 65454: key = KeyboardKey.Decimal; break;
+				case 65455: key = KeyboardKey.Divide; break;
+
 				case 65509: key = KeyboardKey.CapsLock; break;
 				case 269025048: key = KeyboardKey.BrowserHome; break;
 				default:

@@ -60,6 +60,7 @@
     <Compile Include="Layouts\AbsoluteLayout.cs" />
     <Compile Include="Layouts\FlowLayout.cs" />
     <Compile Include="Layouts\BoxLayout.cs" />
+    <Compile Include="Layouts\ListLayout.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="ObjectModels\Theming\Fill.cs" />
     <Compile Include="ObjectModels\Theming\Metrics\PaddingMetric.cs" />

@@ -85,6 +85,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					}
 				}
 			}
+			else if (layout is ListLayout)
+			{
+				IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, hListBoxRow);
+			}
 			else
 			{
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
@@ -149,6 +155,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				hContainer = Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_new();
 				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.None);
+			}
+			else if (layout is Layouts.ListLayout)
+			{
+				hContainer = Internal.GTK.Methods.GtkListBox.gtk_list_box_new();
+
+				Internal.GTK.Methods.GtkListBox.gtk_list_box_set_selection_mode(hContainer, GTKEngine.SelectionModeToGtkSelectionMode((layout as ListLayout).SelectionMode));
+
+				if (control.BorderStyle == ControlBorderStyle.Fixed3D || control.BorderStyle == ControlBorderStyle.FixedSingle)
+				{
+					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hContainer), "frame");
+				}
 			}
 
 			if (hContainer != IntPtr.Zero)

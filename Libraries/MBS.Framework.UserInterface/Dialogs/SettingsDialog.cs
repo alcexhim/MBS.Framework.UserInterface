@@ -162,7 +162,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 			lblNoOptions.HorizontalAlignment = HorizontalAlignment.Center;
 			lblNoOptions.VerticalAlignment = VerticalAlignment.Middle;
 			ctDefault.Controls.Add(lblNoOptions, new BoxLayout.Constraints(true, true));
-			ctDefault.Scrollable = true;
 
 			if (sidebar == null) {
 				vpaned.Panel2.Controls.Add (ctDefault, new BoxLayout.Constraints (true, true));

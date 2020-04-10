@@ -78,6 +78,8 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public ControlBorderStyle BorderStyle { get; set; } = ControlBorderStyle.Default;
+
 		public string Name { get; set; } = String.Empty;
 
 		public Rectangle ClientRectangle

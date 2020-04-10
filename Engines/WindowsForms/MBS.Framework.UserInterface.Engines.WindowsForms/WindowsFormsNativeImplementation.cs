@@ -258,5 +258,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 		}
 
+		protected override double GetAdjustmentValueInternal(Orientation orientation)
+		{
+			return 0.0;
+		}
+		protected override void SetAdjustmentValueInternal(Orientation orientation, double value)
+		{
+		}
+
+		protected override Dimension2D GetScrollBoundsInternal()
+		{
+			return Dimension2D.Empty;
+		}
+		protected override void SetScrollBoundsInternal(Dimension2D bounds)
+		{
+		}
+
 	}
 }

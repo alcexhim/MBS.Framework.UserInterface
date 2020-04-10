@@ -27,7 +27,8 @@ namespace MBS.Framework.UserInterface
 		public double MinimumValue { get; set; } = 0.0;
 		public double MaximumValue { get; set; } = 0.0;
 
-		public RangeSetting(string title, double defaultValue = 0.0, double minimumValue = 0.0, double maximumValue = 0.0) : base(title, defaultValue) {
+		public RangeSetting(string title, double defaultValue = 0.0, double minimumValue = 0.0, double maximumValue = 0.0) : base(title, defaultValue)
+		{
 			MinimumValue = minimumValue;
 			MaximumValue = maximumValue;
 		}
@@ -39,9 +40,11 @@ namespace MBS.Framework.UserInterface
 		public GroupSetting(string title, Setting[] options = null)
 		{
 			Title = title;
-			if (options != null) {
-				foreach (Setting option in options) {
-					Options.Add (option);
+			if (options != null)
+			{
+				foreach (Setting option in options)
+				{
+					Options.Add(option);
 				}
 			}
 		}
@@ -52,32 +55,39 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
-		public override void SetValue (object value)
+		public override void SetValue(object value)
 		{
 			bool val = false;
-			if (value != null) {
-				val = (value.ToString ().ToLower ().Equals ("true"));
+			if (value != null)
+			{
+				val = (value.ToString().ToLower().Equals("true"));
 			}
-			base.SetValue (val);
+			base.SetValue(val);
 		}
 	}
 	public class ChoiceSetting : Setting
 	{
-		public ChoiceSetting(string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base (title, null)
+		public ChoiceSetting(string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base(title, null)
 		{
-			if (values == null) {
+			if (values == null)
+			{
 				values = new ChoiceSettingValue[0];
 			}
-			if (defaultValue != null) {
-				if (defaultValue.Value != null) {
-					base.DefaultValue = defaultValue.Value.ToString ();
-				} else {
+			if (defaultValue != null)
+			{
+				if (defaultValue.Value != null)
+				{
+					base.DefaultValue = defaultValue.Value.ToString();
+				}
+				else
+				{
 					base.DefaultValue = null;
 				}
 			}
-			
-			foreach (ChoiceSettingValue value in values) {
-				ValidValues.Add (value);
+
+			foreach (ChoiceSettingValue value in values)
+			{
+				ValidValues.Add(value);
 			}
 		}
 
@@ -91,7 +101,7 @@ namespace MBS.Framework.UserInterface
 			public string Title { get; set; } = String.Empty;
 			public object Value { get; set; } = null;
 
-			public ChoiceSettingValue(string title, object value) 
+			public ChoiceSettingValue(string title, object value)
 			{
 				Title = title;
 				Value = value;
@@ -111,12 +121,14 @@ namespace MBS.Framework.UserInterface
 	}
 	public abstract class Setting
 	{
-		public Setting(string title, object defaultValue = null) {
+		public Setting(string title, object defaultValue = null)
+		{
 			Title = title;
 			DefaultValue = defaultValue;
 			mvarValue = defaultValue;
 		}
 		public string Title { get; set; } = String.Empty;
+		public string Description { get; set; } = String.Empty;
 
 		public class SettingCollection
 			: System.Collections.ObjectModel.Collection<Setting>
@@ -126,8 +138,10 @@ namespace MBS.Framework.UserInterface
 			{
 				get
 				{
-					foreach (Setting item in this) {
-						if (item.Title.Replace("_", String.Empty).Replace (' ', '_').Equals (name)) { 
+					foreach (Setting item in this)
+					{
+						if (item.Title.Replace("_", String.Empty).Replace(' ', '_').Equals(name))
+						{
 							return item;
 						}
 					}
@@ -144,21 +158,27 @@ namespace MBS.Framework.UserInterface
 
 		private object mvarValue = null;
 
-		public virtual object GetValue() {
+		public virtual object GetValue()
+		{
 			return mvarValue;
 		}
-		public virtual void SetValue(object value) {
+		public virtual void SetValue(object value)
+		{
 			mvarValue = value;
 		}
-		public T GetValue<T>(T defaultValue = default(T)) {
-			try {
+		public T GetValue<T>(T defaultValue = default(T))
+		{
+			try
+			{
 				return (T)GetValue();
 			}
-			catch {
+			catch
+			{
 				return defaultValue;
 			}
 		}
-		public void SetValue<T>(T value) {
+		public void SetValue<T>(T value)
+		{
 			mvarValue = value;
 		}
 	}

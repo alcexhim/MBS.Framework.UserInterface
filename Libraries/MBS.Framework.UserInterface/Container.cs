@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Container : Control, IVirtualControlContainer
+	public class Container : Control, IVirtualControlContainer, IControlContainer
 	{
 		public Container()
 		{
@@ -196,7 +196,7 @@ namespace MBS.Framework.UserInterface
 					}
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
-						(ctl as Button).StockType = (StockType) Application.Engine.StockTypeFromString(item.Properties["label"].Value);
+						(ctl as Button).StockType = (StockType)Application.Engine.StockTypeFromString(item.Properties["label"].Value);
 					}
 					break;
 				}
@@ -215,7 +215,7 @@ namespace MBS.Framework.UserInterface
 				case "GtkAccelLabel":
 				{
 					ctl = new Label();
-					
+
 					if (item.Properties["label"] != null)
 					{
 						ctl.Text = item.Properties["label"].Value;
@@ -299,7 +299,7 @@ namespace MBS.Framework.UserInterface
 				case "GtkNotebook":
 				{
 					ctl = new TabContainer();
-					for (int i = 0;  i < item.Items.Count; i += 2)
+					for (int i = 0; i < item.Items.Count; i += 2)
 					{
 						LayoutItem itemContent = item.Items[i];
 						LayoutItem itemTab = item.Items[i + 1];

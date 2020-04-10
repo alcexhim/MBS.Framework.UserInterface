@@ -34,6 +34,9 @@ namespace MBS.Framework.UserInterface
 			this.Decorated = false;
 			this.Layout = new BoxLayout(Orientation.Vertical);
 			this.StartPosition = WindowStartPosition.Center;
+			this.CommandDisplayMode = CommandDisplayMode.None;
+			this.MenuBar.Visible = false;
+			this.StatusBar.Visible = false;
 			
 			PictureFrame image = new PictureFrame();
 			if (System.IO.File.Exists("splash.bmp"))

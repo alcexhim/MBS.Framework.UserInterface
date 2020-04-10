@@ -36,6 +36,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 		}
 
+		protected override void InvalidateInternal(int x, int y, int width, int height)
+		{
+			tbs.Invalidate(x, y, width, height);
+		}
+
+		protected override void DestroyInternal()
+		{
+			tbs.Destroy();
+		}
+
 		protected override Dimension2D GetControlSizeInternal()
 		{
 			return tbs.Size;
@@ -100,7 +110,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 							if (cmd.StockType == StockType.None) {
 								btn = new Button (cmd.Title);
 							} else {
-								btn = new Button ((ButtonStockType)cmd.StockType);
+								btn = new Button ((StockType)cmd.StockType);
 							}
 							btn.FocusOnClick = false;
 							btn.AlwaysShowImage = true; // .DisplayStyle = ButtonDisplayStyle.ImageAndText;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Windows.Forms;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
@@ -16,27 +17,42 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
 
+		public static System.Windows.Forms.DialogResult DialogResultToSWFDialogResult(DialogResult dialogResult)
+		{
+			switch (dialogResult)
+			{
+			case DialogResult.Abort: return System.Windows.Forms.DialogResult.Abort;
+			case DialogResult.Cancel: return System.Windows.Forms.DialogResult.Cancel;
+			case DialogResult.Ignore: return System.Windows.Forms.DialogResult.Ignore;
+			case DialogResult.No: return System.Windows.Forms.DialogResult.No;
+			case DialogResult.None: return System.Windows.Forms.DialogResult.None;
+			case DialogResult.OK: return System.Windows.Forms.DialogResult.OK;
+			case DialogResult.Retry: return System.Windows.Forms.DialogResult.Retry;
+			case DialogResult.Yes: return System.Windows.Forms.DialogResult.Yes;
+			}
+			return System.Windows.Forms.DialogResult.None;
+		}
 		public static DialogResult SWFDialogResultToDialogResult(System.Windows.Forms.DialogResult dialogResult)
 		{
 			switch (dialogResult)
 			{
-				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
-				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
-				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
-				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
-				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
-				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
-				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
-				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+			case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+			case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+			case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+			case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+			case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+			case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+			case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+			case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
 			}
 			return DialogResult.None;
 		}
 
 		protected override void UpdateSystemColorsInternal()
 		{
-			UpdateSystemColor(SystemColor.HighlightBackgroundColor, System.Drawing.SystemColors.Highlight);
-			UpdateSystemColor(SystemColor.HighlightForegroundColor, System.Drawing.SystemColors.HighlightText);
-			UpdateSystemColor(SystemColor.TextBoxForegroundColor, System.Drawing.SystemColors.WindowText);
+			UpdateSystemColor(SystemColor.HighlightBackground, System.Drawing.SystemColors.Highlight);
+			UpdateSystemColor(SystemColor.HighlightForeground, System.Drawing.SystemColors.HighlightText);
+			UpdateSystemColor(SystemColor.WindowForeground, System.Drawing.SystemColors.WindowText);
 		}
 
 		public static System.Drawing.ContentAlignment HorizontalVerticalAlignmentToContentAlignment(HorizontalAlignment ha, VerticalAlignment va)
@@ -61,8 +77,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-				case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
-				case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
+			case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
+			case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -70,8 +86,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-				case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
-				case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
+			case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
+			case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -87,6 +103,102 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return buttons;
 		}
 
+		internal ToolStripItem InitMenuItem(MenuItem menuItem, string accelPath = null)
+		{
+			if (menuItem is CommandMenuItem)
+			{
+				CommandMenuItem cmi = (menuItem as CommandMenuItem);
+				if (accelPath != null)
+				{
+
+					string cmiName = cmi.Name;
+					if (String.IsNullOrEmpty(cmiName))
+					{
+						cmiName = cmi.Text;
+					}
+
+					// clear out the possible mnemonic definitions
+					cmiName = cmiName.Replace("_", String.Empty);
+
+					accelPath += "/" + cmiName;
+					if (cmi.Shortcut != null)
+					{
+
+					}
+				}
+
+				System.Windows.Forms.ToolStripMenuItem hMenuFile = new ToolStripMenuItem();
+				hMenuFile.Tag = cmi;
+				hMenuFile.Text = cmi.Text.Replace('_', '&');
+				hMenuFile.Enabled = cmi.Enabled;
+				hMenuFile.Click += HMenuFile_Click;
+
+				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
+				{
+					hMenuFile.Alignment = ToolStripItemAlignment.Right;
+				}
+
+				if (cmi.Items.Count > 0)
+				{
+					for (int i = 0; i < cmi.Items.Count; i++)
+					{
+						hMenuFile.DropDownItems.Add(InitMenuItem(cmi.Items[i]));
+					}
+				}
+
+				RegisterMenuItemHandle(cmi, new WindowsFormsNativeMenuItem(hMenuFile));
+				return hMenuFile;
+			}
+			else if (menuItem is SeparatorMenuItem)
+			{
+				System.Windows.Forms.ToolStripSeparator hMenuFile = new ToolStripSeparator();
+				RegisterMenuItemHandle(menuItem, new WindowsFormsNativeMenuItem(hMenuFile));
+				return hMenuFile;
+			}
+			return null;
+		}
+
+		void HMenuFile_Click(object sender, EventArgs e)
+		{
+			((sender as ToolStripMenuItem).Tag as CommandMenuItem).OnClick(e);
+		}
+
+
+		public ContextMenuStrip BuildContextMenuStrip(Menu menu, string accelPath = null)
+		{
+			System.Windows.Forms.ContextMenuStrip hMenuFileMenu = new ContextMenuStrip();
+			if (menu.EnableTearoff)
+			{
+				// TODO: Implement this for Windows Forms
+			}
+
+			if (accelPath != null)
+			{
+			}
+
+			foreach (MenuItem menuItem1 in menu.Items)
+			{
+				System.Windows.Forms.ToolStripItem hMenuItem = InitMenuItem(menuItem1, accelPath);
+				hMenuFileMenu.Items.Add(hMenuItem);
+			}
+			return hMenuFileMenu;
+		}
+		public ContextMenuStrip BuildContextMenuStrip(CommandMenuItem cmi, IntPtr hMenuFile, string accelPath = null)
+		{
+			ContextMenuStrip hMenuFileMenu = new ContextMenuStrip();
+			if (cmi.EnableTearoff)
+			{
+				// TODO: implement this for Windows Forms
+			}
+
+			foreach (MenuItem menuItem1 in cmi.Items)
+			{
+				ToolStripItem hMenuItem = InitMenuItem(menuItem1, accelPath);
+				hMenuFileMenu.Items.Add(hMenuItem);
+			}
+			return hMenuFileMenu;
+		}
+
 		public void UpdateSystemColor(SystemColor color, System.Drawing.Color value)
 		{
 			UpdateSystemColor(color, Color.FromRGBAByte(value.R, value.G, value.B, value.A));
@@ -94,11 +206,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
-			throw new NotImplementedException();
 		}
 		protected override void UpdateControlPropertiesInternal(Control control, NativeControl handle)
 		{
-			throw new NotImplementedException();
 		}
 		protected override void UpdateNotificationIconInternal(NotificationIcon nid, bool updateContextMenu)
 		{
@@ -147,7 +257,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-				case PlatformID.Win32NT:
+			case PlatformID.Win32NT:
 				{
 					IntPtr hWndActive = Internal.Windows.Methods.GetActiveWindow();
 					if (window.ControlImplementation != null)
@@ -173,23 +283,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 						{
 							hWnd = (nc as WindowsFormsNativeControl).Handle.Handle;
 						}
-						Console.WriteLine("does window {0} have focus? {1} == {2} : {3}", window, hWnd, hWndActive, (hWnd.Equals(hWndActive)));
 						return hWnd.Equals(hWndActive);
 					}
 					break;
 				}
 			}
 			return false;
-		}
-
-		protected override Window GetFocusedToplevelWindowInternal()
-		{
-			IntPtr hWnd = Internal.Windows.Methods.GetActiveWindow();
-			Win32NativeControl nc = new Win32NativeControl(hWnd);
-
-			Window w = new Window();
-			RegisterControlHandle(w, nc, true);
-			return w;
 		}
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
@@ -210,7 +309,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					Window focusedTopLevelWindow = GetFocusedToplevelWindow();
 					Console.WriteLine("focusedTopLevelWindow is {0}", focusedTopLevelWindow);
 
-					parentHandle = new Win32Window ((GetHandleForControl(focusedTopLevelWindow) as Win32NativeControl).Handle);
+					parentHandle = new Win32Window((GetHandleForControl(focusedTopLevelWindow) as Win32NativeControl).Handle);
 				}
 			}
 			else
@@ -332,7 +431,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				return SWFDialogResultToDialogResult(result);
 			}
 			throw new NotImplementedException();
-			*/		
+			*/
 		}
 
 		internal static KeyboardKey SWFKeysToKeyboardKey(System.Windows.Forms.Keys keys)
@@ -402,7 +501,112 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			W32_GetToplevelWindowsCallback = new Internal.Windows.Delegates.EnumWindowsProc(W32_GetToplevelWindowsCallbackFunc);
 
-			RegisterStockType(StockType.OK, "ok", "_OK");
+			// the stock types IDs here are the IDs used by Glade Interface Designer, have nothing to do with copypasta from GTKEngine ;)
+			RegisterStockType(StockType.About, "gtk-about", "_About");
+			RegisterStockType(StockType.Add, "gtk-add", "A_dd");
+			RegisterStockType(StockType.Apply, "gtk-apply", "_Apply");
+			RegisterStockType(StockType.Bold, "gtk-bold", "_Bold");
+			RegisterStockType(StockType.Cancel, "gtk-cancel", "Cancel");
+			RegisterStockType(StockType.CapsLockWarning, "gtk-caps-lock-warning", "Caps Lock");
+			RegisterStockType(StockType.CDROM, "gtk-cdrom", "CD-ROM");
+			RegisterStockType(StockType.Clear, "gtk-clear", "Clear");
+			RegisterStockType(StockType.Close, "gtk-close", "Close");
+			RegisterStockType(StockType.ColorPicker, "gtk-color-picker", "Color Picker");
+			RegisterStockType(StockType.Connect, "gtk-connect", "Connect");
+			RegisterStockType(StockType.Convert, "gtk-convert", "Convert");
+			RegisterStockType(StockType.Copy, "gtk-copy", "_Copy");
+			RegisterStockType(StockType.Cut, "gtk-cut", "Cu_t");
+			RegisterStockType(StockType.Delete, "gtk-delete", "_Delete");
+			RegisterStockType(StockType.DialogAuthentication, "gtk-dialog-authentication", "Authentication");
+			RegisterStockType(StockType.DialogInfo, "gtk-dialog-info", "Information");
+			RegisterStockType(StockType.DialogWarning, "gtk-dialog-warning", "Warning");
+			RegisterStockType(StockType.DialogError, "gtk-dialog-error", "Error");
+			RegisterStockType(StockType.DialogQuestion, "gtk-dialog-question", "Question");
+			RegisterStockType(StockType.Directory, "gtk-directory", "Directory");
+			RegisterStockType(StockType.Discard, "gtk-discard", "Discard");
+			RegisterStockType(StockType.Disconnect, "gtk-disconnect", "Disconnect");
+			RegisterStockType(StockType.DragAndDrop, "gtk-dnd", "Drag-and-Drop");
+			RegisterStockType(StockType.DragAndDropMultiple, "gtk-dnd-multiple", "Drag-and-Drop Multiple");
+			RegisterStockType(StockType.Edit, "gtk-edit", "Edit");
+			RegisterStockType(StockType.Execute, "gtk-execute", "E_xecute");
+			RegisterStockType(StockType.File, "gtk-file", "_File");
+			RegisterStockType(StockType.Find, "gtk-find", "_Find");
+			RegisterStockType(StockType.FindAndReplace, "gtk-find-and-replace", "Find and _Replace");
+			RegisterStockType(StockType.Floppy, "gtk-floppy", "Floppy");
+			RegisterStockType(StockType.Fullscreen, "gtk-fullscreen", "F_ullscreen");
+			RegisterStockType(StockType.GotoBottom, "gtk-goto-bottom", "Go to _Bottom");
+			RegisterStockType(StockType.GotoFirst, "gtk-goto-first", "Go to _First");
+			RegisterStockType(StockType.GotoLast, "gtk-goto-last", "Go to _Last");
+			RegisterStockType(StockType.GotoTop, "gtk-goto-top", "Go to _Top");
+			RegisterStockType(StockType.GoBack, "gtk-go-back", "Go _Back");
+			RegisterStockType(StockType.GoDown, "gtk-go-down", "Go _Down");
+			RegisterStockType(StockType.GoForward, "gtk-go-forward", "Go _Forward");
+			RegisterStockType(StockType.GoUp, "gtk-go-up", "Go _Up");
+			RegisterStockType(StockType.HardDisk, "gtk-harddisk", "Hard Disk");
+			RegisterStockType(StockType.Help, "gtk-help", "_Help");
+			RegisterStockType(StockType.Home, "gtk-home", "Home");
+			RegisterStockType(StockType.Index, "gtk-index", "Index");
+			RegisterStockType(StockType.Indent, "gtk-indent", "Indent");
+			RegisterStockType(StockType.Info, "gtk-info", "Information");
+			RegisterStockType(StockType.Italic, "gtk-italic", "_Italic");
+			RegisterStockType(StockType.JumpTo, "gtk-jump-to", "_Go To");
+			RegisterStockType(StockType.JustifyCenter, "gtk-justify-center", "_Center");
+			RegisterStockType(StockType.JustifyFill, "gtk-justify-fill", "_Justify");
+			RegisterStockType(StockType.JustifyLeft, "gtk-justify-left", "Align _Left");
+			RegisterStockType(StockType.JustifyRight, "gtk-justify-right", "Align _Right");
+			RegisterStockType(StockType.LeaveFullscreen, "gtk-leave-fullscreen", "Leave F_ullscreen");
+			RegisterStockType(StockType.MissingImage, "gtk-missing-image", "Missing Image");
+			RegisterStockType(StockType.MediaForward, "gtk-media-forward", "_Forward");
+			RegisterStockType(StockType.MediaNext, "gtk-media-next", "_Next");
+			RegisterStockType(StockType.MediaPause, "gtk-media-pause", "_Pause");
+			RegisterStockType(StockType.MediaPlay, "gtk-media-play", "_Play");
+			RegisterStockType(StockType.MediaPrevious, "gtk-media-previous", "Pre_vious");
+			RegisterStockType(StockType.MediaRecord, "gtk-media-record", "_Record");
+			RegisterStockType(StockType.MediaRewind, "gtk-media-rewind", "Re_wind");
+			RegisterStockType(StockType.MediaStop, "gtk-media-stop", "_Stop");
+			RegisterStockType(StockType.Network, "gtk-network", "Network");
+			RegisterStockType(StockType.New, "gtk-new", "_New");
+			RegisterStockType(StockType.No, "gtk-no", "_No");
+			RegisterStockType(StockType.OK, "gtk-ok", "_OK");
+			RegisterStockType(StockType.Open, "gtk-open", "_Open");
+			RegisterStockType(StockType.OrientationPortrait, "gtk-orientation-portrait", "Portrait");
+			RegisterStockType(StockType.OrientationLandscape, "gtk-orientation-landscape", "Landscape");
+			RegisterStockType(StockType.OrientationReverseLandscape, "gtk-orientation-reverse-landscape", "Reverse Landscape");
+			RegisterStockType(StockType.OrientationReversePortrait, "gtk-orientation-reverse-portrait", "Reverse Portrait");
+			RegisterStockType(StockType.PageSetup, "gtk-page-setup", "Page Set_up");
+			RegisterStockType(StockType.Paste, "gtk-paste", "_Paste");
+			RegisterStockType(StockType.Preferences, "gtk-preferences", "P_references");
+			RegisterStockType(StockType.Print, "gtk-print", "_Print");
+			RegisterStockType(StockType.PrintError, "gtk-print-error", "Print Error");
+			RegisterStockType(StockType.PrintPaused, "gtk-print-paused", "Print Paused");
+			RegisterStockType(StockType.PrintPreview, "gtk-print-preview", "Print Pre_view");
+			RegisterStockType(StockType.PrintReport, "gtk-print-report", "Print Report");
+			RegisterStockType(StockType.PrintWarning, "gtk-print-warning", "Print Warning");
+			RegisterStockType(StockType.Properties, "gtk-properties", "P_roperties");
+			RegisterStockType(StockType.Quit, "gtk-quit", "_Quit");
+			RegisterStockType(StockType.Redo, "gtk-redo", "_Redo");
+			RegisterStockType(StockType.Refresh, "gtk-refresh", "R_efresh");
+			RegisterStockType(StockType.Remove, "gtk-remove", "Re_move");
+			RegisterStockType(StockType.RevertToSaved, "gtk-revert-to-saved", "Revert to Saved");
+			RegisterStockType(StockType.Save, "gtk-save", "_Save");
+			RegisterStockType(StockType.SaveAs, "gtk-save-as", "Save _As");
+			RegisterStockType(StockType.SelectAll, "gtk-select-all", "Select _All");
+			RegisterStockType(StockType.SelectColor, "gtk-select-color", "Select _Color");
+			RegisterStockType(StockType.SelectFont, "gtk-select-font", "Select _Font");
+			RegisterStockType(StockType.SortAscending, "gtk-sort-ascending", "Sort _Ascending");
+			RegisterStockType(StockType.SortDescending, "gtk-sort-descending", "Sort _Descending");
+			RegisterStockType(StockType.SpellCheck, "gtk-spell-check", "Check Spelling");
+			RegisterStockType(StockType.Stop, "gtk-stop", "_Stop");
+			RegisterStockType(StockType.Strikethrough, "gtk-strikethrough", "Strikethrough");
+			RegisterStockType(StockType.Undelete, "gtk-undelete", "Undelete");
+			RegisterStockType(StockType.Underline, "gtk-underline", "_Underline");
+			RegisterStockType(StockType.Undo, "gtk-undo", "_Undo");
+			RegisterStockType(StockType.Unindent, "gtk-unindent", "Unindent");
+			RegisterStockType(StockType.Yes, "gtk-yes", "_Yes");
+			RegisterStockType(StockType.Zoom100, "gtk-zoom-100", "Zoom 100%");
+			RegisterStockType(StockType.ZoomFit, "gtk-zoom-fit", "_Fit to Window");
+			RegisterStockType(StockType.ZoomIn, "gtk-zoom-in", "Zoom _In");
+			RegisterStockType(StockType.ZoomOut, "gtk-zoom-out", "Zoom _Out");
 		}
 
 		private bool W32_GetToplevelWindowsCallbackFunc(IntPtr hWnd, IntPtr lParam)
@@ -562,9 +766,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (headerStyle)
 			{
-				case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
-				case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-				case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
+			case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
+			case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
 			}
 			throw new NotSupportedException();
 		}
@@ -585,7 +789,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		void Doc_BeginPrint(object sender, System.Drawing.Printing.PrintEventArgs e)
 		{
 		}
- 
+
 		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
 		{
 			return new WindowsFormsNativeTreeModel();
@@ -608,7 +812,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void SetMenuItemVisibilityInternal(MenuItem item, bool visible)
 		{
-			throw new NotImplementedException();
+			(GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle.Visible = visible;
+		}
+
+		protected override bool ShowHelpInternal(HelpTopic topic)
+		{
+			return false;
 		}
 
 	}

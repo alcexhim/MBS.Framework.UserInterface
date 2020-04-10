@@ -25,6 +25,28 @@ namespace MBS.Framework.UserInterface.Controls
 		public class ButtonCollection
 			: System.Collections.ObjectModel.Collection<Button>
 		{
+			private Container _parent = null;
+			public ButtonCollection(Container parent)
+			{
+				_parent = parent;
+			}
+
+			protected override void ClearItems()
+			{
+				for (int i = 0; i < Count; i++)
+					Items[i].Parent = null;
+				base.ClearItems();
+			}
+			protected override void InsertItem(int index, Button item)
+			{
+				base.InsertItem(index, item);
+				item.Parent = _parent;
+			}
+			protected override void RemoveItem(int index)
+			{
+				this[index].Parent = null;
+				base.RemoveItem(index);
+			}
 		}
 
 		public Button()
@@ -49,15 +71,23 @@ namespace MBS.Framework.UserInterface.Controls
 			this.Text = text;
 			mvarResponseValue = responseValue;
 		}
-		public Button(ButtonStockType type, DialogResult responseValue)
+		public Button(StockType type, DialogResult responseValue)
 			: this(type, (int)responseValue)
 		{
 		}
-		public Button(ButtonStockType type, int responseValue = (int)DialogResult.None)
+		public Button(StockType type, int responseValue = (int)DialogResult.None)
 		{
-			mvarStockType = type;
+			StockType = type;
 			mvarResponseValue = responseValue;
 		}
+		public Button(StockType type, EventHandler onClick)
+		{
+			StockType = type;
+			if (onClick != null)
+				Click += onClick;
+		}
+
+		public MBS.Framework.UserInterface.Drawing.Image Image { get; set; } = null;
 
 		private bool mvarAlwaysShowImage = false;
 		public bool AlwaysShowImage {  get { return mvarAlwaysShowImage;  } set { mvarAlwaysShowImage = value; } }
@@ -93,8 +123,7 @@ namespace MBS.Framework.UserInterface.Controls
 		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
 		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }
 
-		private ButtonStockType mvarStockType = ButtonStockType.None;
-		public ButtonStockType StockType { get { return mvarStockType; } set { mvarStockType = value; } }
+		public StockType StockType { get; set; } = StockType.None;
 
 		private int mvarResponseValue = 0;
 		/// <summary>

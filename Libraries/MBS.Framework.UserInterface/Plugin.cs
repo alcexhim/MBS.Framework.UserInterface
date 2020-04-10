@@ -25,6 +25,9 @@ namespace MBS.Framework.UserInterface
 {
 	public class Plugin
 	{
+		public virtual string Title { get; } = null;
+		public Feature.FeatureCollection ProvidedFeatures { get; } = new Feature.FeatureCollection();
+
 		public bool Initialized { get; private set; } = false;
 		public void Initialize()
 		{
@@ -63,6 +66,33 @@ namespace MBS.Framework.UserInterface
 				_plugins = plugins.ToArray();
 			}
 			return _plugins;
+		}
+
+		public static Plugin[] Get(Feature[] providedFeatures)
+		{
+			List<Plugin> list = new List<Plugin>();
+			Plugin[] plugins = Get();
+			for (int i = 0; i < plugins.Length; i++)
+			{
+				if (!plugins[i].IsSupported())
+					continue;
+
+				for (int j = 0; j < providedFeatures.Length; j++)
+				{
+					if (plugins[i].ProvidedFeatures.Contains(providedFeatures[j]))
+						list.Add(plugins[i]);
+				}
+			}
+			return list.ToArray();
+		}
+
+		protected virtual bool IsSupportedInternal()
+		{
+			return true;
+		}
+		public bool IsSupported()
+		{
+			return IsSupportedInternal();
 		}
 	}
 }

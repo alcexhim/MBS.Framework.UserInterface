@@ -17,6 +17,9 @@ namespace MBS.Framework.UserInterface.Controls
 
 			string GetSelectedText();
 			void SetSelectedText(string text);
+
+			bool IsEditable();
+			void SetEditable(bool value);
 		}
 	}
 	public class TextBox : SystemControl
@@ -54,7 +57,27 @@ namespace MBS.Framework.UserInterface.Controls
 		/// Determines if text in this <see cref="TextBox" /> may be edited.
 		/// </summary>
 		/// <value><c>true</c> if text may be edited; otherwise, <c>false</c>.</value>
-		public bool Editable { get { return mvarEditable; } set { mvarEditable = value; } }
+		public bool Editable
+		{
+			get
+			{
+				if (!IsCreated)
+					return mvarEditable;
+
+				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
+				if (impl != null)
+					mvarEditable = impl.IsEditable();
+
+				return mvarEditable;
+			}
+			set
+			{
+				if (IsCreated)
+					(ControlImplementation as ITextBoxImplementation)?.SetEditable(value);
+
+				mvarEditable = value;
+			}
+		}
 
 		/// <summary>
 		/// Determines whether this <see cref="TextBox"/> has been changed by the user.

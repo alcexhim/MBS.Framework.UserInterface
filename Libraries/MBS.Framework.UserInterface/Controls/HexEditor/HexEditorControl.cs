@@ -802,16 +802,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 		public bool Editable { get; set; } = true;
 
-		private Brush bForeColor = new SolidBrush(Colors.Black); // SolidBrush(SystemColors.TextBoxForegroundColor);
-		private Brush bOffsetColor = new SolidBrush(Colors.DarkRed);
-
 		private static readonly int HexAsciiMargin = 24;
 
 		private static readonly Vector2D textOffset = new Vector2D(4, 16);
-
-		private Pen pSelectionBorderFocused = new Pen(Colors.SteelBlue);
-		private Brush bSelectionBorderFocused = new SolidBrush(Colors.SteelBlue);
-		private Brush bSelectionBackgroundFocused = new SolidBrush(Colors.LightSteelBlue);
 
 		private Pen pSelectionBorderUnfocused = new Pen(Colors.Gray);
 		private Brush bSelectionBorderUnfocused = new SolidBrush(Colors.Gray);
@@ -820,6 +813,18 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		protected internal override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
+
+			e.Graphics.Clear(SystemColors.WindowBackground);
+
+			Brush bOffsetColor = new SolidBrush(SystemColors.HighlightBackground);
+
+			
+			Pen pSelectionBorderFocused = new Pen(SystemColors.HighlightBackground);
+			Brush bSelectionBorderFocused = new SolidBrush(SystemColors.HighlightBackground);
+			Brush bSelectionBackgroundFocused = new SolidBrush(SystemColors.HighlightBackground);
+
+
+			Brush bForeColor = new SolidBrush(SystemColors.WindowForeground);
 
 			mvarMaxDisplayWidth = (int)((this.Size.Width - PositionGutterWidth - TextAreaWidth - 128 - HexAsciiMargin) / 24);
 

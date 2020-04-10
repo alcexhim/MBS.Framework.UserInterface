@@ -17,6 +17,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 	}
 	public class PrintDialog : CommonDialog
 	{
+		public bool AutoUpgradeEnabled { get; set; } = true;
+
 		private Printer mvarSelectedPrinter = null;
 		public Printer SelectedPrinter
 		{

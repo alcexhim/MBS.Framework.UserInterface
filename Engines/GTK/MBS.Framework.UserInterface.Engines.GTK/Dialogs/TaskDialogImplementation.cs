@@ -65,19 +65,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			{
 				if ((td.ButtonsPreset & TaskDialogButtons.Cancel) == TaskDialogButtons.Cancel)
 				{
-					mybuttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
+					mybuttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 				}
 				if ((td.ButtonsPreset & TaskDialogButtons.Close) == TaskDialogButtons.Close)
 				{
-					mybuttons.Add(new Button(ButtonStockType.Close, DialogResult.None));
+					mybuttons.Add(new Button(StockType.Close, DialogResult.None));
 				}
 				if ((td.ButtonsPreset & TaskDialogButtons.No) == TaskDialogButtons.No)
 				{
-					mybuttons.Add(new Button(ButtonStockType.No, DialogResult.No));
+					mybuttons.Add(new Button(StockType.No, DialogResult.No));
 				}
 				if ((td.ButtonsPreset & TaskDialogButtons.OK) == TaskDialogButtons.OK)
 				{
-					mybuttons.Add(new Button(ButtonStockType.OK, DialogResult.OK));
+					mybuttons.Add(new Button(StockType.OK, DialogResult.OK));
 				}
 				if ((td.ButtonsPreset & TaskDialogButtons.Retry) == TaskDialogButtons.Retry)
 				{
@@ -85,7 +85,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				}
 				if ((td.ButtonsPreset & TaskDialogButtons.Yes) == TaskDialogButtons.Yes)
 				{
-					mybuttons.Add(new Button(ButtonStockType.Yes, DialogResult.Yes));
+					mybuttons.Add(new Button(StockType.Yes, DialogResult.Yes));
 				}
 			}
 
@@ -93,7 +93,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			if (mybuttons.Count == 0)
 			{
 				tdButtonStyle = TaskDialogButtonStyle.Buttons;
-				mybuttons.Add(new Button(ButtonStockType.OK, DialogResult.OK));
+				mybuttons.Add(new Button(StockType.OK, DialogResult.OK));
 			}
 
 			switch (tdButtonStyle)

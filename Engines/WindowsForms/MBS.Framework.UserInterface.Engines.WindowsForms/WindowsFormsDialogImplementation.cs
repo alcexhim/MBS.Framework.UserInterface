@@ -124,6 +124,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if (handle != null)
 			{
 				System.Windows.Forms.DialogResult nativeResult = handle.ShowDialog(parentHandle);
+				if (nc.Form != null)
+				{
+					nativeResult = nc.Form.DialogResult;
+				}
 
 				switch (nativeResult)
 				{

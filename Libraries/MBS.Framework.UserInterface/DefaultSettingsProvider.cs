@@ -19,14 +19,36 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
 	public class DefaultSettingsProvider : ApplicationSettingsProvider
 	{
-		public DefaultSettingsProvider ()
+		protected override void InitializeInternal()
+		{
+			base.InitializeInternal();
+
+			SettingsGroups[1].Settings.Clear();
+			for (int i = 0; i < Application.Features.Count; i++)
+			{
+				Feature feature = Application.Features[i];
+
+				Plugin[] availablePluginsForFeature = Plugin.Get(new Feature[] { feature });
+				List<ChoiceSetting.ChoiceSettingValue> listValues = new List<ChoiceSetting.ChoiceSettingValue>();
+				for (int j = 0; j < availablePluginsForFeature.Length; j++)
+				{
+					listValues.Add(new ChoiceSetting.ChoiceSettingValue(availablePluginsForFeature[j].Title, availablePluginsForFeature[j]));
+				}
+				SettingsGroups[1].Settings.Add(new ChoiceSetting(feature.Title, null, listValues.ToArray()));
+			}
+		}
+		public DefaultSettingsProvider()
 		{
 			SettingsGroups.Add("Application:Language", new Setting[]
+			{
+			});
+			SettingsGroups.Add("Application:Features", new Setting[]
 			{
 			});
 			SettingsGroups.Add("Application:Keyboard", new Setting[]

@@ -2031,6 +2031,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		private Color mvarListViewItemSelectedBorder;
 		public Color ListViewItemHoverBorder { get { return mvarListViewItemSelectedBorder; } set { mvarListViewItemSelectedBorder = value; } }
 
+		public Color ListViewItemInactiveBackgroundGradientBegin { get; set; }
+		public Color ListViewItemInactiveBackgroundGradientMiddle { get; set; }
+		public Color ListViewItemInactiveBackgroundGradientEnd { get; set; }
+		public Color ListViewItemInactiveBorder { get; set; }
+
 		private Color mvarListViewRangeSelectionForeground;
 		public Color ListViewRangeSelectionBorder { get { return mvarListViewRangeSelectionForeground; } set { mvarListViewRangeSelectionForeground = value; } }
 		private Color mvarListViewRangeSelectionBackground;

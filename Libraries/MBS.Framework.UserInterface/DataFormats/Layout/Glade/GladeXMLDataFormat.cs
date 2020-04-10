@@ -57,7 +57,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 			}
 		}
 
-		private LayoutItem LoadLayoutItem(MarkupTagElement tag, MarkupTagElement tagPacking = null)
+		private LayoutItem LoadLayoutItem(MarkupTagElement tag, MarkupTagElement tagPacking = null, MarkupTagElement tagAttributes = null)
 		{
 			LayoutItem item = new LayoutItem();
 
@@ -78,9 +78,10 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					{
 						MarkupTagElement tagObject = (tag1.Elements["object"] as MarkupTagElement);
 						MarkupTagElement tagPacking1 = (tag1.Elements["packing"] as MarkupTagElement);
+						MarkupTagElement tagAttributes1 = (tag1.Elements["attributes"] as MarkupTagElement);
 						if (tagObject != null)
 						{
-							LayoutItem itemChild = LoadLayoutItem(tagObject, tagPacking1);
+							LayoutItem itemChild = LoadLayoutItem(tagObject, tagPacking1, tagAttributes1);
 							item.Items.Add(itemChild);
 						}
 						break;
@@ -98,7 +99,14 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 							if (attName == null) continue;
 
 							string value = null;
-							if (attValue != null) value = attValue.Value;
+							if (attValue != null)
+							{
+								value = attValue.Value;
+							}
+							else
+							{
+								value = tagAttr.Value;
+							}
 
 							item.Attributes.Add(attName.Value, value);
 						}
@@ -130,6 +138,31 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					item.PackingProperties.Add(attName.Value, tagPackingProperty.Value);
 				}
 			}
+			if (tagAttributes != null)
+			{
+				foreach (MarkupElement elAttr in tagAttributes.Elements)
+				{
+					MarkupTagElement tagAttr = (elAttr as MarkupTagElement);
+					if (tagAttr == null) continue;
+
+					MarkupAttribute attName = tagAttr.Attributes["name"];
+					MarkupAttribute attValue = tagAttr.Attributes["value"];
+
+					if (attName == null) continue;
+
+					string value = null;
+					if (attValue != null)
+					{
+						value = attValue.Value;
+					}
+					else
+					{
+						value = tagAttr.Value;
+					}
+
+					item.Attributes.Add(attName.Value, value);
+				}
+			}
 
 			MarkupTagElement tagColumns = tag.Elements["columns"] as MarkupTagElement;
 			if (tagColumns != null)
@@ -153,6 +186,43 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					columns.Items.Add(column);
 				}
 				item.Items.Add(columns);
+			}
+			MarkupTagElement tagData = tag.Elements["data"] as MarkupTagElement;
+			if (tagData != null)
+			{
+				LayoutItem data = new LayoutItem();
+				data.ClassName = "data";
+				foreach (MarkupElement elRow in tagData.Elements)
+				{
+					MarkupTagElement tagRow = (elRow as MarkupTagElement);
+					if (tagRow == null) continue;
+					if (tagRow.FullName != "row") continue;
+
+					LayoutItem row = new LayoutItem();
+					row.ClassName = "row";
+
+					for (int i = 0; i < tagRow.Elements.Count; i++)
+					{
+						MarkupTagElement tagCol = tagRow.Elements[i] as MarkupTagElement;
+						if (tagCol == null) continue;
+						if (tagCol.FullName != "col") continue;
+
+						LayoutItem col = new LayoutItem();
+						col.ClassName = "col";
+
+						MarkupAttribute id = tagCol.Attributes["id"];
+						if (id != null)
+						{
+							col.Attributes.Add("id", id.Value);
+						}
+						col.Value = tagCol.Value;
+
+						row.Items.Add(col);
+					}
+
+					data.Items.Add(row);
+				}
+				item.Items.Add(data);
 			}
 			return item;
 		}

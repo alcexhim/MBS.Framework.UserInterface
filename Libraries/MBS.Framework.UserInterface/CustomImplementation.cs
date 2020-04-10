@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
@@ -26,6 +27,29 @@ namespace MBS.Framework.UserInterface
 	{
 		public CustomImplementation(Engine engine, Control control) : base(engine, control)
 		{
+		}
+
+		protected override Dimension2D GetScrollBoundsInternal()
+		{
+			return Dimension2D.Empty;
+		}
+		protected override void SetScrollBoundsInternal(Dimension2D value)
+		{
+		}
+
+		protected override double GetAdjustmentValueInternal(Orientation orientation)
+		{
+			// FIXME: not implemented
+			return 0.0;
+		}
+		protected override void SetAdjustmentValueInternal(Orientation orientation, double value)
+		{
+			// FIXME: not implemented
+		}
+
+		protected override bool SupportsEngineInternal(Type engineType)
+		{
+			return true;
 		}
 	}
 }

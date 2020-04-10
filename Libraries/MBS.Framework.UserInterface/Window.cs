@@ -190,6 +190,9 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		/// <value><c>true</c> if decorated; otherwise, <c>false</c>.</value>
 		public bool Decorated { get; set; } = true;
+
+		public bool Resizable { get; set; } = true;
+
 		public Rectangle Bounds { get; set; } = Rectangle.Empty;
 
 		public bool HasFocus => Application.Engine.WindowHasFocus(this);
@@ -206,8 +209,8 @@ namespace MBS.Framework.UserInterface
 			if (Deactivate != null) Deactivate (this, e);
 		}
 
-		public event CancelEventHandler Closing;
-		protected virtual void OnClosing(CancelEventArgs e)
+		public event WindowClosingEventHandler Closing;
+		protected virtual void OnClosing(WindowClosingEventArgs e)
 		{
 			if (Closing != null) Closing(this, e);
 		}

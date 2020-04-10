@@ -28,6 +28,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_view_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern GType gtk_tree_view_get_type();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_view_new_with_model(IntPtr /*GtkTreeModel*/ model);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]

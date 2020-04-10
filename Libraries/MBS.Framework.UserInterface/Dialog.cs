@@ -9,8 +9,13 @@ namespace MBS.Framework.UserInterface
 		private Control mvarParent = null;
 		public new Control Parent { get { return mvarParent; } set { mvarParent = value; } }
 
-		private Button.ButtonCollection mvarButtons = new Button.ButtonCollection ();
+		private Button.ButtonCollection mvarButtons = null;
 		public Button.ButtonCollection Buttons { get { return mvarButtons; } }
+
+		public Dialog()
+		{
+			mvarButtons = new Button.ButtonCollection(this);
+		}
 
 		public bool AutoAlignButtons { get; set; } = true;
 

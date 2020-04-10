@@ -289,5 +289,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 		}
+
+		private bool _IsEditable = true;
+		public bool IsEditable()
+		{
+			if (Handle == null)
+				return _IsEditable;
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			return Internal.GTK.Methods.GtkEditable.gtk_editable_get_editable(handle);
+		}
+		public void SetEditable(bool value)
+		{
+			_IsEditable = value;
+			if (Handle == null)
+				return;
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, value);
+		}
 	}
 }

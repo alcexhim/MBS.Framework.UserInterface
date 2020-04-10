@@ -20,6 +20,12 @@ namespace MBS.Framework.UserInterface.Controls
 	}
 	public class NumericTextBox : SystemControl
 	{
+		public event EventHandler Changed;
+		protected virtual void OnChanged(EventArgs e)
+		{
+			Changed?.Invoke(this, e);
+		}
+		
 		private double _Minimum = 0.0;
 		public double Minimum
 		{
@@ -37,7 +43,7 @@ namespace MBS.Framework.UserInterface.Controls
 				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetMinimum(value);
 			}
 		}
-		private double _Maximum = 0.0;
+		private double _Maximum = Double.MaxValue;
 		public double Maximum
 		{
 			get
@@ -85,8 +91,15 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 			set
 			{
-				_Value = value;
-				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetValue(value);
+				if (value >= _Minimum && value <= _Maximum)
+				{
+					_Value = value;
+					(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetValue(value);
+				}
+				else
+				{
+					_Value = _Minimum;
+				}
 			}
 		}
 

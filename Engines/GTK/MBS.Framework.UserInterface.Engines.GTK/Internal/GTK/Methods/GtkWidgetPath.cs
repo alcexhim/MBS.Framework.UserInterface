@@ -29,5 +29,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkWidgetPath*/ gtk_widget_path_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_path_append_type(IntPtr /*GtkWidgetPath*/ path, GType type);
+		[DllImport(Gtk.LIBRARY_FILENAME), Obsolete("gtk_widget_path_iter_add_region has been deprecated since version 3.14 and should not be used in newly-written code. The use of regions is deprecated.")]
+		public static extern void gtk_widget_path_iter_add_region(IntPtr /*GtkWidgetPath*/ path, int pos, string name, int flags);
 	}
 }

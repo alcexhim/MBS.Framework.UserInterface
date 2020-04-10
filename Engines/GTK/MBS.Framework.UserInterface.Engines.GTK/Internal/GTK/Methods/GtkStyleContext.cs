@@ -36,11 +36,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_get_background_color(IntPtr /*GtkStyleContext*/ context, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GDK.Structures.GdkRGBA value);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_get_border_color(IntPtr /*GtkStyleContext*/ context, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GDK.Structures.GdkRGBA value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_get_color(IntPtr /*GtkStyleContext*/ context, Internal.GTK.Constants.GtkStateFlags state, ref Internal.GDK.Structures.GdkRGBA value);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_set_path(IntPtr /*GtkStyleContext*/ context, IntPtr /*GtkWidgetPath*/ path);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_style_context_set_state(IntPtr /*GtkStyleContext*/ context, Constants.GtkStateFlags state);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_style_context_lookup_color(IntPtr /*GtkStyleContext*/ context, string name, ref GDK.Structures.GdkRGBA rgba);
 	}
 }
 

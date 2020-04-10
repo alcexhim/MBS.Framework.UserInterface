@@ -37,8 +37,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.Layout = new BoxLayout(Orientation.Vertical);
 
-			this.Buttons.Add(new Button(ButtonStockType.OK, DialogResult.OK));
-			this.Buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
+			this.Buttons.Add(new Button(StockType.OK, DialogResult.OK));
+			this.Buttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 
 			this.Buttons[0].Click += cmdOK_Click;
 
@@ -171,6 +171,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup> ();
 			foreach (SettingsProvider provider in SettingsProviders) {
+				provider.Initialize();
 				foreach (SettingsGroup grp in provider.SettingsGroups) {
 					if (grps.Contains (grp))
 						continue;
@@ -424,19 +425,30 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private void tv_SelectionChanged(object sender, EventArgs e)
 		{
 			ctDefault.Visible = false;
-			foreach (Control ctl in vpaned.Panel2.Controls) {
+			foreach (Control ctl in vpaned.Panel2.Controls)
+			{
 				ctl.Visible = false;
 			}
 
-			SettingsGroup thegrp = tv.SelectedRows [0].GetExtraData<SettingsGroup> ("group");
-			if (thegrp == null) {
+			if (tv.SelectedRows.Count < 1)
+			{
 				ctDefault.Visible = true;
 				return;
 			}
-			
-			if (optionGroupContainers.ContainsKey (thegrp)) {
-				optionGroupContainers [thegrp].Visible = true;
-			} else {
+
+			SettingsGroup thegrp = tv.SelectedRows[0].GetExtraData<SettingsGroup>("group");
+			if (thegrp == null)
+			{
+				ctDefault.Visible = true;
+				return;
+			}
+
+			if (optionGroupContainers.ContainsKey(thegrp))
+			{
+				optionGroupContainers[thegrp].Visible = true;
+			}
+			else
+			{
 				ctDefault.Visible = true;
 			}
 		}

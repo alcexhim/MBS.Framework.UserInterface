@@ -55,7 +55,19 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the primary <see cref="SplitContainerPanel" /> for this <see cref="SplitContainer"/>. When <see cref="Orientation" /> is set to
+		/// <see cref="Orientation.Vertical" />, this is the left panel; when <see cref="Orientation" /> is set to <see cref="Orientation.Horizontal" />,
+		/// this is the top panel.
+		/// </summary>
+		/// <value>The primary <see cref="SplitContainerPanel" /> for this <see cref="SplitContainer" />.</value>
 		public SplitContainerPanel Panel1 { get; private set; } = null;
+		/// <summary>
+		/// Gets the secondary <see cref="SplitContainerPanel" /> for this <see cref="SplitContainer"/>. When <see cref="Orientation" /> is set to
+		/// <see cref="Orientation.Vertical" />, this is the right panel; when <see cref="Orientation" /> is set to <see cref="Orientation.Horizontal" />,
+		/// this is the bottom panel.
+		/// </summary>
+		/// <value>The secondary <see cref="SplitContainerPanel" /> for this <see cref="SplitContainer" />.</value>
 		public SplitContainerPanel Panel2 { get; private set; } = null;
 
 		private Orientation mvarOrientation = Orientation.Horizontal;

@@ -80,6 +80,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.ListViewItemHoverBackgroundGradientMiddle = Color.FromArgb(255, 236, 181);
 			ColorTable.ListViewItemHoverBackgroundGradientEnd = Color.FromArgb(255, 237, 184);
 			ColorTable.ListViewItemHoverBorder = Color.FromArgb(229, 195, 101);
+
+			ColorTable.ListViewItemInactiveBorder = Color.FromArgb(207, 207, 207);
+			ColorTable.ListViewItemInactiveBackgroundGradientBegin = Color.FromArgb(237, 236, 236);
+			ColorTable.ListViewItemInactiveBackgroundGradientMiddle = Color.Empty;
+			ColorTable.ListViewItemInactiveBackgroundGradientEnd = Color.FromArgb(222, 222, 222);
+
 			ColorTable.ListViewRangeSelectionBorder = Color.FromArgb(229, 195, 101);
 			ColorTable.ListViewRangeSelectionBackground = Color.FromArgb(80, 255, 232, 166);
 
@@ -364,14 +370,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			
 			if (selected)
 			{
-				if (focused)
+				if (!focused)
 				{
-					DrawingTools.FillWithShinyGradient(g, ColorTable.DocumentTabInactiveBackgroundSelectedGradientBegin, ColorTable.DocumentTabInactiveBackgroundSelectedGradientMiddle, ColorTable.DocumentTabInactiveBackgroundSelectedGradientEnd, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Horizontal);
+					DrawingTools.FillWithDoubleGradient(ColorTable.DocumentTabInactiveBackgroundSelectedGradientBegin, ColorTable.DocumentTabInactiveBackgroundSelectedGradientMiddle, ColorTable.DocumentTabInactiveBackgroundSelectedGradientEnd, g, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Vertical, false);
 					g.DrawRoundedRectangle(new System.Drawing.Pen(ColorTable.DocumentTabInactiveBorderSelected), rectTab, 0, 1, 0, 1);
 				}
 				else
 				{
-					DrawingTools.FillWithShinyGradient(g, ColorTable.DocumentTabBackgroundSelectedGradientBegin, ColorTable.DocumentTabBackgroundSelectedGradientMiddle, ColorTable.DocumentTabBackgroundSelectedGradientEnd, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Horizontal);
+					DrawingTools.FillWithDoubleGradient(ColorTable.DocumentTabBackgroundSelectedGradientBegin, ColorTable.DocumentTabBackgroundSelectedGradientMiddle, ColorTable.DocumentTabBackgroundSelectedGradientEnd, g, rectTab, (int)(rectTab.Height / 2), (int)((rectTab.Height / 2) + 1), LinearGradientMode.Vertical, false);
 					g.DrawRoundedRectangle(new System.Drawing.Pen(ColorTable.DocumentTabBorderSelected), rectTab, 0, 1, 0, 1);
 				}
 				return;
@@ -417,7 +423,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		{
 			if (focused)
 			{
-				DrawingTools.FillWithDoubleGradient(ColorTable.DockingWindowActiveTabBackgroundNormalGradientBegin, ColorTable.DockingWindowActiveTabBackgroundNormalGradientMiddle, ColorTable.DockingWindowActiveTabBackgroundNormalGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Horizontal, false);
+				DrawingTools.FillWithDoubleGradient(ColorTable.DockingWindowActiveTabBackgroundNormalGradientBegin, ColorTable.DockingWindowActiveTabBackgroundNormalGradientMiddle, ColorTable.DockingWindowActiveTabBackgroundNormalGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Vertical, false);
 			}
 			else
 			{
@@ -447,20 +453,32 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		#region ListView
 		public override void DrawListItemBackground(Graphics g, Rectangle rect, ControlState state, bool selected, bool focused)
 		{
-			switch (state)
-			{
-				case ControlState.Hover:
-				{
-					DrawingTools.FillWithDoubleGradient(ColorTable.ListViewItemHoverBackgroundGradientBegin, ColorTable.ListViewItemHoverBackgroundGradientMiddle, ColorTable.ListViewItemHoverBackgroundGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Vertical, false);
-					g.DrawRectangle(new Pen(ColorTable.ListViewItemHoverBorder), rect);
-					break;
-				}
-			}
 			if (selected)
 			{
-				g.FillRectangle(new SolidBrush(ColorTable.ListViewItemSelectedBackground), rect);
+				if (focused)
+				{
+					g.FillRectangle(new SolidBrush(ColorTable.ListViewItemSelectedBackground), rect);
+					g.DrawRectangle(new Pen(ColorTable.ListViewItemHoverBorder), rect);
+				}
+				else
+				{
+					if (ColorTable.ListViewItemInactiveBackgroundGradientMiddle != Color.Empty)
+					{
+						DrawingTools.FillWithDoubleGradient(ColorTable.ListViewItemInactiveBackgroundGradientBegin, ColorTable.ListViewItemInactiveBackgroundGradientMiddle, ColorTable.ListViewItemInactiveBackgroundGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Vertical, false);
+					}
+					else
+					{
+						g.FillRectangle(new LinearGradientBrush(rect, ColorTable.ListViewItemInactiveBackgroundGradientBegin, ColorTable.ListViewItemInactiveBackgroundGradientEnd, LinearGradientMode.Vertical), rect);
+					}
+					g.DrawRectangle(new Pen(ColorTable.ListViewItemInactiveBorder), rect);
+				}
+			}
+			if (state == ControlState.Hover)
+			{
+				DrawingTools.FillWithDoubleGradient(ColorTable.ListViewItemHoverBackgroundGradientBegin, ColorTable.ListViewItemHoverBackgroundGradientMiddle, ColorTable.ListViewItemHoverBackgroundGradientEnd, g, rect, rect.Height / 2, rect.Height / 2, LinearGradientMode.Vertical, false);
 				g.DrawRectangle(new Pen(ColorTable.ListViewItemHoverBorder), rect);
 			}
+
 		}
 		public override void DrawListSelectionRectangle(Graphics g, Rectangle rect)
 		{

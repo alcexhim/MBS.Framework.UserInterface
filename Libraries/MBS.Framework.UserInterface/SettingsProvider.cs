@@ -31,6 +31,14 @@ namespace MBS.Framework.UserInterface
 
 		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
 
+		protected virtual void InitializeInternal()
+		{
+		}
+		public void Initialize()
+		{
+			InitializeInternal();
+		}
+
 		protected virtual void LoadSettingsInternal()
 		{
 		}

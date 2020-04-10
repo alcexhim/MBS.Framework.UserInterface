@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
@@ -13,7 +12,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
+		protected override void InvalidateInternal(int x, int y, int width, int height)
 		{
 			if (Handle is WindowsFormsNativeControl)
 				(Handle as WindowsFormsNativeControl).Handle.Invalidate(new System.Drawing.Rectangle(x, y, width, height));
@@ -21,14 +20,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void DestroyInternal()
 		{
-			Console.WriteLine("destroying control using implementation {0}", GetType().FullName);
-			Console.WriteLine("handle is {0}", Handle?.GetType());
-
-			if (Handle is WindowsFormsNativeDialog)
+			if (Control is Dialog)
+			{
+				System.Windows.Forms.Form handle = ((Handle as WindowsFormsNativeControl).GetNamedHandle("dialog") as System.Windows.Forms.Form);
+				handle.Close();
+			}
+			else if (Handle is WindowsFormsNativeDialog)
 			{
 				if ((Handle as WindowsFormsNativeDialog)?.Form != null)
 				{
-					(Handle as WindowsFormsNativeDialog)?.Form.Dispose();
+					(Handle as WindowsFormsNativeDialog)?.Form.Close();
 				}
 				else if ((Handle as WindowsFormsNativeDialog)?.Handle != null)
 				{
@@ -37,11 +38,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 			else
 			{
-				(Handle as WindowsFormsNativeControl).Handle.Dispose();
+				if ((Handle as WindowsFormsNativeControl).Handle is System.Windows.Forms.Form)
+				{
+					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();
+				}
+				else
+				{
+					(Handle as WindowsFormsNativeControl).Handle.Dispose();
+				}
 			}
 		}
 
-		protected override bool SupportsEngine(Type engineType)
+		protected override bool SupportsEngineInternal(Type engineType)
 		{
 			return (engineType == typeof(WindowsFormsEngine));
 		}
@@ -68,12 +76,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void RegisterDragSourceInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			throw new NotImplementedException();
 		}
 
 		protected override void RegisterDropTargetInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			throw new NotImplementedException();
 		}
 
 		protected override void SetControlVisibilityInternal(bool visible)
@@ -167,6 +173,47 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			Input.Mouse.MouseEventArgs ee = new Input.Mouse.MouseEventArgs(e.X, e.Y, WindowsFormsEngine.SWFMouseButtonsToMouseButtons(e.Button), WindowsFormsEngine.SWFKeysToKeyboardModifierKey(System.Windows.Forms.Control.ModifierKeys));
 			InvokeMethod(this, "OnMouseDown", new object[] { ee });
+
+			if (ee.Handled)
+				return;
+
+			if (ee.Buttons == MouseButtons.Secondary)
+			{
+				// default implementation - display a context menu if we have one set
+				// moved this up here to give us a chance to add a context menu if we don't have one associated yet
+				OnBeforeContextMenu(ee);
+
+				if (Control.ContextMenu != null)
+				{
+					System.Windows.Forms.ContextMenuStrip hMenu = (Engine as WindowsFormsEngine).BuildContextMenuStrip(Control.ContextMenu);
+
+					foreach (MenuItem mi in Control.ContextMenu.Items)
+					{
+						RecursiveApplyMenuItemVisibility(mi);
+					}
+					hMenu.Show(System.Windows.Forms.Cursor.Position);
+
+					OnAfterContextMenu(ee);
+				}
+			}
+		}
+
+		private void RecursiveApplyMenuItemVisibility(MenuItem mi)
+		{
+			if (mi == null)
+				return;
+
+			System.Windows.Forms.ToolStripItem hMi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(mi) as WindowsFormsNativeMenuItem).Handle as System.Windows.Forms.ToolStripItem;
+			// hMi.Enabled = mi.Enabled;
+			hMi.Visible = mi.Visible;
+
+			if (mi is CommandMenuItem)
+			{
+				foreach (MenuItem mi1 in (mi as CommandMenuItem).Items)
+				{
+					RecursiveApplyMenuItemVisibility(mi1);
+				}
+			}
 		}
 		void ctl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
 		{

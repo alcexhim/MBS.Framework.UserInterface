@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -282,6 +282,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return button;
 		}
 
+		internal static Internal.GTK.Constants.GtkResponseType DialogResultToGtkResponseType(DialogResult value)
+		{
+			switch (value)
+			{
+				case DialogResult.OK: return Constants.GtkResponseType.OK;
+				case DialogResult.Cancel: return Constants.GtkResponseType.Cancel;
+				case DialogResult.Help: return Constants.GtkResponseType.Help;
+				case DialogResult.No: return Constants.GtkResponseType.No;
+				case DialogResult.None: return Constants.GtkResponseType.None;
+				case DialogResult.Yes: return Constants.GtkResponseType.Yes;
+			}
+			return Constants.GtkResponseType.None;
+		}
 		internal static DialogResult GtkResponseTypeToDialogResult(Internal.GTK.Constants.GtkResponseType value)
 		{
 			DialogResult result = DialogResult.None;
@@ -589,19 +602,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.ZoomOut, "gtk-zoom-out");
 		}
 
-		protected override void DestroyControlInternal(Control control)
-		{
-			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			if (control is Dialog)
-			{
-				// this way is recommended per GTK3.0 docs:
-				// "destroying the dialog during gtk_dialog_run() is a very bad idea, because your post-run code won't know whether the dialog was destroyed or not"
-				Internal.GTK.Methods.GtkDialog.gtk_dialog_response(handle, Internal.GTK.Constants.GtkResponseType.None);
-				return;
-			}
-			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
-		}
-
 		internal static KeyEventArgs GdkEventKeyToKeyEventArgs(Internal.GDK.Structures.GdkEventKey e)
 		{
 			uint keyCode = e.keyval;
@@ -660,7 +660,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 92: key = KeyboardKey.Backslash; break;
 				case 124: key = KeyboardKey.Pipe; break;
 				case 63: key = KeyboardKey.Question; modifierKeys |= KeyboardModifierKey.Shift; break;
-				case 65293: key = KeyboardKey.Enter; break;
+				case 65293: key = KeyboardKey.Return; break;
 				case 65505: key = KeyboardKey.LShiftKey; break;
 				case 65506: key = KeyboardKey.RShiftKey; break;
 				case 65507: key = KeyboardKey.LControlKey; break;
@@ -687,6 +687,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 65307: key = KeyboardKey.Escape; break;
 				case 65288: key = KeyboardKey.Back; break;
 				case 65289: key = KeyboardKey.Tab; break;
+
+				case 65407: key = KeyboardKey.NumLock; break;
+				case 65421: key = KeyboardKey.Enter; break;
+				case 65450: key = KeyboardKey.Multiply; break;
+				case 65451: key = KeyboardKey.Add; break;
+				case 65453: key = KeyboardKey.Subtract; break;
+				case 65454: key = KeyboardKey.Decimal; break;
+				case 65455: key = KeyboardKey.Divide; break;
+
 				case 65509: key = KeyboardKey.CapsLock; break;
 				case 269025048: key = KeyboardKey.BrowserHome; break;
 				default:
@@ -906,8 +915,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override DialogResult ShowDialogInternal(Dialog dialog, Window parent)
 		{
-			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
-
 			IntPtr parentHandle = IntPtr.Zero;
 			if (parent == null)
 			{
@@ -952,15 +959,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			if (value == Internal.GTK.Constants.GtkPrintOperationResult.Cancel) return DialogResult.Cancel;
 			return DialogResult.OK;
-		}
-
-		protected override void InvalidateControlInternal(Control control, int x, int y, int width, int height)
-		{
-			if (!IsControlCreated(control))
-				throw new NullReferenceException("Control handle not found");
-
-			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWidget.gtk_widget_queue_draw_area(handle, x, y, width, height);
 		}
 
 		#region Common Dialog
@@ -1216,7 +1214,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					// Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, text);
 				}
 
-				if (button.StockType != ButtonStockType.None)
+				if (button.StockType != StockType.None)
 				{
 					control.ControlImplementation.SetControlText (control, StockTypeToString ((StockType)button.StockType));
 					Internal.GTK.Methods.GtkButton.gtk_button_set_use_stock(handle, true);
@@ -1843,7 +1841,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			IntPtr hctrl = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
 			IntPtr hCtxTextBox = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hctrl);
-			// IntPtr hCtxTextBox = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
+			IntPtr hCtxDefault = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
 
 			IntPtr hPathTextBox = Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_new();
 			Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_append_type(hPathTextBox, Internal.GTK.Methods.GtkEntry.gtk_entry_get_type());
@@ -1851,13 +1849,43 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_set_path(hCtxTextBox, hPathTextBox);
 
 			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
+			UpdateSystemColor(SystemColor.WindowBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
-			UpdateSystemColor(SystemColor.TextBoxForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			UpdateSystemColor(SystemColor.WindowForeground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
-			UpdateSystemColor(SystemColor.HighlightBackgroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Selected, ref rgba);
-			UpdateSystemColor(SystemColor.HighlightForegroundColor, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_bg_color", ref rgba);
+			UpdateSystemColor(SystemColor.HighlightBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+		}
+
+		protected override bool ShowHelpInternal(HelpTopic topic)
+		{
+			// apparently, a System.ComponentModel.Win32Exception means "file not found".
+			// In this case we could try khelpcenter, or something else, but there's just so many of them
+			// that it's difficult to come up with an all-inclusive solution. Any suggestions?
+			if (topic != null)
+			{
+				try
+				{
+					Process.Start("yelp", Application.ShortName + "/" + topic.Name);
+					return true;
+				}
+				catch (System.ComponentModel.Win32Exception ex)
+				{
+				}
+			}
+			else
+			{
+				try
+				{
+					Process.Start("yelp", Application.ShortName);
+					return true;
+				}
+				catch (System.ComponentModel.Win32Exception ex)
+				{
+				}
+			}
+			return false;
 		}
 	}
 }

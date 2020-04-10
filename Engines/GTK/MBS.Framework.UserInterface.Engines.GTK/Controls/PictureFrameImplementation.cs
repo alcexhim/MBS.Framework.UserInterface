@@ -50,8 +50,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr handle = IntPtr.Zero;
 			if (ctl.Image != null)
 			{
-				IntPtr hpixbuf = (ctl.Image as GDKPixbufImage).Handle;
-				handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hpixbuf);
+				if (ctl.Image is GDKPixbufImage)
+				{
+					IntPtr hpixbuf = (ctl.Image as GDKPixbufImage).Handle;
+					handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hpixbuf);
+				}
 			}
 			/*
 			else if (ctl.IconName != null)

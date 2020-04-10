@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
@@ -60,9 +61,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			protected override bool RunDialog(IntPtr hwndOwner)
 			{
-				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-					return true;
-				return false;
+				System.Windows.Forms.DialogResult result = f.ShowDialog();
+				f.DialogResult = result;
+				if (result == System.Windows.Forms.DialogResult.Cancel)
+					return false;
+				return true;
 			}
 		}
 
@@ -72,31 +75,92 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			System.Windows.Forms.Control ctl = (hContainer as WindowsFormsNativeControl).Handle;
 			System.Windows.Forms.Form f = new System.Windows.Forms.Form();
+			f.Text = dialog.Text;
 
-			f.BackColor = System.Drawing.SystemColors.Window;
+			if (dialog.Decorated)
+			{
+				if (dialog.Resizable)
+				{
+					f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				}
+				else
+				{
+					f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				}
+			}
+			else
+			{
+				f.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			}
+
+			f.FormClosing += F_FormClosing;
+			(hContainer as WindowsFormsNativeControl).SetNamedHandle("dialog", f);
+
+			f.BackColor = Theming.Theme.CurrentTheme.ColorTable.DialogBackground;
 
 			ctl.Dock = System.Windows.Forms.DockStyle.Fill;
 			f.Controls.Add(ctl);
 
 			System.Windows.Forms.FlowLayoutPanel pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
+			pnlButtons.AutoSize = true;
+			pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			pnlButtons.Padding = new System.Windows.Forms.Padding(6, 12, 6, 12);
+			pnlButtons.Paint += PnlButtons_Paint;
 			pnlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			for (int i = 0; i < dialog.Buttons.Count; i++)
+			for (int i = dialog.Buttons.Count - 1; i >= 0; i--)
 			{
 				if (!dialog.Buttons[i].IsCreated)
 					Engine.CreateControl(dialog.Buttons[i]);
 
 				System.Windows.Forms.Button btn = ((Engine.GetHandleForControl(dialog.Buttons[i]) as WindowsFormsNativeControl).Handle as System.Windows.Forms.Button);
 				pnlButtons.Controls.Add(btn);
+
+				if (IsSuggestedResponse(dialog.Buttons[i].ResponseValue) || dialog.DefaultButton == dialog.Buttons[i])
+				{
+					f.AcceptButton = btn;
+				}
+				if (dialog.Buttons[i].ResponseValue == (int)DialogResult.Cancel)
+				{
+					f.CancelButton = btn;
+				}
 			}
 			pnlButtons.BackColor = System.Drawing.SystemColors.Control;
 			pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+			pnlButtons.Visible = (dialog.Buttons.Count > 0);
 			f.Controls.Add(pnlButtons);
 
 			f.Font = System.Drawing.SystemFonts.MenuFont;
+
+			f.MinimumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.MinimumSize);
+			f.MaximumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.MaximumSize);
+			f.Size = WindowsFormsEngine.Dimension2DToSystemDrawingSize(dialog.Size);
+			if (dialog.Size != Dimension2D.Empty)
+				f.AutoSize = true;
 
 			WindowsFormsNativeDialog nc = new WindowsFormsNativeDialog(new __wmG(dialog, f), f);
 			Engine.RegisterControlHandle(dialog, nc);
 			return nc;
 		}
+
+		private bool IsSuggestedResponse(int responseValue)
+		{
+			return (
+				(responseValue == (int)DialogResult.OK) ||
+				(responseValue == (int)DialogResult.Yes) ||
+				(responseValue == (int)DialogResult.Retry)
+			);
+		}
+
+		void PnlButtons_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+		{
+			MBS.Framework.UserInterface.Engines.WindowsForms.Theming.Theme.CurrentTheme.DrawContentAreaBackground(e.Graphics, ((System.Windows.Forms.Control)sender).ClientRectangle);
+		}
+
+
+		void F_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+		{
+			(sender as System.Windows.Forms.Form).DialogResult = WindowsFormsEngine.DialogResultToSWFDialogResult((this.Control as Dialog).DialogResult);
+		}
+
 	}
 }

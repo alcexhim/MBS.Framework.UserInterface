@@ -24,6 +24,7 @@ namespace MBS.Framework.UserInterface
 {
 	public enum CommandDisplayMode
 	{
+		None,
 		CommandBar,
 		Ribbon,
 		Both

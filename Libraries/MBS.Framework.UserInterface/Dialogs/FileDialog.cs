@@ -85,6 +85,26 @@ namespace MBS.Framework.UserInterface.Dialogs
 		public bool HighlightExistingFile { get; set; } = true;
 
 		public bool ConfirmOverwrite { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets the full path of the last file selected by the user, or NULL if no files are selected.
+		/// If <see cref="MultiSelect" /> is false, this will be the only file that is selected, or NULL if no files are selected.
+		/// </summary>
+		/// <value>The full path to the selected file.</value>
+		public string SelectedFileName
+		{
+			get
+			{
+				if (SelectedFileNames.Count > 0)
+					return SelectedFileNames[SelectedFileNames.Count - 1];
+				return null;
+			}
+			set
+			{
+				SelectedFileNames.Clear();
+				SelectedFileNames.Add(value);
+			}
+		}
 	}
 }
 

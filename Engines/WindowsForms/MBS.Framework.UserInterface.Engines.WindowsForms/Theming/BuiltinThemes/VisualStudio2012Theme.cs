@@ -578,16 +578,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		}
 		public override void DrawCommandBarBackground(Graphics graphics, System.Drawing.Rectangle rectangle, Orientation orientation, ToolStrip parent)
 		{
-			Rectangle rect = new Rectangle(new Point(0, 0), parent.Bounds.Size);
+			Rectangle rect = new Rectangle(new Point(0, 0), rectangle.Size);
 			if (parent is MenuStrip)
 			{
-				LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(new Point(0, 0), parent.Bounds.Size), ColorTable.CommandBarGradientMenuBarBackgroundBegin, ColorTable.CommandBarGradientMenuBarBackgroundEnd, LinearGradientMode.Vertical);
+				LinearGradientBrush brush = new LinearGradientBrush(rect, ColorTable.CommandBarGradientMenuBarBackgroundBegin, ColorTable.CommandBarGradientMenuBarBackgroundEnd, LinearGradientMode.Vertical);
 				graphics.FillRectangle(brush, rect);
 				return;
 			}
 			else if (parent is ToolStripDropDown)
 			{
-				LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(new Point(0, 0), parent.Bounds.Size), ColorTable.CommandBarGradientMenuBackgroundBegin, ColorTable.CommandBarGradientMenuBackgroundEnd, LinearGradientMode.Vertical);
+				LinearGradientBrush brush = new LinearGradientBrush(rect, ColorTable.CommandBarGradientMenuBackgroundBegin, ColorTable.CommandBarGradientMenuBackgroundEnd, LinearGradientMode.Vertical);
 				graphics.FillRectangle(brush, rect);
 				graphics.DrawRectangle(new Pen(Color.FromArgb(155, 167, 183)), rect);
 				return;

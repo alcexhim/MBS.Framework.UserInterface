@@ -95,7 +95,45 @@ namespace MBS.Framework.UserInterface
 				return Parent.Layout.GetControlBounds(this);
 			}
 		}
-		
+
+		private Dimension2D _ScrollBounds = Dimension2D.Empty;
+		public Dimension2D ScrollBounds
+		{
+			get
+			{
+				return ControlImplementation?.GetScrollBounds();
+			}
+			set
+			{
+				if (_ScrollBounds != value)
+				{
+					// only notify ControlImplementation if the property has changed
+					// otherwise, at least for GTKEngine ("draw" signal),
+					// calling this in OnPaint results in infinite loop of calling OnPaint for whatever reason
+					ControlImplementation.SetScrollBounds(value);
+				}
+				_ScrollBounds = value;
+			}
+		}
+
+		private Adjustment _HorizontalAdjustment = null;
+		public Adjustment HorizontalAdjustment
+		{
+			get
+			{
+				if (_HorizontalAdjustment == null) _HorizontalAdjustment = new Adjustment(this, Orientation.Horizontal);
+				return _HorizontalAdjustment;
+			}
+		}
+		private Adjustment _VerticalAdjustment = null;
+		public Adjustment VerticalAdjustment
+		{
+			get
+			{
+				if (_VerticalAdjustment == null) _VerticalAdjustment = new Adjustment(this, Orientation.Vertical);
+				return _VerticalAdjustment;
+			}
+		}
 
 		private Vector2D mvarLocation = new Vector2D(0, 0);
 		public Vector2D Location { get { return mvarLocation; } set { mvarLocation = value; } }
@@ -191,7 +229,7 @@ namespace MBS.Framework.UserInterface
 		private Container mvarParent = null;
 		public Container Parent {
 			get { return mvarParent; }
-			private set {
+			internal set {
 				mvarParent = value;
 				Application.Engine.UpdateControlLayout (this);
 			}
@@ -245,6 +283,8 @@ namespace MBS.Framework.UserInterface
 					ControlImplementation?.SetTooltipText(value);
 			}
 		}
+
+		public bool UseMarkup { get; set; } = false;
 
 		private string mvarText = null;
 		public string Text
@@ -307,7 +347,7 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public void Destroy()
 		{
-			Application.Engine.DestroyControl(this);
+			ControlImplementation?.Destroy();
 		}
 
 		public void Focus()
@@ -504,14 +544,6 @@ namespace MBS.Framework.UserInterface
 			}
 			set { _ContextMenu = value; }
 		}
-		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
-		{
-			CommandMenuItem mi = (sender as CommandMenuItem);
-			if (mi == null)
-				return;
-
-			Application.ExecuteCommand(mi.Name);
-		}
 
 		private string _ContextMenuCommandID = null;
 		public string ContextMenuCommandID
@@ -536,16 +568,7 @@ namespace MBS.Framework.UserInterface
 			}
 			else
 			{
-				_ContextMenu = new Menu();
-				foreach (CommandItem ci in cmd.Items)
-				{
-					MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
-					if (mi == null || mi.Length == 0)
-						continue;
-
-					for (int i = 0; i < mi.Length; i++)
-						_ContextMenu.Items.Add(mi[i]);
-				}
+				_ContextMenu = Menu.FromCommand(cmd);
 			}
 		}
 
@@ -576,7 +599,7 @@ namespace MBS.Framework.UserInterface
 		}
 		public void Invalidate(int x, int y, int width, int height)
 		{
-			Application.Engine.InvalidateControl(this, x, y, width, height);
+			ControlImplementation?.Invalidate(x, y, width, height);
 		}
 		public void Refresh()
 		{

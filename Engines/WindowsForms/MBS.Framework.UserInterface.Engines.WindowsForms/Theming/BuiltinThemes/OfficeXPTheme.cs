@@ -15,7 +15,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		}
 		public override CommandBarMenuAnimationType CommandBarMenuAnimationType { get { return Theming.CommandBarMenuAnimationType.Fade; } }
 
-		protected override void InitAeroColors()
+		protected override void InitAeroColorsInternal()
 		{
 		}
 		protected override void InitBlueLunaColors()

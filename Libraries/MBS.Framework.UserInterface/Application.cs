@@ -18,6 +18,8 @@ namespace MBS.Framework.UserInterface
 
 		public static CommandLine CommandLine { get; private set; } = null;
 
+		public static Feature.FeatureCollection Features { get; } = new Feature.FeatureCollection();
+
 		public static DefaultSettingsProvider DefaultSettingsProvider { get; } = new DefaultSettingsProvider();
 		public static SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
@@ -27,6 +29,7 @@ namespace MBS.Framework.UserInterface
 		public static Guid ID { get; set; } = Guid.Empty;
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }
+		public static string Title { get; set; } = String.Empty;
 
 		private static string mvarBasePath = null;
 		public static string BasePath
@@ -459,6 +462,8 @@ namespace MBS.Framework.UserInterface
 			// ConfigurationManager.Load();
 			#endregion
 
+			Application.Title = DefaultLanguage?.GetStringTableEntry("Application.Title", Application.Title);
+
 			OnAfterConfigurationLoaded(EventArgs.Empty);
 		}
 
@@ -782,12 +787,13 @@ namespace MBS.Framework.UserInterface
 
 		public static string ExpandRelativePath(string relativePath)
 		{
-			if (relativePath.StartsWith("~/"))
+			if (relativePath == null) relativePath = String.Empty;
+			if (relativePath.StartsWith("~" + System.IO.Path.DirectorySeparatorChar.ToString()) || relativePath.StartsWith("~" + System.IO.Path.AltDirectorySeparatorChar.ToString()))
 			{
 				string[] potentialFileNames = EnumerateDataPaths();
 				for (int i = potentialFileNames.Length - 1; i >= 0; i--)
 				{
-					potentialFileNames[i] = potentialFileNames[i] + '/' + relativePath.Substring(2);
+					potentialFileNames[i] = potentialFileNames[i] + System.IO.Path.DirectorySeparatorChar.ToString() + relativePath.Substring(2);
 					Console.WriteLine("Looking for " + potentialFileNames[i]);
 
 					if (System.IO.File.Exists(potentialFileNames[i]))
@@ -915,6 +921,14 @@ namespace MBS.Framework.UserInterface
 			// ID = Guid.NewGuid();
 			// sv = sv + ID.ToString().Replace("-", String.Empty);
 			UniqueName = sv;
+
+			// configure UWT-provided features
+			pis = typeof(KnownFeatures).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			for (int i = 0; i < pis.Length; i++)
+			{
+				Feature feature = (Feature)pis[i].GetValue(null, null);
+				Features.Add(feature);
+			}
 
 			// configure UWT-provided settings
 			Application.SettingsProviders.Add(Application.DefaultSettingsProvider);

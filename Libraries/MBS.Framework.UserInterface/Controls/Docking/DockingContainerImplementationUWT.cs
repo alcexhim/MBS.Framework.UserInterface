@@ -16,6 +16,16 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		{
 		}
 
+		protected override void InvalidateInternal(int x, int y, int width, int height)
+		{
+			(Handle as CustomNativeControl).Handle.Invalidate(x, y, width, height);
+		}
+
+		protected override void DestroyInternal()
+		{
+			(Handle as CustomNativeControl).Handle.Destroy();
+		}
+
 		private class DockingDockContainer : Container
 		{
 			private void tbs_SelectedTabChanged(object sender, TabContainerSelectedTabChangedEventArgs e)
@@ -42,18 +52,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 			private void tbs_BeforeTabContextMenu(object sender, BeforeTabContextMenuEventArgs e)
 			{
-				if (_DockingContainerContextMenu == null)
-				{
-					_DockingContainerContextMenu = new Menu();
-					_DockingContainerContextMenu.Items.AddRange(new MenuItem[]
-					{
-						new CommandMenuItem("_Close", null, _DockingContainerContextMenu_Close),
-						new CommandMenuItem("Close All But T_his", null, _DockingContainerContextMenu_CloseAllButThis),
-						new CommandMenuItem("C_lose All", null, _DockingContainerContextMenu_CloseAll)
-					});
-				}
-				_DockingContainerContextMenu.SetExtraData<DockingWindow>("dw", e.TabPage.GetExtraData<DockingWindow>("dw"));
-				e.ContextMenu = _DockingContainerContextMenu;
+				e.ContextMenuCommandID = "DockingWindowTabPageContextMenu";
 			}
 
 			private DockingContainerControl _dcc = null;

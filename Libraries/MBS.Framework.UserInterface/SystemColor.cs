@@ -23,8 +23,9 @@ namespace MBS.Framework.UserInterface
 {
 	public enum SystemColor
 	{
-		HighlightBackgroundColor,
-		HighlightForegroundColor,
-		TextBoxForegroundColor
+		HighlightBackground,
+		HighlightForeground,
+		WindowForeground,
+		WindowBackground
 	}
 }

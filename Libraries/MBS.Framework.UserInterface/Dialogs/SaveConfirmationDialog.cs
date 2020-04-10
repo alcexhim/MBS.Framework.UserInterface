@@ -91,9 +91,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			ctButton.Controls.Add(new Label(), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
 			ctButton.Controls.Add(new Button("Close _without Saving", DialogResult.No), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
-			ctButton.Controls.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+			ctButton.Controls.Add(new Button(StockType.Cancel, DialogResult.Cancel), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
 			// this.Buttons.Add(new Button("_Don't save"));
-			ctButton.Controls.Add(new Button(ButtonStockType.Save, DialogResult.Yes), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
+			ctButton.Controls.Add(new Button(StockType.Save, DialogResult.Yes), new BoxLayout.Constraints(false, false, 4, BoxLayout.PackType.End));
 
 			this.Controls.Add(ctButton, new BoxLayout.Constraints(false, false, 16));
 		}

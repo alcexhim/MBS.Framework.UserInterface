@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-
+using System.Diagnostics.Contracts;
 using MBS.Framework.UserInterface;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;
@@ -16,11 +16,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private enum ImplementedAsType
 		{
 			/// <summary>
-			/// The control can be implemented as a System.Windows.Forms.TreeView control.
+			/// The control can be implemented as a Internal.TreeView.ExplorerTreeView control.
 			/// </summary>
 			TreeView,
 			/// <summary>
-			/// The control can be implemented as a System.Windows.Forms.ListView control.
+			/// The control can be implemented as a Internal.ListView.ListViewControl control.
 			/// </summary>
 			ListView
 		}
@@ -66,23 +66,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 				case SelectionMode.Multiple:
 				{
-					if (handle is System.Windows.Forms.TreeView)
+					if (handle is Internal.TreeView.ExplorerTreeView)
 					{
 					}
-					else if (handle is System.Windows.Forms.ListView)
+					else if (handle is Internal.ListView.ListView)
 					{
-						(handle as System.Windows.Forms.ListView).MultiSelect = true;
+						(handle as Internal.ListView.ListView).MultiSelect = true;
 					}
 					break;
 				}
 				case SelectionMode.Single:
 				{
-					if (handle is System.Windows.Forms.TreeView)
+					if (handle is Internal.TreeView.ExplorerTreeView)
 					{
 					}
-					else if (handle is System.Windows.Forms.ListView)
+					else if (handle is Internal.ListView.ListView)
 					{
-						(handle as System.Windows.Forms.ListView).MultiSelect = false;
+						(handle as Internal.ListView.ListView).MultiSelect = false;
 					}
 					break;
 				}
@@ -101,7 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					if (_SelectionMode != SelectionMode.None && _SelectionMode != SelectionMode.Browse)
 					{
-						if ((handle as System.Windows.Forms.ListView).MultiSelect)
+						if ((handle as Internal.ListView.ListView).MultiSelect)
 						{
 							_SelectionMode = SelectionMode.Multiple;
 						}
@@ -137,13 +137,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			TreeModelRow row = null;
 			TreeModelColumn column = null;
-			if (handle is System.Windows.Forms.ListView)
+			if (handle is Internal.ListView.ListView)
 			{
-				System.Windows.Forms.ListViewHitTestInfo info = (handle as System.Windows.Forms.ListView).HitTest((int)x, (int)y);
+				System.Windows.Forms.ListViewHitTestInfo info = (handle as Internal.ListView.ListView).HitTest((int)x, (int)y);
 				if (info?.Item != null)
 				{
 					row = (info.Item.Tag as TreeModelRow);
 				}
+				/*
 				if (info?.SubItem != null)
 				{
 					if (info.SubItem.Tag is TreeModelRow)
@@ -154,10 +155,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						column = (info.SubItem.Tag as TreeModelRowColumn).Column;
 					}
 				}
+				*/
 			}
-			else if (handle is System.Windows.Forms.TreeView)
+			else if (handle is Internal.TreeView.ExplorerTreeView)
 			{
-				System.Windows.Forms.TreeViewHitTestInfo info = (handle as System.Windows.Forms.TreeView).HitTest((int)x, (int)y);
+				System.Windows.Forms.TreeViewHitTestInfo info = (handle as Internal.TreeView.ExplorerTreeView).HitTest((int)x, (int)y);
 				if (info?.Node != null)
 				{
 					row = (info.Node.Tag as TreeModelRow);
@@ -214,7 +216,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private Dictionary<ListViewColumn, bool> _IsColumnReorderable = new Dictionary<ListViewColumn, bool>();
 		public bool IsColumnReorderable(ListViewColumn column)
 		{
-			System.Windows.Forms.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView);
+			Internal.ListView.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as Internal.ListView.ListView);
 
 			if (_IsColumnReorderableSet == null)
 			{
@@ -249,7 +251,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetColumnReorderable(ListViewColumn column, bool value)
 		{
 			Console.WriteLine("SetColumnReorderable: in function");
-			System.Windows.Forms.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView);
+			Internal.ListView.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as Internal.ListView.ListView);
 			if (lv == null)
 				return;
 
@@ -298,7 +300,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					case ImplementedAsType.ListView:
 					{
-						System.Windows.Forms.ListView lv = (handle as System.Windows.Forms.ListView);
+						Internal.ListView.ListView lv = (handle as Internal.ListView.ListView);
 
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
@@ -307,6 +309,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 							SetColumnEditable(tvc, tvc.Editable);
 						}
 
+						lv.Items.Clear();
 						for (int i = 0; i < tv.Model.Rows.Count; i++)
 						{
 							System.Windows.Forms.ListViewItem lvi = TreeModelRowToListViewItem(tv.Model.Rows[i]);
@@ -316,11 +319,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					}
 					case ImplementedAsType.TreeView:
 					{
-						System.Windows.Forms.TreeView natv = (handle as System.Windows.Forms.TreeView);
-
+						Internal.TreeView.ExplorerTreeView natv = (handle as Internal.TreeView.ExplorerTreeView);
+						natv.Nodes.Clear();
 						for (int i = 0; i < tv.Model.Rows.Count; i++)
 						{
-							RecursiveTreeStoreInsertRow(tv.Model, tv.Model.Rows[i], null, null);
+							RecursiveTreeStoreInsertRow(tv.Model, tv.Model.Rows[i], natv, null);
 						}
 						break;
 					}
@@ -383,39 +386,44 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
-			if (tv.Model != null)
+			if (tv.Model != null && !TreeModelAssociatedControls.ContainsKey(tv.Model))
 			{
-				if (!TreeModelAssociatedControls.ContainsKey(tv.Model))
-				{
-					TreeModelAssociatedControls.Add(tv.Model, new List<System.Windows.Forms.Control>());
-				}
+				TreeModelAssociatedControls.Add(tv.Model, new List<System.Windows.Forms.Control>());
 			}
+
 			switch (ImplementedAs (tv))
 			{
 				case ImplementedAsType.TreeView:
 				{
-					handle = new System.Windows.Forms.TreeView();
-					(handle as System.Windows.Forms.TreeView).AfterLabelEdit += tv_AfterLabelEdit;
+					handle = new Internal.TreeView.ExplorerTreeView();
+					handle.Tag = tv;
+					(handle as Internal.TreeView.ExplorerTreeView).AfterLabelEdit += tv_AfterLabelEdit;
 
-					(handle as System.Windows.Forms.TreeView).NodeMouseDoubleClick += tv_NodeMouseDoubleClick;
-					(handle as System.Windows.Forms.TreeView).BeforeSelect += tv_BeforeSelect;
-					(handle as System.Windows.Forms.TreeView).AfterSelect += tv_AfterSelect;
+					(handle as Internal.TreeView.ExplorerTreeView).NodeMouseDoubleClick += tv_NodeMouseDoubleClick;
+					(handle as Internal.TreeView.ExplorerTreeView).BeforeSelect += tv_BeforeSelect;
+					(handle as Internal.TreeView.ExplorerTreeView).AfterSelect += tv_AfterSelect;
 
-					if (tv.Model != null)
+					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
+					{
 						TreeModelAssociatedControls[tv.Model].Add(handle);
+					}
 					break;
 				}
 				case ImplementedAsType.ListView:
 				{
-					handle = new System.Windows.Forms.ListView();
-					(handle as System.Windows.Forms.ListView).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
-					(handle as System.Windows.Forms.ListView).ItemActivate += lv_ItemActivate;
-					(handle as System.Windows.Forms.ListView).ItemSelectionChanged += lv_ItemSelectionChanged;
-					(handle as System.Windows.Forms.ListView).FullRowSelect = true;
-					(handle as System.Windows.Forms.ListView).View = System.Windows.Forms.View.Details;
+					handle = new Internal.ListView.ListView();
+					handle.Tag = tv;
+					// (handle as Internal.ListView.ListViewControl).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
+					(handle as Internal.ListView.ListView).ItemActivate += lv_ItemActivate;
+					(handle as Internal.ListView.ListView).ItemSelectionChanged += lv_ItemSelectionChanged;
+					(handle as Internal.ListView.ListView).FullRowSelect = true;
+					// (handle as Internal.ListView.ListViewControl).View = System.Windows.Forms.View.Details;
+					(handle as Internal.ListView.ListView).View = System.Windows.Forms.View.Details;
 
-					if (tv.Model != null)
+					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
+					{
 						TreeModelAssociatedControls[tv.Model].Add(handle);
+					}
 					break;
 				}
 			}
@@ -430,7 +438,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void lv_ItemSelectionChanged(object sender, System.Windows.Forms.ListViewItemSelectionChangedEventArgs e)
 		{
-			System.Windows.Forms.ListView _lv = (sender as System.Windows.Forms.ListView);
+			Internal.ListView.ListView _lv = (sender as Internal.ListView.ListView);
 			ListView lv = (Control as ListView);
 
 			Console.WriteLine("selected rows: {0}", lv.SelectedRows.Count);
@@ -440,7 +448,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void tv_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
 		{
-			((sender as System.Windows.Forms.TreeView).Tag as ListView).OnSelectionChanged(e);
+			((sender as Internal.TreeView.ExplorerTreeView).Tag as ListView).OnSelectionChanged(e);
 		}
 
 
@@ -448,7 +456,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			/*
 			ListViewSelectionChangingEventArgs ee = new ListViewSelectionChangingEventArgs();
-			((sender as System.Windows.Forms.TreeView).Tag as ListView).OnSelectionChanging(ee);
+			((sender as Internal.TreeView.ExplorerTreeView).Tag as ListView).OnSelectionChanging(ee);
 			e.Cancel = ee.Cancel;
 			*/		
 		}
@@ -456,7 +464,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		private void lv_ItemActivate(object sender, EventArgs e)
 		{
-			System.Windows.Forms.ListView handle = (sender as System.Windows.Forms.ListView);
+			Internal.ListView.ListView handle = (sender as Internal.ListView.ListView);
 			ListView lv = (handle.Tag as ListView);
 
 			if (handle.SelectedItems.Count > 0)
@@ -466,7 +474,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 		private void tv_NodeMouseDoubleClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e)
 		{
-			System.Windows.Forms.TreeView tv = (sender as System.Windows.Forms.TreeView);
+			Internal.TreeView.ExplorerTreeView tv = (sender as Internal.TreeView.ExplorerTreeView);
 			ListView lv = (tv.Tag as ListView);
 			TreeModelRow row = (e.Node.Tag as TreeModelRow);
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
@@ -499,14 +507,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			TreeModelRow.TreeModelSelectedRowCollection coll = (sender as TreeModelRow.TreeModelSelectedRowCollection);
 			ControlImplementation impl = coll.Parent.ControlImplementation;
 
-
 			if (coll.Parent != null)
 			{
 				switch (ImplementedAs(coll.Parent))
 				{
 					case ImplementedAsType.ListView:
 					{
-						System.Windows.Forms.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.ListView);
+						Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
 						
 						if (e.Index == -1 && e.Count == 1 && e.Item != null)
 						{
@@ -547,7 +554,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					}
 					case ImplementedAsType.TreeView:
 					{
-						System.Windows.Forms.TreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.TreeView);
+						Internal.TreeView.ExplorerTreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.TreeView.ExplorerTreeView);
 
 						if (e.Index == -1 && e.Count == 1 && e.Item != null)
 						{
@@ -590,13 +597,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				ImplementedAsType implementedAs = ImplementedAs(coll.Parent);
 				if (implementedAs == ImplementedAsType.TreeView)
 				{
-					System.Windows.Forms.TreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.TreeView);
+					Internal.TreeView.ExplorerTreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.TreeView.ExplorerTreeView);
 					if (tv != null)
 						tv.SelectedNode = null;
 				}
 				else if (implementedAs == ImplementedAsType.ListView)
 				{
-					System.Windows.Forms.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.ListView);
+					Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
 					if (lv != null)
 						lv.SelectedItems.Clear();
 				}
@@ -645,6 +652,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				tn.SubItems.Add(row.RowColumns[i].Value?.ToString());
 			}
 			tn.Tag = row;
+			row.SetExtraData<System.Windows.Forms.ListViewItem>("lvi", tn);
 			return tn;
 		}
 
@@ -656,6 +664,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				tn.Text = row.RowColumns[0].Value?.ToString();
 			}
 			tn.Tag = row;
+			row.SetExtraData<System.Windows.Forms.TreeNode>("tn", tn);
 
 			foreach (TreeModelRow row2 in row.Rows)
 			{
@@ -676,17 +685,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					for (int i = 0; i < list.Count; i++)
 					{
-						if (list[i] is System.Windows.Forms.TreeView)
+						if (list[i] is Internal.TreeView.ExplorerTreeView)
 						{
-							System.Windows.Forms.TreeView tv = (list[i] as System.Windows.Forms.TreeView);
+							Internal.TreeView.ExplorerTreeView tv = (list[i] as Internal.TreeView.ExplorerTreeView);
 							for (int j = 0; j < e.Rows.Count; j++)
 							{
 								tv.Nodes.Add(TreeModelRowToTreeNode(e.Rows[j]));
 							}
 						}
-						else if (list[i] is System.Windows.Forms.ListView)
+						else if (list[i] is Internal.ListView.ListView)
 						{
-							System.Windows.Forms.ListView lv = (list[i] as System.Windows.Forms.ListView);
+							Internal.ListView.ListView lv = (list[i] as Internal.ListView.ListView);
 							for (int j = 0; j < e.Rows.Count; j++)
 							{
 								lv.Items.Add(TreeModelRowToListViewItem(e.Rows[j]));
@@ -700,10 +709,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					foreach (TreeModelRow row in e.Rows)
 					{
-						
-						// Internal.GTK.Structures.GtkTreeIter iter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
-						// Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
-						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
+						System.Windows.Forms.ListViewItem lvi = row.GetExtraData<System.Windows.Forms.ListViewItem>("lvi");
+						if (lvi == null)
+						{
+							System.Windows.Forms.TreeNode tn = row.GetExtraData<System.Windows.Forms.TreeNode>("tn");
+							if (tn == null)
+							{
+								Console.Error.WriteLine("attempted to remove TreeModelRow without associated ListViewItem or TreeNode");
+								return;
+							}
+							tn.Remove();
+							return;
+						}
+						lvi.Remove();
 					}
 					break;
 				}
@@ -711,13 +729,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					for (int i = 0; i < list.Count; i++)
 					{
-						if (list[i] is System.Windows.Forms.TreeView)
+						if (list[i] is Internal.TreeView.ExplorerTreeView)
 						{
-							(list[i] as System.Windows.Forms.TreeView).Nodes.Clear();
+							(list[i] as Internal.TreeView.ExplorerTreeView).Nodes.Clear();
 						}
-						else if (list[i] is System.Windows.Forms.ListView)
+						else if (list[i] is Internal.ListView.ListView)
 						{
-							(list[i] as System.Windows.Forms.ListView).Items.Clear();
+							(list[i] as Internal.ListView.ListView).Items.Clear();
 						}
 					}
 					break;
@@ -730,11 +748,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			System.Windows.Forms.Control hctrl = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Control);
 			if (hctrl == null) return;
 
-			if (hctrl is System.Windows.Forms.TreeView)
+			if (hctrl is Internal.TreeView.ExplorerTreeView)
 			{
 
 			}
-			else if (hctrl is System.Windows.Forms.ListView)
+			else if (hctrl is Internal.ListView.ListView)
 			{
 			}
 
@@ -748,7 +766,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (lv == null)
 				return false;
 
-			if ((Handle as WindowsFormsNativeControl).Handle is System.Windows.Forms.TreeView)
+			if ((Handle as WindowsFormsNativeControl).Handle is Internal.TreeView.ExplorerTreeView)
 			{
 				if (_NodesForRow.ContainsKey(row))
 				{
@@ -765,7 +783,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (lv == null)
 				return;
 
-			if ((Handle as WindowsFormsNativeControl).Handle is System.Windows.Forms.TreeView)
+			if ((Handle as WindowsFormsNativeControl).Handle is Internal.TreeView.ExplorerTreeView)
 			{
 				if (_NodesForRow.ContainsKey(row))
 				{
@@ -781,8 +799,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 		}
 
-		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, System.Windows.Forms.TreeView parentView, System.Windows.Forms.TreeNode parentNode, int position = -1)
+		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, Internal.TreeView.ExplorerTreeView parentView, System.Windows.Forms.TreeNode parentNode, int position = -1)
 		{
+			Contract.Requires(parentView != null);
+
 			System.Windows.Forms.TreeNode tn = TreeModelRowToTreeNode(row);
 			if (parentNode == null)
 			{

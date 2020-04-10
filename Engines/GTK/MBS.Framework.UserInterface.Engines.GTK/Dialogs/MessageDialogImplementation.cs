@@ -113,7 +113,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				}
 				case MessageDialogButtons.CancelTryContinue:
 				{
-					buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Abort));
+					buttons.Add(new Button(StockType.Cancel, DialogResult.Abort));
 					buttons.Add(new Button("T_ry Again", DialogResult.Retry));
 					buttons.Add(new Button("C_ontinue", DialogResult.Continue));
 					break;
@@ -121,14 +121,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				case MessageDialogButtons.RetryCancel:
 				{
 					buttons.Add(new Button("_Retry", DialogResult.Retry));
-					buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
+					buttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 					break;
 				}
 				case MessageDialogButtons.YesNoCancel:
 				{
-					buttons.Add(new Button(ButtonStockType.Yes, DialogResult.Yes));
-					buttons.Add(new Button(ButtonStockType.No, DialogResult.No));
-					buttons.Add(new Button(ButtonStockType.Cancel, DialogResult.Cancel));
+					buttons.Add(new Button(StockType.Yes, DialogResult.Yes));
+					buttons.Add(new Button(StockType.No, DialogResult.No));
+					buttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 					break;
 				}
 			}

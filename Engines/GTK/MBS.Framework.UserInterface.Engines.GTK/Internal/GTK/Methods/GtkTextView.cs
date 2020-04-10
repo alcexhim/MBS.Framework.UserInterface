@@ -28,6 +28,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_text_view_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern GType gtk_text_view_get_type();
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_text_view_get_buffer(IntPtr /*GtkTextView*/ text_view);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_view_set_buffer(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkTextBuffer*/ buffer);

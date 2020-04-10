@@ -8,6 +8,7 @@ using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Printing;
 using System.Diagnostics.Contracts;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Dialogs;
 
 namespace MBS.Framework.UserInterface
 {
@@ -151,8 +152,15 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public void RegisterControlHandle(Control control, NativeControl handle)
+		public void RegisterControlHandle(Control control, NativeControl handle, bool fDeleteOld = false)
 		{
+			if (fDeleteOld)
+			{
+				if (controlsByHandle.ContainsKey(handle))
+					controlsByHandle.Remove(handle);
+				if (handlesByControl.ContainsKey(control))
+					handlesByControl.Remove(control);
+			}
 			controlsByHandle[handle] = control;
 			handlesByControl[control] = handle;
 			Console.WriteLine("registered control handle {0} for {1} ({2} handles registered)", handle, control.GetType(), controlsByHandle.Count);
@@ -172,6 +180,9 @@ namespace MBS.Framework.UserInterface
 				Console.WriteLine("NULl passed to Engine::UnregisterControlHandle");
 				return;
 			}
+
+			if (!handlesByControl.ContainsKey(ctl))
+				return;
 
 			NativeControl nc = handlesByControl[ctl];
 
@@ -199,39 +210,48 @@ namespace MBS.Framework.UserInterface
 		public static Engine[] Get()
 		{
 			List<Engine> list = new List<Engine>();
-			Type[] engineTypes = Reflection.GetAvailableTypes(new Type[] { typeof(Engine) });
 
-			foreach (Type type in engineTypes)
+			Plugin[] enginePlugins = Plugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
+			for (int i = 0; i < enginePlugins.Length; i++)
 			{
-				Engine engine = null;
-				try
+				if (enginePlugins[i] is EnginePlugin)
 				{
-					engine = (Engine)type.Assembly.CreateInstance(type.FullName);
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine("unable to load engine '{0}' : ({1}) {2}", type.FullName, ex.GetType().Name, ex.Message);
-				}
-
-				if (engine != null)
+					Type type = (enginePlugins[i] as EnginePlugin).EngineType;
+					Engine engine = (Engine)type.Assembly.CreateInstance(type.FullName);
 					list.Add(engine);
+				}
 			}
+
 			list.Sort(new Comparison<Engine>((x, y) => x.Priority.CompareTo(y.Priority)));
 			list.Reverse();
 			return list.ToArray();
 		}
 
 
-		private static BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection> mvarStockIDs = new BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection>();
-		public void RegisterStockType(StockType stockType, string name)
+		private BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection> mvarStockIDs = new BidirectionalDictionary<StockType, System.Collections.Specialized.StringCollection>();
+		private Dictionary<StockType, string> mvarStockLabels = new Dictionary<StockType, string>();
+		public void RegisterStockType(StockType stockType, string name, string label = null)
 		{
 			if (!mvarStockIDs.ContainsValue1(stockType))
 			{
 				mvarStockIDs.Add(stockType, new System.Collections.Specialized.StringCollection());
 			}
 			mvarStockIDs.GetValue2(stockType).Add(name);
+
+			if (label == null) label = name;
+			mvarStockLabels.Add(stockType, label);
 		}
 
+		public string StockTypeToLabel(StockType stockType, bool useMnemonic = false)
+		{
+			string retval = String.Empty;
+			if (mvarStockLabels.ContainsKey(stockType))
+				retval = mvarStockLabels[stockType];
+
+			if (!useMnemonic)
+				retval = retval.Replace("_", String.Empty);
+			return retval;
+		}
 		public string StockTypeToString(StockType stockType)
 		{
 			if (mvarStockIDs.ContainsValue1(stockType))
@@ -401,15 +421,6 @@ namespace MBS.Framework.UserInterface
 			return true;
 		}
 
-		protected abstract void DestroyControlInternal(Control control);
-		/// <summary>
-		/// Destroys the handle associated with the specified <see cref="Control" />.
-		/// </summary>
-		public void DestroyControl(Control control)
-		{
-			DestroyControlInternal(control);
-		}
-
 		public Window GetFocusedToplevelWindow()
 		{
 			// In GTK+, this lists all toplevel windows in the system
@@ -440,6 +451,8 @@ namespace MBS.Framework.UserInterface
 				// find the appropriate parent window
 				parent = GetFocusedToplevelWindow();
 			}
+
+			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
 			return ShowDialogInternal(dialog, parent);
 		}
 
@@ -474,15 +487,6 @@ namespace MBS.Framework.UserInterface
 		public bool SetProperty<T>(string propertyName, T value)
 		{
 			return SetProperty(propertyName, (object)value);
-		}
-
-		protected abstract void InvalidateControlInternal(Control control, int x, int y, int width, int height);
-		public void InvalidateControl(Control control, int x, int y, int width, int height)
-		{
-			if (!IsControlCreated(control))
-				return;
-
-			InvalidateControlInternal(control, x, y, width, height);
 		}
 
 		protected abstract void UpdateControlLayoutInternal(Control control);
@@ -594,10 +598,14 @@ namespace MBS.Framework.UserInterface
 			return _HandleForTreeModel.ContainsKey(model);
 		}
 
-		protected abstract void ShowHelpInternal(HelpTopic topic);
+		protected abstract bool ShowHelpInternal(HelpTopic topic);
 		internal void ShowHelp(HelpTopic topic)
 		{
-			ShowHelpInternal(topic);
+			bool retval = ShowHelpInternal(topic);
+			if (!retval)
+			{
+				MessageDialog.ShowDialog("Unable to launch the operating system's default Help viewer.", "Error", MessageDialogButtons.OK, MessageDialogIcon.Error);
+			}
 		}
 	}
 }

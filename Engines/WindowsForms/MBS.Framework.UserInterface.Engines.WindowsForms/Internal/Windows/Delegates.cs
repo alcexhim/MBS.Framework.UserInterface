@@ -27,6 +27,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 	{
 		public delegate bool EnumWindowsProc([In] IntPtr hWnd, [In] IntPtr lParam);
 
-		public delegate IntPtr /*HRESULT*/ PFTASKDIALOGCALLBACK(IntPtr /*HWND*/ hwnd, uint msg, IntPtr /*WPARAM*/ wParam, IntPtr /*LPARAM*/ lParam, IntPtr /*LONG_PTR*/ lpRefData);
+		// [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+		public delegate int /*HRESULT*/ PFTASKDIALOGCALLBACK(IntPtr /*HWND*/ hwnd, uint msg, UIntPtr /*WPARAM*/ wParam, IntPtr /*LPARAM*/ lParam, IntPtr /*LONG_PTR*/ lpRefData);
 	}
 }

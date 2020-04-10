@@ -47,6 +47,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 
 		private System.Windows.Forms.StatusStrip sb = null;
+		private System.Windows.Forms.MenuStrip mb = null;
 
 		protected override NativeControl CreateControlInternal (Control control)
 		{
@@ -72,6 +73,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.Location = new Point((int)window.Location.X, (int)window.Location.Y);
 			form.Size = new System.Drawing.Size((int)window.Size.Width, (int)window.Size.Height);
 			form.StartPosition = WindowStartPositionToFormStartPosition(window.StartPosition);
+			form.FormClosing += Form_FormClosing;
+			form.FormClosed += Form_FormClosed;
 			form.Shown += form_Shown;
 
 			Internal.CommandBars.ToolBarManager tbm = new Internal.CommandBars.ToolBarManager(form, form);
@@ -79,10 +82,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
 			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 
-			System.Windows.Forms.MenuStrip mb = new System.Windows.Forms.MenuStrip();
+			mb = new System.Windows.Forms.MenuStrip();
 			// mb.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
 			mb.Stretch = true;
-			tbm.AddControl(mb);
 
 			// tsc.TopToolStripPanel.Controls.Add(mb);
 
@@ -92,6 +94,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
+
+			if (mb.Items.Count > 0 && window.MenuBar.Visible && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
+				tbm.AddControl(mb);
 
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
@@ -119,7 +124,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// tsc.BottomToolStripPanel.Controls.Add(sb);
 
 			sb.Text = "Status Bar";
-			// sb.Visible = window.StatusBar.Visible;
+			sb.Visible = window.StatusBar.Visible;
 
 			Container container = new Container();
 			for (int i = 0; i < window.Controls.Count; i++)
@@ -145,8 +150,42 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// form.Controls.Add(tsc);
 			form.Controls.Add(sb);
 			form.Text = window.Text;
-			form.AutoSize = true;
+			form.MinimumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MinimumSize);
+			form.MaximumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MaximumSize);
+			form.Size = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.Size);
+			if (window.Size != Dimension2D.Empty)
+				form.AutoSize = true;
+
+			form.Tag = window;
+			form.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
 			return new WindowsFormsNativeControl (form);
+		}
+
+		void Form_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+		{
+			InvokeMethod((((System.Windows.Forms.Form)sender).Tag as Window), "OnClosed", e);
+		}
+
+		void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+		{
+			WindowClosingEventArgs ce = new WindowClosingEventArgs(CloseReasonToWindowCloseReason(e.CloseReason));
+			InvokeMethod((((System.Windows.Forms.Form)sender).Tag as Window), "OnClosing", ce);
+			e.Cancel = ce.Cancel;
+		}
+
+		private static WindowCloseReason CloseReasonToWindowCloseReason(System.Windows.Forms.CloseReason closeReason)
+		{
+			switch (closeReason)
+			{
+				case System.Windows.Forms.CloseReason.ApplicationExitCall: return WindowCloseReason.ApplicationStop;
+				case System.Windows.Forms.CloseReason.FormOwnerClosing: return WindowCloseReason.OwnerClosing;
+				case System.Windows.Forms.CloseReason.MdiFormClosing: return WindowCloseReason.MdiParentClosing;
+				case System.Windows.Forms.CloseReason.None: return WindowCloseReason.None;
+				case System.Windows.Forms.CloseReason.TaskManagerClosing: return WindowCloseReason.ForcedClosing;
+				case System.Windows.Forms.CloseReason.UserClosing: return WindowCloseReason.UserClosing;
+				case System.Windows.Forms.CloseReason.WindowsShutDown: return WindowCloseReason.SystemShutdown;
+			}
+			return WindowCloseReason.Unknown;
 		}
 
 		private System.Windows.Forms.ToolStripItem CreateToolStripItem(MenuItem m)
@@ -355,17 +394,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		public void InsertMenuItem(int index, MenuItem item)
 		{
-			throw new NotImplementedException();
+			System.Windows.Forms.ToolStripItem tsi = (Engine as WindowsFormsEngine).InitMenuItem(item);
+			mb.Items.Insert(index, tsi);
 		}
 
 		public void ClearMenuItems()
 		{
-			throw new NotImplementedException();
+			mb.Items.Clear();
 		}
 
 		public void RemoveMenuItem(MenuItem item)
 		{
-			throw new NotImplementedException();
+			System.Windows.Forms.ToolStripItem tsi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle;
+			mb.Items.Remove(tsi);
 		}
 	}
 }

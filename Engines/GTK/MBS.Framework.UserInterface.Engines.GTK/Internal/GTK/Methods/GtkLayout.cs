@@ -29,5 +29,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkLayout*/ gtk_layout_new(IntPtr /*GtkAdjustment*/ hadjustment, IntPtr /*GtkAdjustment*/ vadjustment);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_layout_set_size(IntPtr /*GtkLayout*/ layout, uint width, uint height);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_layout_get_size(IntPtr /*GtkLayout*/ layout, out uint width, out uint height);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkWindow*/ gtk_layout_get_bin_window(IntPtr /*GtkLayout*/ layout);
 	}
 }

@@ -19,7 +19,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
                 this.pszButtonText = szButtonText;
             }
         }
-        public struct TASKDIALOGCONFIG
+
+		[StructLayout(LayoutKind.Sequential, Pack = 1)] // required to operate properly on 64-bit windows, though I'm not sure why
+		public struct TASKDIALOGCONFIG
         {
             /// <summary>
             /// Specifies the structure size, in bytes.
@@ -51,15 +53,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
             public string /*PCWSTR*/ pszWindowTitle;
-            /// <summary>
-            /// A handle to an Icon that is to be displayed in the task dialog. This member is ignored unless the TDF_USE_HICON_MAIN flag is specified. If this member is
-            /// NULL and the TDF_USE_HICON_MAIN is specified, no icon will be displayed.
-            /// 
-            /// Pointer that references the icon to be displayed in the task dialog. This parameter is ignored if the USE_HICON_MAIN flag is specified. Otherwise, if this
-            /// parameter is NULL or the hInstance parameter is NULL, no icon will be displayed. This parameter must be an integer resource identifier passed to the
-            /// MAKEINTRESOURCE macro or one of the following predefined values.
-            /// </summary>
-            public IntPtr /*<HICON>_OR_<PCWSTR>*/ hMainIcon;
+			/// <summary>
+			/// A handle to an Icon that is to be displayed in the task dialog. This member is ignored unless the TDF_USE_HICON_MAIN flag is specified. If this member is
+			/// NULL and the TDF_USE_HICON_MAIN is specified, no icon will be displayed.
+			/// 
+			/// Pointer that references the icon to be displayed in the task dialog. This parameter is ignored if the USE_HICON_MAIN flag is specified. Otherwise, if this
+			/// parameter is NULL or the hInstance parameter is NULL, no icon will be displayed. This parameter must be an integer resource identifier passed to the
+			/// MAKEINTRESOURCE macro or one of the following predefined values.
+			/// </summary>
+			public IntPtr /*<HICON>_OR_<PCWSTR>*/ hMainIcon;
             /// <summary>
             /// Pointer that references the string to be used for the main instruction. This parameter can be either a null-terminated string or an integer resource
             /// identifier passed to the MAKEINTRESOURCE macro.
@@ -136,15 +138,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
             public string /*PCWSTR*/ pszCollapsedControlText;
-            /// <summary>
-            /// A handle to an Icon that is to be displayed in the footer of the task dialog. This member is ignored unless the TDF_USE_HICON_FOOTER flag is specified
-            /// and the pszFooterIcon is not. If this member is NULL and the TDF_USE_HICON_FOOTER is specified, no icon is displayed.
-            /// 
-            /// Pointer that references the icon to be displayed in the footer area of the task dialog. This parameter is ignored if the TDF_USE_HICON_FOOTER flag is
-            /// specified, or if pszFooter is NULL. Otherwise, if this parameter is NULL or the hInstance parameter is NULL, no icon is displayed. This parameter must be
-            /// an integer resource identifier passed to the MAKEINTRESOURCE macro or one of the predefined values listed for pszMainIcon.
-            /// </summary>
-            public IntPtr /*<HICON>_OR_<PCWSTR>*/ hFooterIcon;
+			/// <summary>
+			/// A handle to an Icon that is to be displayed in the footer of the task dialog. This member is ignored unless the TDF_USE_HICON_FOOTER flag is specified
+			/// and the pszFooterIcon is not. If this member is NULL and the TDF_USE_HICON_FOOTER is specified, no icon is displayed.
+			/// 
+			/// Pointer that references the icon to be displayed in the footer area of the task dialog. This parameter is ignored if the TDF_USE_HICON_FOOTER flag is
+			/// specified, or if pszFooter is NULL. Otherwise, if this parameter is NULL or the hInstance parameter is NULL, no icon is displayed. This parameter must be
+			/// an integer resource identifier passed to the MAKEINTRESOURCE macro or one of the predefined values listed for pszMainIcon.
+			/// </summary>
+			public IntPtr /*<HICON>_OR_<PCWSTR>*/ hFooterIcon;
             /// <summary>
             /// Pointer to the string to be used in the footer area of the task dialog. This parameter can be either a null-terminated string or an integer resource
             /// identifier passed to the MAKEINTRESOURCE macro. If the TDF_ENABLE_HYPERLINKS flag is specified for the dwFlags member, then this string may contain

@@ -27,6 +27,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_scrolled_window_new(IntPtr /*GtkAdjustment*/ hadjustment, IntPtr /*GtkAdjustment*/ vadjustment);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_scrolled_window_get_policy(IntPtr hScroller, ref Constants.GtkPolicyType hscrollbar_policy, ref Constants.GtkPolicyType vscrollbar_policy);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_scrolled_window_set_policy(IntPtr hScroller, Constants.GtkPolicyType hscrollbar_policy, Constants.GtkPolicyType vscrollbar_policy);
 	}
 }
 

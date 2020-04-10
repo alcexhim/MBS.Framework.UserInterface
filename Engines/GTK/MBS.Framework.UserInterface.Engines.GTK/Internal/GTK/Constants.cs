@@ -639,6 +639,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			/// </summary>
 			WordCharacter
 		}
+
+		public enum GtkPolicyType
+		{
+			Always = 0,
+			Automatic = 1,
+			Never = 2,
+			External = 3
+		}
 	}
 }
 

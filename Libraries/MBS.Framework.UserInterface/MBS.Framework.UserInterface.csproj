@@ -257,6 +257,7 @@
     <Compile Include="WindowCloseReason.cs" />
     <Compile Include="WindowClosingEvent.cs" />
     <Compile Include="Adjustment.cs" />
+    <Compile Include="IControlContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

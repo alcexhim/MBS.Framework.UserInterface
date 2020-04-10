@@ -614,6 +614,28 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return ee;
 		}
 
+		internal static Constants.GtkSelectionMode SelectionModeToGtkSelectionMode(SelectionMode mode)
+		{
+			switch (mode)
+			{
+				case SelectionMode.None: return Constants.GtkSelectionMode.None;
+				case SelectionMode.Single: return Constants.GtkSelectionMode.Single;
+				case SelectionMode.Browse: return Constants.GtkSelectionMode.Browse;
+				case SelectionMode.Multiple: return Constants.GtkSelectionMode.Multiple;
+			}
+			throw new InvalidOperationException();
+		}
+		internal static SelectionMode GtkSelectionModeToSelectionMode(Constants.GtkSelectionMode mode)
+		{
+			switch (mode)
+			{
+				case Constants.GtkSelectionMode.None: return SelectionMode.None;
+				case Constants.GtkSelectionMode.Single: return SelectionMode.Single;
+				case Constants.GtkSelectionMode.Browse: return SelectionMode.Browse;
+				case Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
+			}
+			throw new InvalidOperationException();
+		}
 
 		internal static KeyboardKey GdkKeyCodeToKeyboardKey(uint keyval, uint keycode, out KeyboardModifierKey modifierKeys)
 		{

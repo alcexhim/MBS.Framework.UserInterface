@@ -55,13 +55,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
 					if (hTreeSelection != IntPtr.Zero)
 					{
-						Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_mode(hTreeSelection, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+						Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_set_mode(hTreeSelection, GTKEngine.SelectionModeToGtkSelectionMode(tv.SelectionMode));
 					}
 					break;
 				}
 				case ImplementedAsType.IconView:
 				{
-					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_selection_mode(handle, SelectionModeToGtkSelectionMode(tv.SelectionMode));
+					Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_selection_mode(handle, GTKEngine.SelectionModeToGtkSelectionMode(tv.SelectionMode));
 					break;
 				}
 			}
@@ -76,36 +76,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(handle);
 					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_get_mode(hTreeSelection);
-					return GtkSelectionModeToSelectionMode(mode);
+					return GTKEngine.GtkSelectionModeToSelectionMode(mode);
 				}
 				case ImplementedAsType.IconView:
 				{
 					Internal.GTK.Constants.GtkSelectionMode mode = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_selection_mode(handle);
-					return GtkSelectionModeToSelectionMode(mode);
+					return GTKEngine.GtkSelectionModeToSelectionMode(mode);
 				}
-			}
-			throw new InvalidOperationException();
-		}
-
-		private Internal.GTK.Constants.GtkSelectionMode SelectionModeToGtkSelectionMode(SelectionMode mode)
-		{
-			switch (mode)
-			{
-				case SelectionMode.None: return Internal.GTK.Constants.GtkSelectionMode.None;
-				case SelectionMode.Single: return Internal.GTK.Constants.GtkSelectionMode.Single;
-				case SelectionMode.Browse: return Internal.GTK.Constants.GtkSelectionMode.Browse;
-				case SelectionMode.Multiple: return Internal.GTK.Constants.GtkSelectionMode.Multiple;
-			}
-			throw new InvalidOperationException();
-		}
-		private SelectionMode GtkSelectionModeToSelectionMode(Internal.GTK.Constants.GtkSelectionMode mode)
-		{
-			switch (mode)
-			{
-				case Internal.GTK.Constants.GtkSelectionMode.None: return SelectionMode.None;
-				case Internal.GTK.Constants.GtkSelectionMode.Single: return SelectionMode.Single;
-				case Internal.GTK.Constants.GtkSelectionMode.Browse: return SelectionMode.Browse;
-				case Internal.GTK.Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
 			}
 			throw new InvalidOperationException();
 		}

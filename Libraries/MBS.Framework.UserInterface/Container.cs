@@ -528,7 +528,11 @@ namespace MBS.Framework.UserInterface
 					CreateTreeModelForPropertyOrLocalRef(item);
 					continue;
 				}
+			}
 
+			// I really don't want to loop twice, but sometimes GtkTreeStore / GtkListStore gets created AFTER the controls that reference them, breaking things
+			foreach (LayoutItem item in layout.Items)
+			{
 				if (className != null && (item.ClassName != className)) continue;
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 

@@ -532,7 +532,6 @@ namespace MBS.Framework.UserInterface
 		public static event EventHandler BeforeConfigurationLoaded;
 		private static void OnBeforeConfigurationLoaded(EventArgs e)
 		{
-			AfterConfigurationLoaded?.Invoke(typeof(Application), e);
 			BeforeConfigurationLoaded?.Invoke(typeof(Application), e);
 		}
 

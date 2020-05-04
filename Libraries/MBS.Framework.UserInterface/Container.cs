@@ -25,22 +25,12 @@ namespace MBS.Framework.UserInterface
 		{
 			base.OnCreating(e);
 
-			bool foundContainerAttribute = false;
 			object[] atts = this.GetType().GetCustomAttributes(typeof(ContainerLayoutAttribute), false);
-			foreach (object att in atts)
+			if (atts.Length > 0)
 			{
-				if (att is ContainerLayoutAttribute)
-				{
-					ContainerLayoutAttribute wla = (att as ContainerLayoutAttribute);
-					InitContainerLayout(wla);
-					foundContainerAttribute = true;
-					break; // there can be only one
-				}
-			}
-
-			if (!foundContainerAttribute)
-			{
-				// Console.Error.WriteLine("uwt: warning: ContainerLayout works better [{0}]", this.GetType().FullName);
+				// there can be only one ContainerLayoutAttribute applied to a Container
+				ContainerLayoutAttribute wla = (atts[0] as ContainerLayoutAttribute);
+				InitContainerLayout(wla);
 			}
 		}
 

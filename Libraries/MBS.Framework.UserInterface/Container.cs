@@ -521,10 +521,18 @@ namespace MBS.Framework.UserInterface
 			}
 
 			// I really don't want to loop twice, but sometimes GtkTreeStore / GtkListStore gets created AFTER the controls that reference them, breaking things
+			bool textSet = false;
 			foreach (LayoutItem item in layout.Items)
 			{
 				if (className != null && (item.ClassName != className)) continue;
 				if (id != null && (item.ID != null && item.ID != id)) continue;
+
+				LayoutItemProperty pTitle = item.Properties["title"];
+				if (pTitle != null && !textSet)
+				{
+					Text = pTitle.Value;
+					textSet = true;
+				}
 
 				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid" });
 				if (itemBox == null)

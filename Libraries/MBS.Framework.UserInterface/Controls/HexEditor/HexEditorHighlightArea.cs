@@ -89,7 +89,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			Title = title;
 			Start = start;
 			Length = length;
-			Color = color;
+			BackColor = color;
 		}
 
 		public string Name { get; set; } = String.Empty;
@@ -98,6 +98,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public int Start { get; set; } = 0;
 		public int Length { get; set; } = 0;
 
-		public Color Color { get; set; } = Colors.Gray;
+		public Color BackColor { get; set; } = Color.Empty;
+		public Color ForeColor { get; set; } = Color.Empty;
 	}
 }

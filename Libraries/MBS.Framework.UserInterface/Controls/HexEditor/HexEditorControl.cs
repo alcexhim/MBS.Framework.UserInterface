@@ -858,10 +858,31 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					HexEditorHighlightArea area = HighlightAreas[j];
 					if (i >= area.Start && i < (area.Start + area.Length))
 					{
-						e.Graphics.FillRectangle(new SolidBrush(area.Color), rectCell);
-						e.Graphics.FillRectangle(new SolidBrush(area.Color), rectChar);
+						if (area.BackColor != Color.Empty)
+						{
+							e.Graphics.FillRectangle(new SolidBrush(area.BackColor), rectCell);
+							e.Graphics.FillRectangle(new SolidBrush(area.BackColor), rectChar);
+							if ((bForeColor as SolidBrush).Color != area.ForeColor)
+							{
+								bForeColor = new SolidBrush(area.ForeColor);
+							}
+						}
+						else
+						{
+							if ((bForeColor as SolidBrush).Color != SystemColors.WindowForeground)
+							{
+								bForeColor = new SolidBrush(SystemColors.WindowForeground);
+							}
+						}
 						hasAreaFill = true;
 						break;
+					}
+					else
+					{
+						if ((bForeColor as SolidBrush).Color != SystemColors.WindowForeground)
+						{
+							bForeColor = new SolidBrush(SystemColors.WindowForeground);
+						}
 					}
 				}
 

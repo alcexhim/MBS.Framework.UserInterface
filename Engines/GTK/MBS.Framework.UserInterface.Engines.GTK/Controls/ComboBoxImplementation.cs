@@ -44,7 +44,40 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					return cbo.SelectedItem.RowColumns[0 /*cbo.DisplayIndex*/].Value?.ToString();
 				}
 			}
-			return null;
+			else if (!cbo.ReadOnly)
+			{
+				IntPtr handle = (Handle as GTKNativeControl).Handle;
+				IntPtr hEntry = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(handle);
+				return Internal.GTK.Methods.GtkEntry.gtk_entry_get_text(hEntry);
+			}
+			return base.GetControlTextInternal(control);
+		}
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			ComboBox cbo = (control as ComboBox);
+			/*
+			for (int i = 0; i < (cbo.Model as DefaultTreeModel).Rows.Count; i++)
+			{
+
+			}
+			if (cbo.SelectedItem != null)
+			{
+				if (cbo.SelectedItem.RowColumns.Count > 0)
+				{
+					// cbo.DisplayIndex
+					return cbo.SelectedItem.RowColumns[0].Value?.ToString();
+				}
+			}
+			else 
+			*/
+			if (!cbo.ReadOnly)
+			{
+				IntPtr handle = (Handle as GTKNativeControl).Handle;
+				IntPtr hEntry = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(handle);
+				Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(hEntry, text);
+				return;
+			}
+			base.SetControlTextInternal(control, text);
 		}
 
 		public TreeModel GetModel()

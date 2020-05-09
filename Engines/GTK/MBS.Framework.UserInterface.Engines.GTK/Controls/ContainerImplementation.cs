@@ -21,8 +21,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr ctlHandle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
 
 			Constraints cstr = layout.GetControlConstraints(ctl);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, cstr.HorizontalExpand);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, cstr.VerticalExpand);
+			if (cstr != null)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, cstr.HorizontalExpand);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, cstr.VerticalExpand);
+			}
 
 			if (layout is BoxLayout)
 			{

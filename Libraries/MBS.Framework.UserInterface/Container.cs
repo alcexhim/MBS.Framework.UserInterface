@@ -351,6 +351,20 @@ namespace MBS.Framework.UserInterface
 					RecursiveLoadContainer(layout, item, (ctl as Container));
 					break;
 				}
+				case "GtkDrawingArea":
+				{
+					LayoutItemProperty name = item.Properties["name"];
+					if (name != null)
+					{
+						string className = name.Value;
+						Type classType = MBS.Framework.Reflection.FindType(className);
+						if (classType != null)
+						{
+							ctl = (classType.Assembly.CreateInstance(classType.FullName) as Control);
+						}
+					}
+					break;
+				}
 			}
 
 			if (ctl != null)

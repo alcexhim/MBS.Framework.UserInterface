@@ -275,6 +275,18 @@ namespace MBS.Framework.UserInterface
 				{
 					ctl = new SplitContainer();
 
+					Orientation orientation = Orientation.Vertical;
+					LayoutItemProperty propOrientation = item.Properties["orientation"];
+					if (propOrientation != null)
+					{
+						switch (propOrientation.Value.ToLower())
+						{
+							case "vertical": orientation = Orientation.Horizontal; break;
+							case "horizontal": orientation = Orientation.Vertical; break;
+						}
+					}
+					(ctl as SplitContainer).Orientation = orientation;
+
 					// only two children here
 					if (item.Items.Count > 0)
 					{

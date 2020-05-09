@@ -480,6 +480,15 @@ namespace MBS.Framework.UserInterface
 
 						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new GridLayout.Constraints(top_attach, left_attach, height_attach, width_attach));
 					}
+
+					LayoutItemProperty propHExpand = item2.Properties["hexpand"];
+					LayoutItemProperty propVExpand = item2.Properties["vexpand"];
+					if (container.Layout != null && (propHExpand != null || propVExpand != null))
+					{
+						Constraints constraints = container.Layout.GetControlConstraints(container.Controls[container.Controls.Count - 1]);
+						constraints.HorizontalExpand = (propHExpand != null && propHExpand.Value == "True");
+						constraints.VerticalExpand = (propVExpand != null && propVExpand.Value == "True");
+					}
 				}
 				else
 				{

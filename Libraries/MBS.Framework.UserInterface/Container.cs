@@ -1,8 +1,7 @@
 ﻿using System;
 using UniversalEditor;
 using UniversalEditor.Accessors;
-using UniversalEditor.DataFormats.Markup.XML;
-using UniversalEditor.ObjectModels.Markup;
+
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.DataFormats.Layout.Glade;
 using MBS.Framework.UserInterface.Drawing;
@@ -89,7 +88,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public Control[] GetAllControls()
+		public virtual Control[] GetAllControls()
 		{
 			System.Collections.Generic.List<Control> list = new System.Collections.Generic.List<Control>();
 			foreach (Control ctl in this.Controls)
@@ -275,6 +274,7 @@ namespace MBS.Framework.UserInterface
 				case "GtkPaned":
 				{
 					ctl = new SplitContainer();
+
 					// only two children here
 					if (item.Items.Count > 0)
 					{
@@ -503,9 +503,11 @@ namespace MBS.Framework.UserInterface
 		}
 		public Control GetControlByID(string ID, bool recurse = true)
 		{
-			foreach (Control ctl in this.Controls)
+			Control[] ctls = this.GetAllControls();
+			foreach (Control ctl in ctls)
 			{
 				if (ctl.Name == ID) return ctl;
+				/*
 				if (recurse)
 				{
 					if (ctl is Container)
@@ -523,6 +525,7 @@ namespace MBS.Framework.UserInterface
 						}
 					}
 				}
+				*/
 			}
 			return null;
 		}

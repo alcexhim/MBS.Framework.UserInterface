@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface
 {
-	public abstract class Dialog : Window
+	public abstract class Dialog : Window, IVirtualControlContainer
 	{
 		private Control mvarParent = null;
 		public new Control Parent { get { return mvarParent; } set { mvarParent = value; } }
@@ -31,6 +32,18 @@ namespace MBS.Framework.UserInterface
 			if (result == DialogResult.None)
 				return DialogResult;
 			return result;
+		}
+
+		public override Control[] GetAllControls()
+		{
+			Control[] ctls1 = base.GetAllControls();
+
+			List<Control> list = new List<Control>(ctls1);
+			for (int i = 0; i < Buttons.Count; i++)
+			{
+				list.Add(Buttons[i]);
+			}
+			return list.ToArray();
 		}
 	}
 }

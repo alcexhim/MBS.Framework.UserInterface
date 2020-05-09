@@ -10,9 +10,20 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetSplitterPosition(int value);
 		}
 	}
-	public class SplitContainer : SystemControl
+	public class SplitContainer : SystemControl, IVirtualControlContainer
 	{
 		private int _OldSplitterPosition = 0;
+
+		public Control[] GetAllControls()
+		{
+			Control[] ctls1 = Panel1.GetAllControls();
+			Control[] ctls2 = Panel2.GetAllControls();
+
+			Control[] ctls = new Control[ctls1.Length + ctls2.Length];
+			Array.Copy(ctls1, 0, ctls, 0, ctls1.Length);
+			Array.Copy(ctls2, 0, ctls, ctls1.Length, ctls2.Length);
+			return ctls;
+		}
 
 		protected internal override void OnResizing(ResizingEventArgs e)
 		{

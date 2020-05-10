@@ -389,6 +389,11 @@ namespace MBS.Framework.UserInterface
 			{
 				if (item.ID != null)
 					ctl.Name = item.ID;
+
+				for (int i = 0; i < item.StyleClasses.Count; i++)
+				{
+					ctl.Style.Classes.Add(item.StyleClasses[i]);
+				}
 			}
 			else
 			{

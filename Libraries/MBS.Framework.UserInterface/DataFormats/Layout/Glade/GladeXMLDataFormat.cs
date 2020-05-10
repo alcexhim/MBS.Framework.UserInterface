@@ -121,6 +121,21 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 						item.Properties.Add(property);
 						break;
 					}
+					case "style":
+					{
+						for (int i = 0; i < tag1.Elements.Count; i++)
+						{
+							MarkupTagElement tagStyleClass = tag1.Elements[i] as MarkupTagElement;
+							if (tagStyleClass == null) continue;
+							if (tagStyleClass.FullName != "class") continue;
+
+							MarkupAttribute attStyleClassName = tagStyleClass.Attributes["name"];
+							if (attStyleClassName == null) continue;
+
+							item.StyleClasses.Add(attStyleClassName.Value);
+						}
+						break;
+					}
 				}
 			}
 

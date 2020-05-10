@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Controls
 {
@@ -19,7 +20,7 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetTabPosition(TabPosition position);
 		}
 	}
-	public class TabContainer : SystemControl
+	public class TabContainer : SystemControl, IVirtualControlContainer
 	{
 		private TabPosition _TabPosition = TabPosition.Top;
 		public TabPosition TabPosition
@@ -30,6 +31,17 @@ namespace MBS.Framework.UserInterface.Controls
 				_TabPosition = value;
 				(ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabPosition(value);
 			}
+		}
+
+		public Control[] GetAllControls()
+		{
+			List<Control> list = new List<Control>();
+			for (int i = 0; i < TabPages.Count; i++)
+			{
+				Control[] ctls = TabPages[i].GetAllControls();
+				list.AddRange(ctls);
+			}
+			return list.ToArray();
 		}
 
 		public event TabContainerSelectedTabChangedEventHandler SelectedTabChanged;

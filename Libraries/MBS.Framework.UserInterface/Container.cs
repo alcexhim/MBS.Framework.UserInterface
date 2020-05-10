@@ -585,6 +585,17 @@ namespace MBS.Framework.UserInterface
 					itemBox = item;
 				}
 				RecursiveLoadContainer(layout, itemBox, this);
+
+				LayoutItemProperty pDefaultWidth = item.Properties["default_width"];
+				LayoutItemProperty pDefaultHeight = item.Properties["default_height"];
+				if (pDefaultWidth != null)
+				{
+					this.Size.Width = Int32.Parse(pDefaultWidth.Value);
+				}
+				if (pDefaultHeight != null)
+				{
+					this.Size.Height = Int32.Parse(pDefaultHeight.Value);
+				}
 			}
 		}
 

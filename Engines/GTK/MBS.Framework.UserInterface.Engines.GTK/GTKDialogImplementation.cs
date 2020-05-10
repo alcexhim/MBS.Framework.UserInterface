@@ -180,6 +180,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			List<Button> buttons = new List<Button>();
 
 			Dialog dialog = (control as Dialog);
+
+			// we must get this BEFORE the call to CreateDialogInternal because once the dialog is created it returns the *actual* size of the GtkWidget
+			MBS.Framework.Drawing.Dimension2D dialogSize = dialog.Size;
+
 			GTKNativeControl nc = CreateDialogInternal(dialog, buttons) as GTKNativeControl;
 			IntPtr handle = (nc as GTKNativeControl).Handle;
 
@@ -201,6 +205,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, dialog.Decorated);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
+			Internal.GTK.Methods.GtkWindow.gtk_window_resize(handle, (int)dialogSize.Width, (int)dialogSize.Height);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "delete_event", gc_delete_event_handler);
 			// Internal.GObject.Methods.g_signal_connect_after(handle, "destroy", gc_Window_Closed, new IntPtr(0xDEADBEEF));

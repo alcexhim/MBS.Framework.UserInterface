@@ -128,6 +128,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public HexEditorControl()
 		{
 			HighlightAreas = new HexEditorHighlightArea.HexEditorHighlightAreaCollection(this);
+			MinimumSize = new Framework.Drawing.Dimension2D(320, 240);
 		}
 
 		public HexEditorHighlightArea.HexEditorHighlightAreaCollection HighlightAreas { get; private set; } = null;
@@ -827,6 +828,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			Brush bForeColor = new SolidBrush(SystemColors.WindowForeground);
 
 			mvarMaxDisplayWidth = (int)((this.Size.Width - PositionGutterWidth - TextAreaWidth - 128 - HexAsciiMargin) / 24);
+			if (mvarMaxDisplayWidth < 1) mvarMaxDisplayWidth = 1;// prevent division by zero
 
 			Font font = Font.FromFamily("Monospace", 14.0);
 

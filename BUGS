@@ -1,3 +1,6 @@
+UWT Platform:
+    ***** UX: modifying Command.Items collection should update all associated MenuItems when an item is added or removed
+
 Dialog signals do not respond after initial creation, destruction, re-creation of dialog
 	See Universal Editor, File->New Document
 		Dialog runs

@@ -194,11 +194,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 
 			IntPtr[] hButtons = Dialog_AddButtons(dialog, handle, buttons, dialog.AutoAlignButtons);
-			if (dialog.DefaultButton != null)
-			{
-				IntPtr hButtonDefault = ((Engine as GTKEngine).GetHandleForControl(dialog.DefaultButton) as GTKNativeControl).Handle;
-				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
-			}
 
 
 
@@ -215,6 +210,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			// }
 
 			InvokeMethod(dialog, "OnCreated", EventArgs.Empty);
+
+			if (dialog.DefaultButton != null)
+			{
+				IntPtr hButtonDefault = ((Engine as GTKEngine).GetHandleForControl(dialog.DefaultButton) as GTKNativeControl).Handle;
+
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_default(hButtonDefault, true);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_grab_default(hButtonDefault);
+			}
 			return nc;
 		}
 

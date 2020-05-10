@@ -820,5 +820,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return false;
 		}
 
+		protected override void InsertChildControlInternal(Container parent, Control control)
+		{
+			// FIXME: this may not work if we are using a custom control or something that does not get handled by WindowsFormsNativeControl
+			WindowsFormsNativeControl wfncParent = (GetHandleForControl(parent) as WindowsFormsNativeControl);
+			WindowsFormsNativeControl wfncChild = (GetHandleForControl(control) as WindowsFormsNativeControl);
+			wfncParent.Handle.Controls.Add(wfncChild.Handle);
+		}
+
 	}
 }

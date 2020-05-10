@@ -16,7 +16,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private IntPtr mvarContainerHandle = IntPtr.Zero;
 
-		private void ApplyLayout(IntPtr hContainer, Control ctl, Layout layout)
+		internal void ApplyLayout(IntPtr hContainer, Control ctl, Layout layout)
 		{
 			IntPtr ctlHandle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
 

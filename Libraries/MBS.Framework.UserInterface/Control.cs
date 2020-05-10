@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface
 			{
 				base.InsertItem(index, item);
 				item.Parent = _parent;
-				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
+				if (_parent != null) Application.Engine.InsertChildControl(_parent, item);
 			}
 			protected override void RemoveItem(int index)
 			{
@@ -70,11 +70,11 @@ namespace MBS.Framework.UserInterface
 
 			public void Add(Control item, Constraints constraints)
 			{
-				Add(item);
 				if (constraints != null)
 				{
 					_parent.Layout?.SetControlConstraints(item, constraints);
 				}
+				Add(item);
 			}
 		}
 

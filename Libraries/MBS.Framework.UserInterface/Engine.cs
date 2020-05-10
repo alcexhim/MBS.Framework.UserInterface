@@ -152,6 +152,16 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		protected abstract void InsertChildControlInternal(Container parent, Control control);
+		internal void InsertChildControl(Container parent, Control control)
+		{
+			if (!parent.IsCreated) return;
+			if (!control.IsCreated)
+				CreateControl(control);
+
+			InsertChildControlInternal(parent, control);
+		}
+
 		public void RegisterControlHandle(Control control, NativeControl handle, bool fDeleteOld = false)
 		{
 			if (fDeleteOld)

@@ -983,6 +983,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return DialogResult.OK;
 		}
 
+		protected override void InsertChildControlInternal(Container parent, Control item)
+		{
+			GTKNativeControl ncParent = (GetHandleForControl(parent) as GTKNativeControl);
+			GTKNativeControl ncChild = (GetHandleForControl(item) as GTKNativeControl);
+
+			(parent.ControlImplementation as Controls.ContainerImplementation).ApplyLayout(ncParent.Handle, item, parent.Layout);
+		}
+
 		#region Common Dialog
 		public IntPtr CommonDialog_GetParentHandle(Dialog dlg)
 		{

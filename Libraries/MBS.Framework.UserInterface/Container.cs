@@ -287,6 +287,12 @@ namespace MBS.Framework.UserInterface
 					}
 					(ctl as SplitContainer).Orientation = orientation;
 
+					LayoutItemProperty propPosition = item.Properties["position"];
+					if (propPosition != null)
+					{
+						(ctl as SplitContainer).SplitterPosition = Int32.Parse(propPosition.Value);
+					}
+
 					// only two children here
 					if (item.Items.Count > 0)
 					{

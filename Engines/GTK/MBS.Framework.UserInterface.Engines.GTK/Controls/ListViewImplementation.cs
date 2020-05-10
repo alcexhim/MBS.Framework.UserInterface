@@ -219,7 +219,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void UpdateTreeModel ()
 		{
-			UpdateTreeModel ((Handle as GTKNativeControl).Handle);
+			UpdateTreeModel ((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
 		}
 
 		public void UpdateTreeModelColumn(TreeModelRowColumn rc)

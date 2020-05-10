@@ -68,15 +68,23 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			{
 				base.InsertItem(index, item);
 
+				item._parent = this;
 				_itemsByName[item.Name] = item;
 				_parent.Refresh();
 			}
 			protected override void RemoveItem(int index)
 			{
+				this[index]._parent = null;
 				_itemsByName.Remove(this[index].Name);
 
 				base.RemoveItem(index);
 				_parent.Refresh();
+			}
+
+			internal void UpdateName(HexEditorHighlightArea area, string name)
+			{
+				_itemsByName.Remove(area.Name);
+				_itemsByName[name] = area;
 			}
 		}
 
@@ -92,7 +100,18 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			BackColor = color;
 		}
 
-		public string Name { get; set; } = String.Empty;
+		private HexEditorHighlightAreaCollection _parent = null;
+
+		private string _Name = String.Empty;
+		public string Name
+		{
+			get { return _Name; }
+			set
+			{
+				if (_parent != null) _parent.UpdateName(this, value);
+				_Name = value;
+			}
+		}
 		public string Title { get; set; } = String.Empty;
 
 		public int Start { get; set; } = 0;

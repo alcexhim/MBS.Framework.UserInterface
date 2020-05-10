@@ -553,6 +553,14 @@ namespace MBS.Framework.UserInterface
 						Constraints constraints = container.Layout.GetControlConstraints(container.Controls[container.Controls.Count - 1]);
 						constraints.HorizontalExpand = (propHExpand != null && propHExpand.Value == "True");
 						constraints.VerticalExpand = (propVExpand != null && propVExpand.Value == "True");
+
+						if (constraints is GridLayout.Constraints)
+						{
+							ExpandMode expand = ExpandMode.None;
+							if (constraints.HorizontalExpand) expand |= ExpandMode.Horizontal;
+							if (constraints.VerticalExpand) expand |= ExpandMode.Vertical;
+							(constraints as GridLayout.Constraints).Expand = expand;
+						}
 					}
 				}
 				else

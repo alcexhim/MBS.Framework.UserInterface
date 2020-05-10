@@ -383,6 +383,33 @@ namespace MBS.Framework.UserInterface
 					}
 					break;
 				}
+				case "GtkToolbar":
+				{
+					ctl = new Toolbar();
+					for (int i = 0; i < item.Items.Count; i++)
+					{
+						switch (item.Items[i].ClassName)
+						{
+							case "GtkToolButton":
+							{
+								LayoutItemProperty propStockId = item.Items[i].Properties["stock_id"];
+								if (propStockId != null)
+								{
+									StockType stockType = Application.Engine.StockTypeFromString(propStockId.Value);
+									ToolbarItemButton tsb = new ToolbarItemButton(item.Items[i].ID, stockType);
+									(ctl as Toolbar).Items.Add(tsb);
+								}
+								break;
+							}
+							case "GtkSeparatorToolItem":
+							{
+								(ctl as Toolbar).Items.Add(new ToolbarItemSeparator());
+								break;
+							}
+						}
+					}
+					break;
+				}
 			}
 
 			if (ctl != null)

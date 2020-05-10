@@ -260,6 +260,7 @@
     <Compile Include="IControlContainer.cs" />
     <Compile Include="ControlBorderStyle.cs" />
     <Compile Include="IControl.cs" />
+    <Compile Include="Controls\Disclosure.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

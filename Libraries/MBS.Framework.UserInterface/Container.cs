@@ -369,6 +369,12 @@ namespace MBS.Framework.UserInterface
 					RecursiveLoadContainer(layout, item, (ctl as Container));
 					break;
 				}
+				case "GtkExpander":
+				{
+					ctl = new Disclosure();
+					RecursiveLoadContainer(layout, item, (ctl as Container));
+					break;
+				}
 				case "GtkDrawingArea":
 				{
 					LayoutItemProperty name = item.Properties["name"];
@@ -473,6 +479,15 @@ namespace MBS.Framework.UserInterface
 			foreach (LayoutItem item2 in item.Items)
 			{
 				Control control = RecursiveLoadControl(layout, item2);
+				if (item2.ChildType != null)
+				{
+					// do not add it to the collection
+					if (container is Disclosure && item2.ChildType == "label")
+					{
+						(container as Disclosure).Text = item2.Properties["label"]?.Value;
+					}
+					continue;
+				}
 
 				if (container is Dialog && item2.ClassName == "GtkButtonBox")
 				{

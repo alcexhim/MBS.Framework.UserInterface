@@ -208,6 +208,8 @@
     <Compile Include="Internal\GTK\Methods\GtkListBox.cs" />
     <Compile Include="GTKPlugin.cs" />
     <Compile Include="Internal\GTK\Methods\GtkScrollable.cs" />
+    <Compile Include="Controls\DisclosureImplementation.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkExpander.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

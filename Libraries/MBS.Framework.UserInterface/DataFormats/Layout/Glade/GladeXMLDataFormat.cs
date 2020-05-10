@@ -76,12 +76,18 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 				{
 					case "child":
 					{
+						MarkupAttribute attChildType = tag1.Attributes["type"];
+
 						MarkupTagElement tagObject = (tag1.Elements["object"] as MarkupTagElement);
 						MarkupTagElement tagPacking1 = (tag1.Elements["packing"] as MarkupTagElement);
 						MarkupTagElement tagAttributes1 = (tag1.Elements["attributes"] as MarkupTagElement);
 						if (tagObject != null)
 						{
 							LayoutItem itemChild = LoadLayoutItem(tagObject, tagPacking1, tagAttributes1);
+							if (attChildType != null)
+							{
+								itemChild.ChildType = attChildType.Value;
+							}
 							item.Items.Add(itemChild);
 						}
 						break;

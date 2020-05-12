@@ -59,6 +59,8 @@ namespace MBS.Framework.UserInterface.ObjectModels.Layout
 		public string ClassName { get; set; }
 		public string ID { get; set; }
 		public string ChildType { get; set; }
+		public string InternalType { get; set; }
+
 		public LayoutItemCollection Items { get; } = new LayoutItemCollection();
 		public LayoutItemProperty.LayoutItemPropertyCollection Attributes { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
 		public LayoutItemProperty.LayoutItemPropertyCollection Properties { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();

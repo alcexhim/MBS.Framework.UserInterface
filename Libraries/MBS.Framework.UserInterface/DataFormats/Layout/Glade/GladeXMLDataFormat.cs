@@ -77,6 +77,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 					case "child":
 					{
 						MarkupAttribute attChildType = tag1.Attributes["type"];
+						MarkupAttribute attInternalChildType = tag1.Attributes["internal-child"];
 
 						MarkupTagElement tagObject = (tag1.Elements["object"] as MarkupTagElement);
 						MarkupTagElement tagPacking1 = (tag1.Elements["packing"] as MarkupTagElement);
@@ -87,6 +88,10 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 							if (attChildType != null)
 							{
 								itemChild.ChildType = attChildType.Value;
+							}
+							if (attInternalChildType != null)
+							{
+								itemChild.InternalType = attInternalChildType.Value;
 							}
 							item.Items.Add(itemChild);
 						}

@@ -354,6 +354,47 @@ namespace MBS.Framework.UserInterface
 							ListViewColumn ch = new ListViewColumnText(col, item2.Properties["title"]?.Value);
 							(ctl as ListView).Columns.Add(ch);
 						}
+						else if (item2.ClassName == "GtkTreeSelection" && item2.InternalType == "selection")
+						{
+							LayoutItemProperty propMode = item2.Properties["mode"];
+							if (propMode != null)
+							{
+								switch (propMode.Value)
+								{
+									case "none":
+									{
+										(ctl as ListView).SelectionMode = SelectionMode.None;
+										break;
+									}
+									case "multiple":
+									{
+										(ctl as ListView).SelectionMode = SelectionMode.Multiple;
+										break;
+									}
+									case "browse":
+									{
+										(ctl as ListView).SelectionMode = SelectionMode.Browse;
+										break;
+									}
+									case "single":
+									{
+										(ctl as ListView).SelectionMode = SelectionMode.Single;
+										break;
+									}
+									default:
+									{
+										// if the property is there, but is invalid, SelectionMode gets set to None
+										(ctl as ListView).SelectionMode = SelectionMode.None;
+										break;
+									}
+								}
+							}
+							else
+							{
+								// if the property isn't there at all, SelectionMode gets set to Single
+								(ctl as ListView).SelectionMode = SelectionMode.Single;
+							}
+						}
 					}
 					break;
 				}

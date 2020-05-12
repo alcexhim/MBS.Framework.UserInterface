@@ -5,7 +5,7 @@ using MBS.Framework.UserInterface.Controls.Docking.Native;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
-	// [ControlImplementation(typeof(DockingContainerControl))]
+	[ControlImplementation(typeof(DockingContainerControl))]
 	public class DockingContainerImplementation : GTKNativeImplementation, IDockingContainerNativeImplementation
 	{
 		public DockingContainerImplementation(Engine engine, DockingContainerControl control)
@@ -160,7 +160,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkContainer.gtk_container_add(childHandle, chdhclm);
 				}
 				Internal.GDL.Methods.gdl_dock_add_item(hDock, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
-				Internal.GDL.Methods.gdl_dock_object_dock(hDock, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
+				// Internal.GDL.Methods.gdl_dock_object_dock(hDock, childHandle, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
 
 				// HACK: until we can figure out how to properly detect when a doc tab is switched
 				mvarCurrentItem = item;
@@ -178,7 +178,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 
 				Internal.GDL.Methods.gdl_dock_add_item(hDock, hDockParent, UwtDockItemPlacementToGdlDockPlacement(item.Placement));
-				Internal.GDL.Methods.gdl_dock_object_dock(hDock, hDockParent, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
+				// Internal.GDL.Methods.gdl_dock_object_dock(hDock, hDockParent, UwtDockItemPlacementToGdlDockPlacement(item.Placement), IntPtr.Zero);
 			}
 		}
 

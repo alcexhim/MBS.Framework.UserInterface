@@ -818,8 +818,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)
 		{
-			IntPtr hScrolledWindow = (handle as GTKNativeControl).Handle;
-			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
+			IntPtr hTreeView = (handle as GTKNativeControl).GetNamedHandle("TreeView");
 			if (hTreeView == IntPtr.Zero) return;
 
 			ListView ctl = (_ControlsByHandle[hTreeView] as ListView);

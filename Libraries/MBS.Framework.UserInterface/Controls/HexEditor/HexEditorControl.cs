@@ -864,9 +864,20 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						{
 							e.Graphics.FillRectangle(new SolidBrush(area.BackColor), rectCell);
 							e.Graphics.FillRectangle(new SolidBrush(area.BackColor), rectChar);
-							if ((bForeColor as SolidBrush).Color != area.ForeColor)
+
+							if (area.ForeColor != Color.Empty)
 							{
-								bForeColor = new SolidBrush(area.ForeColor);
+								if ((bForeColor as SolidBrush).Color != area.ForeColor)
+								{
+									bForeColor = new SolidBrush(area.ForeColor);
+								}
+							}
+							else
+							{
+								if ((bForeColor as SolidBrush).Color != SystemColors.WindowForeground)
+								{
+									bForeColor = new SolidBrush(SystemColors.WindowForeground);
+								}
 							}
 						}
 						else

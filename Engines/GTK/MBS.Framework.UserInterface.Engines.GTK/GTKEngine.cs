@@ -708,6 +708,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 65535: key = KeyboardKey.Delete; break;
 				case 65307: key = KeyboardKey.Escape; break;
 				case 65288: key = KeyboardKey.Back; break;
+
+				// idk why shift+tab is handled as a different keycode
+				case 65056: key = KeyboardKey.Tab; modifierKeys |= KeyboardModifierKey.Shift; break;
 				case 65289: key = KeyboardKey.Tab; break;
 
 				case 65407: key = KeyboardKey.NumLock; break;
@@ -983,31 +986,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return DialogResult.OK;
 		}
 
-		protected override void InsertChildControlInternal(Container parent, Control item)
+		protected override void InsertChildControlInternal(IControlContainer parent, Control item)
 		{
-			GTKNativeControl ncParent = (GetHandleForControl(parent) as GTKNativeControl);
-			GTKNativeControl ncChild = (GetHandleForControl(item) as GTKNativeControl);
-
-			(parent.ControlImplementation as Controls.ContainerImplementation).ApplyLayout(ncParent.Handle, item, parent.Layout);
+			(parent.ControlImplementation as IControlContainerImplementation).InsertChildControl(item);
 		}
-		protected override void ClearChildControlsInternal(Container parent)
+		protected override void ClearChildControlsInternal(IControlContainer parent)
 		{
-			GTKNativeControl ncParent = (GetHandleForControl(parent) as GTKNativeControl);
-
-			Control[] ctls = parent.GetAllControls();
-
-			IntPtr hContainer = ncParent.Handle;
-			List<IntPtr> _list = new List<IntPtr>();
-			Internal.GTK.Methods.GtkContainer.gtk_container_forall(hContainer, delegate (IntPtr /*GtkWidget*/ widget, IntPtr data)
-			{
-				_list.Add(widget);
-				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, widget);
-			}, IntPtr.Zero);
-
-			for (int i = 0; i < ctls.Length; i++)
-			{
-				UnregisterControlHandle(ctls[i]);
-			}
+			(parent.ControlImplementation as IControlContainerImplementation).ClearChildControls();
 		}
 
 		#region Common Dialog
@@ -1892,11 +1877,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hCtxTextBox = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hctrl);
 			IntPtr hCtxDefault = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
 
-			IntPtr hPathTextBox = Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_new();
-			Internal.GTK.Methods.GtkWidgetPath.gtk_widget_path_append_type(hPathTextBox, Internal.GTK.Methods.GtkEntry.gtk_entry_get_type());
-
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_set_path(hCtxTextBox, hPathTextBox);
-
 			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
 			UpdateSystemColor(SystemColor.WindowBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
@@ -1905,6 +1885,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_bg_color", ref rgba);
 			UpdateSystemColor(SystemColor.HighlightBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_fg_color", ref rgba);
+			UpdateSystemColor(SystemColor.HighlightForeground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 		}
 
 		protected override bool ShowHelpInternal(HelpTopic topic)

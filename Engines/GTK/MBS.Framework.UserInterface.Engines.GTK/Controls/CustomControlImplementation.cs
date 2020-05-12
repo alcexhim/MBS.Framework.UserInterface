@@ -7,7 +7,7 @@ using MBS.Framework.UserInterface.Engines.GTK.Drawing;
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(CustomControl))]
-	public class CustomControlImplementation : GTKNativeImplementation
+	public class CustomControlImplementation : GTKNativeImplementation, IControlContainerImplementation
 	{
 		public CustomControlImplementation(Engine engine, Control control) : base(engine, control)
 		{
@@ -21,6 +21,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease | Internal.GDK.Constants.GdkEventMask.PointerMotion | Internal.GDK.Constants.GdkEventMask.PointerMotionHint);
+
+			CustomControl ctl = (control as CustomControl);
+			for (int i = 0; i < ctl.Controls.Count; i++)
+			{
+				if (Engine.CreateControl(ctl.Controls[i]))
+				{
+					_InsertChildControl(ctl.Controls[i], handle);
+				}
+			}
 
 			IntPtr scrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
 
@@ -70,7 +79,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			InvokeMethod(ctl, "OnPaint", e);
 			if (e.Handled) return true;
 
-			return true;
+			return false;
 		}
 
 		private double _vadj, _hadj = 0;
@@ -116,6 +125,49 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			IntPtr hLayout = (Handle as GTKNativeControl).GetNamedHandle("Layout");
 			Internal.GTK.Methods.GtkLayout.gtk_layout_set_size(hLayout, (uint)value.Width, (uint)value.Height);
+		}
+
+		private void _InsertChildControl(Control child, IntPtr handle)
+		{
+			IntPtr c = (child.ControlImplementation.Handle as GTKNativeControl).Handle;
+
+			Layouts.AbsoluteLayout.Constraints cc = (Control as CustomControl).Layout.GetControlConstraints(child) as Layouts.AbsoluteLayout.Constraints;
+			Internal.GTK.Methods.GtkLayout.gtk_layout_put(handle, c, cc.X, cc.Y);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(c, cc.Width, cc.Height);
+		}
+		public void InsertChildControl(Control child)
+		{
+			_InsertChildControl(child, (Handle as GTKNativeControl).Handle);
+		}
+		public void ClearChildControls()
+		{
+			Control[] ctls = (Control as IControlContainer).GetAllControls();
+
+			IntPtr hContainer = (Handle as GTKNativeControl).Handle;
+			List<IntPtr> _list = new List<IntPtr>();
+			Internal.GTK.Methods.GtkContainer.gtk_container_forall(hContainer, delegate (IntPtr /*GtkWidget*/ widget, IntPtr data)
+			{
+				_list.Add(widget);
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, widget);
+			}, IntPtr.Zero);
+
+			for (int i = 0; i < ctls.Length; i++)
+			{
+				Engine.UnregisterControlHandle(ctls[i]);
+			}
+		}
+
+		public void SetControlConstraints(Control control, Constraints constraints)
+		{
+			if (!Control.IsCreated) return;
+
+			Layouts.AbsoluteLayout.Constraints cc = (constraints as Layouts.AbsoluteLayout.Constraints);
+			if (cc == null) return;
+
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("Layout");
+			IntPtr hctrl = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkLayout.gtk_layout_move(handle, hctrl, cc.X, cc.Y);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(hctrl, cc.Width, cc.Height);
 		}
 	}
 }

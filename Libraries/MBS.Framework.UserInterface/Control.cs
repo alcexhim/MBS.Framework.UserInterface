@@ -33,8 +33,8 @@ namespace MBS.Framework.UserInterface
 		public class ControlCollection
 			: System.Collections.ObjectModel.Collection<Control>
 		{
-			private Container _parent = null;
-			public ControlCollection(Container parent = null)
+			private IControlContainer _parent = null;
+			public ControlCollection(IControlContainer parent = null)
 			{
 				_parent = parent;
 			}
@@ -228,8 +228,8 @@ namespace MBS.Framework.UserInterface
 		/// <value>The attributes.</value>
 		public System.Collections.Generic.Dictionary<string, object> Attributes { get; } = new Dictionary<string, object>();
 
-		private Container mvarParent = null;
-		public Container Parent {
+		private IControlContainer mvarParent = null;
+		public IControlContainer Parent {
 			get { return mvarParent; }
 			internal set {
 				mvarParent = value;
@@ -237,7 +237,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		internal void SetParent(Container parent)
+		internal void SetParent(IControlContainer parent)
 		{
 			mvarParent = parent;
 		}
@@ -578,7 +578,7 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
-				Control ctl = Parent;
+				IControlContainer ctl = Parent;
 				if (ctl == null)
 					return null;
 

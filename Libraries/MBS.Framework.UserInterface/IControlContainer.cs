@@ -5,5 +5,6 @@ namespace MBS.Framework.UserInterface
 	{
 		Control[] GetAllControls();
 		Control.ControlCollection Controls { get; }
+		Layout Layout { get; set; }
 	}
 }

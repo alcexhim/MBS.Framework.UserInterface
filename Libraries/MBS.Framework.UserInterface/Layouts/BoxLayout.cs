@@ -73,7 +73,7 @@ namespace MBS.Framework.UserInterface.Layouts
 				{
 					foreach (Control ctl1 in ctl.Parent.Controls)
 					{
-						Rectangle parentRect = GetControlBounds(ctl.Parent);
+						Rectangle parentRect = GetControlBounds((Control)ctl.Parent);
 						switch (mvarOrientation)
 						{
 							case Orientation.Horizontal:

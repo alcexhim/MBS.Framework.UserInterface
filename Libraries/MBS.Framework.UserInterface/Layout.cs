@@ -22,6 +22,12 @@ namespace MBS.Framework.UserInterface
 		public void SetControlConstraints(Control ctl, Constraints constraints)
 		{
 			_controlConstraints [ctl] = constraints;
+
+			if (ctl.Parent != null)
+			{
+				if (ctl.Parent.IsCreated)
+					(ctl.Parent.ControlImplementation as IControlContainerImplementation)?.SetControlConstraints(ctl, constraints);
+			}
 		}
 		public Constraints GetControlConstraints(Control ctl)
 		{

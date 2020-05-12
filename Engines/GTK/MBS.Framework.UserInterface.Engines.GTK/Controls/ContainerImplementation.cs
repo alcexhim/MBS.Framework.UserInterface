@@ -5,7 +5,7 @@ using MBS.Framework.UserInterface.Layouts;
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(Container))]
-	public class ContainerImplementation : GTKNativeImplementation
+	public class ContainerImplementation : GTKNativeImplementation, IControlContainerImplementation
 	{
 		public ContainerImplementation(Engine engine, Container control)
 			: base(engine, control)
@@ -191,6 +191,32 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			return new GTKNativeControl(hContainer);
+		}
+
+		public void InsertChildControl(Control child)
+		{
+			ApplyLayout((Handle as GTKNativeControl).Handle, child, (Control as Container).Layout);
+		}
+		public void ClearChildControls()
+		{
+			Control[] ctls = (Control as IControlContainer).GetAllControls();
+
+			IntPtr hContainer = (Handle as GTKNativeControl).Handle;
+			List<IntPtr> _list = new List<IntPtr>();
+			Internal.GTK.Methods.GtkContainer.gtk_container_forall(hContainer, delegate (IntPtr /*GtkWidget*/ widget, IntPtr data)
+			{
+				_list.Add(widget);
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, widget);
+			}, IntPtr.Zero);
+
+			for (int i = 0; i < ctls.Length; i++)
+			{
+				Engine.UnregisterControlHandle(ctls[i]);
+			}
+		}
+		public void SetControlConstraints(Control control, Constraints constraints)
+		{
+			Console.WriteLine("Changing control constraints in a Container not supported YET");
 		}
 	}
 }

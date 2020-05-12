@@ -152,8 +152,8 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		protected abstract void InsertChildControlInternal(Container parent, Control control);
-		internal void InsertChildControl(Container parent, Control control)
+		protected abstract void InsertChildControlInternal(IControlContainer parent, Control control);
+		internal void InsertChildControl(IControlContainer parent, Control control)
 		{
 			if (!parent.IsCreated) return;
 			if (!control.IsCreated)
@@ -161,8 +161,8 @@ namespace MBS.Framework.UserInterface
 
 			InsertChildControlInternal(parent, control);
 		}
-		protected abstract void ClearChildControlsInternal(Container parent);
-		internal void ClearChildControls(Container parent)
+		protected abstract void ClearChildControlsInternal(IControlContainer parent);
+		internal void ClearChildControls(IControlContainer parent)
 		{
 			if (!parent.IsCreated) return;
 			ClearChildControlsInternal(parent);

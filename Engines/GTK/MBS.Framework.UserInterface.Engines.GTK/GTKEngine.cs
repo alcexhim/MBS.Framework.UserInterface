@@ -990,6 +990,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			(parent.ControlImplementation as Controls.ContainerImplementation).ApplyLayout(ncParent.Handle, item, parent.Layout);
 		}
+		protected override void ClearChildControlsInternal(Container parent)
+		{
+			GTKNativeControl ncParent = (GetHandleForControl(parent) as GTKNativeControl);
+
+			Control[] ctls = parent.GetAllControls();
+
+			IntPtr hContainer = ncParent.Handle;
+			List<IntPtr> _list = new List<IntPtr>();
+			Internal.GTK.Methods.GtkContainer.gtk_container_forall(hContainer, delegate (IntPtr /*GtkWidget*/ widget, IntPtr data)
+			{
+				_list.Add(widget);
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, widget);
+			}, IntPtr.Zero);
+
+			for (int i = 0; i < ctls.Length; i++)
+			{
+				UnregisterControlHandle(ctls[i]);
+			}
+		}
 
 		#region Common Dialog
 		public IntPtr CommonDialog_GetParentHandle(Dialog dlg)

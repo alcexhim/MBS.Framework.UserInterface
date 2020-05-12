@@ -35,6 +35,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GList*/ gtk_container_get_children(IntPtr /*GtkContainer*/ container);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_container_set_focus_child(IntPtr container, IntPtr widget);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_container_remove(IntPtr /*GtkContainer*/ container, IntPtr /*GtkWidget*/ widget);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_container_forall(IntPtr /*GtkContainer*/ container, Action<IntPtr /*GtkWidget*/, IntPtr> /*GtkCallback*/ callback, IntPtr callback_data);
 	}
 }
 

@@ -41,12 +41,12 @@ namespace MBS.Framework.UserInterface
 
 			protected override void ClearItems()
 			{
+				if (_parent != null) Application.Engine.ClearChildControls(_parent);
 				foreach (Control ctl in this)
 				{
 					ctl.Parent = null;
 				}
 				base.ClearItems();
-				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
 			protected override void InsertItem(int index, Control item)
 			{

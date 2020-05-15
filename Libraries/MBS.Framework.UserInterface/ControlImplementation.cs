@@ -72,6 +72,9 @@ namespace MBS.Framework.UserInterface
 		protected abstract void SetAdjustmentValueInternal(Orientation orientation, double value);
 		public void SetAdjustmentValue(Orientation orientation, double value)
 		{
+			double currentValue = GetAdjustmentValue(orientation);
+			if (currentValue == value) return;
+
 			SetAdjustmentValueInternal(orientation, value);
 		}
 

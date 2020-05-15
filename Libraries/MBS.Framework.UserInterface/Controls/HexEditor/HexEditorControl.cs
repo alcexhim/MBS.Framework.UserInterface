@@ -57,28 +57,66 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			get { return new HexEditorPosition(mvarSelectionStart, selectedNybble); }
 			set
 			{
-				if (value.ByteIndex < 0 || value.ByteIndex >= Data.Length)
+				bool changed = (mvarSelectionStart != value.ByteIndex || selectedNybble != value.NybbleIndex);
+				if (changed)
 				{
-					Console.WriteLine(String.Format("Selection start must be between the bounds of zero and length of data ({0}) minus one", Data.Length));
-				}
-				else
-				{
-					mvarSelectionStart = value.ByteIndex;
-				}
+					if (value.ByteIndex < 0 || value.ByteIndex >= Data.Length)
+					{
+						Console.WriteLine(String.Format("Selection start must be between the bounds of zero and length of data ({0}) minus one", Data.Length));
+					}
+					else
+					{
+						mvarSelectionStart = value.ByteIndex;
+					}
 
-				if (value.NybbleIndex < 0 || value.NybbleIndex > 1)
-				{
-					Console.WriteLine(String.Format("Selected nybble must be either 0 or 1, not {0}", value.NybbleIndex));
-				}
-				else
-				{
-					selectedNybble = value.NybbleIndex;
-				}
+					if (value.NybbleIndex < 0 || value.NybbleIndex > 1)
+					{
+						Console.WriteLine(String.Format("Selected nybble must be either 0 or 1, not {0}", value.NybbleIndex));
+					}
+					else
+					{
+						selectedNybble = value.NybbleIndex;
+					}
 
-				cursorBlinking = true;
-				Refresh();
-				OnSelectionChanged(EventArgs.Empty);
+					// ensure the window gets scrolled to the line on which the current selection resides
+					Rectangle cellRect = GetCellRect(SelectionStart.ByteIndex);
+					// scroll to the start of the current selection
+					if (cellRect.Y < VerticalAdjustment.Value)
+					{
+						VerticalAdjustment.Value = cellRect.Y;
+					}
+					else if (cellRect.Y > VerticalAdjustment.Value + Size.Height - LineHeight)
+					{
+						VerticalAdjustment.Value = cellRect.Y - Size.Height + LineHeight;
+					}
+
+					cursorBlinking = true;
+					Refresh();
+					OnSelectionChanged(EventArgs.Empty);
+				}
 			}
+		}
+
+		private int GetLineIndex(int byteIndex)
+		{
+			return byteIndex % CellsPerLine;
+		}
+		private MBS.Framework.Drawing.Rectangle GetCellRect(int byteIndex)
+		{
+			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, CellSize);
+			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, CellSize, CellSize);
+			for (int i = 0; i < byteIndex; i++)
+			{
+				rectCell.X += rectCell.Width + HorizontalCellSpacing;
+
+				if (((i + 1) % CellsPerLine) == 0)
+				{
+					rectCell.X = rectPosition.X + rectPosition.Width + HorizontalCellSpacing;
+					rectCell.Y += rectCell.Height + VerticalCellSpacing;
+					rectPosition.Y += rectPosition.Height + VerticalCellSpacing;
+				}
+			}
+			return rectCell;
 		}
 
 		private HexEditorPosition mvarSelectionLength = new HexEditorPosition(0, 0);
@@ -100,16 +138,37 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			SelectionChanged?.Invoke(this, e);
 		}
 
-		public int mvarSelectionStart = 0; // where the selection starts
+		public int mvarSelectionStart = 0;
 
 		private int selectedNybble = 0; // 0 = first nybble, 1 = second nybble
-
-		// The maximum number of cells we can display in a single line
-		private int mvarMaxDisplayWidth = 16;
 
 		// offsets for data display
 		private const int xoffset = 0;
 		private const int yoffset = 16 + 16;
+
+
+		public int CellSize { get { return 24; } }
+		/// <summary>
+		/// Gets the maximum number of cells that can be displayed in a single line.
+		/// </summary>
+		/// <value>The maximum number of cells that can be displayed in a single line.</value>
+		public int CellsPerLine
+		{
+			get
+			{
+				int maxDisplayWidth = (int)(PageWidth / CellSize);
+				if (maxDisplayWidth < 1) maxDisplayWidth = 1;// prevent division by zero
+				return maxDisplayWidth;  // PageWidth / (ByteWidth + HorizontalCellSpacing + HorizontalCellSpacing);
+			}
+		}
+		public int CellsPerColumn { get { return (PageHeight / (CellSize + VerticalCellSpacing + VerticalCellSpacing)) + 1; } }
+		public int BytesPerPage {  get { return CellsPerLine * CellsPerColumn; } }
+
+		public int PageWidth { get { return (int)(this.Size.Width - PositionGutterWidth - TextAreaWidth - 128 - HexAsciiMargin); } }
+		public int PageHeight { get { return (int)this.Size.Height; } }
+
+		public int NLines { get { return (int)Math.Round((double)Data.Length / CellsPerLine) + 1; } }
+		public int LineHeight { get { return (CellSize + VerticalCellSpacing); } }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this
@@ -147,12 +206,12 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public HexEditorHitTestInfo HitTest(double x, double y)
 		{
 			int byteIndex = -1, nybbleIndex = -1;
-			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, 24);
-			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, 24, 24);
+			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, CellSize);
+			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width + HorizontalCellSpacing, yoffset, CellSize, CellSize);
 
 			for (int i = 0; i < mvarData.Length + 1; i++)
 			{
-				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
+				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % CellsPerLine) * 8), rectCell.Y, 8, CellSize);
 
 				if (x >= rectCell.X && x <= rectCell.Right && y >= rectCell.Y && y <= rectCell.Bottom)
 				{
@@ -176,7 +235,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				rectCell.X += rectCell.Width + HorizontalCellSpacing;
 
-				if (((i + 1) % mvarMaxDisplayWidth) == 0)
+				if (((i + 1) % CellsPerLine) == 0)
 				{
 					rectCell.X = rectPosition.X + rectPosition.Width + HorizontalCellSpacing;
 					rectCell.Y += rectCell.Height + VerticalCellSpacing;
@@ -191,16 +250,16 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			base.OnMouseDown(e);
 			Focus();
 
-			HexEditorHitTestInfo index = HitTest(e.X, e.Y);
-			if (index.ByteIndex > -1)
+			if (e.Buttons == MouseButtons.Primary || SelectionLength == 0)
 			{
-				mvarSelectionStart = index.ByteIndex;
-				selectedNybble = index.NybbleIndex;
-				mvarSelectionLength = new HexEditorPosition(0, 0);
-
-				SelectionStart = SelectionStart;
-				SelectedSection = index.Section;
-				Refresh();
+				HexEditorHitTestInfo index = HitTest(e.X, e.Y);
+				if (index.ByteIndex > -1)
+				{
+					SelectionStart = new HexEditorPosition(index.ByteIndex, index.NybbleIndex);
+					SelectionLength = new HexEditorPosition(0, 0);
+					SelectedSection = index.Section;
+					Refresh();
+				}
 			}
 		}
 		protected internal override void OnMouseMove(MouseEventArgs e)
@@ -271,7 +330,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 				case KeyboardKey.Back:
 				{
-					if (!Editable || ((SelectionStart == 0 && selectedNybble == 0) || SelectionStart < 0))
+					if (!Editable || ((SelectionStart.ByteIndex == 0 && SelectionStart.NybbleIndex == 0) || SelectionStart < 0))
 					{
 						return;
 					}
@@ -279,7 +338,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte || SelectedSection == HexEditorHitTestSection.ASCII)
 					{
 						// ASCII section ALWAYS erases a whole byte
-						if (mvarSelectionStart > 0)
+						if (SelectionStart > 0)
 						{
 							if (ShouldBackspaceDelete(e.ModifierKeys))
 							{
@@ -290,27 +349,24 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 								}
 								else
 								{
-									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart, mvarSelectionLength);
-									if (mvarSelectionLength < 0)
+									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, SelectionStart.ByteIndex, SelectionLength);
+									if (SelectionLength < 0)
 									{
-										mvarSelectionStart += mvarSelectionLength;
+										SelectionStart += SelectionLength;
 									}
 								}
 							}
 							else // if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
 							{
-								Data[mvarSelectionStart - 1] = 0x0;
+								Data[SelectionStart - 1] = 0x0;
 							}
-							mvarSelectionLength = 0;
-
-							SelectionStart = SelectionStart; // to fire events
-							Refresh();
+							SelectionLength = 0;
 							e.Cancel = true;
 						}
 					}
 					else if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseNybble)
 					{
-						if (selectedNybble == 0)
+						if (SelectionStart.NybbleIndex == 0)
 						{
 							string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');
 							Data[mvarSelectionStart - 1] = Byte.Parse(curhex.Substring(0, 1) + '0', System.Globalization.NumberStyles.HexNumber);
@@ -318,28 +374,26 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 							if (ShouldBackspaceDelete(e.ModifierKeys))
 							{
 								ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
-								selectedNybble = 0;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 0);
 							}
 							else
 							{
-								selectedNybble = 1;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 1);
 							}
 
-							mvarSelectionStart--;
+							SelectionStart--;
 						}
-						else if (selectedNybble == 1)
+						else if (SelectionStart.NybbleIndex == 1)
 						{
-							if (mvarSelectionStart < Data.Length)
+							if (SelectionStart < Data.Length)
 							{
 								string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
 								Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
 							}
 							selectedNybble = 0;
 						}
-						mvarSelectionLength = 0;
+						SelectionLength = 0;
 
-						SelectionStart = SelectionStart; // to fire events
-						Refresh();
 						e.Cancel = true;
 					}
 					return;
@@ -350,25 +404,23 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
-							mvarSelectionLength -= 0.5;
+							SelectionLength -= 0.5;
 						}
 						else
 						{
-							mvarSelectionLength = 0;
-							if (selectedNybble == 1)
+							SelectionLength = 0;
+							if (SelectionStart.NybbleIndex == 1)
 							{
-								selectedNybble = 0;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 0);
 							}
 							else if (selectedNybble == 0)
 							{
-								mvarSelectionStart--;
-								selectedNybble = 1;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex - 1, 1);
 							}
 
-							if (mvarSelectionStart < 0)
+							if (SelectionStart < 0)
 							{
-								mvarSelectionStart = 0;
-								selectedNybble = 0;
+								SelectionStart = 0;
 							}
 						}
 					}
@@ -376,21 +428,19 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
-							mvarSelectionLength -= 1;
+							SelectionLength -= 1;
 						}
 						else
 						{
-							mvarSelectionLength = 0;
-							mvarSelectionStart--;
-							selectedNybble = 0;
+							SelectionLength = 0;
+							SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex - 1, 0);
 
-							if (mvarSelectionStart < 0)
+							if (SelectionStart < 0)
 							{
-								mvarSelectionStart = 0;
+								SelectionStart = 0;
 							}
 						}
 					}
-					SelectionStart = SelectionStart; // to fire events
 					e.Cancel = true;
 					break;
 				}
@@ -400,26 +450,24 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
-							mvarSelectionLength += 0.5;
+							SelectionLength += 0.5;
 						}
 						else
 						{
-							mvarSelectionLength = 0;
+							SelectionLength = 0;
 							if (selectedNybble == 1)
 							{
-								mvarSelectionStart++;
-								selectedNybble = 0;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex + 1, 0);
 							}
 							else if (selectedNybble == 0)
 							{
-								selectedNybble = 1;
+								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 1);
 							}
 
 							int end = Editable ? Data.Length : Data.Length - 1;
-							if (mvarSelectionStart > end)
+							if (SelectionStart > end)
 							{
-								mvarSelectionStart = end;
-								selectedNybble = 1;
+								SelectionStart = new HexEditorPosition(end, 1);
 							}
 						}
 					}
@@ -427,23 +475,20 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					{
 						if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 						{
-							mvarSelectionLength += 1;
+							SelectionLength += 1;
 						}
 						else
 						{
-							mvarSelectionLength = 0;
-							mvarSelectionStart++;
-							selectedNybble = 0;
+							SelectionLength = 0;
+							SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex + 1, 0);
 
 							int end = Editable ? Data.Length : Data.Length - 1;
 							if (mvarSelectionStart > end)
 							{
-								mvarSelectionStart = end;
-								selectedNybble = 0;
+								SelectionStart = new HexEditorPosition(end, 0);
 							}
 						}
 					}
-					SelectionStart = SelectionStart; // to fire events
 					e.Cancel = true;
 					break;
 				}
@@ -451,18 +496,16 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				{
 					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 					{
-						mvarSelectionLength -= mvarMaxDisplayWidth;
+						SelectionLength -= CellsPerLine;
 					}
 					else
 					{
-						mvarSelectionLength = 0;
-						if (mvarSelectionStart - mvarMaxDisplayWidth >= 0)
+						SelectionLength = 0;
+						if (mvarSelectionStart - CellsPerLine >= 0)
 						{
-							mvarSelectionStart -= mvarMaxDisplayWidth;
+							SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex - CellsPerLine, SelectionStart.NybbleIndex);
 						}
 					}
-
-					SelectionStart = SelectionStart; // to fire events
 					e.Cancel = true;
 					break;
 				}
@@ -470,59 +513,47 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				{
 					if ((e.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
 					{
-						mvarSelectionLength += mvarMaxDisplayWidth;
+						SelectionLength += CellsPerLine;
 					}
 					else
 					{
-						mvarSelectionLength = 0;
-						mvarSelectionStart += mvarMaxDisplayWidth;
+						SelectionLength = 0;
+						SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex + CellsPerLine, SelectionStart.NybbleIndex);
 
-						if (mvarSelectionStart >= Data.Length)
-							mvarSelectionStart = Data.Length - 1;
+						if (SelectionStart >= Data.Length)
+							SelectionStart = Data.Length - 1;
 
 					}
-
-					SelectionStart = SelectionStart; // to fire events
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.Home:
 				{
 					// let's try something different
-					mvarSelectionLength = 0;
+					SelectionLength = 0;
 					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
 					{
-						mvarSelectionStart = 0;
-						selectedNybble = 0;
+						SelectionStart = 0;
 					}
 					else
 					{
-						mvarSelectionStart = (int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth;
-						selectedNybble = 0;
+						SelectionStart = (int)((double)mvarSelectionStart / (double)CellsPerLine) * CellsPerLine;
 					}
-
-					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
 				case KeyboardKey.End:
 				{
 					// let's try something different
-					mvarSelectionLength = 0;
+					SelectionLength = 0;
 					if ((e.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
 					{
-						mvarSelectionStart = Data.Length - 1;
-						selectedNybble = 1;
+						SelectionStart = new HexEditorPosition(Data.Length - 1, 1);
 					}
 					else
 					{
-						mvarSelectionStart = Math.Min(Data.Length - 1, (((int)((double)mvarSelectionStart / (double)mvarMaxDisplayWidth) * mvarMaxDisplayWidth) + mvarMaxDisplayWidth) - 1);
-						selectedNybble = 1;
+						SelectionStart = new HexEditorPosition(Math.Min(Data.Length - 1, (((int)((double)mvarSelectionStart / (double)CellsPerLine) * CellsPerLine) + CellsPerLine) - 1), 1);
 					}
-
-					SelectionStart = SelectionStart; // to fire events
-					Refresh();
 					e.Cancel = true;
 					break;
 				}
@@ -729,7 +760,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				if (ee.Cancel)
 					return;
 
-				if (mvarSelectionStart >= Data.Length)
+				if (SelectionStart.ByteIndex >= Data.Length)
 				{
 					if (EnableInsert)
 					{
@@ -741,28 +772,25 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				{
 					string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
 					mvarSelectionLength = 0;
-					if (selectedNybble == 0)
+					if (SelectionStart.NybbleIndex == 0)
 					{
-						Data[mvarSelectionStart] = Byte.Parse(next.ToString() + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
-						selectedNybble = 1;
+						Data[SelectionStart.ByteIndex] = Byte.Parse(next.ToString() + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
+						SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 1);
 					}
-					else if (selectedNybble == 1)
+					else if (SelectionStart.NybbleIndex == 1)
 					{
 						Data[mvarSelectionStart] = Byte.Parse(curhex.Substring(0, 1) + next.ToString(), System.Globalization.NumberStyles.HexNumber);
 
-						mvarSelectionStart++;
-						selectedNybble = 0;
+						SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex + 1, 0);
 					}
 				}
 				else
 				{
-					Data[mvarSelectionStart] = (byte)next;
-					mvarSelectionStart++;
-					selectedNybble = 0;
+					Data[SelectionStart.ByteIndex] = (byte)next;
+					SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex + 1, 0);
 				}
 
 				OnChanged(EventArgs.Empty);
-				SelectionStart = SelectionStart;
 			}
 		}
 
@@ -816,6 +844,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			base.OnPaint(e);
 
 			e.Graphics.Clear(SystemColors.WindowBackground);
+			ScrollBounds = new MBS.Framework.Drawing.Dimension2D(0, NLines * LineHeight);
 
 			Brush bOffsetColor = new SolidBrush(SystemColors.HighlightBackground);
 
@@ -827,31 +856,32 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			Brush bForeColor = new SolidBrush(SystemColors.WindowForeground);
 
-			mvarMaxDisplayWidth = (int)((this.Size.Width - PositionGutterWidth - TextAreaWidth - 128 - HexAsciiMargin) / 24);
-			if (mvarMaxDisplayWidth < 1) mvarMaxDisplayWidth = 1;// prevent division by zero
-
 			Font font = Font.FromFamily("Monospace", 14.0);
 
-			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, 24);
-			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width, yoffset, 24, 24);
+			int start = 0; //(int)(VerticalAdjustment.Value / LineHeight) * CellsPerLine;
+			if (start < 0) start = 0;
 
 			int end = mvarData.Length;
 			if (Editable)
 				end++;
 
-			for (int i = 0; i < mvarMaxDisplayWidth; i++)
+			Rectangle rectPosition = new Rectangle(xoffset, yoffset, PositionGutterWidth, CellSize);
+			Rectangle rectCell = new Rectangle(rectPosition.X + rectPosition.Width, yoffset, CellSize, CellSize);
+
+			for (int i = 0; i < CellsPerLine; i++)
 			{
-				e.Graphics.DrawText(i.ToString("X").PadLeft(2, '0'), font, new Rectangle(rectCell.X + textOffset.X + (i * (24 + HorizontalCellSpacing)), yoffset - 8, 24, 24), bOffsetColor);
+				e.Graphics.DrawText(i.ToString("X").PadLeft(2, '0'), font, new Rectangle(rectCell.X + textOffset.X + (i * (CellSize + HorizontalCellSpacing)), VerticalAdjustment.Value + yoffset - 8, CellSize, CellSize), bOffsetColor);
 			}
 
-			for (int i = 0; i < end; i++)
+			Console.WriteLine("render cell range: {0} (0x{1}) to {2} (0x{3})", start, start.ToString("x"), end, end.ToString("x"));
+			for (int i = start; i < end; i++)
 			{
 				Rectangle rectPositionText = new Rectangle(rectPosition.X + textOffset.X, rectPosition.Y + textOffset.Y, rectPosition.Width - (textOffset.X * 2), rectPosition.Height - (textOffset.Y * 2));
 				Rectangle rectCellText = new Rectangle(rectCell.X + textOffset.X, rectCell.Y + textOffset.Y, rectCell.Width - (textOffset.X * 2), rectCell.Height - (textOffset.Y * 2));
 				Rectangle rectFirstNybbleCell = new Rectangle(rectCell.X, rectCell.Y, rectCell.Width / 2, rectCell.Height);
 				Rectangle rectNybbleCell = new Rectangle(rectCell.X + ((rectCell.Width / 2) * selectedNybble), rectCell.Y, rectCell.Width / 2, rectCell.Height);
 
-				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % mvarMaxDisplayWidth) * 8), rectCell.Y, 8, 24);
+				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % CellsPerLine) * 8), rectCell.Y, 8, 24);
 				Rectangle rectCharText = new Rectangle(rectChar.X, rectChar.Y + textOffset.Y, rectChar.Width, rectChar.Height);
 
 				bool hasAreaFill = false;
@@ -899,17 +929,17 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					}
 				}
 
-				int start = mvarSelectionStart;
-				int length = mvarSelectionLength.ByteIndex;
-				if (length < 0)
+				int selstart = mvarSelectionStart;
+				int sellength = mvarSelectionLength.ByteIndex;
+				if (sellength < 0)
 				{
-					length = Math.Abs(length);
-					start = mvarSelectionStart - length;
+					sellength = Math.Abs(sellength);
+					selstart = mvarSelectionStart - sellength;
 				}
 
-				if (i >= start && i <= (start + length - 1))
+				if (i >= selstart && i <= (selstart + sellength - 1))
 				{
-					if (mvarSelectionLength.NybbleIndex == 1 || i < (start + length - 1))
+					if (mvarSelectionLength.NybbleIndex == 1 || i < (selstart + sellength - 1))
 					{
 						if (!hasAreaFill)
 						{
@@ -927,7 +957,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					}
 				}
 
-				if ((i % mvarMaxDisplayWidth) == 0)
+				if ((i % CellsPerLine) == 0)
 				{
 					// print the offset of data, once per line
 					string strOffset = i.ToString("X").PadLeft(8, '0');
@@ -951,14 +981,14 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 				if (mvarData.Length > 0 && i < end)
 				{
-					if (i >= start && i <= start + length)
+					if (i >= selstart && i <= selstart + sellength)
 					{
-						if (i < start + length)
+						if (i < selstart + sellength)
 						{
 							// highlight
 							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBackgroundFocused : bSelectionBackgroundUnfocused, new Rectangle(rectChar.X, rectChar.Y, rectChar.Width, rectChar.Height));
 						}
-						if (i == start)
+						if (i == selstart)
 						{
 							// cursor
 							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));
@@ -978,14 +1008,14 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					}
 				}
 
-				if (((i + 1) % mvarMaxDisplayWidth) == 0)
+				if (((i + 1) % CellsPerLine) == 0)
 				{
 					rectCell.X = rectPosition.X + rectPosition.Width;
 					rectCell.Y += rectCell.Height + VerticalCellSpacing;
 					rectPosition.Y += rectPosition.Height + VerticalCellSpacing;
 				}
 
-				if (rectPosition.Y > this.Size.Height)
+				if (rectPosition.Y > this.Size.Height + VerticalAdjustment.Value)
 				{
 					break;
 				}

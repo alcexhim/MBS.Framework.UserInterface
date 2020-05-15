@@ -21,7 +21,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease | Internal.GDK.Constants.GdkEventMask.PointerMotion | Internal.GDK.Constants.GdkEventMask.PointerMotionHint);
-
 			CustomControl ctl = (control as CustomControl);
 			for (int i = 0; i < ctl.Controls.Count; i++)
 			{
@@ -109,6 +108,30 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						_vadjDirty = false;
 					}
 					return _vadj;
+				}
+			}
+			throw new ArgumentOutOfRangeException(nameof(orientation));
+		}
+		protected override void SetAdjustmentValueInternal(Orientation orientation, double value)
+		{
+			IntPtr hLayout = (Handle as GTKNativeControl).GetNamedHandle("Layout");
+			switch (orientation)
+			{
+				case Orientation.Horizontal:
+				{
+					IntPtr adj = Internal.GTK.Methods.GtkScrollable.gtk_scrollable_get_hadjustment(hLayout);
+					Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_set_value(adj, value);
+					_hadj = value;
+					_hadjDirty = false;
+					return;
+				}
+				case Orientation.Vertical:
+				{
+					IntPtr adj = Internal.GTK.Methods.GtkScrollable.gtk_scrollable_get_vadjustment(hLayout);
+					Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_set_value(adj, value);
+					_vadj = value;
+					_vadjDirty = false;
+					return;
 				}
 			}
 			throw new ArgumentOutOfRangeException(nameof(orientation));

@@ -29,6 +29,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkAdjustment*/ gtk_adjustment_new(double value, double lower, double upper, double step_increment, double page_increment, double page_size);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern double gtk_adjustment_get_value(IntPtr /*GtkAdjustment*/ adjustment);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_adjustment_set_value(IntPtr /*GtkAdjustment*/ adjustment, double value);
 	}
 }
 

@@ -147,6 +147,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				Internal.GTK.Methods.GtkEntry.gtk_entry_set_width_chars(handle, ctl.WidthChars);
 			}
+			if (ctl.BorderStyle == ControlBorderStyle.None)
+			{
+				Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, false);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, true);
+			}
 			Internal.GTK.Methods.GtkEntry.gtk_entry_set_activates_default(handle, true);
 			Internal.GTK.Methods.GtkEntry.gtk_entry_set_visibility(handle, !ctl.UseSystemPasswordChar);
 

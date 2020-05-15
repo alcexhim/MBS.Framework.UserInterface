@@ -66,6 +66,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_entry_get_activates_default(IntPtr /*GtkEntry*/ entry);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_entry_set_activates_default(IntPtr /*GtkEntry*/ entry, bool value);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_has_frame(IntPtr /*GtkEntry*/ entry, bool value);
 	}
 }
 

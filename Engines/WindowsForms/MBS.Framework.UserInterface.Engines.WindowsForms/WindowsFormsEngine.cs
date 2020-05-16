@@ -1,18 +1,40 @@
-﻿using System;
+﻿//
+//  WindowsFormsEngine.cs - provides a Universal Widget Toolkit Engine powered by the Windows Forms toolkit
+//
+//  Author:
+//       Michael Becker <alcexhim@gmail.com>
+//
+//  Copyright (c) 2019-2020 Mike Becker's Software
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+
 using MBS.Framework.Drawing;
-using MBS.Framework.UserInterface.Controls;
-using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.WindowsForms.Printing;
 using MBS.Framework.UserInterface.Input.Keyboard;
-using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Printing;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
+	/// <summary>
+	/// Provides a Universal Widget Toolkit <see cref="Engine" /> powered by the Windows Forms toolkit.
+	/// </summary>
 	public class WindowsFormsEngine : Engine
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
@@ -21,14 +43,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (dialogResult)
 			{
-			case DialogResult.Abort: return System.Windows.Forms.DialogResult.Abort;
-			case DialogResult.Cancel: return System.Windows.Forms.DialogResult.Cancel;
-			case DialogResult.Ignore: return System.Windows.Forms.DialogResult.Ignore;
-			case DialogResult.No: return System.Windows.Forms.DialogResult.No;
-			case DialogResult.None: return System.Windows.Forms.DialogResult.None;
-			case DialogResult.OK: return System.Windows.Forms.DialogResult.OK;
-			case DialogResult.Retry: return System.Windows.Forms.DialogResult.Retry;
-			case DialogResult.Yes: return System.Windows.Forms.DialogResult.Yes;
+				case DialogResult.Abort: return System.Windows.Forms.DialogResult.Abort;
+				case DialogResult.Cancel: return System.Windows.Forms.DialogResult.Cancel;
+				case DialogResult.Ignore: return System.Windows.Forms.DialogResult.Ignore;
+				case DialogResult.No: return System.Windows.Forms.DialogResult.No;
+				case DialogResult.None: return System.Windows.Forms.DialogResult.None;
+				case DialogResult.OK: return System.Windows.Forms.DialogResult.OK;
+				case DialogResult.Retry: return System.Windows.Forms.DialogResult.Retry;
+				case DialogResult.Yes: return System.Windows.Forms.DialogResult.Yes;
 			}
 			return System.Windows.Forms.DialogResult.None;
 		}
@@ -36,14 +58,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (dialogResult)
 			{
-			case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
-			case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
-			case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
-			case System.Windows.Forms.DialogResult.No: return DialogResult.No;
-			case System.Windows.Forms.DialogResult.None: return DialogResult.None;
-			case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
-			case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
-			case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
+				case System.Windows.Forms.DialogResult.Abort: return DialogResult.Abort;
+				case System.Windows.Forms.DialogResult.Cancel: return DialogResult.Cancel;
+				case System.Windows.Forms.DialogResult.Ignore: return DialogResult.Ignore;
+				case System.Windows.Forms.DialogResult.No: return DialogResult.No;
+				case System.Windows.Forms.DialogResult.None: return DialogResult.None;
+				case System.Windows.Forms.DialogResult.OK: return DialogResult.OK;
+				case System.Windows.Forms.DialogResult.Retry: return DialogResult.Retry;
+				case System.Windows.Forms.DialogResult.Yes: return DialogResult.Yes;
 			}
 			return DialogResult.None;
 		}
@@ -834,6 +856,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			WindowsFormsNativeControl wfncChild = (GetHandleForControl(control) as WindowsFormsNativeControl);
 			wfncParent.Handle.Controls.Add(wfncChild.Handle);
 		}
+
+		private SystemSettings _SystemSettings = new WindowsFormsSystemSettings();
+		public override SystemSettings SystemSettings => _SystemSettings;
 
 	}
 }

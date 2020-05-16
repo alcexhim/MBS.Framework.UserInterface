@@ -97,6 +97,20 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			}
 		}
 
+		private bool _AlternateRowHighlight = true;
+		/// <summary>
+		/// Gets or sets a value indicating whether every other row in this <see cref="HexEditorControl" /> is highlighted with an alternate background color.
+		/// </summary>
+		/// <value><c>true</c> if alternating rows should be highlighted with an alternate background color; otherwise, <c>false</c>.</value>
+		public bool AlternateRowHighlight { get { return _AlternateRowHighlight; } set { _AlternateRowHighlight = value; Refresh(); } }
+
+		private bool _HighlightCurrentLine = true;
+		/// <summary>
+		/// Gets or sets a value indicating whether the line containing the currently-selected cell in this <see cref="HexEditorControl" /> is highlighted.
+		/// </summary>
+		/// <value><c>true</c> if the current line should be highlighted; otherwise, <c>false</c>.</value>
+		public bool HighlightCurrentLine { get { return _HighlightCurrentLine; } set { _HighlightCurrentLine = value; Refresh(); } }
+
 		private int GetLineIndex(int byteIndex)
 		{
 			return byteIndex % CellsPerLine;
@@ -881,8 +895,14 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				Rectangle rectFirstNybbleCell = new Rectangle(rectCell.X, rectCell.Y, rectCell.Width / 2, rectCell.Height);
 				Rectangle rectNybbleCell = new Rectangle(rectCell.X + ((rectCell.Width / 2) * selectedNybble), rectCell.Y, rectCell.Width / 2, rectCell.Height);
 
-				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % CellsPerLine) * 8), rectCell.Y, 8, 24);
+				Rectangle rectChar = new Rectangle(this.Size.Width - TextAreaWidth - PositionGutterWidth + ((i % CellsPerLine) * 8), rectCell.Y, 8, rectCell.Height);
 				Rectangle rectCharText = new Rectangle(rectChar.X, rectChar.Y + textOffset.Y, rectChar.Width, rectChar.Height);
+
+				bool isFirstCellInLine = (i % CellsPerLine) == 0;
+				if (isFirstCellInLine && AlternateRowHighlight && (int)(((double)i / CellsPerLine) % 2) == 0)
+				{
+					e.Graphics.FillRectangle(new SolidBrush(Colors.DarkGray.Alpha(0.2)), new Rectangle(rectCell.X, rectCell.Y, this.Size.Width, rectCell.Height));
+				}
 
 				bool hasAreaFill = false;
 				for (int j = HighlightAreas.Count - 1;  j > -1;  j--)
@@ -936,6 +956,10 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 					sellength = Math.Abs(sellength);
 					selstart = mvarSelectionStart - sellength;
 				}
+				if (HighlightCurrentLine && i == selstart)
+				{
+					e.Graphics.FillRectangle(new SolidBrush(SystemColors.HighlightBackground.Alpha(0.2)), new Rectangle(0, rectCell.Y, this.Size.Width, rectCell.Height));
+				}
 
 				if (i >= selstart && i <= (selstart + sellength - 1))
 				{
@@ -955,6 +979,11 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						}
 						e.Graphics.DrawRectangle(SelectedSection == HexEditorHitTestSection.Hexadecimal ? pSelectionBorderFocused : pSelectionBorderUnfocused, rectFirstNybbleCell);
 					}
+					bForeColor = new SolidBrush(SystemColors.HighlightForeground);
+				}
+				else
+				{
+					bForeColor = new SolidBrush(SystemColors.WindowForeground);
 				}
 
 				if ((i % CellsPerLine) == 0)

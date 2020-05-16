@@ -26,6 +26,8 @@ namespace MBS.Framework.UserInterface
 		private static int mvarExitCode = 0;
 		public static int ExitCode { get { return mvarExitCode; } }
 
+		public static bool Exited { get; internal set; } = false;
+
 		public static Guid ID { get; set; } = Guid.Empty;
 		public static string UniqueName { get; set; } = null;
 		public static string ShortName { get; set; }

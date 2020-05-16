@@ -308,7 +308,9 @@ namespace MBS.Framework.UserInterface
 
 		public int Start(Window waitForClose = null)
 		{
-			return StartInternal(waitForClose);
+			int retval = StartInternal(waitForClose);
+			Application.Exited = true;
+			return retval;
 		}
 		public void Stop(int exitCode = 0)
 		{

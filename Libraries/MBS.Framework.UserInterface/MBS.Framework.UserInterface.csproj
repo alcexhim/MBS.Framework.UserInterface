@@ -262,6 +262,7 @@
     <Compile Include="IControl.cs" />
     <Compile Include="Controls\Disclosure.cs" />
     <Compile Include="IControlContainerImplementation.cs" />
+    <Compile Include="SystemSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

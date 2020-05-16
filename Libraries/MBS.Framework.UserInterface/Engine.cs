@@ -15,6 +15,7 @@ namespace MBS.Framework.UserInterface
 	public abstract class Engine
 	{
 		protected abstract int Priority { get; }
+		public abstract SystemSettings SystemSettings { get; }
 
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
 

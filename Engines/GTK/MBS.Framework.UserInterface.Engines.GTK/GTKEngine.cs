@@ -27,6 +27,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Unix ? 1 : -1);
 
+		private GTKSystemSettings _SystemSettings = new GTKSystemSettings();
+		public override SystemSettings SystemSettings => _SystemSettings;
+
 		private int _exitCode = 0;
 
 		public IntPtr ApplicationHandle { get; private set; } = IntPtr.Zero;

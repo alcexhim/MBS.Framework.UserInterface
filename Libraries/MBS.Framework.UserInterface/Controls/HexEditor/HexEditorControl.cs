@@ -200,7 +200,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 			base.OnCreated(e);
 
 			_tCursorBlinkThread = new System.Threading.Thread(_tCursorBlinkThread_ThreadStart);
-			// _tCursorBlinkThread.Start();
+			_tCursorBlinkThread.Start();
 		}
 
 		public HexEditorHitTestInfo HitTest(double x, double y)
@@ -812,13 +812,13 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private System.Threading.Thread _tCursorBlinkThread = null;
 		private void _tCursorBlinkThread_ThreadStart()
 		{
-			while (true)
+			while (!Application.Exited)
 			{
-				System.Threading.Thread.Sleep(500);
+				System.Threading.Thread.Sleep(Application.Engine.SystemSettings.CursorBlinkTime);
 				cursorBlinking = !cursorBlinking;
 
 				if (IsCreated)
-					Refresh(); // replace with call to Invalidate(Rect)
+					Invalidate(); // replace with call to Invalidate(Rect)
 			}
 		}
 
@@ -991,7 +991,8 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						if (i == selstart)
 						{
 							// cursor
-							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4));
+							Rectangle cursorRect = new Rectangle(rectChar.X, rectChar.Bottom - 4, rectChar.Width, 4);
+							e.Graphics.FillRectangle(SelectedSection == HexEditorHitTestSection.ASCII ? bSelectionBorderFocused : bSelectionBorderUnfocused, cursorRect);
 						}
 					}
 

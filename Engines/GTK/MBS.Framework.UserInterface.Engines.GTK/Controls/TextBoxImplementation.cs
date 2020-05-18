@@ -51,7 +51,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (ctl.Multiline)
 			{
 				// handle points to the ScrolledWindow
-				IntPtr hTextBox = Internal.GTK.Methods.GtkContainer.gtk_container_get_focus_child(handle);
+				IntPtr hTextBox = (Engine.GetHandleForControl(control) as GTKNativeControl).GetNamedHandle("TextBox");
 				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
 
 				Internal.GTK.Structures.GtkTextIter hStartIter = new Internal.GTK.Structures.GtkTextIter();
@@ -87,10 +87,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			TextBox ctl = (control as TextBox);
 			if (ctl.Multiline)
 			{
-				IntPtr hScrolledWindow = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
-				IntPtr hList = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hScrolledWindow);
-				IntPtr hTextBox = Internal.GLib.Methods.g_list_nth_data(hList, 0);
-
+				IntPtr hTextBox = (Engine.GetHandleForControl(control) as GTKNativeControl).GetNamedHandle("TextBox");
 				IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
 
 				text = text.Replace('\0', ' ');
@@ -121,57 +118,65 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			string ctlText = ctl.Text;
-			if (ctlText != null)
-			{
-				if (ctl.Multiline)
-				{
-					IntPtr hTextTagTable = Internal.GTK.Methods.GtkTextTagTable.gtk_text_tag_table_new();
-					IntPtr hBuffer = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_new(hTextTagTable);
-					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctlText, ctlText.Length);
-					Internal.GTK.Methods.GtkTextView.gtk_text_view_set_buffer(handle, hBuffer);
-					Internal.GTK.Methods.GtkTextView.gtk_text_view_set_wrap_mode(handle, Internal.GTK.Constants.GtkWrapMode.Word);
-					_TextBoxForBuffer[hBuffer] = ctl;
-					Internal.GObject.Methods.g_signal_connect(hBuffer, "changed", TextBuffer_Changed_Handler);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(handle, ctlText);
-				}
-			}
-
-			if (ctl.MaxLength > -1)
-			{
-				Internal.GTK.Methods.GtkEntry.gtk_entry_set_max_length(handle, ctl.MaxLength);
-			}
-			if (ctl.WidthChars > -1)
-			{
-				Internal.GTK.Methods.GtkEntry.gtk_entry_set_width_chars(handle, ctl.WidthChars);
-			}
-			if (ctl.BorderStyle == ControlBorderStyle.None)
-			{
-				Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, false);
-			}
-			else
-			{
-				Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, true);
-			}
-			Internal.GTK.Methods.GtkEntry.gtk_entry_set_activates_default(handle, true);
-			Internal.GTK.Methods.GtkEntry.gtk_entry_set_visibility(handle, !ctl.UseSystemPasswordChar);
-
-			Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, ctl.Editable);
-
 			if (ctl.Multiline)
 			{
+				IntPtr hTextTagTable = Internal.GTK.Methods.GtkTextTagTable.gtk_text_tag_table_new();
+				IntPtr hBuffer = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_new(hTextTagTable);
+				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_buffer(handle, hBuffer);
+				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_wrap_mode(handle, Internal.GTK.Constants.GtkWrapMode.Word);
+				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_editable(handle, ctl.Editable);
+
+				_TextBoxForBuffer[hBuffer] = ctl;
+
+				if (ctlText != null)
+				{
+					Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctlText, ctlText.Length);
+				}
+				Internal.GObject.Methods.g_signal_connect(hBuffer, "changed", TextBuffer_Changed_Handler);
+
 				IntPtr hHAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
 				IntPtr hVAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
 
 				IntPtr hScrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hHAdjustment, hVAdjustment);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hScrolledWindow, handle);
-				return new GTKNativeControl(hScrolledWindow);
+				return new GTKNativeControl(hScrolledWindow, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("ScrolledWindow", hScrolledWindow),
+					new KeyValuePair<string, IntPtr>("TextBox", handle)
+				});
 			}
 			else
 			{
-				return new GTKNativeControl(handle);
+				if (ctl.MaxLength > -1)
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_max_length(handle, ctl.MaxLength);
+				}
+				if (ctl.WidthChars > -1)
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_width_chars(handle, ctl.WidthChars);
+				}
+
+				if (ctl.BorderStyle == ControlBorderStyle.None)
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, false);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, true);
+				}
+
+				Internal.GTK.Methods.GtkEntry.gtk_entry_set_activates_default(handle, true);
+				Internal.GTK.Methods.GtkEntry.gtk_entry_set_visibility(handle, !ctl.UseSystemPasswordChar);
+				Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, ctl.Editable);
+
+				if (ctlText != null)
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_text(handle, ctlText);
+				}
+				return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("TextBox", handle)
+				});
 			}
 		}
 
@@ -304,8 +309,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (Handle == null)
 				return _IsEditable;
 
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			return Internal.GTK.Methods.GtkEditable.gtk_editable_get_editable(handle);
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			if ((Control as TextBox).Multiline)
+			{
+				return Internal.GTK.Methods.GtkTextView.gtk_text_view_get_editable(handle);
+			}
+			else
+			{
+				return Internal.GTK.Methods.GtkEditable.gtk_editable_get_editable(handle);
+			}
 		}
 		public void SetEditable(bool value)
 		{
@@ -313,8 +325,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (Handle == null)
 				return;
 
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, value);
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			if ((Control as TextBox).Multiline)
+			{
+				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_editable(handle, value);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, value);
+			}
 		}
 	}
 }

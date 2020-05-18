@@ -35,6 +35,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_text_view_set_buffer(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkTextBuffer*/ buffer);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_view_set_wrap_mode(IntPtr /*GtkTextView*/ text_view, Constants.GtkWrapMode mode);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_text_view_get_editable(IntPtr /*GtkTextView*/ text_view);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_view_set_editable(IntPtr /*GtkTextView*/ text_view, bool editable);
 	}
 }
 

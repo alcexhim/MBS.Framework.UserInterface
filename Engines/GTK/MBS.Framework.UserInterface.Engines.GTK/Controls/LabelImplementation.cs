@@ -15,7 +15,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		protected override string GetControlTextInternal(Control control)
 		{
-			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
+			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).GetNamedHandle("Control");
 			IntPtr hLabelText = Internal.GTK.Methods.GtkLabel.gtk_label_get_label(handle);
 			
 			string value = System.Runtime.InteropServices.Marshal.PtrToStringAuto(hLabelText);

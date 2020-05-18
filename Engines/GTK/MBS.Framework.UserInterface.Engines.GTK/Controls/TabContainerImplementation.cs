@@ -16,7 +16,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			create_window_d = new Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr>(create_window);
 			page_reordered_d = new Action<IntPtr, IntPtr, uint>(page_reordered);
-			change_current_tab_d = new Func<IntPtr, int, IntPtr, bool>(change_current_tab);
+			change_current_tab_d = new Func<IntPtr, int, IntPtr, bool>(change_current_page);
 			switch_page_d = new Action<IntPtr, IntPtr, uint>(switch_page);
 		}
 
@@ -287,7 +287,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			TabContainerSelectedTabChangedEventArgs ee = new TabContainerSelectedTabChangedEventArgs(oldTab, newTab);
 			InvokeMethod(tc, "OnSelectedTabChanged", new object[] { ee });
 		}
-		private static bool change_current_tab(IntPtr /*GtkNotebook*/ notebook, int index, IntPtr user_data)
+		private static bool change_current_page(IntPtr /*GtkNotebook*/ notebook, int index, IntPtr user_data)
 		{
 			GTKNativeControl nc = new GTKNativeControl(notebook);
 			TabContainer tc = (Application.Engine.GetControlByHandle(nc) as TabContainer);
@@ -316,7 +316,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
 			Internal.GObject.Methods.g_signal_connect(handle, "page_reordered", page_reordered_d, IntPtr.Zero);
-			Internal.GObject.Methods.g_signal_connect(handle, "change_current_tab", change_current_tab_d, IntPtr.Zero);
+			Internal.GObject.Methods.g_signal_connect(handle, "change_current_page", change_current_tab_d, IntPtr.Zero);
 			Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
 
 			return new GTKNativeControl(handle);

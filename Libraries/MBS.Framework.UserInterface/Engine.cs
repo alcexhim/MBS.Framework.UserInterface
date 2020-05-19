@@ -107,6 +107,7 @@ namespace MBS.Framework.UserInterface
 
 		protected internal abstract Image LoadImage(string filename, string type = null);
 		protected internal abstract Image LoadImage(byte[] filedata, string type);
+		protected internal abstract Image LoadImage(byte[] filedata, int width, int height, int rowstride);
 		protected internal abstract Image LoadImageByName(string name, int size);
 
 		protected abstract Clipboard GetDefaultClipboardInternal();

@@ -17,7 +17,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 
 		protected override void DrawImageInternal(Image image, double x, double y, double width, double height)
 		{
+			Internal.GDK.Methods.gdk_cairo_set_source_pixbuf(mvarCairoContext, (image as GDKPixbufImage).Handle, x, y);
+			CheckStatus();
 
+			Internal.Cairo.Methods.cairo_paint(mvarCairoContext);
+			CheckStatus();
 		}
 
 		protected override void DrawLineInternal(Pen pen, double x1, double y1, double x2, double y2)

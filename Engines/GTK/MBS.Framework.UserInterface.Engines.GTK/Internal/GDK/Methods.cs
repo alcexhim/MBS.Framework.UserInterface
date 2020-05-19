@@ -48,6 +48,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern IntPtr /*cairo_t*/ gdk_drawing_context_get_cairo_context(IntPtr /*GdkDrawingContext*/ context);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*cairo_t*/ gdk_cairo_create(IntPtr /*GdkWindow*/ window);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_cairo_set_source_pixbuf(IntPtr /*cairo_t*/ cr, IntPtr /*const GdkPixbuf*/ pixbuf, double x, double y);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_pixbuf_new_from_data(byte[] data, Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height, int rowstride, Action<byte[], IntPtr> destroy_fn, IntPtr destroy_fn_data);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_pixbuf_new_from_data(IntPtr data, Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height, int rowstride, Action<byte[], IntPtr> destroy_fn, IntPtr destroy_fn_data);
 	}
 }
 

@@ -40,6 +40,11 @@ namespace MBS.Framework.UserInterface.Drawing
 			Image image = Application.Engine.LoadImage(data, type);
 			return image;
 		}
+		public static Image FromBytes(byte[] data, int width, int height, int rowstride)
+		{
+			Image image = Application.Engine.LoadImage(data, width, height, rowstride);
+			return image;
+		}
 
 		public static Image Create(int width, int height)
 		{

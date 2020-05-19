@@ -49,9 +49,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
 		protected override Image CreateImage(int width, int height)
 		{
-			// IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new(Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height);
+			IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new(Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height);
+			return new GDKPixbufImage(hImage);
+			/*
 			IntPtr hImage = Internal.Cairo.Methods.cairo_image_surface_create(Internal.Cairo.Constants.CairoFormat.ARGB32, width, height);
 			return new CairoImage(hImage);
+			*/
 		}
 		protected override Image LoadImage(StockType stockType, int size)
 		{
@@ -70,6 +73,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hLoader = CreateImageLoader(type);
 			byte[] buffer = System.IO.File.ReadAllBytes(filename);
 			return LoadImage(hLoader, buffer, ref hError);
+		}
+
+		private Action<byte[], IntPtr> /*GdkPixbufDestroyNotify*/ _destroy_fn_d = null;
+		private void _destroy_fn(byte[] pixels, IntPtr data)
+		{
+			Marshal.FreeHGlobal(data);
+		}
+		protected override Image LoadImage(byte[] filedata, int width, int height, int rowstride)
+		{
+			IntPtr hPinned = Marshal.AllocHGlobal(filedata.Length);
+			Marshal.Copy(filedata, 0, hPinned, filedata.Length);
+
+			IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new_from_data(hPinned, Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height, rowstride, _destroy_fn_d, hPinned);
+			return new GDKPixbufImage(hImage);
 		}
 
 		protected override Image LoadImageByName(string name, int size)
@@ -494,6 +511,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			InitializeEventHandlers();
 
 			GtkPrintJob_status_changed_handler = new Internal.GObject.Delegates.GCallbackV1I(GtkPrintJob_status_changed);
+			_destroy_fn_d = new Action<byte[], IntPtr>(_destroy_fn);
 		}
 
 		private void InitializeStockIDs()

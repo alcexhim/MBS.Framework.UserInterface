@@ -164,6 +164,7 @@ namespace MBS.Framework.UserInterface
 			set
 			{
 				mvarSize = value;
+				ControlImplementation?.SetControlSize(value);
 			}
 		}
 

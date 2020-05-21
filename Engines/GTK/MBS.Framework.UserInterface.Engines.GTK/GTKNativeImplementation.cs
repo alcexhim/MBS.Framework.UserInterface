@@ -206,8 +206,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return new Dimension2D(hAlloc.width, hAlloc.height);
 		}
 
-
-
+		protected override void SetControlSizeInternal(Dimension2D value)
+		{
+		}
 
 
 		#region Event Handlers

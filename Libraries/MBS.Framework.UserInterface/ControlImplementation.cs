@@ -155,6 +155,12 @@ namespace MBS.Framework.UserInterface
 			return GetControlSizeInternal();
 		}
 
+		protected abstract void SetControlSizeInternal(Dimension2D value);
+		public void SetControlSize(Dimension2D value)
+		{
+			SetControlSizeInternal(value);
+		}
+
 		private NativeControl mvarHandle = null;
 		public NativeControl Handle { get { return mvarHandle; } }
 

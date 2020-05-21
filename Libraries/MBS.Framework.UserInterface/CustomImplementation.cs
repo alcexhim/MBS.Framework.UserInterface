@@ -36,6 +36,11 @@ namespace MBS.Framework.UserInterface
 		protected override void SetScrollBoundsInternal(Dimension2D value)
 		{
 		}
+		
+		protected override void SetControlSizeInternal(Dimension2D value)
+		{
+			(Handle as CustomNativeControl).Handle.Size = value;
+		}
 
 		protected override double GetAdjustmentValueInternal(Orientation orientation)
 		{

@@ -393,6 +393,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			});
 		}
 
+		protected override void SetControlSizeInternal(Dimension2D value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWindow.gtk_window_resize(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+		}
+
+		protected override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+		}
+
 		protected override void OnShown(EventArgs e)
 		{
 			if (!(Control as Window).StatusBar.Visible)

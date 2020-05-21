@@ -135,11 +135,6 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			return new CustomNativeControl(ddc);
 		}
 
-		protected override Dimension2D GetControlSizeInternal()
-		{
-			return (Handle as CustomNativeControl).Handle.Size;
-		}
-
 		protected override Cursor GetCursorInternal()
 		{
 			throw new NotImplementedException();

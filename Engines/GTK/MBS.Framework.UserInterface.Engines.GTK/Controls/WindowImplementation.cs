@@ -295,30 +295,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			#endregion
 
-			#region Toolbars
-			for (int i = 0; i < Application.CommandBars.Count; i++)
+			if (control is MainWindow)
 			{
-				Toolbar tb = window.LoadCommandBar(Application.CommandBars[i]);
-				Engine.CreateControl(tb);
-
-				IntPtr hToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl).Handle;
-				bool showGrip = false; // tb.GripStyle == GripStyle.Visible;
-
-				if (showGrip)
+				#region Toolbars
+				for (int i = 0; i < Application.CommandBars.Count; i++)
 				{
-					IntPtr hGripBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
-					Internal.GTK.Methods.GtkContainer.gtk_container_add(hGripBox, hToolbar);
+					Toolbar tb = window.LoadCommandBar(Application.CommandBars[i]);
+					Engine.CreateControl(tb);
 
-					Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hGripBox, false, true, 0);
+					IntPtr hToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl).Handle;
+					bool showGrip = false; // tb.GripStyle == GripStyle.Visible;
 
-					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hGripBox);
+					if (showGrip)
+					{
+						IntPtr hGripBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
+						Internal.GTK.Methods.GtkContainer.gtk_container_add(hGripBox, hToolbar);
+
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hGripBox, false, true, 0);
+
+						Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hGripBox);
+					}
+					else
+					{
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hToolbar, false, true, 0);
+					}
 				}
-				else
-				{
-					Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hToolbar, false, true, 0);
-				}
+				#endregion
 			}
-			#endregion
 
 			IntPtr hStatusBar = IntPtr.Zero;
 

@@ -56,6 +56,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					handle = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hpixbuf);
 				}
 			}
+
+			if (handle == IntPtr.Zero)
+				handle = Internal.GTK.Methods.GtkImage.gtk_image_new();
 			/*
 			else if (ctl.IconName != null)
 			{

@@ -30,7 +30,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 
-			IntPtr scrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
+			IntPtr hadj = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			hadj_changed_d = new Action<IntPtr>(hadj_changed);
+			Internal.GObject.Methods.g_signal_connect(hadj, "value_changed", hadj_changed_d);
+
+			IntPtr vadj = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			vadj_changed_d = new Action<IntPtr>(vadj_changed);
+			Internal.GObject.Methods.g_signal_connect(vadj, "value_changed", vadj_changed_d);
+
+			IntPtr scrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hadj, vadj);
 
 			// Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(scrolledWindow, Internal.GTK.Constants.GtkPolicyType.Always, Internal.GTK.Constants.GtkPolicyType.Always);
 			Internal.GTK.Methods.GtkContainer.gtk_container_add(scrolledWindow, handle);
@@ -39,6 +47,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				new KeyValuePair<string, IntPtr>("Layout", handle)
 			});
+		}
+
+		private Action<IntPtr> hadj_changed_d;
+		private void hadj_changed(IntPtr /*GtkAdjustment*/ adj)
+		{
+			OnScrolled(new ScrolledEventArgs(Orientation.Horizontal));
+		}
+		private Action<IntPtr> vadj_changed_d;
+		private void vadj_changed(IntPtr /*GtkAdjustment*/ adj)
+		{
+			OnScrolled(new ScrolledEventArgs(Orientation.Vertical));
 		}
 
 		private Internal.GObject.Delegates.DrawFunc DrawHandler_Handler;

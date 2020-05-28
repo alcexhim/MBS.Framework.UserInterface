@@ -283,6 +283,11 @@ namespace MBS.Framework.UserInterface
 			Control.OnResized(e);
 		}
 
+		protected internal virtual void OnScrolled(ScrolledEventArgs e)
+		{
+			Control.OnScrolled(e);
+		}
+
 
 		protected virtual void OnBeforeContextMenu(EventArgs e)
 		{

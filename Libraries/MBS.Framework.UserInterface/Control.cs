@@ -532,6 +532,12 @@ namespace MBS.Framework.UserInterface
 			Resized?.Invoke(this, e);
 		}
 
+		public event ScrolledEventHandler Scrolled;
+		protected internal virtual void OnScrolled(ScrolledEventArgs e)
+		{
+			Scrolled?.Invoke(this, e);
+		}
+
 		private bool _ContextMenuCommandIDChanged = false;
 		private Menu _ContextMenu = null;
 		public Menu ContextMenu

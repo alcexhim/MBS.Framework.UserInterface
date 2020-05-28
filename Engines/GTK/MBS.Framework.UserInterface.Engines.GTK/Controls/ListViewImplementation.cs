@@ -673,11 +673,56 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return null;
 		}
 
+		private List<TreeModelRow> _oldSelection = null;
+
 		private static void gc_cursor_or_selection_changed(IntPtr handle)
 		{
 			ListView ctl = GetControlByHandle(handle);
 			if (ctl != null)
 			{
+				// TODO: figure out how we can fake an OnSelectionChanging event, save the previous selection, and then restore the previous selection
+				//       if user cancels OnSelectionChanging event
+				ListViewImplementation impl = (ctl.ControlImplementation as ListViewImplementation);
+				bool changed = false;
+				if (impl != null)
+				{
+					if (impl._oldSelection != null)
+					{
+						for (int i = 0; i < ctl.SelectedRows.Count; i++)
+						{
+							if (!impl._oldSelection.Contains(ctl.SelectedRows[i]))
+							{
+								changed = true;
+								break;
+							}
+						}
+					}
+					else
+					{
+						changed = true;
+					}
+				}
+
+				if (changed)
+				{
+					ListViewSelectionChangingEventArgs e = new ListViewSelectionChangingEventArgs(impl._oldSelection?.ToArray(), new List<TreeModelRow>(ctl.SelectedRows).ToArray());
+					ctl.OnSelectionChanging(e);
+					if (e.Cancel)
+					{
+						// restore the selection
+						ctl.SelectedRows.Clear();
+						if (impl._oldSelection != null)
+						{
+							for (int i = 0; i < impl._oldSelection.Count; i++)
+							{
+								ctl.SelectedRows.Add(impl._oldSelection[i]);
+							}
+						}
+						return;
+					}
+				}
+
+				impl._oldSelection = new List<TreeModelRow>(ctl.SelectedRows);
 				ctl.OnSelectionChanged(EventArgs.Empty);
 			}
 		}
@@ -793,7 +838,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						}
 						else
 						{
-							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, null, 0, true);
+							// HACK: this is already done by the new CreateTreeModelRow code... calling it again results in two rows being added
+							// but we should really make absolutely certain that it really doesn't need to be called anymore
+							// RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, null, 0, true);
 						}
 					}
 					break;

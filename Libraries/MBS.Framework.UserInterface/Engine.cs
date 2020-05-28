@@ -40,6 +40,12 @@ namespace MBS.Framework.UserInterface
 			_SystemColors[color] = value;
 		}
 
+		protected abstract void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model);
+		internal void CreateTreeModelRow(TreeModelRow row, TreeModel model)
+		{
+			CreateTreeModelRowInternal(row, model);
+		}
+
 		protected abstract void UpdateSystemColorsInternal();
 		public void UpdateSystemColors()
 		{
@@ -323,7 +329,7 @@ namespace MBS.Framework.UserInterface
 			List<Type> possibleHandlers = new List<Type>();
 			// Type[] ts = Application.Engine.GetType().Assembly.GetTypes();
 
-			Type[] ts = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(ControlImplementation) });		
+			Type[] ts = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(ControlImplementation) });
 			foreach (Type t in ts)
 			{
 				if (t.IsSubclassOf(typeof(ControlImplementation)))

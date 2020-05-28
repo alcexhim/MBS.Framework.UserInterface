@@ -4,15 +4,15 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class TreeModel
 	{
-		private TreeModelColumn.TreeModelColumnCollection mvarColumns = new TreeModelColumn.TreeModelColumnCollection();
-		public TreeModelColumn.TreeModelColumnCollection Columns { get { return mvarColumns; } }
+		public TreeModelColumn.TreeModelColumnCollection Columns { get; private set; } = null;
 
 		public TreeModel(Type[] columnTypes)
 		{
+			Columns = new TreeModelColumn.TreeModelColumnCollection(this);
 			foreach (Type t in columnTypes)
 			{
 				TreeModelColumn c = new TreeModelColumn(t);
-				mvarColumns.Add(c);
+				Columns.Add(c);
 			}
 		}
 
@@ -39,25 +39,26 @@ namespace MBS.Framework.UserInterface
 						TreeModelRow[] items = new TreeModelRow[e.NewItems.Count];
 						for (int i = 0; i < e.NewItems.Count; i++)
 						{
-								items[i] = (e.NewItems[i] as TreeModelRow);
+							items[i] = (e.NewItems[i] as TreeModelRow);
+							Application.Engine.CreateTreeModelRow(e.NewItems[i] as TreeModelRow, this);
 						}
 						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Add, items, (TreeModelRow)null);
 						break;
 					}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
 					{
-							Console.WriteLine("NotifyCollection: treemodel: move not supported");
+						Console.WriteLine("NotifyCollection: treemodel: move not supported");
 						break;
 					}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
 					{
-							TreeModelRow[] items = new TreeModelRow[e.OldItems.Count];
-							for (int i = 0; i < e.OldItems.Count; i++)
-							{
-								items[i] = (e.OldItems[i] as TreeModelRow);
-							}
-							ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, items, (TreeModelRow)null);
-							break;
+						TreeModelRow[] items = new TreeModelRow[e.OldItems.Count];
+						for (int i = 0; i < e.OldItems.Count; i++)
+						{
+							items[i] = (e.OldItems[i] as TreeModelRow);
+						}
+						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, items, (TreeModelRow)null);
+						break;
 					}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
 					{

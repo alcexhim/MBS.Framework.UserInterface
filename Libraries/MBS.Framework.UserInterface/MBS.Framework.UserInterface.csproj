@@ -265,6 +265,7 @@
     <Compile Include="SystemSettings.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="ScrolledEvent.cs" />
+    <Compile Include="ListViewSelectionChangingEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

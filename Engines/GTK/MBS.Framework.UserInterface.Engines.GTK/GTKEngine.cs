@@ -1625,6 +1625,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter();
 				foreach (TreeModelRow row in dtm.Rows)
 				{
+					if (_GtkTreeIterForTreeModelRow.ContainsKey(row))
+						continue;
+
 					RecursiveTreeStoreInsertRow(dtm, row, hTreeStore, out hIter, null, dtm.Rows.Count - 1);
 				}
 			}
@@ -1673,6 +1676,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
 		private Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
 		private Dictionary<IntPtr, TreeModelRow> _TreeModelRowForGtkTreeIterU = new Dictionary<IntPtr, TreeModelRow>();
+
+		protected override void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model)
+		{
+			if (!IsTreeModelCreated(model))
+				return; // handled by RecursiveTreeStoreInsertRow
+
+			Structures.GtkTreeIter hIter = new Structures.GtkTreeIter();
+			IntPtr hTreeModel = (GetHandleForTreeModel(model) as GTKNativeTreeModel).Handle;
+			RecursiveTreeStoreInsertRow(model, row, hTreeModel, out hIter, null, (model as DefaultTreeModel).Rows.Count - 1);
+		}
+
 		internal void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
 		{
 			_GtkTreeIterForTreeModelRow[row] = hIter;

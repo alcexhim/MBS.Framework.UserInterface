@@ -281,6 +281,12 @@ namespace MBS.Framework.UserInterface.Controls
 			RowActivated?.Invoke(this, e);
 		}
 
+		public event ListViewSelectionChangingEventHandler SelectionChanging;
+		public virtual void OnSelectionChanging(ListViewSelectionChangingEventArgs e)
+		{
+			SelectionChanging?.Invoke(this, e);
+		}
+
 		public event EventHandler SelectionChanged;
 		public virtual void OnSelectionChanged(EventArgs e)
 		{

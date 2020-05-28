@@ -265,6 +265,8 @@
     <Compile Include="SystemSettings.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="ScrolledEvent.cs" />
+    <Compile Include="Timer.cs" />
+    <Compile Include="TimerImplementation.cs" />
     <Compile Include="ListViewSelectionChangingEvent.cs" />
   </ItemGroup>
   <ItemGroup>

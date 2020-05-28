@@ -1953,6 +1953,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 			return false;
 		}
+
+		private Dictionary<Timer, TimerImplementation> _Timer_Implementations = new Dictionary<Timer, TimerImplementation>();
+		protected override void Timer_StartInternal(Timer timer)
+		{
+			if (!_Timer_Implementations.ContainsKey(timer))
+			{
+				_Timer_Implementations[timer] = new GTKTimerImplementation();
+			}
+			_Timer_Implementations[timer].Timer = timer;
+			_Timer_Implementations[timer].Start();
+		}
+		protected override void Timer_StopInternal(Timer timer)
+		{
+		}
 	}
 }
 

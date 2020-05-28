@@ -633,5 +633,16 @@ namespace MBS.Framework.UserInterface
 				MessageDialog.ShowDialog("Unable to launch the operating system's default Help viewer.", "Error", MessageDialogButtons.OK, MessageDialogIcon.Error);
 			}
 		}
+
+		protected abstract void Timer_StartInternal(Timer timer);
+		internal void Timer_Start(Timer timer)
+		{
+			Timer_StartInternal(timer);
+		}
+		protected abstract void Timer_StopInternal(Timer timer);
+		internal void Timer_Stop(Timer timer)
+		{
+			Timer_StopInternal(timer);
+		}
 	}
 }

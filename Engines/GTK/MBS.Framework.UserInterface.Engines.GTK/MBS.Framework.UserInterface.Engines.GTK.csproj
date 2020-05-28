@@ -213,6 +213,7 @@
     <Compile Include="Internal\GTK\Methods\GtkExpander.cs" />
     <Compile Include="GTKSystemSettings.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSettings.cs" />
+    <Compile Include="GTKTimerImplementation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

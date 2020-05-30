@@ -39,8 +39,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 		protected override GTKNativeControl CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
-			IntPtr handle = Internal.GObject.Methods.g_object_new(Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type(), "use-header-bar", 1, IntPtr.Zero);
-			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dlg.Text, hParent, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
+			int use_header = 0;
+			Internal.GObject.Methods.g_object_get(Internal.GTK.Methods.GtkSettings.gtk_settings_get_default(), "gtk-dialogs-use-header", ref use_header, IntPtr.Zero);
+
+			IntPtr handle = Internal.GObject.Methods.g_object_new(Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type(), "use-header-bar", use_header, IntPtr.Zero);
+			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dialog.Text, IntPtr.Zero, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
 
 			IntPtr hText = Marshal.StringToHGlobalAuto(dialog.Text);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(handle, hText);

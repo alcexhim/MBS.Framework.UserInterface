@@ -46,6 +46,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GObject
 			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.None);
 		}
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void g_object_get(IntPtr obj, string first_property_name, ref int first_property_value, IntPtr zero);
+
 		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr data)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);

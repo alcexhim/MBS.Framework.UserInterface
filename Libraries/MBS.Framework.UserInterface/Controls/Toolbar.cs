@@ -57,7 +57,39 @@ namespace MBS.Framework.UserInterface.Controls
 		public class ToolbarItemCollection
 			: System.Collections.ObjectModel.Collection<ToolbarItem>
 		{
+			private Dictionary<string, ToolbarItem> _itemsByName = new Dictionary<string, ToolbarItem>();
+			public ToolbarItem this[string name]
+			{
+				get
+				{
+					if (_itemsByName.ContainsKey(name))
+						return _itemsByName[name];
+					return null;
+				}
+			}
 
+			public bool Contains(string name)
+			{
+				return _itemsByName.ContainsKey(name);
+			}
+
+			protected override void ClearItems()
+			{
+				base.ClearItems();
+				_itemsByName.Clear();
+			}
+			protected override void InsertItem(int index, ToolbarItem item)
+			{
+				base.InsertItem(index, item);
+				if (item.Name != null)
+					_itemsByName[item.Name] = item;
+			}
+			protected override void RemoveItem(int index)
+			{
+				if (_itemsByName.ContainsKey(this[index].Name))
+					_itemsByName.Remove(this[index].Name);
+				base.RemoveItem(index);
+			}
 		}
 
 		public string Name { get; set; } = String.Empty;

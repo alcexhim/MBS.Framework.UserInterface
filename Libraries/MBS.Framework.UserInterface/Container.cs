@@ -667,6 +667,11 @@ namespace MBS.Framework.UserInterface
 				if (className != null && (item.ClassName != className)) continue;
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 
+				if (item.ClassName == "GtkListStore" || item.ClassName == "GtkTreeStore")
+				{
+					continue;
+				}
+
 				LayoutItemProperty pTitle = item.Properties["title"];
 				if (pTitle != null && !textSet)
 				{

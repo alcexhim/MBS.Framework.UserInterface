@@ -603,8 +603,7 @@ namespace MBS.Framework.UserInterface
 
 		public void Invalidate()
 		{
-			// TODO: actually get dimensions of this Control
-			Invalidate(0, 0, 4096, 4096);
+			Invalidate(0, 0, (int)Size.Width, (int)Size.Height);
 		}
 		public void Invalidate(Rectangle rect)
 		{

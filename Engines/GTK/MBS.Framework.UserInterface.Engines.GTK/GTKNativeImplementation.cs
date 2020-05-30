@@ -354,21 +354,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private void gc_show(IntPtr /*GtkWidget*/ widget)
 		{
-			OnShown (EventArgs.Empty);
+			if (this == null) return;
+
+			OnShown(EventArgs.Empty);
 		}
 
 		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
+			if (this == null) return;
+
 			DragEventArgs e = new DragEventArgs();
 			OnDragBegin (e);
 		}
 		private void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
+			if (this == null) return;
+
 			EventArgs e = new EventArgs();
 			OnDragDataDelete (e);
 		}
 		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
+			if (this == null) return;
+
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
 			OnDragDropDataRequest (e);
 			if (e.Cancel) return;
@@ -399,35 +407,77 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private void gc_realize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			OnRealize (EventArgs.Empty);
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_realize: ControlImplementation is NULL");
+				return;
+			}
+
+			OnRealize(EventArgs.Empty);
 		}
 		private void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			OnUnrealize (EventArgs.Empty);
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_unrealize: ControlImplementation is NULL");
+				return;
+			}
+
+			OnUnrealize(EventArgs.Empty);
 		}
 		private void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			OnMapping (EventArgs.Empty);
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_map: ControlImplementation is NULL");
+				return;
+			}
+
+			OnMapping(EventArgs.Empty);
 		}
 		private void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
 		{
-			OnMapped (EventArgs.Empty);
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_map_event: ControlImplementation is NULL");
+				return;
+			}
+
+			OnMapped(EventArgs.Empty);
 		}
 
 		private bool gc_focus_in_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			OnGotFocus (EventArgs.Empty);
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_focus_in_event: ControlImplementation is NULL");
+				return false;
+			}
+
+			OnGotFocus(EventArgs.Empty);
 			return false;
 		}
 
 		private bool gc_focus_out_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_focus_out_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			OnLostFocus (EventArgs.Empty);
 			return false;
 		}
 
 		private bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_key_press_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
 			Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
@@ -438,6 +488,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_key_release_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
 			Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
@@ -467,6 +523,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private bool _mouse_double_click = false;
 		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_button_press_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTKEngine.GdkEventButtonToMouseEventArgs(e);
 			if (e.type == MBS.Framework.UserInterface.Engines.GTK.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
@@ -527,6 +589,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_motion_notify_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			Internal.GDK.Structures.GdkEventMotion e = (Internal.GDK.Structures.GdkEventMotion)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventMotion));
 
 			MouseEventArgs ee = GTKEngine.GdkEventMotionToMouseEventArgs(e);
@@ -541,6 +609,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 		private bool gc_button_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			if (this == null)
+			{
+				Console.WriteLine("uwt: gtk: ERROR: gc_button_release_event: ControlImplementation is NULL");
+				return false;
+			}
+
 			_mousedown_buttons = MouseButtons.None;
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTKEngine.GdkEventButtonToMouseEventArgs(e);

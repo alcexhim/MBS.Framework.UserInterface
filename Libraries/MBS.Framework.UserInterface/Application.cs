@@ -870,11 +870,20 @@ namespace MBS.Framework.UserInterface
 							Console.WriteLine ("loaded option provider \"{0}\"", type.FullName);
 						} catch (System.Reflection.TargetInvocationException ex) {
 							Console.WriteLine ("binding error: " + ex.InnerException.Message);
+							if (ex.InnerException.InnerException != null)
+							{
+								Console.WriteLine("^--- {0}", ex.InnerException.InnerException.Message);
+								Console.WriteLine();
+								Console.WriteLine(" *** STACK TRACE *** ");
+								Console.WriteLine(ex.StackTrace);
+								Console.WriteLine(" ******************* ");
+								Console.WriteLine();
+							}
 						} catch (Exception ex) {
-							Console.WriteLine ("error while loading editor '" + type.FullName + "': " + ex.Message);
+							Console.WriteLine ("error while loading SettingsProvider '" + type.FullName + "': " + ex.Message);
 						}
 					} else {
-						Console.WriteLine ("skipping already loaded OptionProvider '{0}'", type.FullName);
+						Console.WriteLine ("skipping already loaded SettingsProvider '{0}'", type.FullName);
 					}
 				}
 			}

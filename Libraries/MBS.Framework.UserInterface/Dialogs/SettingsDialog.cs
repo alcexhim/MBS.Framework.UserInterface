@@ -121,7 +121,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 		/// <value>The collection of <see cref="OptionProvider" />s used to display options in this <see cref="OptionsDialog" />.</value>
 		public SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
-		public SettingsDialogAppearance Appearance { get; set; } = SettingsDialogAppearance.System;
+		public SettingsDialogAppearance Appearance { get; set; } = SettingsDialogAppearance.VisualStudio;
 
 		Container ctDefault = new Container ();
 		internal protected override void OnCreating (EventArgs e)
@@ -250,6 +250,17 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer> optionGroupContainers = new System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer>();
 
+		private void txt_Changed(object sender, EventArgs e)
+		{
+			Control ctl = (sender as Control);
+			Setting setting = ctl.GetExtraData<Setting>("setting");
+
+			if (ctl is TextBox)
+			{
+				setting.SetValue((ctl as TextBox).Text);
+			}
+		}
+
 		private void LoadOption(Setting opt, int iRow, ref Control label, ref Control control)
 		{
 
@@ -265,6 +276,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				TextBox txt = new TextBox();
 				txt.Text = o.GetValue<string>();
 				txt.SetExtraData<Setting>("setting", o);
+				txt.Changed += txt_Changed;
 				control = txt;
 			}
 			else if (opt is BooleanSetting)

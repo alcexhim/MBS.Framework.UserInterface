@@ -36,6 +36,13 @@ namespace MBS.Framework.UserInterface.Controls
 		}
 
 		private bool mvarChecked = false;
+
+		public event EventHandler Changed;
+		protected virtual void OnChanged(EventArgs e)
+		{
+			Changed?.Invoke(this, e);
+		}
+
 		public bool Checked
 		{
 			get

@@ -30,6 +30,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public CheckBoxImplementation(Engine engine, Control control)
 			: base(engine, control)
 		{
+			toggled_d = new Action<IntPtr>(toggled);
 		}
 
 		public bool GetChecked()
@@ -47,6 +48,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active (handle, value);
 		}
 
+		private Action<IntPtr> toggled_d = null;
+		private void toggled(IntPtr handle)
+		{
+			OnChanged(EventArgs.Empty);
+		}
+
+		protected virtual void OnChanged(EventArgs e)
+		{
+			InvokeMethod(Control as CheckBox, "OnChanged", new object[] { e });
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			CheckBox ctl = (control as CheckBox);
@@ -61,6 +73,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				handle = Internal.GTK.Methods.GtkCheckButton.gtk_check_button_new_with_label(ctl.Text);
 			}
 			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active (handle, ctl.Checked);
+
+			Internal.GObject.Methods.g_signal_connect(handle, "toggled", toggled_d);
 			
 			return new GTKNativeControl(handle);
 		}

@@ -1,5 +1,5 @@
 ﻿//
-//  TimerImplementation.cs
+//  WindowsFormsTimerImplementation.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -19,28 +19,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Engines.GTK
+namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
-	public class GTKTimerImplementation : TimerImplementation
+	public class WindowsFormsTimerImplementation : TimerImplementation
 	{
-		[System.Runtime.InteropServices.DllImport("glib-2.0")]
-		private static extern void g_timeout_add(uint interval, Func<IntPtr, bool> func, IntPtr data);
+		private System.Windows.Forms.Timer _timer = null;
+		public WindowsFormsTimerImplementation(Timer timer) : base(timer)
+		{
+			_timer = new System.Windows.Forms.Timer();
+			_timer.Tick += _timer_Tick;
+		}
 
-		private Func<IntPtr, bool> Timer_Callback_D = null;
-		private bool Timer_Callback(IntPtr data)
+		void _timer_Tick(object sender, EventArgs e)
 		{
 			OnTick();
-			return Timer.Enabled;
 		}
 
-		public GTKTimerImplementation(Timer timer) : base(timer)
-		{
-			Timer_Callback_D = new Func<IntPtr, bool>(Timer_Callback);
-		}
 
 		protected override void StartInternal()
 		{
-			g_timeout_add((uint)Timer.Duration, Timer_Callback_D, IntPtr.Zero);
+			_timer.Start();
+		}
+		protected override void StopInternal()
+		{
+			_timer.Stop();
 		}
 	}
 }

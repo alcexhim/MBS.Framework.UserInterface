@@ -23,7 +23,13 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class TimerImplementation
 	{
-		public Timer Timer { get; set; }
+		public TimerImplementation(Timer timer)
+		{
+			Timer = timer;
+		}
+
+		public Timer Timer { get; private set; }
+
 		protected void OnTick()
 		{
 			Timer._OnTick();
@@ -33,6 +39,12 @@ namespace MBS.Framework.UserInterface
 		public void Start()
 		{
 			StartInternal();
+		}
+
+		protected abstract void StopInternal();
+		public void Stop()
+		{
+			StopInternal();
 		}
 	}
 }

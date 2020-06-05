@@ -237,6 +237,7 @@
     <Compile Include="Controls\Internal\TreeView\ExplorerTreeView.cs" />
     <Compile Include="Controls\Internal\ListView\ListView.cs" />
     <Compile Include="WindowsFormsSystemSettings.cs" />
+    <Compile Include="WindowsFormsTimerImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

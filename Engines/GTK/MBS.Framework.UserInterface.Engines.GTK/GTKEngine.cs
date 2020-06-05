@@ -1959,9 +1959,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			if (!_Timer_Implementations.ContainsKey(timer))
 			{
-				_Timer_Implementations[timer] = new GTKTimerImplementation();
+				_Timer_Implementations[timer] = new GTKTimerImplementation(timer);
 			}
-			_Timer_Implementations[timer].Timer = timer;
 			_Timer_Implementations[timer].Start();
 		}
 		protected override void Timer_StopInternal(Timer timer)

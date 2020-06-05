@@ -366,7 +366,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 							// start the timeout
 							if (mvarEnableAutomaticInlineRenaming)
 							{
-								_labelEditTimer = TimerMethods.SetTimeout(1000, delegate(object[] paramz)
+								_labelEditTimer = Timer.SetTimeout(1000, delegate(object[] paramz)
 								{
 									BeginLabelEdit(paramz[0] as ListViewItem);
 								}, lvi);
@@ -948,7 +948,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			if (cancel && _labelEditTimer != null)
 			{
-				TimerMethods.ClearTimeout(_labelEditTimer);
+				Timer.ClearTimeout(_labelEditTimer);
 				_labelEditTimer = null;
 			}
 

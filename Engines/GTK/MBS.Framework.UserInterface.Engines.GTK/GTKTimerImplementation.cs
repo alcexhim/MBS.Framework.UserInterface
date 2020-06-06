@@ -42,5 +42,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			g_timeout_add((uint)Timer.Duration, Timer_Callback_D, IntPtr.Zero);
 		}
+		protected override void StopInternal()
+		{
+			// GTK implementation handles this by watching the Enabled property
+		}
 	}
 }

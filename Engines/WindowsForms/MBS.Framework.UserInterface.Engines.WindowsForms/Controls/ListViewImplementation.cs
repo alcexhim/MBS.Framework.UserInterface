@@ -506,85 +506,79 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			TreeModelRow.TreeModelSelectedRowCollection coll = (sender as TreeModelRow.TreeModelSelectedRowCollection);
 			ControlImplementation impl = coll.Parent.ControlImplementation;
-
 			if (coll.Parent != null)
 			{
-				switch (ImplementedAs(coll.Parent))
+				if ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl).Handle is Internal.ListView.ListView)
 				{
-					case ImplementedAsType.ListView:
+					Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
+
+					if (e.Index == -1 && e.Count == 1 && e.Item != null)
 					{
-						Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
-						
-						if (e.Index == -1 && e.Count == 1 && e.Item != null)
+						// we are adding a new row to the selected collection
+						// GetListViewItem(e.Item)
+						// lv.Items[index].Selected = true;
+						return;
+					}
+					else
+					{
+						e.Count = lv.SelectedItems.Count;
+						if (e.Count > 0 && e.Index > -1)
 						{
-							// we are adding a new row to the selected collection
-							// GetListViewItem(e.Item)
-							// lv.Items[index].Selected = true;
-							return;
+							TreeModelRow row = (lv.SelectedItems[e.Index].Tag as TreeModelRow);
+							e.Item = row;
+						}
+						else if (e.Count > 0 && e.Index == -1 && e.Item != null)
+						{
+							// we are checking if selection contains a row
+							bool found = false;
+							for (int i = 0; i < lv.SelectedItems.Count; i++)
+							{
+								TreeModelRow rowtest = (lv.SelectedItems[i].Tag as TreeModelRow);
+								if (rowtest == e.Item)
+								{
+									found = true;
+									break;
+								}
+							}
+							if (!found) e.Item = null;
 						}
 						else
 						{
-							e.Count = lv.SelectedItems.Count;
-							if (e.Count > 0 && e.Index > -1)
-							{
-								TreeModelRow row = (lv.SelectedItems[e.Index].Tag as TreeModelRow);
-								e.Item = row;
-							}
-							else if (e.Count > 0 && e.Index == -1 && e.Item != null)
-							{
-								// we are checking if selection contains a row
-								bool found = false;
-								for (int i = 0; i < lv.SelectedItems.Count; i++)
-								{
-									TreeModelRow rowtest = (lv.SelectedItems[i].Tag as TreeModelRow);
-									if (rowtest == e.Item)
-									{
-										found = true;
-										break;
-									}
-								}
-								if (!found) e.Item = null;
-							}
-							else
-							{
-								e.Item = null;
-							}
+							e.Item = null;
 						}
-						break;
 					}
-					case ImplementedAsType.TreeView:
-					{
-						Internal.TreeView.ExplorerTreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.TreeView.ExplorerTreeView);
+				}
+				else if ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl).Handle is Internal.TreeView.ExplorerTreeView)
+				{
+					Internal.TreeView.ExplorerTreeView tv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.TreeView.ExplorerTreeView);
 
-						if (e.Index == -1 && e.Count == 1 && e.Item != null)
+					if (e.Index == -1 && e.Count == 1 && e.Item != null)
+					{
+						// we are adding a new row to the selected collection
+						// GetListViewItem(e.Item)
+						// lv.Items[index].Selected = true;
+						return;
+					}
+					else if (tv.SelectedNode != null)
+					{
+						e.Count = 1;
+						if (e.Count > 0 && e.Index > -1)
 						{
-							// we are adding a new row to the selected collection
-							// GetListViewItem(e.Item)
-							// lv.Items[index].Selected = true;
-							return;
+							TreeModelRow row = (tv.SelectedNode.Tag as TreeModelRow);
+							e.Item = row;
 						}
-						else if (tv.SelectedNode != null)
+						else if (e.Count > 0 && e.Index == -1 && e.Item != null)
 						{
-							e.Count = 1;
-							if (e.Count > 0 && e.Index > -1)
-							{
-								TreeModelRow row = (tv.SelectedNode.Tag as TreeModelRow);
-								e.Item = row;
-							}
-							else if (e.Count > 0 && e.Index == -1 && e.Item != null)
-							{
-								// we are checking if selection contains a row
-								if (tv.SelectedNode.Tag != e.Item)
-								{
-									e.Item = null;
-								}
-							}
-							else
+							// we are checking if selection contains a row
+							if (tv.SelectedNode.Tag != e.Item)
 							{
 								e.Item = null;
 							}
 						}
-						break;
+						else
+						{
+							e.Item = null;
+						}
 					}
 				}
 			}

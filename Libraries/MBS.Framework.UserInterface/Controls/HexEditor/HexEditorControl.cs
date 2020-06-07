@@ -60,7 +60,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				bool changed = (mvarSelectionStart != value.ByteIndex || selectedNybble != value.NybbleIndex);
 				if (changed)
 				{
-					if (value.ByteIndex < 0 || value.ByteIndex >= Data.Length)
+					if (value.ByteIndex < 0 || ((EnableInsert && value.ByteIndex > Data.Length) || (!EnableInsert && value.ByteIndex >= Data.Length)))
 					{
 						Console.WriteLine(String.Format("Selection start must be between the bounds of zero and length of data ({0}) minus one", Data.Length));
 					}

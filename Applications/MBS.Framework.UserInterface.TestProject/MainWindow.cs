@@ -23,7 +23,7 @@ namespace MBS.Framework.UserInterface.TestProject
 
 			Button cmdCloseTab = new Button();
 			cmdCloseTab.AlwaysShowImage = true;
-			cmdCloseTab.StockType = ButtonStockType.Close;
+			cmdCloseTab.StockType = StockType.Close;
 			cmdCloseTab.BorderStyle = ButtonBorderStyle.None;
 			cmdCloseTab.Click += (sender, e) =>
 			{
@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			}));
 			tabGeneral.Controls.Add(cbo);
 
-			Button btn1 = new Button(ButtonStockType.OK, DialogResult.None);
+			Button btn1 = new Button(StockType.OK, DialogResult.None);
 			btn1.Click += (sender, e) =>
 			{
 				MessageDialog.ShowDialog("You clicked the button!");

@@ -191,8 +191,13 @@ namespace MBS.Framework.UserInterface
 				}
 				case "GtkSearchEntry":
 				case "GtkEntry":
+				case "GtkTextView":
 				{
 					ctl = new TextBox();
+					if (item.ClassName == "GtkTextView")
+					{
+						(ctl as TextBox).Multiline = true;
+					}
 
 					if (item.Properties["editable"] != null)
 					{

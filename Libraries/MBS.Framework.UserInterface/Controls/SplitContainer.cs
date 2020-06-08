@@ -39,24 +39,28 @@ namespace MBS.Framework.UserInterface.Controls
 				get { return _Expanded; }
 				set
 				{
+					bool changed = (_Expanded != value);
 					_Expanded = value;
-					if (_Expanded)
+					if (changed)
 					{
-						Parent.mvarSplitterPosition = Parent._OldSplitterPosition;
-					}
-					else
-					{
-						Parent._OldSplitterPosition = Parent.mvarSplitterPosition;
-						if (this == Parent.Panel1)
+						if (_Expanded)
 						{
-							Parent.mvarSplitterPosition = 0;
+							Parent.mvarSplitterPosition = Parent._OldSplitterPosition;
 						}
-						else if (this == Parent.Panel2)
+						else
 						{
-							Parent.mvarSplitterPosition = (int)Parent.Size.Width;
+							Parent._OldSplitterPosition = Parent.SplitterPosition;
+							if (this == Parent.Panel1)
+							{
+								Parent.mvarSplitterPosition = 0;
+							}
+							else if (this == Parent.Panel2)
+							{
+								Parent.mvarSplitterPosition = (int)Parent.Size.Width;
+							}
 						}
+						(Parent.ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition(Parent.mvarSplitterPosition);
 					}
-					(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition(Parent.mvarSplitterPosition);
 				}
 			}
 
@@ -97,21 +101,22 @@ namespace MBS.Framework.UserInterface.Controls
 				if (IsCreated)
 				{
 					Native.ISplitContainerImplementation impl = (ControlImplementation as Native.ISplitContainerImplementation);
-					if (impl != null) {
-						mvarSplitterPosition = impl.GetSplitterPosition ();
+					if (impl != null)
+					{
+						mvarSplitterPosition = impl.GetSplitterPosition();
 					}
 				}
-				return (Panel1.Expanded && Panel2.Expanded ? mvarSplitterPosition : (Panel1.Expanded ? (int)Size.Width : 0));
+				return mvarSplitterPosition;
 			}
 			set
 			{
 				_OldSplitterPosition = value;
-				(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition (value);
+				(ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition(value);
 				mvarSplitterPosition = value;
 			}
 		}
 
-		public SplitContainer (Orientation orientation = Orientation.Horizontal)
+		public SplitContainer(Orientation orientation = Orientation.Horizontal)
 		{
 			mvarOrientation = orientation;
 			Panel1 = new SplitContainerPanel(this);

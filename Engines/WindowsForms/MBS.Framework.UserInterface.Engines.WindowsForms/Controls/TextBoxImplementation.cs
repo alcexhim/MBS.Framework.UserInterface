@@ -42,6 +42,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			handle.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 
 			handle.Multiline = ctl.Multiline;
+			handle.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			handle.TextChanged += handle_TextChanged;
 			handle.Text = ctl.Text;
 			if (ctl.MaxLength > -1)

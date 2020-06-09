@@ -655,9 +655,44 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return list;
 		}
 
+		private void SingleInstanceManager_Callback(object sender, SingleInstanceManager.InstanceCallbackEventArgs e)
+		{
+			if (!e.IsFirstInstance)
+			{
+				ApplicationActivatedEventArgs ee = new ApplicationActivatedEventArgs(false);
+				ee.CommandLine = new WindowsFormsCommandLine(e.CommandLineArgs);
+				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { ee });
+
+				/*
+				if (LastWindow != null)
+				{
+					Document[] documents = new Document[e.CommandLineArgs.Length - 1];
+					for (int i = 1; i < e.CommandLineArgs.Length; i++)
+					{
+						documents[i - 1] = new Document(null, null, new FileAccessor(e.CommandLineArgs[i]));
+					}
+
+					LastWindow.OpenFile(documents);
+					LastWindow.ActivateWindow();
+				}
+				*/
+			}
+		}
+
 		protected override int StartInternal(Window waitForClose = null)
 		{
 			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
+
+			string INSTANCEID = GetType().FullName + "$2d429aa3371c421fb63b42525e51a50c$92751853175891031214292357218181357901238$";
+			/*
+			if (ConfigurationManager.GetValue<bool>("SingleInstanceUniquePerDirectory", true))
+			{
+				// The single instance should be unique per directory
+				INSTANCEID += System.Reflection.Assembly.GetEntryAssembly().Location;
+			}
+			*/
+
+			if (!SingleInstanceManager.CreateSingleInstance(INSTANCEID, new EventHandler<SingleInstanceManager.InstanceCallbackEventArgs>(SingleInstanceManager_Callback))) return -1;
 
 			if (waitForClose != null)
 			{
@@ -666,7 +701,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 			else
 			{
-
 				ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
 				e.CommandLine = new WindowsFormsCommandLine(Environment.GetCommandLineArgs());
 				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });

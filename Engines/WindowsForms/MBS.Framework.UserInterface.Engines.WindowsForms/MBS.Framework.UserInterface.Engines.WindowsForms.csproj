@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WindowsFormsEngine.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Controls\Internal\ListView\ListView.cs" />
     <Compile Include="WindowsFormsSystemSettings.cs" />
     <Compile Include="WindowsFormsTimerImplementation.cs" />
+    <Compile Include="SingleInstanceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

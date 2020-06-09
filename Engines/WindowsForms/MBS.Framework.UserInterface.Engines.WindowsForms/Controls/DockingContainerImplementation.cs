@@ -81,11 +81,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			}
 		}
 
-		private void InsertDockingWindow(DockingWindow item, int index, DockPanel parent)
+		private void ThreadUnsafeInsertDockingWindow(DockingWindow item, int index, DockPanel parent)
 		{
-			if (parent == null)
-				parent = (Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel;
-
 			if (!item.ChildControl.IsCreated)
 			{
 				Console.WriteLine("child control of type {0} not yet created", item.ChildControl.GetType());
@@ -102,14 +99,31 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 				System.Windows.Forms.Control wfcChild = (ncChild as WindowsFormsNativeControl).Handle;
 
 				DockContent dcontent = new DockContent();
+
 				dcontent.TabPageContextMenuStrip = (Application.Engine as WindowsFormsEngine).BuildContextMenuStrip(Menu.FromCommand(Application.Commands["DockingWindowTabPageContextMenu"]));
 				dcontent.Text = item.Title;
 				wfcChild.Dock = System.Windows.Forms.DockStyle.Fill;
+
 				dcontent.Controls.Add(wfcChild);
 
 				RegisterDockContent(item, dcontent);
 
 				dcontent.Show(parent, DockingItemPlacementToDockState(item.Placement, item.AutoHide));
+			}
+		}
+
+		private void InsertDockingWindow(DockingWindow item, int index, DockPanel parent)
+		{
+			if (parent == null)
+				parent = (Handle as WindowsFormsNativeControl).Handle as WeifenLuo.WinFormsUI.Docking.DockPanel;
+
+			if (parent.InvokeRequired)
+			{
+				parent.Invoke(new Action<DockingWindow, int, DockPanel>(ThreadUnsafeInsertDockingWindow), item, index, parent);
+			}
+			else
+			{
+				ThreadUnsafeInsertDockingWindow(item, index, parent);
 			}
 		}
 

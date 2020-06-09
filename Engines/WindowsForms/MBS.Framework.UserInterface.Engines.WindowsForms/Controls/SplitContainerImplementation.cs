@@ -23,12 +23,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.SplitContainer).SplitterDistance;
 		}
 
+		private class SC : System.Windows.Forms.SplitContainer
+		{
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-SplitContainer";
+					return p;
+				}
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control is SplitContainer);
 
 			SplitContainer ctl = (control as SplitContainer);
-			System.Windows.Forms.SplitContainer handle = new System.Windows.Forms.SplitContainer();
+			SC handle = new SC();
 			handle.SplitterDistance = ctl.SplitterPosition;
 			handle.Orientation = WindowsFormsEngine.OrientationToWindowsFormsOrientation(ctl.Orientation);
 

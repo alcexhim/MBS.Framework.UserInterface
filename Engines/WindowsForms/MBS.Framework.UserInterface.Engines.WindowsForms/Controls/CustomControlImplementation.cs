@@ -14,15 +14,27 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		private class BufferedUserControl : System.Windows.Forms.UserControl
 		{
-			public BufferedUserControl()
+			private Control _control = null;
+			public BufferedUserControl(Control control)
 			{
+				_control = control;
 				DoubleBuffered = true;
+			}
+
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams cp = base.CreateParams;
+					cp.Caption = String.Format("uwt-CustomControl<{0}>", _control?.GetType().FullName);
+					return cp;
+				}
 			}
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			BufferedUserControl handle = new BufferedUserControl();
+			BufferedUserControl handle = new BufferedUserControl(control);
 			handle.Paint += handle_Paint;
 			return new WindowsFormsNativeControl(handle);
 		}

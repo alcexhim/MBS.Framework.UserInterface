@@ -14,6 +14,61 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		private class __BoxLayout : System.Windows.Forms.TableLayoutPanel
+		{
+			private Orientation _ = Orientation.Horizontal;
+			public __BoxLayout(Orientation orientation)
+			{
+				_ = orientation;
+			}
+
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-BoxLayout<" + _.ToString() + ">";
+					return p;
+				}
+			}
+		}
+		private class __AbsoluteLayout : System.Windows.Forms.Panel
+		{
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-AbsoluteLayout";
+					return p;
+				}
+			}
+		}
+		private class __GridLayout : System.Windows.Forms.TableLayoutPanel
+		{
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-GridLayout";
+					return p;
+				}
+			}
+		}
+		private class __FlowLayout : System.Windows.Forms.TableLayoutPanel
+		{
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-FlowLayout";
+					return p;
+				}
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			System.Windows.Forms.Panel hContainer = null;
@@ -25,7 +80,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (layout is BoxLayout)
 			{
 				BoxLayout box = (layout as BoxLayout);
-				hContainer = new System.Windows.Forms.TableLayoutPanel();
+				hContainer = new __BoxLayout(box.Orientation);
 
 				switch (box.Orientation)
 				{
@@ -46,21 +101,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			else if (layout is AbsoluteLayout)
 			{
 				AbsoluteLayout abs = (layout as AbsoluteLayout);
-				hContainer = new System.Windows.Forms.Panel();
+				hContainer = new __AbsoluteLayout();
 			}
 			else if (layout is GridLayout)
 			{
-				hContainer = new System.Windows.Forms.TableLayoutPanel();
+				hContainer = new __GridLayout();
 			}
 			else if (layout is FlowLayout)
 			{
-				hContainer = new System.Windows.Forms.FlowLayoutPanel();
+				hContainer = new __FlowLayout();
 			}
 
 			if (hContainer != null)
 			{
-				hContainer.Text = String.Format("<{0}>", layout.GetType().Name);
-
 				if (hContainer.Dock != System.Windows.Forms.DockStyle.Fill)
 					hContainer.AutoSize = true;
 

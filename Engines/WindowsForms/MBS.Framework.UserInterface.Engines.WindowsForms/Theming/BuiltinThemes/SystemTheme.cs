@@ -95,7 +95,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 									}
 									else
 									{
-										_Normal = new VisualStyleRenderer(VisualStyleElement.TreeView.Glyph.Opened);
+										_Normal = new VisualStyleRenderer(VisualStyleElement.TreeView.Glyph.Closed);
 									}
 								}
 								return _Normal;
@@ -736,6 +736,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			}
 
 			VisualStyleRenderer vsr = null;
+
 
 			if (expanded)
 			{

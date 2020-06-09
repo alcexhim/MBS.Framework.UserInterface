@@ -61,6 +61,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				hContainer.Text = String.Format("<{0}>", layout.GetType().Name);
 
+				if (hContainer.Dock != System.Windows.Forms.DockStyle.Fill)
+					hContainer.AutoSize = true;
+
 				foreach (Control ctl in container.Controls)
 				{
 					bool ret = Engine.CreateControl(ctl);

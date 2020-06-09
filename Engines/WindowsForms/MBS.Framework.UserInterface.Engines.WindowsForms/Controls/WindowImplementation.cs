@@ -153,7 +153,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.MinimumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MinimumSize);
 			form.MaximumSize = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.MaximumSize);
 			form.Size = WindowsFormsEngine.Dimension2DToSystemDrawingSize(window.Size);
-			if (window.Size != Dimension2D.Empty)
+			if (window.Size == Dimension2D.Empty)
 				form.AutoSize = true;
 
 			form.Tag = window;

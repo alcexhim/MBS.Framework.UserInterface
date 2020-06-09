@@ -101,6 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			btn.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
 			btn.MinimumSize = new System.Drawing.Size(75, 23);
 			btn.AutoSize = true;
+			btn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 
 			WindowsFormsNativeControl nc = new WindowsFormsNativeControl(btn);
 			return nc;

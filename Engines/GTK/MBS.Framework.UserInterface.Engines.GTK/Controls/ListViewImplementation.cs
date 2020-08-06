@@ -133,13 +133,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		/// </summary>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			// still slightly buggy, but works well enough
+			ListView tv = Control as ListView;
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			if (tv == null) return;
+
 			if (e.Buttons == MouseButtons.Primary && e.ModifierKeys == KeyboardModifierKey.None)
 			{
-				ListView tv = Control as ListView;
-				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-				if (tv == null) return;
-				
+				// still slightly buggy, but works well enough
 				if (tv.SelectedRows.Count <= 1) return;
 				
 				// stop the selection
@@ -158,6 +158,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					UnblockSelection();
 					prevSelectedRow = null;
+				}
+			}
+			else if (e.Buttons == MouseButtons.Secondary)
+			{
+				// hack to set the selected item before the BeforeContextMenu event fires
+				if (tv.SelectedRows.Count == 0)
+				{
+					ListViewHitTestInfo lvhti = HitTest(e.X, e.Y);
+					if (lvhti.Row != null)
+					{
+						tv.SelectedRows.Add(lvhti.Row);
+					}
 				}
 			}
 			base.OnMouseDown(e);

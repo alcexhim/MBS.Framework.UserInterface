@@ -611,7 +611,11 @@ namespace MBS.Framework.UserInterface
 			Contract.Ensures(Contract.Result<NativeTreeModel>() != null);
 
 			if (IsTreeModelCreated(model))
-				return _HandleForTreeModel[model];
+			{
+				// TODO: unregister handle 
+				_HandleForTreeModel.Remove(model);
+				// return _HandleForTreeModel[model]; // this fks up additional columns tweaking
+			}
 
 			NativeTreeModel handle = CreateTreeModelInternal(model);
 			RegisterTreeModel(model, handle);

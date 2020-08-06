@@ -69,6 +69,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			}
 		}
 
+		private class _FLPanel : System.Windows.Forms.FlowLayoutPanel
+		{
+			public _FLPanel()
+			{
+				base.DoubleBuffered = true;
+			}
+		}
+
 		protected override WindowsFormsNativeDialog CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
 			NativeControl hContainer = (new Controls.ContainerImplementation(Engine, dialog)).CreateControl(dialog);
@@ -101,7 +109,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			ctl.Dock = System.Windows.Forms.DockStyle.Fill;
 			f.Controls.Add(ctl);
 
-			System.Windows.Forms.FlowLayoutPanel pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
+			_FLPanel pnlButtons = new _FLPanel();
 			pnlButtons.AutoSize = true;
 			pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			pnlButtons.Padding = new System.Windows.Forms.Padding(6, 12, 6, 12);

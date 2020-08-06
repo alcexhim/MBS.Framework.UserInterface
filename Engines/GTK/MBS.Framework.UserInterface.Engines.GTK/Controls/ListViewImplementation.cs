@@ -328,6 +328,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					case ImplementedAsType.TreeView:
 					{
+						// HACK: get rid of all existing columns in the TreeView before adding new ones
+						// this fixes a regression where certain treeviews (perhaps from containerlayout-generated UI) end up having duplicated columns
+						while (Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_n_columns(handle) > 0)
+						{
+							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_remove_column(handle, Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_column(handle, 0));
+						}
+
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
@@ -962,7 +969,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				// since "Marshalling of type object is not implemented"
 				// (mono/metadata/marshal.c:6507) we have to do it ourselves
-
 
 				Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
 

@@ -67,6 +67,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_view_get_column(IntPtr /*GtkTreeView*/ tree_view, int n);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_tree_view_remove_column(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreeViewColumn*/ column);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_tree_view_get_n_columns(IntPtr handle);
 	}
 }
 

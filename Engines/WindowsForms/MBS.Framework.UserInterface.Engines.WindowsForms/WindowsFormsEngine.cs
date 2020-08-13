@@ -263,6 +263,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
 			return new WindowsFormsNativeImage(image);
 		}
+		protected override Image LoadImage(byte[] filedata, int width, int height, int rowstride)
+		{
+			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(new System.IO.MemoryStream(filedata));
+			return new WindowsFormsNativeImage(bitmap);
+		}
 
 		internal static Input.Keyboard.KeyEventArgs SWFKeyEventArgsToKeyEventArgs(System.Windows.Forms.KeyEventArgs e)
 		{

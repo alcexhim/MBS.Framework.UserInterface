@@ -90,7 +90,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			foreach (MenuItem m in window.MenuBar.Items)
 			{
-				System.Windows.Forms.ToolStripItem tsmi = CreateToolStripItem(m);
+				System.Windows.Forms.ToolStripItem tsmi = (Application.Engine as WindowsFormsEngine).InitMenuItem(m);
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
@@ -187,127 +187,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 			return WindowCloseReason.Unknown;
 		}
-
-		private System.Windows.Forms.ToolStripItem CreateToolStripItem(MenuItem m)
-		{
-			if (m is CommandMenuItem)
-			{
-				System.Windows.Forms.ToolStripMenuItem mi = new System.Windows.Forms.ToolStripMenuItem();
-				CommandMenuItem cmi = (m as CommandMenuItem);
-				mi.Tag = cmi;
-				mi.Click += Mi_Click;
-				mi.Text = cmi.Text.Replace('_', '&');
-				try
-				{
-					mi.ShortcutKeys = ShortcutToShortcutKeys(cmi.Shortcut);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine("could not set shortcut keys value from uwt {0} to winforms {1}", cmi.Shortcut, ShortcutToShortcutKeys(cmi.Shortcut));
-				}
-				foreach (MenuItem mi1 in cmi.Items)
-				{
-					if (mi1 == null)
-					{
-						Console.WriteLine("uwt: wf: ERROR: MenuItem is null in {0} ({1})", cmi.Text, cmi.Name);
-					}
-					System.Windows.Forms.ToolStripItem tsiChild = CreateToolStripItem(mi1);
-					if (tsiChild != null)
-						mi.DropDownItems.Add(tsiChild);
-				}
-				return mi;
-			}
-			else if (m is SeparatorMenuItem)
-			{
-				System.Windows.Forms.ToolStripSeparator mi = new System.Windows.Forms.ToolStripSeparator();
-				return mi;
-			}
-			else if (m == null)
-			{
-				return null;
-			}
-
-			Console.WriteLine("uwt: wf: ERROR: could not create ToolStripMenuItem {0}", m.GetType().FullName);
-			return null;
-		}
-
-		void Mi_Click(object sender, EventArgs e)
-		{
-			System.Windows.Forms.ToolStripItem tsi = (sender as System.Windows.Forms.ToolStripItem);
-			CommandMenuItem cmi = (tsi.Tag as CommandMenuItem);
-			cmi.OnClick(e);
-		}
-
-
-		private System.Windows.Forms.Keys ShortcutToShortcutKeys(Shortcut shortcut)
-		{
-			System.Windows.Forms.Keys keys = System.Windows.Forms.Keys.None;
-			if (shortcut == null)
-				return keys;
-
-			if ((shortcut.ModifierKeys & KeyboardModifierKey.Alt) == KeyboardModifierKey.Alt)
-				keys |= System.Windows.Forms.Keys.Alt;
-			if ((shortcut.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Control)
-				keys |= System.Windows.Forms.Keys.Control;
-			if ((shortcut.ModifierKeys & KeyboardModifierKey.Shift) == KeyboardModifierKey.Shift)
-				keys |= System.Windows.Forms.Keys.Shift;
-			if ((shortcut.ModifierKeys & KeyboardModifierKey.Meta) == KeyboardModifierKey.Meta)
-				keys |= System.Windows.Forms.Keys.Alt;
-			if ((shortcut.ModifierKeys & KeyboardModifierKey.Control) == KeyboardModifierKey.Super)
-				keys |= System.Windows.Forms.Keys.LWin;
-
-			switch (shortcut.Key)
-			{
-				case KeyboardKey.A: keys |= System.Windows.Forms.Keys.A; break;
-				case KeyboardKey.B: keys |= System.Windows.Forms.Keys.B; break;
-				case KeyboardKey.C: keys |= System.Windows.Forms.Keys.C; break;
-				case KeyboardKey.D: keys |= System.Windows.Forms.Keys.D; break;
-				case KeyboardKey.E: keys |= System.Windows.Forms.Keys.E; break;
-				case KeyboardKey.F: keys |= System.Windows.Forms.Keys.F; break;
-				case KeyboardKey.G: keys |= System.Windows.Forms.Keys.G; break;
-				case KeyboardKey.H: keys |= System.Windows.Forms.Keys.H; break;
-				case KeyboardKey.I: keys |= System.Windows.Forms.Keys.I; break;
-				case KeyboardKey.J: keys |= System.Windows.Forms.Keys.J; break;
-				case KeyboardKey.K: keys |= System.Windows.Forms.Keys.K; break;
-				case KeyboardKey.L: keys |= System.Windows.Forms.Keys.L; break;
-				case KeyboardKey.M: keys |= System.Windows.Forms.Keys.M; break;
-				case KeyboardKey.N: keys |= System.Windows.Forms.Keys.N; break;
-				case KeyboardKey.O: keys |= System.Windows.Forms.Keys.O; break;
-				case KeyboardKey.P: keys |= System.Windows.Forms.Keys.P; break;
-				case KeyboardKey.Q: keys |= System.Windows.Forms.Keys.Q; break;
-				case KeyboardKey.R: keys |= System.Windows.Forms.Keys.R; break;
-				case KeyboardKey.S: keys |= System.Windows.Forms.Keys.S; break;
-				case KeyboardKey.T: keys |= System.Windows.Forms.Keys.T; break;
-				case KeyboardKey.U: keys |= System.Windows.Forms.Keys.U; break;
-				case KeyboardKey.V: keys |= System.Windows.Forms.Keys.V; break;
-				case KeyboardKey.W: keys |= System.Windows.Forms.Keys.W; break;
-				case KeyboardKey.X: keys |= System.Windows.Forms.Keys.X; break;
-				case KeyboardKey.Y: keys |= System.Windows.Forms.Keys.Y; break;
-				case KeyboardKey.Z: keys |= System.Windows.Forms.Keys.Z; break;
-				case KeyboardKey.D0: keys |= System.Windows.Forms.Keys.D0; break;
-				case KeyboardKey.D1: keys |= System.Windows.Forms.Keys.D1; break;
-				case KeyboardKey.D2: keys |= System.Windows.Forms.Keys.D2; break;
-				case KeyboardKey.D3: keys |= System.Windows.Forms.Keys.D3; break;
-				case KeyboardKey.D4: keys |= System.Windows.Forms.Keys.D4; break;
-				case KeyboardKey.D5: keys |= System.Windows.Forms.Keys.D5; break;
-				case KeyboardKey.D6: keys |= System.Windows.Forms.Keys.D6; break;
-				case KeyboardKey.D7: keys |= System.Windows.Forms.Keys.D7; break;
-				case KeyboardKey.D8: keys |= System.Windows.Forms.Keys.D8; break;
-				case KeyboardKey.D9: keys |= System.Windows.Forms.Keys.D9; break;
-				case KeyboardKey.NumPad0: keys |= System.Windows.Forms.Keys.NumPad0; break;
-				case KeyboardKey.NumPad1: keys |= System.Windows.Forms.Keys.NumPad1; break;
-				case KeyboardKey.NumPad2: keys |= System.Windows.Forms.Keys.NumPad2; break;
-				case KeyboardKey.NumPad3: keys |= System.Windows.Forms.Keys.NumPad3; break;
-				case KeyboardKey.NumPad4: keys |= System.Windows.Forms.Keys.NumPad4; break;
-				case KeyboardKey.NumPad5: keys |= System.Windows.Forms.Keys.NumPad5; break;
-				case KeyboardKey.NumPad6: keys |= System.Windows.Forms.Keys.NumPad6; break;
-				case KeyboardKey.NumPad7: keys |= System.Windows.Forms.Keys.NumPad7; break;
-				case KeyboardKey.NumPad8: keys |= System.Windows.Forms.Keys.NumPad8; break;
-				case KeyboardKey.NumPad9: keys |= System.Windows.Forms.Keys.NumPad9; break;
-			}
-			return keys;
-		}
-
+		
 		private void form_Shown(object sender, EventArgs e)
 		{
 			OnShown(e);

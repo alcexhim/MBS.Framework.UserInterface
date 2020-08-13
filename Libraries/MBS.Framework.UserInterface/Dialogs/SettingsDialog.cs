@@ -503,6 +503,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private void AddOptionGroupPathPart(SettingsGroup grp, string[] path, int index, TreeModelRow parent = null)
 		{
+			if (path == null) path = new string[] { String.Empty };
 			if (index > path.Length - 1)
 				return;
 

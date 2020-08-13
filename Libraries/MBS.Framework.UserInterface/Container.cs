@@ -186,6 +186,14 @@ namespace MBS.Framework.UserInterface
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
 						(ctl as Button).StockType = (StockType)Application.Engine.StockTypeFromString(item.Properties["label"].Value);
+						switch ((ctl as Button).StockType)
+						{
+							case StockType.Cancel:
+							{
+								(ctl as Button).ResponseValue = (int)DialogResult.Cancel;
+								break;
+							}
+						}
 					}
 					break;
 				}

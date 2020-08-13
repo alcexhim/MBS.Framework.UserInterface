@@ -10,6 +10,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 {
 	public class SystemTheme : ClassicTheme
 	{
+		public SystemTheme()
+		{
+			Name = "System";
+		}
+
 		private static class VisualStyleRenderers
 		{
 			public static class Button

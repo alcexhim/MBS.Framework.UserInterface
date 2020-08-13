@@ -137,6 +137,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		
 		public VisualStudio2012Theme(ColorMode colorMode = ColorMode.Light)
 		{
+			Name = String.Format("VisualStudio2012/{0}", colorMode.ToString());
+
 			SetColorMode(colorMode);
 			InitializeMetricTable();
 		}

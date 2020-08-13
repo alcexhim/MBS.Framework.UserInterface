@@ -261,6 +261,15 @@ namespace MBS.Framework.UserInterface.Dialogs
 				setting.SetValue((ctl as TextBox).Text);
 			}
 		}
+		private void chk_Changed(object sender, EventArgs e)
+		{
+			Control ctl = (sender as Control);
+			Setting setting = ctl.GetExtraData<Setting>("setting");
+			if (ctl is CheckBox)
+			{
+				setting.SetValue<bool>((ctl as CheckBox).Checked);
+			}
+		}
 
 		private void LoadOption(Setting opt, int iRow, ref Control label, ref Control control)
 		{
@@ -293,6 +302,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				// chk.DisplayStyle = CheckBoxDisplayStyle.Switch;
 				chk.Checked = o.GetValue<bool>();
 				chk.SetExtraData<Setting>("setting", o);
+				chk.Changed += chk_Changed;
 				// chk.Text = o.Title;
 				// ct.Controls.Add(chk, new GridLayout.Constraints(iRow, 0, 1, 2, ExpandMode.Horizontal));
 				control = chk;

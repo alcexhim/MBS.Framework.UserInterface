@@ -116,7 +116,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			System.Drawing.StringFormat format = new System.Drawing.StringFormat();
 			format.Alignment = AlignmentToStringAlignment(horizontalAlignment);
 			format.LineAlignment = AlignmentToStringAlignment(verticalAlignment);
-			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), Vector2DToNativePointF(location), format);
+
+			System.Windows.Forms.TextRenderer.DrawText(Handle, value, FontToNativeFont(font), new System.Drawing.Point((int)location.X, (int)location.Y), (BrushToNativeBrush(brush) as System.Drawing.SolidBrush).Color, System.Windows.Forms.TextFormatFlags.Default);
+			// Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), Vector2DToNativePointF(location), format);
 		}
 
 		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)

@@ -28,7 +28,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 	{
 		public SyntaxTextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
+			populate_popup_d = new Action<IntPtr, IntPtr, IntPtr>(populate_popup);
 		}
+
+		protected override bool SubclassHandlesContextMenu => true;
 
 		protected override void SetControlTextInternal(Control control, string text)
 		{
@@ -42,6 +45,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else
 			{
 				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+		}
+	
+		private Action<IntPtr /*GtkTextView*/, IntPtr /*GtkWidget*/, IntPtr> populate_popup_d;
+		private void populate_popup(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkWidget*/ popup, IntPtr user_data)
+		{
+			SyntaxTextBox ctl = (Control as SyntaxTextBox);
+			if (!ctl.MergeContextMenu)
+			{
+				// clear the menu items
+				Internal.GTK.Methods.GtkContainer.gtk_container_forall(popup, new Action<IntPtr, IntPtr>(delegate (IntPtr widget, IntPtr user_data1)
+				{
+					Internal.GTK.Methods.GtkContainer.gtk_container_remove(popup, widget);
+				}), IntPtr.Zero);
+			}
+			if (ctl.ContextMenu != null)
+			{
+				foreach (MenuItem mi in ctl.ContextMenu.Items)
+				{
+					IntPtr hMenuItem = (Engine as GTKEngine).InitMenuItem(mi);
+					Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_insert(popup, hMenuItem, -1);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenuItem);
+				}
 			}
 		}
 
@@ -61,6 +87,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_set_text(hBuffer, ctl.Text, ctl.Text.Length);
 			}
 			handle = Internal.GTK.Methods.GtkSourceView.gtk_source_view_new_with_buffer(hBuffer);
+
+			Internal.GObject.Methods.g_signal_connect(handle, "populate_popup", populate_popup_d);
 
 			// setup monospace
 			IntPtr hError = IntPtr.Zero;
@@ -98,8 +126,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				ncSyntaxTextBox = CreatePlainTextBox(control);
 			}
 
-			popup = new PopupWindow();
-			Engine.CreateControl(popup);
+			// popup = new PopupWindow();
+			// Engine.CreateControl(popup);
 
 			return ncSyntaxTextBox;
 		}
@@ -110,9 +138,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			base.OnKeyDown (e);
 
+			/*
 			if (!popup.Visible) {
 				popup.Show ();
 			}
+			*/
 		}
 	}
 }

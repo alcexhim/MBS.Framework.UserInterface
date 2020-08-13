@@ -519,6 +519,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="GTKNativeImplementation" /> uses context menu handling provided by the subclass.
+		/// </summary>
+		/// <value><c>true</c> if context menu handling should be provided by the subclass; otherwise, <c>false</c>.</value>
+		protected virtual bool SubclassHandlesContextMenu { get; } = false;
+
 		private MouseButtons _mousedown_buttons = MouseButtons.None;
 		private bool _mouse_double_click = false;
 		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -539,7 +545,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			OnMouseDown(ee);
 			if (ee.Handled) return true;
 
-			if (ee.Buttons == MouseButtons.Secondary)
+			if (ee.Buttons == MouseButtons.Secondary && !SubclassHandlesContextMenu)
 			{
 				// default implementation - display a context menu if we have one set
 				// moved this up here to give us a chance to add a context menu if we don't have one associated yet

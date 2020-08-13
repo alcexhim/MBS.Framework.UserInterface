@@ -24,6 +24,12 @@ namespace MBS.Framework.UserInterface.Controls
 	}
 	public class TextBox : SystemControl
 	{
+		/// <summary>
+		/// Gets or sets a value indicating whether the <see cref="Control.ContextMenu" /> for this <see cref="TextBox" /> should be merged with the system native context menu.
+		/// </summary>
+		/// <value><c>true</c> if the ContextMenu for this TextBox should be merged ; otherwise, <c>false</c>.</value>
+		public bool MergeContextMenu { get; set; } = true;
+
 		private int mvarMaxLength = -1;
 		public int MaxLength { get { return mvarMaxLength; } set { mvarMaxLength = value; } }
 

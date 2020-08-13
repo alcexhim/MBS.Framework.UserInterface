@@ -14,6 +14,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			TextBox_Changed_Handler = new Internal.GObject.Delegates.GCallback(TextBox_Changed);
 			TextBuffer_Changed_Handler = new Internal.GObject.Delegates.GCallbackV1I(TextBuffer_Changed);
+
+			populate_popup_d = new Action<IntPtr, IntPtr, IntPtr>(populate_popup);
 		}
 
 		public void InsertText(string content)
@@ -103,6 +105,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
+		private Action<IntPtr /*GtkTextView*/, IntPtr /*GtkWidget*/, IntPtr> populate_popup_d;
+		private void populate_popup(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkWidget*/ popup, IntPtr user_data)
+		{
+
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control is TextBox);
@@ -127,6 +135,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_buffer(handle, hBuffer);
 				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_wrap_mode(handle, Internal.GTK.Constants.GtkWrapMode.Word);
 				Internal.GTK.Methods.GtkTextView.gtk_text_view_set_editable(handle, ctl.Editable);
+
+				Internal.GObject.Methods.g_signal_connect(handle, "populate_popup", populate_popup_d);
 
 				_TextBoxForBuffer[hBuffer] = ctl;
 

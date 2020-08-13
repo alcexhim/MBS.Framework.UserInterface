@@ -28,11 +28,39 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
+		public Guid ID { get; private set; } = Guid.Empty;
 		public string Title { get; private set; } = null;
 
-		public Feature(string title)
+		public Feature(Guid id, string title)
 		{
+			ID = id;
 			Title = title;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (!(this is null) && (obj is null)) return false;
+			if (this is null && !(obj is null)) return false;
+
+			if (obj is Feature)
+			{
+				Feature feat = (obj as Feature);
+				return feat.ID.Equals(ID);
+			}
+			return base.Equals(obj);
+		}
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		public static bool operator ==(Feature left, Feature right)
+		{
+			return (left.ID == right.ID);
+		}
+		public static bool operator !=(Feature left, Feature right)
+		{
+			return (left.ID != right.ID);
 		}
 	}
 }

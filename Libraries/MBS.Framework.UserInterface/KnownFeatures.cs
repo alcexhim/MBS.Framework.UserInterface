@@ -23,6 +23,6 @@ namespace MBS.Framework.UserInterface
 {
 	public class KnownFeatures
 	{
-		public static Feature UWTPlatform { get; } = new Feature("UWT Platform");
+		public static Feature UWTPlatform { get; } = new Feature(new Guid("{76d5e79f-8aac-4904-8d02-87fcf60fbe7f}"), "UWT Platform");
 	}
 }

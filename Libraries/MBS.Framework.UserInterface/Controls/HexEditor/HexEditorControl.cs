@@ -870,7 +870,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			Brush bForeColor = new SolidBrush(SystemColors.WindowForeground);
 
-			Font font = Font.FromFamily("Monospace", 14.0);
+			Font font = SystemFonts.Monospace;
 
 			int start = 0; //(int)(VerticalAdjustment.Value / LineHeight) * CellsPerLine;
 			if (start < 0) start = 0;

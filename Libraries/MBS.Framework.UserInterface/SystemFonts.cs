@@ -8,8 +8,7 @@ namespace MBS.Framework.UserInterface
 {
 	public static class SystemFonts
 	{
-		private static Font mvarMenuFont = new Font();
-		public static Font MenuFont { get { return mvarMenuFont; } }
-
+		public static Font MenuFont { get; } = new Font();
+		public static Font Monospace { get; } = new Font();
 	}
 }

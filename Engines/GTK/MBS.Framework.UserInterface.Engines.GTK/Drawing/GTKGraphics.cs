@@ -68,6 +68,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			if (font == null)
 				font = Font.FromFamily("Sans", 10);
 
+			if (font == SystemFonts.Monospace)
+			{
+				font = Font.FromFamily("Monospace", 10.0);
+			}
+
 			Internal.Cairo.Methods.cairo_select_font_face(mvarCairoContext, font.FamilyName, (font.Italic ? Internal.Cairo.Constants.CairoFontSlant.Italic : Internal.Cairo.Constants.CairoFontSlant.Normal), (font.Weight == 800 ? Internal.Cairo.Constants.CairoFontWeight.Bold : Internal.Cairo.Constants.CairoFontWeight.Normal));
 			CheckStatus();
 

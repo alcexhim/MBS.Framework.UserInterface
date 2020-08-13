@@ -26,6 +26,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 {
 	public class WindowsFormsNativeGraphics : Graphics
 	{
+		private const string FONTFAMILY_MONOSPACE = "Courier New";
+
 		public System.Drawing.Graphics Handle { get; private set; } = null;
 		public WindowsFormsNativeGraphics(System.Drawing.Graphics g)
 		{
@@ -89,6 +91,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		private System.Drawing.Font FontToNativeFont(Font font)
 		{
 			if (font == null) return System.Drawing.SystemFonts.DialogFont;
+			if (font == SystemFonts.Monospace)
+			{
+				return new System.Drawing.Font(FONTFAMILY_MONOSPACE, 10.0f);
+			}
 			return new System.Drawing.Font(font.FamilyName, (float)font.Size);
 		}
 		private System.Drawing.Brush BrushToNativeBrush(Brush brush)

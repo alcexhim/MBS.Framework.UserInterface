@@ -1,10 +1,10 @@
 ﻿//
-//  DragDropTarget.cs
+//  DragDropTargetType.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2020 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,17 +21,7 @@
 using System;
 namespace MBS.Framework.UserInterface.DragDrop
 {
-	public class DragDropTarget
+	public class DragDropTargetType
 	{
-		public DragDropTargetType Type { get; set; }
-		public DragDropTargetFlags Flags { get; set; }
-		public int ID { get; set; }
-
-		public DragDropTarget(DragDropTargetType type, DragDropTargetFlags flags, int id)
-		{
-			Type = type;
-			Flags = flags;
-			ID = id;
-		}
 	}
 }

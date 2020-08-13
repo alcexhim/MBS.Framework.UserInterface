@@ -241,9 +241,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				if ((target.Flags & DragDropTargetFlags.SameApplication) == DragDropTargetFlags.SameApplication) flags |= Internal.GTK.Constants.GtkTargetFlags.SameApp;
 				if ((target.Flags & DragDropTargetFlags.SameWidget) == DragDropTargetFlags.SameWidget) flags |= Internal.GTK.Constants.GtkTargetFlags.SameWidget;
 
-				list.Add(new Internal.GTK.Structures.GtkTargetEntry() { flags = flags, info = (uint)target.ID, target = target.Name });
+				list.Add(new Internal.GTK.Structures.GtkTargetEntry() { flags = flags, info = (uint)target.ID, target = GetDragDropTargetTypeName(target.Type) });
 			}
 			return list.ToArray();
+		}
+
+		private static string GetDragDropTargetTypeName(DragDropTargetType type)
+		{
+			if (type == DragDropTargetTypes.FileList)
+			{
+				return "text/uri-list";
+			}
+			throw new NotSupportedException();
 		}
 
 		internal static Internal.GDK.Constants.GdkDragAction DragDropEffectToGdkDragAction(DragDropEffect actions)

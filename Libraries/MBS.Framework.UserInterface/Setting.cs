@@ -119,6 +119,19 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 	}
+	public class CollectionSetting : Setting
+	{
+		public Setting.SettingCollection Settings { get; } = new Setting.SettingCollection();
+		public SettingsGroup.SettingsGroupCollection Items { get; } = new SettingsGroup.SettingsGroupCollection();
+
+		public CollectionSetting(string title, SettingsGroup group) : base(title, null)
+		{
+			for (int i = 0; i < group.Settings.Count; i++)
+			{
+				Settings.Add(group.Settings[i]);
+			}
+		}
+	}
 	public abstract class Setting
 	{
 		public Setting(string title, object defaultValue = null)

@@ -267,6 +267,7 @@
     <Compile Include="Timer.cs" />
     <Compile Include="TimerImplementation.cs" />
     <Compile Include="ListViewSelectionChangingEvent.cs" />
+    <Compile Include="Controls\CollectionListView.cs" />
     <Compile Include="DragDrop\DragDropTargetType.cs" />
     <Compile Include="DragDrop\DragDropTargetTypes.cs" />
     <Compile Include="CustomPlugin.cs" />

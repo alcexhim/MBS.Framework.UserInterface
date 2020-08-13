@@ -3,6 +3,7 @@ using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Dialogs
 {
@@ -334,6 +335,95 @@ namespace MBS.Framework.UserInterface.Dialogs
 				txt.Maximum = o.MaximumValue;
 				txt.Value = o.GetValue<double>();
 				control = txt;
+			}
+			else if (opt is CollectionSetting)
+			{
+				CollectionSetting o = (opt as CollectionSetting);
+
+				GroupBox fra = new GroupBox();
+				fra.Text = o.Title;
+				fra.Layout = new BoxLayout(Orientation.Vertical);
+
+				CollectionListView clv = new CollectionListView();
+
+				DefaultTreeModel tm = new DefaultTreeModel(new Type[0]);
+				foreach (Setting sett in o.Settings)
+				{
+					tm.Columns.Add(new TreeModelColumn(typeof(string)));
+				}
+				clv.ListView.Model = tm;
+				for (int i = 0; i < o.Settings.Count; i++)
+				{
+					clv.ListView.Columns.Add(new ListViewColumnText(tm.Columns[i], o.Settings[i].Title));
+				}
+
+				clv.ItemAdding += clv_ItemAdding;
+				clv.ItemEditing += clv_ItemEditing;
+				clv.SetExtraData<CollectionSetting>("setting", o);
+				fra.Controls.Add(clv, new BoxLayout.Constraints(true, true));
+
+				control = fra;
+			}
+		}
+
+		private void clv_ItemAdding(object sender, EventArgs e)
+		{
+			CollectionListView clv = (sender as CollectionListView);
+			CollectionSetting o = clv.GetExtraData<CollectionSetting>("setting");
+
+			SettingsDialog dlg = new SettingsDialog();
+			dlg.SettingsProviders.Clear();
+
+			CustomSettingsProvider csp = new CustomSettingsProvider();
+
+			SettingsGroup group = new SettingsGroup();
+			for (int i = 0; i < o.Settings.Count; i++)
+			{
+				group.Settings.Add(o.Settings[i]);
+			}
+			csp.SettingsGroups.Add(group);
+			dlg.SettingsProviders.Add(csp);
+
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				List<TreeModelRowColumn> list = new List<TreeModelRowColumn>();
+				for (int i = 0; i < o.Settings.Count; i++)
+				{
+					object val = o.Settings[i].GetValue();
+					list.Add(new TreeModelRowColumn(clv.ListView.Model.Columns[i], val));
+				}
+
+				TreeModelRow row = new TreeModelRow(list.ToArray());
+				row.SetExtraData<SettingsGroup>("group", group);
+				clv.ListView.Model.Rows.Add(row);
+				o.Items.Add(group);
+			}
+		}
+		private void clv_ItemEditing(object sender, EventArgs e)
+		{
+			CollectionListView clv = (sender as CollectionListView);
+			CollectionSetting o = clv.GetExtraData<CollectionSetting>("setting");
+
+			SettingsDialog dlg = new SettingsDialog();
+			dlg.SettingsProviders.Clear();
+
+			CustomSettingsProvider csp = new CustomSettingsProvider();
+
+			SettingsGroup group = clv.ListView.SelectedRows[0].GetExtraData<SettingsGroup>("group");
+			csp.SettingsGroups.Add(group);
+			dlg.SettingsProviders.Add(csp);
+
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				/*
+				List<TreeModelRowColumn> list = new List<TreeModelRowColumn>();
+				for (int i = 0; i < o.Settings.Count; i++)
+				{
+					object val = o.Settings[i].GetValue();
+					list.Add(new TreeModelRowColumn(clv.ListView.Model.Columns[i], val));
+				}
+				clv.ListView.Model.Rows.Add(new TreeModelRow(list.ToArray()));
+				*/			
 			}
 		}
 

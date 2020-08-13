@@ -805,6 +805,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 
 				OnChanged(EventArgs.Empty);
+				e.Cancel = true;
 			}
 		}
 

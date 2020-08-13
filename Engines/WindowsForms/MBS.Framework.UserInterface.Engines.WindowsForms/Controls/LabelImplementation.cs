@@ -26,10 +26,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			Label ctl = (control as Label);
 
 			System.Windows.Forms.Label handle = new System.Windows.Forms.Label();
-			handle.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			// handle.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			handle.UseMnemonic = ctl.UseMnemonic;
 			handle.TextAlign = WindowsFormsEngine.HorizontalVerticalAlignmentToContentAlignment(ctl.HorizontalAlignment, ctl.VerticalAlignment);
-			handle.AutoSize = true;
+			// handle.AutoSize = true;
 
 			/*
 			if (ctl.WordWrap == WordWrapMode.Always)

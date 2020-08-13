@@ -54,6 +54,10 @@ namespace MBS.Framework.UserInterface.Drawing
 
 		public static Image FromFile(string filename, string type = null)
 		{
+			if (type == null)
+			{
+				type = System.IO.Path.GetExtension(filename).ToLower().Substring(1);
+			}
 			Image image = Application.Engine.LoadImage(filename, type);
 			return image;
 		}

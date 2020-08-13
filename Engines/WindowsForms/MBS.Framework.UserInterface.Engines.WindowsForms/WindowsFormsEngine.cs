@@ -906,8 +906,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return (GetHandleForControl(control) as WindowsFormsNativeControl).Handle.Enabled;
 		}
 
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		private static extern bool SetProcessDPIAware();
+
 		protected override bool InitializeInternal()
 		{
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
+			{
+				// SetProcessDPIAware();
+			}
+
 			System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 

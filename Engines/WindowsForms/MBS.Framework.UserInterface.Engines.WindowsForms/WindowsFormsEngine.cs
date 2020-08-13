@@ -897,6 +897,30 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			wfncParent.Handle.Controls.Add(wfncChild.Handle);
 		}
 
+		private Dictionary<Timer, TimerImplementation> _Timer_Implementations = new Dictionary<Timer, TimerImplementation>();
+		protected override void Timer_StopInternal(Timer timer)
+		{
+			if (!_Timer_Implementations.ContainsKey(timer))
+			{
+				_Timer_Implementations[timer] = new WindowsFormsTimerImplementation(timer);
+			}
+
+			if (_Timer_Implementations[timer].Timer.Enabled)
+				_Timer_Implementations[timer].Stop();
+		}
+		protected override void Timer_StartInternal(Timer timer)
+		{
+			if (!_Timer_Implementations.ContainsKey(timer))
+			{
+				_Timer_Implementations[timer] = new WindowsFormsTimerImplementation(timer);
+			}
+
+			if (_Timer_Implementations[timer].Timer.Enabled)
+				_Timer_Implementations[timer].Stop();
+
+			_Timer_Implementations[timer].Start();
+		}
+
 		private SystemSettings _SystemSettings = new WindowsFormsSystemSettings();
 		public override SystemSettings SystemSettings => _SystemSettings;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Input.Keyboard;
@@ -63,6 +64,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			return new Framework.Drawing.Dimension2D((Handle as WindowsFormsNativeControl).Handle.Size.Width, ((Handle as WindowsFormsNativeControl).Handle.Size.Height));
 		}
+		protected override void SetControlSizeInternal(Dimension2D value)
+		{
+			(Handle as WindowsFormsNativeControl).Handle.Size = new System.Drawing.Size((int)value.Width, (int)value.Height);
+		}
 
 		protected override Cursor GetCursorInternal()
 		{
@@ -74,8 +79,70 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
+		private struct DRAGDROPDATA
+		{
+			public DragDropTarget[] targets;
+			public DragDropEffect actions;
+			public MouseButtons buttons;
+			public KeyboardModifierKey modifierKeys;
+		}
+		private Dictionary<Control, List<DRAGDROPDATA>> _DDTargets = new Dictionary<Control, List<DRAGDROPDATA>>();
+
 		protected override void RegisterDragSourceInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
+			if (!_DDTargets.ContainsKey(control))
+			{
+				System.Windows.Forms.Control ctl = (Engine.GetHandleForControl(control) as WindowsFormsNativeControl).Handle;
+				ctl.MouseMove += control_MouseMove_DragSource;
+				_DDTargets[control] = new List<DRAGDROPDATA>();
+			}
+
+			DRAGDROPDATA ddd = new DRAGDROPDATA();
+			ddd.targets = targets;
+			ddd.actions = actions;
+			ddd.buttons = buttons;
+			ddd.modifierKeys = modifierKeys;
+			_DDTargets[control].Add(ddd);
+		}
+
+		private void dobj_DataRequest(DragDropDataRequestEventArgs e)
+		{
+
+
+		}
+
+		private void control_MouseMove_DragSource(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				System.Windows.Forms.Control ctl = (sender as System.Windows.Forms.Control);
+
+				List<DRAGDROPDATA> ddd = _DDTargets[ctl.Tag as Control];
+
+				System.Windows.Forms.DataObject dobj = new System.Windows.Forms.DataObject();
+				// dobj.Control = ctl.Tag as Control;
+				// dobj.DataRequest += dobj_DataRequest;
+
+				System.Windows.Forms.DragDropEffects effects = System.Windows.Forms.DragDropEffects.None;
+				for (int i = 0; i < ddd.Count; i++)
+				{
+					if ((ddd[i].actions & DragDropEffect.Copy) == DragDropEffect.Copy) effects |= System.Windows.Forms.DragDropEffects.Copy;
+					if ((ddd[i].actions & DragDropEffect.Link) == DragDropEffect.Link) effects |= System.Windows.Forms.DragDropEffects.Link;
+					if ((ddd[i].actions & DragDropEffect.Move) == DragDropEffect.Move) effects |= System.Windows.Forms.DragDropEffects.Move;
+					if ((ddd[i].actions & DragDropEffect.Scroll) == DragDropEffect.Scroll) effects |= System.Windows.Forms.DragDropEffects.Scroll;
+
+					for (int j = 0; j < ddd[i].targets.Length; j++)
+					{
+						if (ddd[i].targets[j].Type == DragDropTargetTypes.FileList)
+						{
+							System.Collections.Specialized.StringCollection sc = new System.Collections.Specialized.StringCollection();
+							dobj.SetFileDropList(sc);
+						}
+					}
+				}
+
+				ctl.DoDragDrop(dobj, effects);
+			}
 		}
 
 		protected override void RegisterDropTargetInternal(Control control, DragDropTarget[] targets, DragDropEffect actions, Input.Mouse.MouseButtons buttons, KeyboardModifierKey modifierKeys)
@@ -151,7 +218,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			ctl.MouseLeave += ctl_MouseLeave;
 			ctl.KeyUp += ctl_KeyUp;
 			ctl.KeyDown += ctl_KeyDown;
+			ctl.PreviewKeyDown += ctl_PreviewKeyDown;
 		}
+
+		void ctl_PreviewKeyDown(object sender, System.Windows.Forms.PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == System.Windows.Forms.Keys.Left || e.KeyCode == System.Windows.Forms.Keys.Right || e.KeyCode == System.Windows.Forms.Keys.Up || e.KeyCode == System.Windows.Forms.Keys.Down)
+			{
+				e.IsInputKey = true;
+			}
+		}
+
 
 		protected override void SetControlTextInternal(Control control, string text)
 		{
@@ -185,9 +262,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 				if (Control.ContextMenu != null)
 				{
-					System.Windows.Forms.ContextMenuStrip hMenu = (Engine as WindowsFormsEngine).BuildContextMenuStrip(Control.ContextMenu);
+					Menu menu = Control.ContextMenu;
 
-					foreach (MenuItem mi in Control.ContextMenu.Items)
+					System.Windows.Forms.ContextMenuStrip hMenu = (Engine as WindowsFormsEngine).BuildContextMenuStrip(menu);
+					foreach (MenuItem mi in menu.Items)
 					{
 						RecursiveApplyMenuItemVisibility(mi);
 					}

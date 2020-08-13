@@ -279,7 +279,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-			case PlatformID.Win32NT:
+				case PlatformID.Win32NT:
 				{
 					IntPtr hWndActive = Internal.Windows.Methods.GetActiveWindow();
 					if (window.ControlImplementation != null)
@@ -849,6 +849,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
 		{
 			return new WindowsFormsNativeTreeModel();
+		}
+
+		protected override void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model)
+		{
+			if (!IsTreeModelCreated(model))
+				return; // handled by RecursiveTreeStoreInsertRow
 		}
 
 		private static WindowsFormsClipboard _Clipboard = null;

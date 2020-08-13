@@ -8,6 +8,10 @@ using MBS.Framework.UserInterface.Controls.Native;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 
+using LISTVIEWTYPE = MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.ListView.ListView; // BrightIdeasSoftware.TreeListView;
+using LISTVIEWITEMTYPE = System.Windows.Forms.ListViewItem;
+using LISTVIEWCOLUMNHEADERTYPE = System.Windows.Forms.ColumnHeader; // BrightIdeasSoftware.OLVColumn;
+
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
 	[ControlImplementation(typeof(ListView))]
@@ -26,6 +30,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 		private static ImplementedAsType ImplementedAs(ListView tv)
 		{
+			return ImplementedAsType.ListView;
+
 			bool rowsHaveChildren = false;
 			if (tv.Model != null)
 			{
@@ -69,9 +75,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					if (handle is Internal.TreeView.ExplorerTreeView)
 					{
 					}
-					else if (handle is Internal.ListView.ListView)
+					else if (handle is LISTVIEWTYPE)
 					{
-						(handle as Internal.ListView.ListView).MultiSelect = true;
+						(handle as LISTVIEWTYPE).MultiSelect = true;
 					}
 					break;
 				}
@@ -80,9 +86,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					if (handle is Internal.TreeView.ExplorerTreeView)
 					{
 					}
-					else if (handle is Internal.ListView.ListView)
+					else if (handle is LISTVIEWTYPE)
 					{
-						(handle as Internal.ListView.ListView).MultiSelect = false;
+						(handle as LISTVIEWTYPE).MultiSelect = false;
 					}
 					break;
 				}
@@ -101,7 +107,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					if (_SelectionMode != SelectionMode.None && _SelectionMode != SelectionMode.Browse)
 					{
-						if ((handle as Internal.ListView.ListView).MultiSelect)
+						if ((handle as LISTVIEWTYPE).MultiSelect)
 						{
 							_SelectionMode = SelectionMode.Multiple;
 						}
@@ -137,9 +143,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			TreeModelRow row = null;
 			TreeModelColumn column = null;
-			if (handle is Internal.ListView.ListView)
+			if (handle is LISTVIEWTYPE)
 			{
-				System.Windows.Forms.ListViewHitTestInfo info = (handle as Internal.ListView.ListView).HitTest((int)x, (int)y);
+				System.Windows.Forms.ListViewHitTestInfo info = (handle as LISTVIEWTYPE).HitTest((int)x, (int)y);
 				if (info?.Item != null)
 				{
 					row = (info.Item.Tag as TreeModelRow);
@@ -216,7 +222,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private Dictionary<ListViewColumn, bool> _IsColumnReorderable = new Dictionary<ListViewColumn, bool>();
 		public bool IsColumnReorderable(ListViewColumn column)
 		{
-			Internal.ListView.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as Internal.ListView.ListView);
+			LISTVIEWTYPE lv = ((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE);
 
 			if (_IsColumnReorderableSet == null)
 			{
@@ -251,7 +257,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetColumnReorderable(ListViewColumn column, bool value)
 		{
 			Console.WriteLine("SetColumnReorderable: in function");
-			Internal.ListView.ListView lv = ((Handle as WindowsFormsNativeControl).Handle as Internal.ListView.ListView);
+			LISTVIEWTYPE lv = ((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE);
 			if (lv == null)
 				return;
 
@@ -288,32 +294,47 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			InvokeMethod((Control as ListView), "OnRowColumnEdited", new object[] { e });
 		}
 
+		private TreeModel _OldModel = null;
+
 		protected void UpdateTreeModel (System.Windows.Forms.Control handle)
 		{
 			ListView tv = (Control as ListView);
 
 			if (tv.Model != null)
 			{
-				tv.Model.TreeModelChanged += Model_TreeModelChanged;
+				if (_OldModel != tv.Model)
+				{
+					tv.Model.TreeModelChanged += Model_TreeModelChanged;
+				}
 
 				switch (ImplementedAs(tv))
 				{
 					case ImplementedAsType.ListView:
 					{
-						Internal.ListView.ListView lv = (handle as Internal.ListView.ListView);
+						LISTVIEWTYPE lv = (handle as LISTVIEWTYPE);
 
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
 							TreeModelColumn c = tvc.Column;
-							lv.Columns.Add(tvc.Title).Tag = tvc;
+							LISTVIEWCOLUMNHEADERTYPE lvh = new LISTVIEWCOLUMNHEADERTYPE();
+							lvh.Text = tvc.Title;
+							lvh.Tag = tvc;
+							lv.Columns.Add(lvh);
 							SetColumnEditable(tvc, tvc.Editable);
 						}
 
-						lv.Items.Clear();
-						for (int i = 0; i < tv.Model.Rows.Count; i++)
+						if (lv.VirtualMode)
 						{
-							System.Windows.Forms.ListViewItem lvi = TreeModelRowToListViewItem(tv.Model.Rows[i]);
-							lv.Items.Add(lvi);
+							lv.VirtualListSize = GetVirtualListSize(tv.Model.Rows);
+						}
+						else
+						{
+							lv.Items.Clear();
+							for (int i = 0; i < tv.Model.Rows.Count; i++)
+							{
+								System.Windows.Forms.ListViewItem lvi = TreeModelRowToListViewItem(tv.Model.Rows[i]);
+								lv.Items.Add(lvi);
+							}
 						}
 						break;
 					}
@@ -329,6 +350,76 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					}
 				}
 			}
+			_OldModel = tv.Model;
+		}
+
+		public List<TreeModelRow> GetVirtualListRows(TreeModelRow.TreeModelRowCollection rows)
+		{
+			// HACK: i'm not smart enough to figure out how to do this without creating a temporary list...
+			List<TreeModelRow> list = new List<TreeModelRow>();
+			List<TreeModelRow> templist = new List<TreeModelRow>();
+
+			ListView lv = (Control as ListView);
+			for (int i = 0; i < rows.Count; i++)
+			{
+				templist.Add(rows[i]);
+			}
+			if (lvwColumnSorter != null)
+			{
+				templist.Sort(lvwColumnSorter);
+			}
+
+			for (int i = 0; i < templist.Count; i++)
+			{
+				list.Add(templist[i]);
+				if (templist[i].Expanded && templist[i].Rows.Count > 0)
+				{
+					List<TreeModelRow> sublist = GetVirtualListRows(templist[i].Rows);
+					list.AddRange(sublist);
+				}
+			}
+			return list;
+		}
+		public TreeModelRow GetVirtualListRow(int index)
+		{
+			ListView lv = (Control as ListView);
+			List<TreeModelRow> rows = GetVirtualListRows(lv.Model.Rows);
+			if (index >= 0 && index < rows.Count)
+			{
+				return rows[index];
+			}
+			return null;
+		}
+
+		public int GetVirtualListIndex(TreeModelRow row)
+		{
+			ListView lv = (Control as ListView);
+			if (row.ParentRow == null)
+			{
+				int end = lv.Model.Rows.IndexOf(row);
+				int rowindex = end;
+				for (int i = 0; i < end; i++)
+				{
+					if (lv.Model.Rows[i].Expanded)
+					{
+						rowindex += GetVirtualListSize(lv.Model.Rows[i].Rows);
+					}
+				}
+				return rowindex;
+			}
+			return 0;
+		}
+		private int GetVirtualListSize(TreeModelRow.TreeModelRowCollection rows)
+		{
+			int size = rows.Count;
+			for (int i = 0; i < rows.Count; i++)
+			{
+				if (rows[i].Expanded)
+				{
+					size += GetVirtualListSize(rows[i].Rows);
+				}
+			}
+			return size;
 		}
 
 		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
@@ -411,14 +502,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 				case ImplementedAsType.ListView:
 				{
-					handle = new Internal.ListView.ListView();
+					handle = new LISTVIEWTYPE(this);
 					handle.Tag = tv;
-					// (handle as Internal.ListView.ListViewControl).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
-					(handle as Internal.ListView.ListView).ItemActivate += lv_ItemActivate;
-					(handle as Internal.ListView.ListView).ItemSelectionChanged += lv_ItemSelectionChanged;
-					(handle as Internal.ListView.ListView).FullRowSelect = true;
-					// (handle as Internal.ListView.ListViewControl).View = System.Windows.Forms.View.Details;
-					(handle as Internal.ListView.ListView).View = System.Windows.Forms.View.Details;
+					(handle as LISTVIEWTYPE).HeaderStyle = WindowsFormsEngine.HeaderStyleToSWFHeaderStyle(tv.HeaderStyle);
+					(handle as LISTVIEWTYPE).ItemActivate += lv_ItemActivate;
+					(handle as LISTVIEWTYPE).ItemSelectionChanged += lv_ItemSelectionChanged;
+					(handle as LISTVIEWTYPE).FullRowSelect = true;
+					(handle as LISTVIEWTYPE).View = System.Windows.Forms.View.Details;
+					(handle as LISTVIEWTYPE).ColumnClick += Handle_ColumnClick;
+
+					lvwColumnSorter = new ListViewItemSorter(control as ListView, handle as LISTVIEWTYPE);
 
 					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
 					{
@@ -436,9 +529,105 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return new WindowsFormsNativeControl(handle);
 		}
 
+		private class ListViewItemSorter : IComparer<TreeModelRow>
+		{
+			public LISTVIEWTYPE Parent { get; private set; } = null;
+			public ListView Control { get; private set; } = null;
+
+			public ListViewItemSorter(ListView ctl, LISTVIEWTYPE lvparent)
+			{
+				Parent = lvparent;
+				Control = ctl;
+			}
+
+			/// <summary>
+			/// Specifies the column to be sorted
+			/// </summary>
+			public int ColumnIndex { get; set; }
+			/// <summary>
+			/// Specifies the order in which to sort (i.e. 'Ascending').
+			/// </summary>
+			public System.Windows.Forms.SortOrder SortOrder { get; set; }
+
+			public int Compare(TreeModelRow left, TreeModelRow right)
+			{
+				int compareResult = 0;
+				// Cast the objects to be compared to ListViewItem objects
+				if (Control.SortContainerRowsFirst)
+				{
+					if (left.Rows.Count > 0 && right.Rows.Count == 0)
+						return 1;
+					if (left.Rows.Count == 0 && right.Rows.Count > 0)
+						return -1;
+				}
+
+				// Compare the two items
+				if (left.RowColumns[ColumnIndex].Value == null && right.RowColumns[ColumnIndex].Value == null)
+				{
+					compareResult = 0;
+				}
+				else if (left.RowColumns[ColumnIndex].Value is IComparable)
+				{
+					compareResult = (left.RowColumns[ColumnIndex].Value as IComparable).CompareTo(right.RowColumns[ColumnIndex].Value);
+				}
+				else
+				{
+					compareResult = (left == right) ? 0 : -1;
+				}
+
+				// Calculate correct return value based on object comparison
+				if (SortOrder == System.Windows.Forms.SortOrder.Ascending)
+				{
+					// Ascending sort is selected, return normal result of compare operation
+					return compareResult;
+				}
+				else if (SortOrder == System.Windows.Forms.SortOrder.Descending)
+				{
+					// Descending sort is selected, return negative result of compare operation
+					return (-compareResult);
+				}
+				else
+				{
+					// Return '0' to indicate they are equal
+					return 0;
+				}
+			}
+		}
+
+		private ListViewItemSorter lvwColumnSorter = null;
+
+		void Handle_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+		{
+			LISTVIEWTYPE lv = (sender as LISTVIEWTYPE);
+
+			// Determine if clicked column is already the column that is being sorted.
+			if (e.Column == lvwColumnSorter.ColumnIndex)
+			{
+				// Reverse the current sort direction for this column.
+				if (lvwColumnSorter.SortOrder == System.Windows.Forms.SortOrder.Ascending)
+				{
+					lvwColumnSorter.SortOrder = System.Windows.Forms.SortOrder.Descending;
+				}
+				else
+				{
+					lvwColumnSorter.SortOrder = System.Windows.Forms.SortOrder.Ascending;
+				}
+			}
+			else
+			{
+				// Set the column number that is to be sorted; default to ascending.
+				lvwColumnSorter.ColumnIndex = e.Column;
+				lvwColumnSorter.SortOrder = System.Windows.Forms.SortOrder.Ascending;
+			}
+
+			// Perform the sort with these new sort options.
+			lv.Refresh();
+		}
+
+
 		void lv_ItemSelectionChanged(object sender, System.Windows.Forms.ListViewItemSelectionChangedEventArgs e)
 		{
-			Internal.ListView.ListView _lv = (sender as Internal.ListView.ListView);
+			LISTVIEWTYPE _lv = (sender as LISTVIEWTYPE);
 			ListView lv = (Control as ListView);
 
 			Console.WriteLine("selected rows: {0}", lv.SelectedRows.Count);
@@ -464,12 +653,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		private void lv_ItemActivate(object sender, EventArgs e)
 		{
-			Internal.ListView.ListView handle = (sender as Internal.ListView.ListView);
+			LISTVIEWTYPE handle = (sender as LISTVIEWTYPE);
 			ListView lv = (handle.Tag as ListView);
 
-			if (handle.SelectedItems.Count > 0)
+			if (handle.SelectedIndices.Count > 0)
 			{
-				lv.OnRowActivated(new ListViewRowActivatedEventArgs(handle.SelectedItems[0].Tag as TreeModelRow));
+				lv.OnRowActivated(new ListViewRowActivatedEventArgs(handle.Items[handle.SelectedIndices[0]].Tag as TreeModelRow));
 			}
 		}
 		private void tv_NodeMouseDoubleClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e)
@@ -508,9 +697,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			ControlImplementation impl = coll.Parent.ControlImplementation;
 			if (coll.Parent != null)
 			{
-				if ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl).Handle is Internal.ListView.ListView)
+				if ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl).Handle is LISTVIEWTYPE)
 				{
-					Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
+					LISTVIEWTYPE lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as LISTVIEWTYPE);
 
 					if (e.Index == -1 && e.Count == 1 && e.Item != null)
 					{
@@ -521,19 +710,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					}
 					else
 					{
-						e.Count = lv.SelectedItems.Count;
+						e.Count = lv.SelectedIndices.Count;
 						if (e.Count > 0 && e.Index > -1)
 						{
-							TreeModelRow row = (lv.SelectedItems[e.Index].Tag as TreeModelRow);
+							TreeModelRow row = (lv.Items[lv.SelectedIndices[e.Index]].Tag as TreeModelRow);
 							e.Item = row;
 						}
 						else if (e.Count > 0 && e.Index == -1 && e.Item != null)
 						{
 							// we are checking if selection contains a row
 							bool found = false;
-							for (int i = 0; i < lv.SelectedItems.Count; i++)
+							for (int i = 0; i < lv.SelectedIndices.Count; i++)
 							{
-								TreeModelRow rowtest = (lv.SelectedItems[i].Tag as TreeModelRow);
+								TreeModelRow rowtest = (lv.Items[lv.SelectedIndices[i]].Tag as TreeModelRow);
 								if (rowtest == e.Item)
 								{
 									found = true;
@@ -597,9 +786,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 				else if (implementedAs == ImplementedAsType.ListView)
 				{
-					Internal.ListView.ListView lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as Internal.ListView.ListView);
+					LISTVIEWTYPE lv = ((coll.Parent.ControlImplementation?.Handle as WindowsFormsNativeControl)?.Handle as LISTVIEWTYPE);
 					if (lv != null)
-						lv.SelectedItems.Clear();
+						lv.SelectedIndices.Clear();
 				}
 			}
 		}
@@ -639,7 +828,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			System.Windows.Forms.ListViewItem tn = new System.Windows.Forms.ListViewItem();
 			if (row.RowColumns.Count > 0)
 			{
-				tn.Text = row.RowColumns[0].Value?.ToString();
+				tn.Text = row.RowColumns[0].Value?.ToString();                 
 			}
 			for (int i = 1; i < row.RowColumns.Count; i++)
 			{
@@ -687,12 +876,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 								tv.Nodes.Add(TreeModelRowToTreeNode(e.Rows[j]));
 							}
 						}
-						else if (list[i] is Internal.ListView.ListView)
+						else if (list[i] is LISTVIEWTYPE)
 						{
-							Internal.ListView.ListView lv = (list[i] as Internal.ListView.ListView);
-							for (int j = 0; j < e.Rows.Count; j++)
+							LISTVIEWTYPE lv = (list[i] as LISTVIEWTYPE);
+							if (lv.VirtualMode)
 							{
-								lv.Items.Add(TreeModelRowToListViewItem(e.Rows[j]));
+								lv.VirtualListSize = GetVirtualListSize((tm as DefaultTreeModel).Rows);
+							}
+							else
+							{
+								for (int j = 0; j < e.Rows.Count; j++)
+								{
+									lv.Items.Add(TreeModelRowToListViewItem(e.Rows[j]));
+								}
 							}
 						}
 					}
@@ -727,9 +923,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						{
 							(list[i] as Internal.TreeView.ExplorerTreeView).Nodes.Clear();
 						}
-						else if (list[i] is Internal.ListView.ListView)
+						else if (list[i] is LISTVIEWTYPE)
 						{
-							(list[i] as Internal.ListView.ListView).Items.Clear();
+							(list[i] as LISTVIEWTYPE).Items.Clear();
 						}
 					}
 					break;
@@ -746,7 +942,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 
 			}
-			else if (hctrl is Internal.ListView.ListView)
+			else if (hctrl is LISTVIEWTYPE)
 			{
 			}
 
@@ -760,6 +956,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (lv == null)
 				return false;
 
+
 			if ((Handle as WindowsFormsNativeControl).Handle is Internal.TreeView.ExplorerTreeView)
 			{
 				if (_NodesForRow.ContainsKey(row))
@@ -767,9 +964,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					return _NodesForRow[row].IsExpanded;
 				}
 			}
+			else if ((Handle as WindowsFormsNativeControl).Handle is LISTVIEWTYPE)
+			{ 
+				if (_RowExpanded.ContainsKey(row))
+				{
+					return _RowExpanded[row];
+				}
+			}
 			return false;
 		}
 
+		private Dictionary<TreeModelRow, bool> _RowExpanded = new Dictionary<TreeModelRow, bool>();
 		private Dictionary<TreeModelRow, System.Windows.Forms.TreeNode> _NodesForRow = new Dictionary<TreeModelRow, System.Windows.Forms.TreeNode>();
 		public void SetRowExpanded(TreeModelRow row, bool expanded)
 		{
@@ -789,6 +994,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					{
 						_NodesForRow[row].Collapse();
 					}
+				}
+			}
+			else if ((Handle as WindowsFormsNativeControl).Handle is Internal.ListView.ListView)
+			{
+				_RowExpanded[row] = expanded;
+
+				if (expanded)
+				{
+					((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE).VirtualListSize = ((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE).VirtualListSize + row.Rows.Count;
+				}
+				else
+				{
+					((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE).VirtualListSize = ((Handle as WindowsFormsNativeControl).Handle as LISTVIEWTYPE).VirtualListSize - row.Rows.Count;
 				}
 			}
 		}

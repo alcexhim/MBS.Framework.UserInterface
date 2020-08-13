@@ -329,6 +329,21 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public int RowLevel
+		{
+			get
+			{
+				int level = -1;
+				TreeModelRow parent = this;
+				while (parent != null)
+				{
+					level++;
+					parent = parent.ParentRow;
+				}
+				return level;
+			}
+		}
+
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
 		public T GetExtraData<T>(string key, T defaultValue = default(T))
 		{

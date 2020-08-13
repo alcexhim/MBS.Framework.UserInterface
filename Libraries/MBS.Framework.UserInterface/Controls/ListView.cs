@@ -321,6 +321,13 @@ namespace MBS.Framework.UserInterface.Controls
 		public ListViewMode Mode { get; set; } = ListViewMode.Detail;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="ListViewItemSorter"/> sorts container rows (i.e. rows that contain other rows) first. Useful for
+		/// implementing a "sort folders before files" feature.
+		/// </summary>
+		/// <value><c>true</c> if container rows should be sorted first; otherwise, <c>false</c>.</value>
+		public bool SortContainerRowsFirst { get; set; } = false;
+
+		/// <summary>
 		/// Hits the test.
 		/// </summary>
 		/// <returns>A <see cref="ListViewHitTestInfo" /> indicating the results of the hit test. For <see cref="ListView" /> instances with a <see cref="ControlImplementation" />, this method SHOULD NEVER return null.</returns>

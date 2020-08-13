@@ -269,6 +269,7 @@
     <Compile Include="ListViewSelectionChangingEvent.cs" />
     <Compile Include="DragDrop\DragDropTargetType.cs" />
     <Compile Include="DragDrop\DragDropTargetTypes.cs" />
+    <Compile Include="CustomPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

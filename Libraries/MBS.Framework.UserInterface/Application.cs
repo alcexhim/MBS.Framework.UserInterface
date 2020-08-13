@@ -8,6 +8,7 @@ using UniversalEditor;
 using UniversalEditor.Accessors;
 using UniversalEditor.DataFormats.Markup.XML;
 using UniversalEditor.ObjectModels.Markup;
+using UniversalEditor.ObjectModels.PropertyList;
 
 namespace MBS.Framework.UserInterface
 {
@@ -460,6 +461,22 @@ namespace MBS.Framework.UserInterface
 			}
 			#endregion
 
+			#region Plugins
+			UpdateSplashScreenStatus("Loading plugins");
+
+			MarkupTagElement tagPlugins = (mvarRawMarkup.FindElement("ApplicationFramework", "Plugins") as MarkupTagElement);
+			if (tagPlugins != null)
+			{
+				foreach (MarkupElement elPlugin in tagPlugins.Elements)
+				{
+					MarkupTagElement tagPlugin = (elPlugin as MarkupTagElement);
+					if (tagPlugin == null) continue;
+					if (tagPlugin.FullName != "Plugin") continue;
+					InitializePlugin(tagPlugin);
+				}
+			}
+			#endregion
+
 			// UpdateSplashScreenStatus("Finalizing configuration");
 			// ConfigurationManager.Load();
 			#endregion
@@ -467,6 +484,49 @@ namespace MBS.Framework.UserInterface
 			Application.Title = DefaultLanguage?.GetStringTableEntry("Application.Title", Application.Title);
 
 			OnAfterConfigurationLoaded(EventArgs.Empty);
+		}
+
+		public static CustomPlugin.CustomPluginCollection CustomPlugins { get; } = new CustomPlugin.CustomPluginCollection();
+
+		private static void InitializePlugin(MarkupTagElement tag)
+		{
+			CustomPlugin plugin = new CustomPlugin();
+			plugin.ID = new Guid(tag.Attributes["ID"]?.Value);
+			plugin.Title = tag.Attributes["Title"]?.Value;
+
+			MarkupTagElement tagProvidedFeatures = tag.Elements["ProvidedFeatures"] as MarkupTagElement;
+			if (tagProvidedFeatures != null)
+			{
+				for (int i = 0; i < tagProvidedFeatures.Elements.Count; i++)
+				{
+					MarkupTagElement tagProvidedFeature = (tagProvidedFeatures.Elements[i] as MarkupTagElement);
+					if (tagProvidedFeature == null) continue;
+					if (tagProvidedFeature.FullName != "ProvidedFeature") continue;
+
+					string featureId = tagProvidedFeature.Attributes["FeatureID"]?.Value;
+					if (featureId == null) continue;
+
+					plugin.ProvidedFeatures.Add(new Feature(new Guid(featureId), tagProvidedFeature.Attributes["Title"]?.Value));
+				}
+			}
+
+			MarkupTagElement tagConfiguration = tag.Elements["Configuration"] as MarkupTagElement;
+			if (tagConfiguration != null)
+			{
+				MarkupObjectModel cfg = new MarkupObjectModel();
+				cfg.Elements.Add(tagConfiguration);
+
+				PropertyListObjectModel plom = new PropertyListObjectModel();
+				MemoryAccessor ma = new MemoryAccessor();
+				Document.Save(cfg, new XMLDataFormat(), ma);
+				ma.Position = 0;
+
+				Document.Load(plom, new UniversalEditor.DataFormats.PropertyList.XML.XMLPropertyListDataFormat(), ma);
+
+				plugin.Configuration = plom;
+			}
+
+			CustomPlugins.Add(plugin);
 		}
 
 		private static void InitializeLanguage(MarkupTagElement tag)

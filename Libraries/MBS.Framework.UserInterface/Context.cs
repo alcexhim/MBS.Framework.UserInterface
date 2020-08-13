@@ -82,13 +82,13 @@ namespace MBS.Framework.UserInterface
 			}
 			return false;
 		}
-		public bool ExecuteCommand(string commandID)
+		public bool ExecuteCommand(string commandID, KeyValuePair<string, object>[] namedParameters = null)
 		{
 			if (_CommandEventHandlers.ContainsKey(commandID))
 			{
 				for (int i = 0; i < _CommandEventHandlers[commandID].Count; i++)
 				{
-					_CommandEventHandlers[commandID][i](this, EventArgs.Empty);
+					_CommandEventHandlers[commandID][i](this, new CommandEventArgs(Commands[commandID], namedParameters));
 				}
 			}
 			return false;

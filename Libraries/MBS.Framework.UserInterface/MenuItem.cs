@@ -98,6 +98,8 @@ namespace MBS.Framework.UserInterface
 					CommandMenuItem mi = new CommandMenuItem(cmd.Title);
 					mi.Name = cmd.ID;
 					mi.Shortcut = cmd.Shortcut;
+					mi.StockType = cmd.StockType;
+					mi.IconName = cmd.ImageFileName;
 					if (cmd.Items.Count > 0)
 					{
 						foreach (CommandItem ci1 in cmd.Items)

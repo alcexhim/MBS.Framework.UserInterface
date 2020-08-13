@@ -20,12 +20,16 @@ namespace MBS.Framework.UserInterface
 		public Shortcut Shortcut { get { return mvarShortcut; } set { mvarShortcut = value; } }
 
 		public bool Enabled { get; set; } = true;
+		public StockType StockType { get; set; } = StockType.None;
+		public string IconName { get; set; } = null;
 
 		public event EventHandler Click;
 
-		public void OnClick(EventArgs e) {
-			if (Click != null) {
-				Click (this, e);
+		public void OnClick(EventArgs e)
+		{
+			if (Click != null)
+			{
+				Click(this, e);
 			}
 		}
 
@@ -37,12 +41,15 @@ namespace MBS.Framework.UserInterface
 		public CommandMenuItem(string text, MenuItem[] items = null, EventHandler onClick = null, Shortcut shortcut = null)
 		{
 			mvarText = text;
-			if (items != null) {
-				foreach (MenuItem item in items) {
-					mvarItems.Add (item);
+			if (items != null)
+			{
+				foreach (MenuItem item in items)
+				{
+					mvarItems.Add(item);
 				}
 			}
-			if (onClick != null) {
+			if (onClick != null)
+			{
 				Click += onClick;
 			}
 			mvarShortcut = shortcut;

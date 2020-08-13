@@ -233,6 +233,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					Console.WriteLine("could not set shortcut keys value from uwt {0} to winforms {1}", cmi.Shortcut, ShortcutToShortcutKeys(cmi.Shortcut));
 				}
 
+				string imageFileName = null;
+				if (cmi.StockType != StockType.None)
+				{
+					imageFileName = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, StockTypeToString(cmi.StockType)));
+				}
+				else if (cmi.IconName != null)
+				{
+					imageFileName = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, cmi.IconName));
+				}
+
+				if (imageFileName != null)
+					hMenuFile.Image = System.Drawing.Image.FromFile(imageFileName);
+
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					hMenuFile.Alignment = ToolStripItemAlignment.Right;
@@ -242,7 +255,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				{
 					for (int i = 0; i < cmi.Items.Count; i++)
 					{
-						hMenuFile.DropDownItems.Add(InitMenuItem(cmi.Items[i]));
+						if (cmi.Items[i] == null)
+						{
+							Console.WriteLine("uwt: wf: ERROR: MenuItem is null in {0} ({1})", cmi.Text, cmi.Name);
+							continue;
+						}
+
+						System.Windows.Forms.ToolStripItem tsiChild = InitMenuItem(cmi.Items[i]);
+						if (tsiChild == null) continue;
+
+						hMenuFile.DropDownItems.Add(tsiChild);
 					}
 				}
 
@@ -255,6 +277,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				RegisterMenuItemHandle(menuItem, new WindowsFormsNativeMenuItem(hMenuFile));
 				return hMenuFile;
 			}
+
+			Console.WriteLine("uwt: wf: ERROR: could not create ToolStripMenuItem {0}", menuItem.GetType().FullName);
 			return null;
 		}
 

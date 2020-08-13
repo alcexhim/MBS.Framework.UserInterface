@@ -80,11 +80,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 						{
 							if (tsb.StockType != StockType.None)
 							{
-								iconWidget = null;  // WindowsFormsEngine.GetStockImage(stockTypeID);
-								if (iconWidget != null)
+								try
 								{
-									(hItem as System.Windows.Forms.ToolStripButton).Image = iconWidget;
+									string filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, stockTypeID));
+									if (filename == null)
+									{
+										filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", stockTypeID));
+									}
+									if (filename != null)
+										iconWidget = System.Drawing.Image.FromFile(filename);
 								}
+								catch (System.IO.FileNotFoundException ex)
+								{
+									Console.WriteLine("stock icon image '{0}' not found for theme '{1}'", stockTypeID, "Default");
+								}
+							}
+							else if (tsb.IconName != null)
+							{
+								string filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, tsb.IconName));
+								if (filename == null)
+								{
+									filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", tsb.IconName));
+								}
+								if (filename != null)
+									iconWidget = System.Drawing.Image.FromFile(filename);
+							}
+							if (iconWidget != null)
+							{
+								(hItem as System.Windows.Forms.ToolStripButton).Image = iconWidget;
 							}
 							break;
 						}

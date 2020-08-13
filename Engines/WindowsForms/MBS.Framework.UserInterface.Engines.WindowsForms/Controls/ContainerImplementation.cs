@@ -150,25 +150,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					case BoxLayout.PackType.Start:
 					case BoxLayout.PackType.End:
 					{
-						System.Windows.Forms.AnchorStyles anchor = System.Windows.Forms.AnchorStyles.None;
-						if (c.Expand)
-						{
-							anchor = System.Windows.Forms.AnchorStyles.None;
-						}
-						else
-						{
-							anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-						}
-						if (c.Fill)
-						{
-							anchor |= System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
-						}
-
-						if (c.Expand && c.Fill)
-						{
-							ctlNative.Dock = System.Windows.Forms.DockStyle.Fill;
-						}
-						ctlNative.Anchor = anchor;
+						ctlNative.Dock = System.Windows.Forms.DockStyle.Fill;
 
 						switch (box.Orientation)
 						{
@@ -183,7 +165,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 								break;
 							}
 						}
-						// (hContainer as System.Windows.Forms.TableLayoutPanel).SetRowSpan(ctl
+						if (!c.Expand /*&&  !c.Fill */)
+						{
+							(hContainer as System.Windows.Forms.TableLayoutPanel).RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+						}
+						else
+						{
+							(hContainer as System.Windows.Forms.TableLayoutPanel).RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0f));
+						}
 						break;
 					}
 				}

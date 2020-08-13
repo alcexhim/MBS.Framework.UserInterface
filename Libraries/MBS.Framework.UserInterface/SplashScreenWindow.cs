@@ -39,9 +39,10 @@ namespace MBS.Framework.UserInterface
 			this.StatusBar.Visible = false;
 			
 			PictureFrame image = new PictureFrame();
-			if (System.IO.File.Exists("splash.bmp"))
+			string imageFileName = MBS.Framework.IO.File.Find("splash.bmp");
+			if (imageFileName != null)
 			{
-				image.Image = Image.FromFile("splash.bmp");
+				image.Image = Image.FromFile(imageFileName);
 			}
 			else
 			{

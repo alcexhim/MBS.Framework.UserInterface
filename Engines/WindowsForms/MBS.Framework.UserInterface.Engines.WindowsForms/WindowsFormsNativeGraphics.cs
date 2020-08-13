@@ -113,7 +113,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
-			System.Drawing.StringFormat format = System.Drawing.StringFormat.GenericDefault;
+			System.Drawing.StringFormat format = new System.Drawing.StringFormat();
 			format.Alignment = AlignmentToStringAlignment(horizontalAlignment);
 			format.LineAlignment = AlignmentToStringAlignment(verticalAlignment);
 			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), Vector2DToNativePointF(location), format);
@@ -121,10 +121,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
-			System.Drawing.StringFormat format = System.Drawing.StringFormat.GenericDefault;
+			System.Drawing.StringFormat format = new System.Drawing.StringFormat();
 			format.Alignment = AlignmentToStringAlignment(horizontalAlignment);
 			format.LineAlignment = AlignmentToStringAlignment(verticalAlignment);
-			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), new System.Drawing.RectangleF((float)rectangle.X, (float)rectangle.Y, (float)rectangle.Width, (float)rectangle.Height), format);
+			// Console.WriteLine("coordinate rect : {0}", rectangle);
+
+			System.Drawing.RectangleF rect = new System.Drawing.RectangleF((float)rectangle.X, (float)rectangle.Y, (float)rectangle.Width, (float)rectangle.Height);
+			System.Drawing.PointF pt = new System.Drawing.PointF((float)rectangle.X, (float)rectangle.Y);
+			pt.Y -= 12; // I don't even know
+			pt.X -= 2;
+			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), pt, format);
 		}
 	}
 }

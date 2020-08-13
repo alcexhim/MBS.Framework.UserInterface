@@ -24,6 +24,10 @@ namespace MBS.Framework.UserInterface.Controls
 {
 	public class SyntaxTextBox : TextBox
 	{
+		public SyntaxTextBox()
+		{
+			Multiline = true;
+		}
 	}
 }
 

@@ -12,9 +12,12 @@ using LISTVIEWTYPE = MBS.Framework.UserInterface.Engines.WindowsForms.Controls.I
 using LISTVIEWITEMTYPE = System.Windows.Forms.ListViewItem;
 using LISTVIEWCOLUMNHEADERTYPE = System.Windows.Forms.ColumnHeader; // BrightIdeasSoftware.OLVColumn;
 
+using MBS.Framework.UserInterface.Controls.ListView;
+using MBS.Framework.UserInterface.Controls.ListView.Native;
+
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
-	[ControlImplementation(typeof(ListView))]
+	[ControlImplementation(typeof(ListViewControl))]
 	public class ListViewImplementation : WindowsFormsNativeImplementation, IListViewNativeImplementation, MBS.Framework.UserInterface.Native.ITreeModelRowCollectionNativeImplementation
 	{
 		private enum ImplementedAsType
@@ -28,7 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			/// </summary>
 			ListView
 		}
-		private static ImplementedAsType ImplementedAs(ListView tv)
+		private static ImplementedAsType ImplementedAs(ListViewControl tv)
 		{
 			return ImplementedAsType.ListView;
 
@@ -61,7 +64,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 
 		private SelectionMode _SelectionMode = SelectionMode.Single;
-		private void SetSelectionModeInternal(System.Windows.Forms.Control handle, ListView tv, SelectionMode value)
+		private void SetSelectionModeInternal(System.Windows.Forms.Control handle, ListViewControl tv, SelectionMode value)
 		{
 			_SelectionMode = value;
 			switch (value)
@@ -95,7 +98,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 		}
 
-		private SelectionMode GetSelectionModeInternal(System.Windows.Forms.Control handle, ListView tv)
+		private SelectionMode GetSelectionModeInternal(System.Windows.Forms.Control handle, ListViewControl tv)
 		{
 			switch (ImplementedAs(tv))
 			{
@@ -125,13 +128,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetSelectionMode(SelectionMode value)
 		{
 			System.Windows.Forms.Control handle = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Control);
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			SetSelectionModeInternal(handle, tv, value);
 		}
 		public SelectionMode GetSelectionMode()
 		{
 			System.Windows.Forms.Control handle = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Control);
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			return GetSelectionModeInternal(handle, tv);
 		}
 
@@ -181,7 +184,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		public void UpdateTreeModelColumn(TreeModelRowColumn rc)
 		{
-			TreeModel tm = (rc.Parent.ParentControl as ListView).Model;
+			TreeModel tm = (rc.Parent.ParentControl as ListViewControl).Model;
 
 			// Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 		}
@@ -287,18 +290,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		protected virtual void OnRowColumnEditing(TreeModelRowColumnEditingEventArgs e)
 		{
-			InvokeMethod((Control as ListView), "OnRowColumnEditing", new object[] { e });
+			InvokeMethod((Control as ListViewControl), "OnRowColumnEditing", new object[] { e });
 		}
 		protected virtual void OnRowColumnEdited(TreeModelRowColumnEditedEventArgs e)
 		{
-			InvokeMethod((Control as ListView), "OnRowColumnEdited", new object[] { e });
+			InvokeMethod((Control as ListViewControl), "OnRowColumnEdited", new object[] { e });
 		}
 
 		private TreeModel _OldModel = null;
 
 		protected void UpdateTreeModel (System.Windows.Forms.Control handle)
 		{
-			ListView tv = (Control as ListView);
+			ListViewControl tv = (Control as ListViewControl);
 
 			if (tv.Model != null)
 			{
@@ -359,7 +362,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			List<TreeModelRow> list = new List<TreeModelRow>();
 			List<TreeModelRow> templist = new List<TreeModelRow>();
 
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 			for (int i = 0; i < rows.Count; i++)
 			{
 				templist.Add(rows[i]);
@@ -382,7 +385,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 		public TreeModelRow GetVirtualListRow(int index)
 		{
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 			List<TreeModelRow> rows = GetVirtualListRows(lv.Model.Rows);
 			if (index >= 0 && index < rows.Count)
 			{
@@ -393,7 +396,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		public int GetVirtualListIndex(TreeModelRow row)
 		{
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 			if (row.ParentRow == null)
 			{
 				int end = lv.Model.Rows.IndexOf(row);
@@ -469,7 +472,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			ListView tv = (control as ListView);
+			ListViewControl tv = (control as ListViewControl);
 			System.Windows.Forms.Control handle = null;
 
 			// TODO: fix GtkTreeView implementation
@@ -511,7 +514,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					(handle as LISTVIEWTYPE).View = System.Windows.Forms.View.Details;
 					(handle as LISTVIEWTYPE).ColumnClick += Handle_ColumnClick;
 
-					lvwColumnSorter = new ListViewItemSorter(control as ListView, handle as LISTVIEWTYPE);
+					lvwColumnSorter = new ListViewItemSorter(control as ListViewControl, handle as LISTVIEWTYPE);
 
 					if (tv.Model != null && !TreeModelAssociatedControls[tv.Model].Contains(handle))
 					{
@@ -532,9 +535,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private class ListViewItemSorter : IComparer<TreeModelRow>
 		{
 			public LISTVIEWTYPE Parent { get; private set; } = null;
-			public ListView Control { get; private set; } = null;
+			public ListViewControl Control { get; private set; } = null;
 
-			public ListViewItemSorter(ListView ctl, LISTVIEWTYPE lvparent)
+			public ListViewItemSorter(ListViewControl ctl, LISTVIEWTYPE lvparent)
 			{
 				Parent = lvparent;
 				Control = ctl;
@@ -628,7 +631,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		void lv_ItemSelectionChanged(object sender, System.Windows.Forms.ListViewItemSelectionChangedEventArgs e)
 		{
 			LISTVIEWTYPE _lv = (sender as LISTVIEWTYPE);
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 
 			Console.WriteLine("selected rows: {0}", lv.SelectedRows.Count);
 			InvokeMethod(lv, "OnSelectionChanged", new object[] { e });
@@ -637,7 +640,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void tv_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
 		{
-			((sender as Internal.TreeView.ExplorerTreeView).Tag as ListView).OnSelectionChanged(e);
+			((sender as Internal.TreeView.ExplorerTreeView).Tag as ListViewControl).OnSelectionChanged(e);
 		}
 
 
@@ -654,7 +657,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private void lv_ItemActivate(object sender, EventArgs e)
 		{
 			LISTVIEWTYPE handle = (sender as LISTVIEWTYPE);
-			ListView lv = (handle.Tag as ListView);
+			ListViewControl lv = (handle.Tag as ListViewControl);
 
 			if (handle.SelectedIndices.Count > 0)
 			{
@@ -664,7 +667,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private void tv_NodeMouseDoubleClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e)
 		{
 			Internal.TreeView.ExplorerTreeView tv = (sender as Internal.TreeView.ExplorerTreeView);
-			ListView lv = (tv.Tag as ListView);
+			ListViewControl lv = (tv.Tag as ListViewControl);
 			TreeModelRow row = (e.Node.Tag as TreeModelRow);
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
 		}
@@ -672,7 +675,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		private void tv_AfterLabelEdit(object sender, System.Windows.Forms.NodeLabelEditEventArgs e)
 		{
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 			if (lv.Model == null)
 				return;
 
@@ -797,7 +800,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			base.OnKeyDown (e);
 
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null) return;
 
 			if (lv.SelectedRows.Count != 1) return;
@@ -946,13 +949,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 			}
 
-			UpdateTreeModel((Control as ListView).Model, e);
+			UpdateTreeModel((Control as ListViewControl).Model, e);
 		}
 
 
 		public bool IsRowExpanded(TreeModelRow row)
 		{
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null)
 				return false;
 
@@ -978,7 +981,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private Dictionary<TreeModelRow, System.Windows.Forms.TreeNode> _NodesForRow = new Dictionary<TreeModelRow, System.Windows.Forms.TreeNode>();
 		public void SetRowExpanded(TreeModelRow row, bool expanded)
 		{
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null)
 				return;
 

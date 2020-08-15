@@ -1,5 +1,6 @@
 ﻿using System;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
@@ -27,7 +28,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 	public class SettingsDialog : Dialog
 	{
 		private DefaultTreeModel tmOptionGroups = null;
-		private ListView tv = null;
+		private ListViewControl tv = null;
 		private SplitContainer vpaned = null;
 
 		private StackSidebar sidebar = null;
@@ -100,7 +101,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.Controls.Add(vpaned, new BoxLayout.Constraints(true, true, 0, BoxLayout.PackType.Start));
 
-			tv = new ListView();
+			tv = new ListViewControl();
 			tv.Model = tmOptionGroups;
 			tv.Columns.Add (new ListViewColumnText (tmOptionGroups.Columns [0], "Group"));
 			tv.HeaderStyle = ColumnHeaderStyle.None;

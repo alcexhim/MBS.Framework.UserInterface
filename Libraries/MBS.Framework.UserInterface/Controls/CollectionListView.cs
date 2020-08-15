@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Controls
@@ -26,9 +27,9 @@ namespace MBS.Framework.UserInterface.Controls
 	public class CollectionListView : Container
 	{
 		private Toolbar tbItems;
-		private ListView lvItems;
+		private ListViewControl lvItems;
 
-		public ListView ListView { get { return lvItems; } }
+		public ListViewControl ListView { get { return lvItems; } }
 
 		private void InitializeComponent()
 		{
@@ -46,7 +47,7 @@ namespace MBS.Framework.UserInterface.Controls
 
 			Controls.Add(tbItems, new BoxLayout.Constraints(false, false));
 
-			lvItems = new ListView();
+			lvItems = new ListViewControl();
 			Controls.Add(lvItems, new BoxLayout.Constraints(true, true));
 		}
 

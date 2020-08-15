@@ -114,7 +114,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Lis
 				{
 					ListViewItem.ListViewSubItem lvsi = new ListViewItem.ListViewSubItem();
 
-					UserInterface.Controls.ListViewColumn tvc = Columns[i].Tag as UserInterface.Controls.ListViewColumn;
+					UserInterface.Controls.ListView.ListViewColumn tvc = Columns[i].Tag as UserInterface.Controls.ListView.ListViewColumn;
 					if (tvc != null)
 					{
 						if (row.RowColumns[tvc.Column] != null)

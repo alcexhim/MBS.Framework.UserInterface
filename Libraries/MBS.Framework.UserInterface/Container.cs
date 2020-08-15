@@ -3,6 +3,7 @@ using UniversalEditor;
 using UniversalEditor.Accessors;
 
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.DataFormats.Layout.Glade;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Layouts;
@@ -345,11 +346,11 @@ namespace MBS.Framework.UserInterface
 				case "GtkIconView":
 				case "GtkTreeView":
 				{
-					ctl = new ListView();
+					ctl = new ListViewControl();
 					if (item.Properties["model"] != null)
 					{
 						DefaultTreeModel tm = GetPropertyOrLocalRef(item.Properties["model"].Value) as DefaultTreeModel;
-						(ctl as ListView).Model = tm;
+						(ctl as ListViewControl).Model = tm;
 					}
 					foreach (LayoutItem item2 in item.Items)
 					{
@@ -361,11 +362,11 @@ namespace MBS.Framework.UserInterface
 								if (item2.Items[0].Attributes["text"] != null)
 								{
 									int colindex = Int32.Parse(item2.Items[0].Attributes["text"].Value);
-									col = (ctl as ListView).Model?.Columns[colindex];
+									col = (ctl as ListViewControl).Model?.Columns[colindex];
 								}
 							}
 							ListViewColumn ch = new ListViewColumnText(col, item2.Properties["title"]?.Value);
-							(ctl as ListView).Columns.Add(ch);
+							(ctl as ListViewControl).Columns.Add(ch);
 						}
 						else if (item2.ClassName == "GtkTreeSelection" && item2.InternalType == "selection")
 						{
@@ -376,28 +377,28 @@ namespace MBS.Framework.UserInterface
 								{
 									case "none":
 									{
-										(ctl as ListView).SelectionMode = SelectionMode.None;
+										(ctl as ListViewControl).SelectionMode = SelectionMode.None;
 										break;
 									}
 									case "multiple":
 									{
-										(ctl as ListView).SelectionMode = SelectionMode.Multiple;
+										(ctl as ListViewControl).SelectionMode = SelectionMode.Multiple;
 										break;
 									}
 									case "browse":
 									{
-										(ctl as ListView).SelectionMode = SelectionMode.Browse;
+										(ctl as ListViewControl).SelectionMode = SelectionMode.Browse;
 										break;
 									}
 									case "single":
 									{
-										(ctl as ListView).SelectionMode = SelectionMode.Single;
+										(ctl as ListViewControl).SelectionMode = SelectionMode.Single;
 										break;
 									}
 									default:
 									{
 										// if the property is there, but is invalid, SelectionMode gets set to None
-										(ctl as ListView).SelectionMode = SelectionMode.None;
+										(ctl as ListViewControl).SelectionMode = SelectionMode.None;
 										break;
 									}
 								}
@@ -405,7 +406,7 @@ namespace MBS.Framework.UserInterface
 							else
 							{
 								// if the property isn't there at all, SelectionMode gets set to Single
-								(ctl as ListView).SelectionMode = SelectionMode.Single;
+								(ctl as ListViewControl).SelectionMode = SelectionMode.Single;
 							}
 						}
 					}

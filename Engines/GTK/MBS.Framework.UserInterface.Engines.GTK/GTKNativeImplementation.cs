@@ -24,6 +24,7 @@ using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.ListView;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
@@ -339,7 +340,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		/// </summary>
 		private IntPtr FindEventHandlingHandle(GTKNativeControl fakeHandle, Control ctl)
 		{
-			if (ctl is ListView)
+			if (ctl is ListViewControl)
 			{
 				return GetScrolledWindowChild(fakeHandle.Handle);
 			}

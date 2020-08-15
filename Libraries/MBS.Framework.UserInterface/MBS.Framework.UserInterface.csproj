@@ -117,7 +117,6 @@
     <Compile Include="Controls\SplitContainer.cs" />
     <Compile Include="NotificationIcon.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="Controls\ListView.cs" />
     <Compile Include="TreeModel.cs" />
     <Compile Include="NotificationPopup.cs" />
     <Compile Include="Dialog.cs" />
@@ -273,6 +272,9 @@
     <Compile Include="DragDrop\DragDropTargetType.cs" />
     <Compile Include="DragDrop\DragDropTargetTypes.cs" />
     <Compile Include="CustomPlugin.cs" />
+    <Compile Include="Controls\ListView\ListViewRowActivatedEvent.cs" />
+    <Compile Include="Controls\ListView\ListViewColumn.cs" />
+    <Compile Include="Controls\ListView\ListViewControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -313,5 +315,6 @@
     <Folder Include="Controls\FileBrowser\" />
     <Folder Include="Printing\" />
     <Folder Include="Controls\HexEditor\" />
+    <Folder Include="Controls\ListView\" />
   </ItemGroup>
 </Project>

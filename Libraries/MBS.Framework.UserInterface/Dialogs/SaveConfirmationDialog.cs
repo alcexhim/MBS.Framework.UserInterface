@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Dialogs
@@ -46,7 +47,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private Label lblTitle = null;
 		private Label lblNoSaveWarning = null;
-		private ListView lv = null;
+		private ListViewControl lv = null;
 		private DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(bool), typeof(string) });
 
 		public SaveConfirmationDialog()
@@ -68,7 +69,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			lblTitle.HorizontalAlignment = HorizontalAlignment.Left;
 			ct.Controls.Add(lblTitle, new BoxLayout.Constraints(false, false, 8));
 
-			this.lv = new ListView();
+			this.lv = new ListViewControl();
 			lv.Model = tm;
 			lv.Columns.Add(new ListViewColumnCheckBox(tm.Columns[0], "Save"));
 			lv.Columns.Add(new ListViewColumnText(tm.Columns[1], "File name"));

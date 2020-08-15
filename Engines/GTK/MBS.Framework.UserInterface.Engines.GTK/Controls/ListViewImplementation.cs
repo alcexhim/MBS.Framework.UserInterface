@@ -9,10 +9,12 @@ using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Engines.GTK.Internal.GLib;
 using MBS.Framework.UserInterface.Engines.GTK.Internal.GTK;
+using MBS.Framework.UserInterface.Controls.ListView;
+using MBS.Framework.UserInterface.Controls.ListView.Native;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
-	[ControlImplementation(typeof(ListView))]
+	[ControlImplementation(typeof(ListViewControl))]
 	public class ListViewImplementation : GTKNativeImplementation, IListViewNativeImplementation, MBS.Framework.UserInterface.Native.ITreeModelRowCollectionNativeImplementation
 	{
 		private enum ImplementedAsType
@@ -20,7 +22,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			TreeView,
 			IconView
 		}
-		private static ImplementedAsType ImplementedAs(ListView tv)
+		private static ImplementedAsType ImplementedAs(ListViewControl tv)
 		{
 			switch (tv.Mode)
 			{
@@ -46,7 +48,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			gtk_cell_renderer_edited_d = new Action<IntPtr, string, string, IntPtr>(gtk_cell_renderer_edited);
 		}
 
-		private void SetSelectionModeInternal(IntPtr handle, ListView tv, SelectionMode value)
+		private void SetSelectionModeInternal(IntPtr handle, ListViewControl tv, SelectionMode value)
 		{
 			switch (ImplementedAs(tv))
 			{
@@ -68,7 +70,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			
 		}
 
-		private SelectionMode GetSelectionModeInternal(IntPtr handle, ListView tv)
+		private SelectionMode GetSelectionModeInternal(IntPtr handle, ListViewControl tv)
 		{
 			switch (ImplementedAs(tv))
 			{
@@ -90,19 +92,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public void SetSelectionMode(SelectionMode value)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			SetSelectionModeInternal(handle, tv, value);
 		}
 		public SelectionMode GetSelectionMode()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			return GetSelectionModeInternal(handle, tv);
 		}
 
 		public ListViewHitTestInfo HitTest(double x, double y)
 		{
-			IntPtr hTreeView = GetHandleForControl(Control as ListView);
+			IntPtr hTreeView = GetHandleForControl(Control as ListViewControl);
 			return HitTestInternal(hTreeView, x, y);
 		}
 		private ListViewHitTestInfo HitTestInternal(IntPtr handle, double x, double y)
@@ -133,7 +135,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		/// </summary>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 			if (tv == null) return;
 
@@ -184,7 +186,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			if (e.Buttons == MouseButtons.Primary && e.ModifierKeys == KeyboardModifierKey.None) {
 
-				ListView tv = Control as ListView;
+				ListViewControl tv = Control as ListViewControl;
 				IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 				if (tv == null) return;
 
@@ -197,7 +199,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private TreeModelRow prevSelectedRow = null;
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			ListView tv = Control as ListView;
+			ListViewControl tv = Control as ListViewControl;
 			UnblockSelection();
 			if (e.ModifierKeys == KeyboardModifierKey.None)
 			{
@@ -236,7 +238,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void UpdateTreeModelColumn(TreeModelRowColumn rc)
 		{
-			TreeModel tm = (rc.Parent.ParentControl as ListView).Model;
+			TreeModel tm = (rc.Parent.ParentControl as ListViewControl).Model;
 			GTKNativeTreeModel ntm = Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel;
 			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(rc.Parent);
 
@@ -291,7 +293,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Action<IntPtr, string, string, IntPtr> gtk_cell_renderer_edited_d = null;
 		private void gtk_cell_renderer_edited(IntPtr /*GtkCellRendererText*/ renderer, string path, string new_text, IntPtr user_data)
 		{
-			ListView lv = (Control as ListView);
+			ListViewControl lv = (Control as ListViewControl);
 			if (lv.Model == null)
 				return;
 
@@ -320,16 +322,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		protected virtual void OnRowColumnEditing(TreeModelRowColumnEditingEventArgs e)
 		{
-			InvokeMethod((Control as ListView), "OnRowColumnEditing", new object[] { e });
+			InvokeMethod((Control as ListViewControl), "OnRowColumnEditing", new object[] { e });
 		}
 		protected virtual void OnRowColumnEdited(TreeModelRowColumnEditedEventArgs e)
 		{
-			InvokeMethod((Control as ListView), "OnRowColumnEdited", new object[] { e });
+			InvokeMethod((Control as ListViewControl), "OnRowColumnEdited", new object[] { e });
 		}
 
 		protected void UpdateTreeModel (IntPtr handle)
 		{
-			ListView tv = (Control as ListView);
+			ListViewControl tv = (Control as ListViewControl);
 
 			if (tv.Model != null)
 			{
@@ -496,7 +498,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			ListView tv = (control as ListView);
+			ListViewControl tv = (control as ListViewControl);
 			IntPtr handle = IntPtr.Zero;
 
 			// TODO: fix GtkTreeView implementation
@@ -672,20 +674,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		// TODO: figure out why _ControlsByHandle is ONLY SOMETIMES
 		//       (for certain instances) but CONSISTENTLY (for the
 		//       same instance, multiple times), null...
-		private static Dictionary<IntPtr, ListView> _ControlsByHandle = new Dictionary<IntPtr, ListView>();
-		private static Dictionary<ListView, IntPtr> _HandlesByControl = new Dictionary<ListView, IntPtr>();
-		private static void RegisterListViewHandle(ListView lv, IntPtr handle)
+		// also FIXME: why the hell are we storing all this separately anyway? we have Engine.RegisterControlHandle for a reason...
+		private static Dictionary<IntPtr, ListViewControl> _ControlsByHandle = new Dictionary<IntPtr, ListViewControl>();
+		private static Dictionary<ListViewControl, IntPtr> _HandlesByControl = new Dictionary<ListViewControl, IntPtr>();
+		private static void RegisterListViewHandle(ListViewControl lv, IntPtr handle)
 		{
 			_ControlsByHandle[handle] = lv;
 			_HandlesByControl[lv] = handle;
 		}
-		private static IntPtr GetHandleForControl(ListView lv)
+		private static IntPtr GetHandleForControl(ListViewControl lv)
 		{
 			if (_HandlesByControl.ContainsKey(lv))
 				return _HandlesByControl[lv];
 			return IntPtr.Zero;
 		}
-		private static ListView GetControlByHandle(IntPtr handle)
+		private static ListViewControl GetControlByHandle(IntPtr handle)
 		{
 			if (_ControlsByHandle.ContainsKey(handle))
 				return _ControlsByHandle[handle];
@@ -696,7 +699,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private static void gc_cursor_or_selection_changed(IntPtr handle)
 		{
-			ListView ctl = GetControlByHandle(handle);
+			ListViewControl ctl = GetControlByHandle(handle);
 			if (ctl != null)
 			{
 				// TODO: figure out how we can fake an OnSelectionChanging event, save the previous selection, and then restore the previous selection
@@ -748,7 +751,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		
 		private static void gc_row_activated(IntPtr handle, IntPtr /*GtkTreePath*/ path, IntPtr /*GtkTreeViewColumn*/ column)
 		{
-			ListView lv = (GetControlByHandle(handle) as ListView);
+			ListViewControl lv = (GetControlByHandle(handle) as ListViewControl);
 			if (lv == null) return;
 
 			IntPtr hModel = (lv.ControlImplementation.Engine.GetHandleForTreeModel(lv.Model) as GTKNativeTreeModel).Handle;
@@ -765,7 +768,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			base.OnKeyDown (e);
 
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null) return;
 
 			if (lv.SelectedRows.Count != 1) return;
@@ -813,7 +816,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		internal override void RegisterDragSourceGTK(IntPtr hScrolledWindow, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
 		{
 			IntPtr hTreeView = GetHTreeView(hScrolledWindow);
-			ListView tv = (GetControlByHandle(hTreeView) as ListView);
+			ListViewControl tv = (GetControlByHandle(hTreeView) as ListViewControl);
 			switch (ImplementedAs(tv))
 			{
 				case ImplementedAsType.IconView:
@@ -887,7 +890,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hTreeView = (handle as GTKNativeControl).GetNamedHandle("TreeView");
 			if (hTreeView == IntPtr.Zero) return;
 
-			ListView ctl = (_ControlsByHandle[hTreeView] as ListView);
+			ListViewControl ctl = (_ControlsByHandle[hTreeView] as ListViewControl);
 			if (ctl == null) {
 				Console.Error.WriteLine("UpdateTreeModel: _ControlsByHandle[" + hTreeView.ToString() + "] is null");
 				return;
@@ -917,7 +920,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public bool IsRowExpanded(TreeModelRow row)
 		{
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null)
 				return false;
 
@@ -932,7 +935,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 		public void SetRowExpanded(TreeModelRow row, bool expanded)
 		{
-			ListView lv = Control as ListView;
+			ListViewControl lv = Control as ListViewControl;
 			if (lv == null)
 				return;
 

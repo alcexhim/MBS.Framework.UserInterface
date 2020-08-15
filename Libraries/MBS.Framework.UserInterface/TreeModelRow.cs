@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UniversalEditor;
-using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.ListView;
 
 namespace MBS.Framework.UserInterface
 {
@@ -46,8 +46,8 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			public ListView Parent { get; private set; }
-			public TreeModelSelectedRowCollection(ListView parent)
+			public ListViewControl Parent { get; private set; }
+			public TreeModelSelectedRowCollection(ListViewControl parent)
 			{
 				Parent = parent;
 			}
@@ -120,7 +120,7 @@ namespace MBS.Framework.UserInterface
 
 		internal void UpdateColumnValue(TreeModelRowColumn rc)
 		{
-			(ParentControl?.ControlImplementation as Controls.Native.IListViewNativeImplementation)?.UpdateTreeModelColumn(rc);
+			(ParentControl?.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModelColumn(rc);
 		}
 
 		public class TreeModelRowCollection
@@ -284,7 +284,7 @@ namespace MBS.Framework.UserInterface
 					}
 					if (ParentControl != null)
 					{
-						(ParentControl.ControlImplementation as MBS.Framework.UserInterface.Controls.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
+						(ParentControl.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
 					}
 					break;
 				}
@@ -299,7 +299,7 @@ namespace MBS.Framework.UserInterface
 					}
 					if (ParentControl != null)
 					{
-						(ParentControl.ControlImplementation as MBS.Framework.UserInterface.Controls.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, list.ToArray(), this));
+						(ParentControl.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, list.ToArray(), this));
 					}
 					break;
 				}

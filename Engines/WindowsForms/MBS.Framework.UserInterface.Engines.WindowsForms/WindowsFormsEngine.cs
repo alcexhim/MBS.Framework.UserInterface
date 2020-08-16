@@ -906,14 +906,38 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return (GetHandleForControl(control) as WindowsFormsNativeControl).Handle.Enabled;
 		}
 
-		[System.Runtime.InteropServices.DllImport("user32.dll")]
-		private static extern bool SetProcessDPIAware();
-
 		protected override bool InitializeInternal()
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
 			{
-				// SetProcessDPIAware();
+				switch (Application.DpiAwareness)
+				{
+					case DpiAwareness.Unaware:
+					{
+						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.Unaware);
+						break;
+					}
+					case DpiAwareness.SystemAware:
+					{
+						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.SystemAware);
+						break;
+					}
+					case DpiAwareness.PerMonitorAware:
+					{
+						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerMonitorAware);
+						break;
+					}
+					case DpiAwareness.PerWindowAware:
+					{
+						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerWindowAware);
+						break;
+					}
+					case DpiAwareness.UnawareGDIScaled:
+					{
+						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.UnawareGDIScaled);
+						break;
+					}
+				}
 			}
 
 			System.Windows.Forms.Application.EnableVisualStyles();

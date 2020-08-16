@@ -62,5 +62,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 		public static extern int TaskDialog(IntPtr hwndParent, IntPtr hInstance, string pszWindowTitle, string pszMainInstruction, string pszContent, int dwCommonButtons, IntPtr pszIcon, out int pnButton);
 		[DllImport("comctl32.dll", CharSet = CharSet.Unicode)]
 		public static extern uint /*HRESULT*/ TaskDialogIndirect(ref Structures.TASKDIALOGCONFIG pTaskConfig, out int pnButton, out int pnRadioButton, [MarshalAs(UnmanagedType.Bool)] out bool pfVerificationFlagChecked);
+
+		/// <summary>
+		/// Sets the process-default DPI awareness to system-DPI awareness. This is equivalent to calling <see cref="SetProcessDpiAwarenessContext"/> with a
+		/// <see cref="Constants.DpiAwarenessContext" /> value of <see cref="Constants.DpiAwarenessContext.SystemAware" />.
+		/// </summary>
+		/// <returns></returns>
+		[DllImport(LIBRARY_FILENAME_USER32)]
+		public static extern bool SetProcessDPIAware();
+
+		/// <summary>
+		/// Sets the current process to a specified dots per inch (dpi) awareness context. The DPI awareness contexts are from the
+		/// <see cref="Constants.DpiAwarenessContext" /> value.
+		/// </summary>
+		/// <param name="value">A <see cref="Constants.DpiAwarenessContext" /> handle to set.</param>
+		/// <returns></returns>
+		[DllImport(LIBRARY_FILENAME_USER32)]
+		public static extern bool SetProcessDpiAwarenessContext(Constants.DpiAwarenessContext value);
 	}
 }

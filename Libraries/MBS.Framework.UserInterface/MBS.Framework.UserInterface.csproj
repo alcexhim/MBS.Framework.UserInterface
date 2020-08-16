@@ -47,6 +47,7 @@
     <Compile Include="Controls\Label.cs" />
     <Compile Include="DataFormats\Theming\ThemeXMLDataFormat.cs" />
     <Compile Include="Dialogs\MessageDialog.cs" />
+    <Compile Include="DpiAwareness.cs" />
     <Compile Include="Drawing\Brush.cs" />
     <Compile Include="Drawing\Font.cs" />
     <Compile Include="Drawing\FontWeights.cs" />

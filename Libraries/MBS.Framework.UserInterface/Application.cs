@@ -34,6 +34,8 @@ namespace MBS.Framework.UserInterface
 		public static string ShortName { get; set; }
 		public static string Title { get; set; } = String.Empty;
 
+		public static DpiAwareness DpiAwareness { get; set; } = DpiAwareness.Default;
+
 		private static string mvarBasePath = null;
 		public static string BasePath
 		{

@@ -311,6 +311,9 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
+				if (ParentControl?.IsCreated == false)
+					return mvarExpanded;
+
 				mvarExpanded = ((ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(this)).GetValueOrDefault(false);
 				return mvarExpanded;
 			}

@@ -69,6 +69,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 		}
 
+		private class __ListLayout : __BoxLayout
+		{
+			public __ListLayout() : base(Orientation.Vertical)
+			{
+
+			}
+
+			protected override System.Windows.Forms.CreateParams CreateParams
+			{
+				get
+				{
+					System.Windows.Forms.CreateParams p = base.CreateParams;
+					p.Caption = "uwt-ListLayout";
+					return p;
+				}
+			}
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			System.Windows.Forms.Panel hContainer = null;
@@ -111,6 +129,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				hContainer = new __FlowLayout();
 			}
+			else if (layout is ListLayout)
+			{
+				hContainer = new __ListLayout();
+			}
 
 			if (hContainer != null)
 			{
@@ -136,6 +158,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private void ApplyLayout(System.Windows.Forms.Panel hContainer, Control ctl, Layout layout)
 		{
 			System.Windows.Forms.Control ctlNative = (Engine.GetHandleForControl(ctl) as WindowsFormsNativeControl).Handle;
+			if (ctlNative == null)
+			{
+				Console.WriteLine("ctlNative is null - layout was {0}", layout.GetType());
+				return;
+			}
 
 			if (layout is BoxLayout)
 			{

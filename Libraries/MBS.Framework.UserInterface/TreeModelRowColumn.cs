@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
-	public class TreeModelRowColumn
+	public class TreeModelRowColumn : ISupportsExtraData
 	{
 		public class TreeModelRowColumnCollection
 			: System.Collections.ObjectModel.Collection<TreeModelRowColumn>
@@ -94,6 +94,26 @@ namespace MBS.Framework.UserInterface
 		{
 			mvarColumn = column;
 			mvarValue = value;
+		}
+
+		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
+		public T GetExtraData<T>(string key, T defaultValue = default(T))
+		{
+			if (_ExtraData.ContainsKey(key))
+				return (T)_ExtraData[key];
+			return defaultValue;
+		}
+		public void SetExtraData<T>(string key, T value)
+		{
+			_ExtraData[key] = value;
+		}
+		public object GetExtraData(string key, object defaultValue = null)
+		{
+			return GetExtraData<object>(key, defaultValue);
+		}
+		public void SetExtraData(string key, object value)
+		{
+			SetExtraData<object>(key, value);
 		}
 	}
 }

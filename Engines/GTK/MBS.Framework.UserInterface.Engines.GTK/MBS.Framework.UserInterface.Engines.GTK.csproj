@@ -214,6 +214,8 @@
     <Compile Include="GTKSystemSettings.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSettings.cs" />
     <Compile Include="GTKTimerImplementation.cs" />
+    <Compile Include="GDKScreen.cs" />
+    <Compile Include="GDKMonitor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

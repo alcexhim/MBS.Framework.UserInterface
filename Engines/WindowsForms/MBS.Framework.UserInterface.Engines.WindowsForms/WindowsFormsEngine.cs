@@ -881,7 +881,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			List<Monitor> list = new List<Monitor>();
 			foreach (System.Windows.Forms.Screen scr in System.Windows.Forms.Screen.AllScreens)
 			{
-				list.Add(new Monitor(scr.DeviceName, SDRectangleToUWTRectangle(scr.Bounds), SDRectangleToUWTRectangle(scr.WorkingArea)/*, scr.Primary*/));
+				list.Add(new WindowsFormsMonitor(scr));
 			}
 			return list.ToArray();
 		}
@@ -1058,6 +1058,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				_Timer_Implementations[timer].Stop();
 
 			_Timer_Implementations[timer].Start();
+		}
+
+		private Screen _DefaultScreen = null;
+		protected override Screen GetDefaultScreenInternal()
+		{
+			if (_DefaultScreen == null)
+				_DefaultScreen = new WindowsFormsScreen();
+			return _DefaultScreen;
 		}
 
 		private SystemSettings _SystemSettings = new WindowsFormsSystemSettings();

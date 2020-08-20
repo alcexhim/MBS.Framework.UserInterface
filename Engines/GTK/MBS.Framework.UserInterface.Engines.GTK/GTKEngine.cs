@@ -1975,6 +1975,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override void Timer_StopInternal(Timer timer)
 		{
 		}
+
+		protected override Screen GetDefaultScreenInternal()
+		{
+			IntPtr hScreenDefault = Internal.GDK.Methods.gdk_screen_get_default();
+			return new GDKScreen(hScreenDefault);
+		}
 	}
 }
 

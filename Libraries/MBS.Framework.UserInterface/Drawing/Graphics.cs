@@ -23,37 +23,69 @@ namespace MBS.Framework.UserInterface.Drawing
 		}
 		public void DrawImage(Image image, double x, double y, double width, double height)
 		{
+			DpiScale(ref x, ref y, ref width, ref height);
 			DrawImageInternal(image, x, y, width, height);
 		}
 
 		protected abstract void DrawLineInternal(Pen pen, double x1, double y1, double x2, double y2);
 		public void DrawLine(Pen pen, double x1, double y1, double x2, double y2)
 		{
+			DpiScale(ref x1, ref x2, ref y1, ref y2);
 			DrawLineInternal(pen, x1, y1, x2, y2);
+		}
+
+		private Vector2D DpiScale(Vector2D point)
+		{
+			if (Application.ShouldDpiScale)
+			{
+				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
+				return new Vector2D(point.X * sf, point.Y * sf);
+			}
+			return point;
+		}
+		private Rectangle DpiScale(Rectangle rect)
+		{
+			if (Application.ShouldDpiScale)
+			{
+				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
+				return new Rectangle(rect.X * sf, rect.Y * sf, rect.Width * sf, rect.Height * sf);
+			}
+			return rect;
+		}
+		private void DpiScale(ref double x, ref double y, ref double w, ref double h)
+		{
+			if (Application.ShouldDpiScale)
+			{
+				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
+				x *= sf;
+				y *= sf;
+				w *= sf;
+				h *= sf;
+			}
 		}
 
 		protected abstract void DrawRectangleInternal(Pen pen, double x, double y, double width, double height);
 		public void DrawRectangle(Pen pen, double x, double y, double width, double height)
 		{
 			Rectangle rect2 = NormalizeRectangle(new Rectangle(x, y, width, height));
+			rect2 = DpiScale(rect2);
 			DrawRectangleInternal(pen, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
 		public void DrawRectangle(Pen pen, Rectangle rect)
 		{
-			Rectangle rect2 = NormalizeRectangle(rect);
-			DrawRectangle(pen, rect2.X, rect2.Y, rect2.Width, rect2.Height);
+			DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
 		protected abstract void FillRectangleInternal(Brush brush, double x, double y, double width, double height);
 		public void FillRectangle(Brush brush, double x, double y, double width, double height)
 		{
 			Rectangle rect2 = NormalizeRectangle(new Rectangle(x, y, width, height));
+			rect2 = DpiScale(rect2);
 			FillRectangleInternal(brush, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
 		public void FillRectangle(Brush brush, Rectangle rect)
 		{
-			Rectangle rect2 = NormalizeRectangle(rect);
-			FillRectangle(brush, rect2.X, rect2.Y, rect2.Width, rect2.Height);
+			FillRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
 		private Rectangle NormalizeRectangle(Rectangle input)
@@ -179,13 +211,13 @@ namespace MBS.Framework.UserInterface.Drawing
 
 						switch (threed.Type)
 						{
-						case ThreeDOutlineType.Inset:
+							case ThreeDOutlineType.Inset:
 							{
 								lightColor = Color.FromString(threed.DarkColor);
 								darkColor = Color.FromString(threed.LightColor);
 								break;
 							}
-						case ThreeDOutlineType.Outset:
+							case ThreeDOutlineType.Outset:
 							{
 								lightColor = Color.FromString(threed.LightColor);
 								darkColor = Color.FromString(threed.DarkColor);
@@ -244,11 +276,13 @@ namespace MBS.Framework.UserInterface.Drawing
 		protected abstract void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
 		public void DrawText(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
+			location = DpiScale(location);
 			DrawTextInternal(value, font, location, brush, horizontalAlignment, verticalAlignment);
 		}
 		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
 		public void DrawText(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
+			rectangle = DpiScale(rectangle);
 			DrawTextInternal(value, font, rectangle, brush, horizontalAlignment, verticalAlignment);
 		}
 
@@ -270,10 +304,10 @@ namespace MBS.Framework.UserInterface.Drawing
 		{
 			switch (orientation)
 			{
-			case LinearGradientFillOrientation.BackwardDiagonal: return LinearGradientBrushOrientation.BackwardDiagonal;
-			case LinearGradientFillOrientation.ForwardDiagonal: return LinearGradientBrushOrientation.ForwardDiagonal;
-			case LinearGradientFillOrientation.Horizontal: return LinearGradientBrushOrientation.Horizontal;
-			case LinearGradientFillOrientation.Vertical: return LinearGradientBrushOrientation.Vertical;
+				case LinearGradientFillOrientation.BackwardDiagonal: return LinearGradientBrushOrientation.BackwardDiagonal;
+				case LinearGradientFillOrientation.ForwardDiagonal: return LinearGradientBrushOrientation.ForwardDiagonal;
+				case LinearGradientFillOrientation.Horizontal: return LinearGradientBrushOrientation.Horizontal;
+				case LinearGradientFillOrientation.Vertical: return LinearGradientBrushOrientation.Vertical;
 			}
 			return LinearGradientBrushOrientation.Horizontal;
 		}

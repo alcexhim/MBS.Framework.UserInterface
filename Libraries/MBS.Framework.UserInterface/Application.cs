@@ -35,6 +35,11 @@ namespace MBS.Framework.UserInterface
 		public static string Title { get; set; } = String.Empty;
 
 		public static DpiAwareness DpiAwareness { get; set; } = DpiAwareness.Default;
+		internal static bool ShouldDpiScale
+		{
+			// TODO: implement other forms of DpiAwareness
+			get { return false; } // DpiAwareness == DpiAwareness.Default && Application.DpiAwareness == DpiAwareness.Default && System.Environment.OSVersion.Platform == PlatformID.Unix; }
+		}
 
 		private static string mvarBasePath = null;
 		public static string BasePath

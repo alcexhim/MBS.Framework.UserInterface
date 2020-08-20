@@ -11,6 +11,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern IntPtr gdk_display_get_default();
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkMonitor*/ gdk_display_get_monitor(IntPtr /*GdkDisplay*/ display, int index);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkDisplay*/ gdk_screen_get_display(IntPtr /*GdkScreen*/ screen);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gdk_screen_get_n_monitors(IntPtr screen);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gdk_screen_get_primary_monitor(IntPtr screen);
@@ -19,14 +25,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern IntPtr gdk_screen_get_default();
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern double gdk_screen_get_resolution(IntPtr /*GdkScreen*/ screen);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkCursor*/ gdk_cursor_new_from_name(IntPtr /*GdkDisplay*/ display, string name);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkDisplay*/ gdk_window_get_display(IntPtr /*GdkWindow*/ window);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkCursor*/ gdk_window_get_cursor(IntPtr /*GdkWindow*/ window);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gdk_monitor_get_scale_factor(IntPtr /*GdkMonitor*/ monitor);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_monitor_get_geometry(IntPtr handle, ref Structures.GdkRectangle geom);
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_window_set_cursor(IntPtr /*GdkWindow*/ window, IntPtr /*GdkCursor*/ cursor);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_monitor_get_workarea(IntPtr /*GdkMonitor*/ handle, ref Structures.GdkRectangle workarea);
 
 		// pixbuf
 		[DllImport(LIBRARY_FILENAME)]

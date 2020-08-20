@@ -240,6 +240,8 @@
     <Compile Include="WindowsFormsSystemSettings.cs" />
     <Compile Include="WindowsFormsTimerImplementation.cs" />
     <Compile Include="SingleInstanceManager.cs" />
+    <Compile Include="WindowsFormsScreen.cs" />
+    <Compile Include="WindowsFormsMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

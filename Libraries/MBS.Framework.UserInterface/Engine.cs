@@ -25,6 +25,12 @@ namespace MBS.Framework.UserInterface
 			return CreateGraphicsInternal(image);
 		}
 
+		protected abstract Screen GetDefaultScreenInternal();
+		internal Screen GetDefaultScreen()
+		{
+			return GetDefaultScreenInternal();
+		}
+
 		protected static Dictionary<Control, NativeControl> handlesByControl = new Dictionary<Control, NativeControl>();
 
 		public Control GetControlByHandle(NativeControl handle)

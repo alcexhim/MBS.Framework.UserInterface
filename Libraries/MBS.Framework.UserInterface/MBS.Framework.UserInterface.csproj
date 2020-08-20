@@ -276,6 +276,7 @@
     <Compile Include="Controls\ListView\ListViewRowActivatedEvent.cs" />
     <Compile Include="Controls\ListView\ListViewColumn.cs" />
     <Compile Include="Controls\ListView\ListViewControl.cs" />
+    <Compile Include="Screen.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

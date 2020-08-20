@@ -1667,6 +1667,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				return -1;
 			}
 
+			TreeModelRowCompareEventArgs ee = new TreeModelRowCompareEventArgs(rowA, rowB, columnIndex);
+			InvokeMethod(tm, "OnRowCompare", ee);
+			if (ee.Handled)
+				return ee.Value;
+
 			if (columnIndex >= 0 && columnIndex < rowA.RowColumns.Count && columnIndex < rowB.RowColumns.Count)
 			{
 				if (rowA.RowColumns[columnIndex].RawValue is IComparable)

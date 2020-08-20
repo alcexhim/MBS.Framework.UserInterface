@@ -21,6 +21,12 @@ namespace MBS.Framework.UserInterface
 		{
 			return FindInternal(value);
 		}
+
+		public event TreeModelRowCompareEventHandler RowCompare;
+		protected virtual void OnRowCompare(TreeModelRowCompareEventArgs e)
+		{
+			RowCompare?.Invoke(this, e);
+		}
 	}
 	public class DefaultTreeModel : TreeModel
 	{

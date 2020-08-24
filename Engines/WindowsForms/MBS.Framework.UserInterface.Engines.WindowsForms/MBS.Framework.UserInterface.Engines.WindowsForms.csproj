@@ -242,6 +242,7 @@
     <Compile Include="SingleInstanceManager.cs" />
     <Compile Include="WindowsFormsScreen.cs" />
     <Compile Include="WindowsFormsMonitor.cs" />
+    <Compile Include="Controls\ProgressBarImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

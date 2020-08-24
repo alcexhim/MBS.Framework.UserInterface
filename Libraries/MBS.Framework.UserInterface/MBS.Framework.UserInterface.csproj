@@ -278,6 +278,7 @@
     <Compile Include="Controls\ListView\ListViewControl.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="TreeModelRowCompareEvent.cs" />
+    <Compile Include="Controls\ProgressBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

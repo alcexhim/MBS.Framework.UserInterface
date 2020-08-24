@@ -216,6 +216,8 @@
     <Compile Include="GTKTimerImplementation.cs" />
     <Compile Include="GDKScreen.cs" />
     <Compile Include="GDKMonitor.cs" />
+    <Compile Include="Controls\ProgressBarImplementation.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkProgressBar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

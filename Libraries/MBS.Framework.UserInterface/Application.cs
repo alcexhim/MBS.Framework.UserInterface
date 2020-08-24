@@ -242,9 +242,15 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public static ApplicationMainMenu MainMenu { get { return mvarMainMenu; } }
 
-		private static void UpdateSplashScreenStatus(string value, int u = 0, int v = 0, int total = 0)
+		public static void UpdateSplashScreenStatus(string value)
 		{
 			// TODO: implement this
+			splasher.SetStatus(value);
+		}
+		public static void UpdateSplashScreenStatus(string value, int progressValue, int progressMinimum = 0, int progressMaximum = 100)
+		{
+			// TODO: implement this
+			splasher.SetStatus(value, progressValue, progressMinimum, progressMaximum);
 		}
 
 		public static string ConfigurationFileNameFilter { get; set; } = null;
@@ -278,7 +284,7 @@ namespace MBS.Framework.UserInterface
 
 				markup.CopyTo(mvarRawMarkup);
 
-				// UpdateSplashScreenStatus("Loading XML configuration files", Array.IndexOf(xmlfiles, xmlfile) + 1);
+				UpdateSplashScreenStatus("Loading XML configuration files", Array.IndexOf(xmlfiles, xmlfile) + 1, 0, xmlfiles.Length);
 			}
 
 			#endregion

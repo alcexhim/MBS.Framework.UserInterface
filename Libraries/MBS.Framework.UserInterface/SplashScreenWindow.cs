@@ -29,6 +29,7 @@ namespace MBS.Framework.UserInterface
 {
 	public class SplashScreenWindow : Window
 	{
+		private ProgressBar pb = new ProgressBar();
 		public SplashScreenWindow()
 		{
 			this.Decorated = false;
@@ -55,6 +56,10 @@ namespace MBS.Framework.UserInterface
 			
 			this.Controls.Add(image, new BoxLayout.Constraints(true, true));
 			// this.Controls.Add(lbl, new BoxLayout.Constraints(true, true));
+
+			pb.Value = 0;
+			pb.Text = "initializing";
+			this.Controls.Add(pb, new BoxLayout.Constraints(false, false));
 		}
 
 		protected internal override void OnRealize(EventArgs e)
@@ -70,9 +75,19 @@ namespace MBS.Framework.UserInterface
 if (created) return;
 created = true;
 		}
+
+		public void SetStatus(string message)
+		{
+			pb.Marquee = true;
+			pb.Text = message;
+		}
 		public void SetStatus(string message, int progressValue, int progressMinimum, int progressMaximum)
 		{
-
+			pb.Marquee = false;
+			pb.Minimum = progressMinimum;
+			pb.Maximum = progressMaximum;
+			pb.Value = progressValue;
+			pb.Text = message;
 		}
 
 		

@@ -71,6 +71,19 @@ namespace MBS.Framework.UserInterface.Drawing
 			rect2 = DpiScale(rect2);
 			DrawRectangleInternal(pen, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 		}
+
+		protected abstract void DrawPolygonInternal(Pen pen, Vector2D[] points);
+		public void DrawPolygon(Pen pen, Vector2D[] points)
+		{
+			DrawPolygonInternal(pen, points);
+		}
+
+		protected abstract void FillPolygonInternal(Brush brush, Vector2D[] points);
+		public void FillPolygon(Brush brush, Vector2D[] points)
+		{
+			FillPolygonInternal(brush, points);
+		}
+
 		public void DrawRectangle(Pen pen, Rectangle rect)
 		{
 			DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);

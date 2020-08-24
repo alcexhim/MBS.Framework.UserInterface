@@ -15,6 +15,35 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			mvarCairoContext = cairoContext;
 		}
 
+		private void SelectPath(Vector2D[] points)
+		{
+			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, points[0].X, points[0].Y);
+			CheckStatus();
+
+			for (int i = 1; i < points.Length; i++)
+			{
+				Internal.Cairo.Methods.cairo_line_to(mvarCairoContext, points[i].X, points[i].Y);
+				CheckStatus();
+			}
+		}
+
+		protected override void DrawPolygonInternal(Pen pen, Vector2D[] points)
+		{
+			SelectPen(pen);
+			SelectPath(points);
+
+			Internal.Cairo.Methods.cairo_stroke(mvarCairoContext);
+			CheckStatus();
+		}
+		protected override void FillPolygonInternal(Brush brush, Vector2D[] points)
+		{
+			SelectBrush(brush);
+			SelectPath(points);
+
+			Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
+			CheckStatus();
+		}
+
 		protected override void DrawImageInternal(Image image, double x, double y, double width, double height)
 		{
 			Internal.GDK.Methods.gdk_cairo_set_source_pixbuf(mvarCairoContext, (image as GDKPixbufImage).Handle, x, y);

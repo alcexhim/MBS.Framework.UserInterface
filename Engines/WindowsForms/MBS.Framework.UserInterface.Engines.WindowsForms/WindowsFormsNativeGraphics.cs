@@ -43,6 +43,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return new System.Drawing.Pen(ColorToNativeColor(pen.Color), (float) pen.Width.ConvertTo(MeasurementUnit.Pixel).Value);
 		}
 
+		protected override void DrawPolygonInternal(Pen pen, Vector2D[] points)
+		{
+			Handle.DrawPolygon(PenToNativePen(pen), Vector2DToNativePointF(points));
+		}
+		protected override void FillPolygonInternal(Brush brush, Vector2D[] points)
+		{
+			Handle.FillPolygon(BrushToNativeBrush(brush), Vector2DToNativePointF(points));
+		}
+
 		protected override void DrawImageInternal(Image image, double x, double y, double width, double height)
 		{
 			Handle.DrawImage(ImageToNativeImage(image), new System.Drawing.Rectangle((int)x, (int)y, (int)width, (int)height));
@@ -109,6 +118,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		private System.Drawing.PointF Vector2DToNativePointF(Vector2D point)
 		{
 			return new System.Drawing.PointF((float)point.X, (float)point.Y);
+		}
+		private System.Drawing.PointF[] Vector2DToNativePointF(Vector2D[] points)
+		{
+			System.Drawing.PointF[] ptf = new System.Drawing.PointF[points.Length];
+			for (int i = 0; i < points.Length; i++)
+			{
+				ptf[i] = new System.Drawing.PointF((float)points[i].X, (float)points[i].Y);
+			}
+			return ptf;
 		}
 
 		protected override void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)

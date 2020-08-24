@@ -1,7 +1,7 @@
 ﻿using System;
-using UniversalEditor;
-using UniversalEditor.Accessors;
+using System.Collections.Generic;
 
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.DataFormats.Layout.Glade;
@@ -9,8 +9,8 @@ using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Layouts;
 using MBS.Framework.UserInterface.ObjectModels.Layout;
 
-using MBS.Framework.Drawing;
-using System.Collections.Generic;
+using UniversalEditor;
+using UniversalEditor.Accessors;
 
 namespace MBS.Framework.UserInterface
 {
@@ -771,7 +771,11 @@ namespace MBS.Framework.UserInterface
 			{
 				switch (columns.Items[j].ClassName)
 				{
+					case "gchar": types.Add(typeof(sbyte)); break;
+					case "guchar": types.Add(typeof(byte)); break;
 					case "gboolean": types.Add(typeof(bool)); break;
+					case "gshort": types.Add(typeof(short)); break;
+					case "gushort": types.Add(typeof(ushort)); break;
 					case "gint": types.Add(typeof(int)); break;
 					case "guint": types.Add(typeof(uint)); break;
 					case "glong": types.Add(typeof(long)); break;
@@ -798,7 +802,7 @@ namespace MBS.Framework.UserInterface
 						// cols
 						// oh god make it stop
 						LayoutItem col = rows.Items[j].Items[k];
-						row.RowColumns.Add(new TreeModelRowColumn(dtm.Columns[Int32.Parse(col.Attributes["id"].Value)], col.Value));
+						row.RowColumns.Add(new TreeModelRowColumn(dtm.Columns[Int32.Parse(col.Attributes["id"].Value)], col.Value.Parse(types[k])));
 					}
 					dtm.Rows.Add(row);
 				}

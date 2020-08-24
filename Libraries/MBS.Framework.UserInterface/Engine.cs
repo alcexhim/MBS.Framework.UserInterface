@@ -600,7 +600,7 @@ namespace MBS.Framework.UserInterface
 		}
 		public NativeTreeModel GetHandleForTreeModel(TreeModel tm)
 		{
-			if (_HandleForTreeModel.ContainsKey(tm)) return _HandleForTreeModel[tm];
+			if (tm != null && _HandleForTreeModel.ContainsKey(tm)) return _HandleForTreeModel[tm];
 			return null;
 		}
 

@@ -81,7 +81,7 @@ namespace MBS.Framework.UserInterface
 
 				if (ee != null)
 				{
-					OnTreeModelChanged(sender, ee);
+					OnTreeModelChanged(ee);
 				}
 			};
 		}
@@ -133,9 +133,9 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public event TreeModelChangedEventHandler TreeModelChanged;
-		protected virtual void OnTreeModelChanged(object sender, TreeModelChangedEventArgs e)
+		protected virtual void OnTreeModelChanged(TreeModelChangedEventArgs e)
 		{
-			TreeModelChanged?.Invoke(sender, e);
+			TreeModelChanged?.Invoke(this, e);
 		}
 
 		public TreeModelRow.TreeModelRowCollection Rows { get; private set; } = null;

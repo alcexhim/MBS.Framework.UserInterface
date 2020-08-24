@@ -441,7 +441,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
 		{
 			TreeModelRow.TreeModelRowCollection coll = (sender as TreeModelRow.TreeModelRowCollection);
-			UpdateTreeModel(coll.Model, e);
+			(Application.Engine as GTKEngine).UpdateTreeModel(coll.Model, e);
 		}
 
 
@@ -832,59 +832,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
-		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)
-		{
-			IntPtr hTreeModel = GetHandleForTreeModel(tm);
-			if (hTreeModel == IntPtr.Zero)
-			{
-				// we do not have a treemodel handle yet
-				return;
-			}
-			switch (e.Action)
-			{
-				case TreeModelChangedAction.Add:
-				{
-					Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
-
-					for (int i = 0; i < e.Rows.Count; i++)
-					{
-						TreeModelRow row = e.Rows[i];
-					
-						// as written we currently cannot do this...
-						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
-						if (e.ParentRow != null && (Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
-						{
-							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(e.ParentRow);
-							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
-						}
-						else
-						{
-							// HACK: this is already done by the new CreateTreeModelRow code... calling it again results in two rows being added
-							// but we should really make absolutely certain that it really doesn't need to be called anymore
-							// RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, null, 0, true);
-						}
-					}
-					break;
-				}
-				case TreeModelChangedAction.Remove:
-				{
-					foreach (TreeModelRow row in e.Rows)
-					{
-						Internal.GTK.Structures.GtkTreeIter iter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
-						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
-						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
-					}
-					break;
-				}
-				case TreeModelChangedAction.Clear:
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_clear(hTreeModel);
-					break;
-				}
-			}
-		}
-
 		public void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e)
 		{
 			IntPtr hTreeView = (handle as GTKNativeControl).GetNamedHandle("TreeView");
@@ -907,7 +854,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
 			}
 			TreeModel tm = TreeModelFromHandle(hTreeModel);
-			UpdateTreeModel(tm, e);
+			(Application.Engine as GTKEngine).UpdateTreeModel(tm, e);
 		}
 
 		private IntPtr GetHTreeView(IntPtr hScrolledWindow)

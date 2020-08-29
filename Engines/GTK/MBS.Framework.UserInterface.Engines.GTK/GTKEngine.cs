@@ -2047,6 +2047,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hScreenDefault = Internal.GDK.Methods.gdk_screen_get_default();
 			return new GDKScreen(hScreenDefault);
 		}
+
+		private DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+		protected override void PresentWindowInternal(Window window, DateTime timestamp)
+		{
+			IntPtr handle = (GetHandleForControl(window) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWindow.gtk_window_present(handle);
+			// Internal.GTK.Methods.GtkWindow.gtk_window_present_with_time(handle, (uint)((timestamp - UNIX_EPOCH).TotalMilliseconds));
+		}
 	}
 }
 

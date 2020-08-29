@@ -86,7 +86,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GList*/ gtk_window_list_toplevels();
 
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_present_with_time(IntPtr /*GtkWindow*/ window, uint totalMilliseconds);
 
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_present(IntPtr handle);
 	}
 }
 

@@ -1071,5 +1071,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		private SystemSettings _SystemSettings = new WindowsFormsSystemSettings();
 		public override SystemSettings SystemSettings => _SystemSettings;
 
+		protected override void PresentWindowInternal(Window window, DateTime timestamp)
+		{
+			System.Windows.Forms.Form handle = (GetHandleForControl(window) as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form;
+			handle.Show();
+			handle.BringToFront();
+		}
+
 	}
 }

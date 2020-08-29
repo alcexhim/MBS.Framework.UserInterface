@@ -203,6 +203,13 @@ namespace MBS.Framework.UserInterface
 			handlesByControl.Remove(ctl);
 			controlsByHandle.Remove(handle);
 		}
+
+		protected abstract void PresentWindowInternal(Window window, DateTime timestamp);
+		public void PresentWindow(Window window, DateTime timestamp)
+		{
+			PresentWindowInternal(window, timestamp);
+		}
+
 		public void UnregisterControlHandle(Control ctl)
 		{
 			if (ctl == null)

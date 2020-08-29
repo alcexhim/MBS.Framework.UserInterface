@@ -279,6 +279,9 @@
     <Compile Include="Screen.cs" />
     <Compile Include="TreeModelRowCompareEvent.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
+    <Compile Include="Controls\WebBrowser\WebBrowserControl.cs" />
+    <Compile Include="Controls\WebBrowser\WebBrowserDialogEvent.cs" />
+    <Compile Include="Controls\WebBrowser\WebBrowserDialogType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -320,5 +323,6 @@
     <Folder Include="Printing\" />
     <Folder Include="Controls\HexEditor\" />
     <Folder Include="Controls\ListView\" />
+    <Folder Include="Controls\WebBrowser\" />
   </ItemGroup>
 </Project>

@@ -218,6 +218,9 @@
     <Compile Include="GDKMonitor.cs" />
     <Compile Include="Controls\ProgressBarImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkProgressBar.cs" />
+    <Compile Include="Internal\WebKit\Methods.cs" />
+    <Compile Include="Controls\WebBrowser\WebBrowserImplementation.cs" />
+    <Compile Include="Internal\WebKit\Constants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -226,6 +229,8 @@
     <Folder Include="Drawing\" />
     <Folder Include="Internal\" />
     <Folder Include="Printing\" />
+    <Folder Include="Internal\WebKit\" />
+    <Folder Include="Controls\WebBrowser\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\UniversalEditor\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">

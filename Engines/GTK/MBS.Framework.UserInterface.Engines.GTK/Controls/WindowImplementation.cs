@@ -33,6 +33,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name ((Handle as GTKNativeControl).Handle, value);
 		}
 
+		private string _DocumentFileName = null;
+		public string GetDocumentFileName()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("HeaderBar");
+			if (handle != IntPtr.Zero)
+				return Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_get_subtitle(handle);
+			return _DocumentFileName;
+		}
+		public void SetDocumentFileName(string value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("HeaderBar");
+			if (handle != IntPtr.Zero)
+				Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_subtitle(handle, value);
+			_DocumentFileName = value;
+		}
+
 		public bool GetStatusBarVisible()
 		{
 			return true;
@@ -324,6 +340,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			IntPtr hStatusBar = IntPtr.Zero;
+			IntPtr hHeaderBar = IntPtr.Zero;
 
 			if (hContainer != IntPtr.Zero)
 			{
@@ -341,6 +358,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, window.Decorated);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_focus_on_map(handle, true);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name(handle, window.IconName);
+			Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_subtitle(handle, window.DocumentFileName);
 
 			if (window.Decorated)
 			{
@@ -349,7 +367,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 				else
 				{
-					IntPtr hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
+					hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
@@ -389,7 +407,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
 			{
 				new KeyValuePair<string, IntPtr>("MenuBar", hMenuBar),
-				new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar)
+				new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar),
+				new KeyValuePair<string, IntPtr>("HeaderBar", hHeaderBar)
 			});
 		}
 

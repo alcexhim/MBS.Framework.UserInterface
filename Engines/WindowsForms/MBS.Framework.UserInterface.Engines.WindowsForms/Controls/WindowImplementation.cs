@@ -16,6 +16,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
+		private string _DocumentFileName = null;
+		public string GetDocumentFileName()
+		{
+			return _DocumentFileName;
+		}
+		public void SetDocumentFileName(string value)
+		{
+			_DocumentFileName = value;
+		}
+
 		protected override void DestroyInternal()
 		{
 			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.Form).Close();

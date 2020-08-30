@@ -25,6 +25,9 @@ namespace MBS.Framework.UserInterface
 			void InsertMenuItem(int index, MenuItem item);
 			void ClearMenuItems();
 			void RemoveMenuItem(MenuItem item);
+
+			string GetDocumentFileName();
+			void SetDocumentFileName(string value);
 		}
 	}
 	public class Window : Container
@@ -33,7 +36,7 @@ namespace MBS.Framework.UserInterface
 		public RibbonControl Ribbon { get { return mvarRibbon; } }
 
 		public bool Modal { get; set; } = false;
-
+	
 		private void tsbCommand_Click(object sender, EventArgs e)
 		{
 			ToolbarItemButton tsb = (sender as ToolbarItemButton);
@@ -224,6 +227,24 @@ namespace MBS.Framework.UserInterface
 		public static Window[] GetToplevelWindows()
 		{
 			return Application.Engine.GetToplevelWindows(); 
+		}
+
+		private string _DocumentFileName = null;
+		public string DocumentFileName
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					Native.IWindowNativeImplementation impl = (ControlImplementation as Native.IWindowNativeImplementation);
+					if (impl != null) return impl.GetDocumentFileName();
+				}
+				return _DocumentFileName;
+			}
+			set
+			{
+				(ControlImplementation as Native.IWindowNativeImplementation)?.SetDocumentFileName(value); _DocumentFileName = value;
+			}
 		}
 
 		public override string ToString()

@@ -128,7 +128,7 @@ namespace MBS.Framework.UserInterface
 				case CommandDisplayMode.Ribbon:
 				case CommandDisplayMode.Both:
 				{
-					this.Controls.Add (mvarRibbon);
+					this.Controls.Insert(0, mvarRibbon);
 					break;
 				}
 			}

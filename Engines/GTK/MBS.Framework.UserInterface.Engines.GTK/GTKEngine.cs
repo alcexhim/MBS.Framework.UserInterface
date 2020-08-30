@@ -607,7 +607,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.PrintWarning, "gtk-print-warning");
 			RegisterStockType(StockType.Properties, "gtk-properties");
 			RegisterStockType(StockType.Quit, "gtk-quit");
-			RegisterStockType(StockType.Redo, "gtk-redo");
+			RegisterStockType(StockType.Redo, "gtk-redo-ltr");
 			RegisterStockType(StockType.Refresh, "gtk-refresh");
 			RegisterStockType(StockType.Remove, "gtk-remove");
 			RegisterStockType(StockType.RevertToSaved, "gtk-revert-to-saved");
@@ -623,7 +623,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.Strikethrough, "gtk-strikethrough");
 			RegisterStockType(StockType.Undelete, "gtk-undelete");
 			RegisterStockType(StockType.Underline, "gtk-underline");
-			RegisterStockType(StockType.Undo, "gtk-undo");
+			RegisterStockType(StockType.Undo, "gtk-undo-ltr");
 			RegisterStockType(StockType.Unindent, "gtk-unindent");
 			RegisterStockType(StockType.Yes, "gtk-yes");
 			RegisterStockType(StockType.Zoom100, "gtk-zoom-100");

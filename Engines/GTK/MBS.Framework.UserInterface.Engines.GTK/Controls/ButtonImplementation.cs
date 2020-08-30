@@ -74,10 +74,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 
-			if (ctl.StockType != StockType.None) {
-				PictureFrame image = new PictureFrame ();
-				image.Image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString (ctl.StockType), (int) ctl.ImageSize.Width);
-				if (Engine.CreateControl (image)) {
+			PictureFrame image = null;
+			if (ctl.StockType != StockType.None)
+			{
+				image = new PictureFrame();
+				image.Image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString(ctl.StockType), (int)ctl.ImageSize.Width);
+			}
+			else if (ctl.Image != null)
+			{
+				image = new PictureFrame();
+				image.Image = ctl.Image;
+			}
+			if (image != null)
+			{
+				if (Engine.CreateControl(image))
+				{
 					IntPtr hImage = (Engine.GetHandleForControl(image) as GTKNativeControl).Handle;
 					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImage);
 				}

@@ -153,6 +153,8 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public Button.ButtonCollection TitleBarButtons { get; private set; } = null;
+
 		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
 
 		public WindowStartPosition StartPosition { get; set; } = WindowStartPosition.Default;
@@ -161,6 +163,7 @@ namespace MBS.Framework.UserInterface
 		{
 			StatusBar = new StatusBar(this);
 			MenuBar = new Menu(this);
+			TitleBarButtons = new Button.ButtonCollection(this);
 
 			Application.AddWindow(this);
 		}

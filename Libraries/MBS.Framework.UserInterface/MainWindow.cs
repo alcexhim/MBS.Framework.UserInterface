@@ -19,12 +19,51 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Drawing;
+
 namespace MBS.Framework.UserInterface
 {
 	public class MainWindow : Window
 	{
 		public MainWindow()
 		{
+		}
+
+		protected internal override void OnCreating(EventArgs e)
+		{
+			base.OnCreating(e);
+
+			for (int i = 0; i < Application.QuickAccessToolbarItems.Count; i++)
+			{
+				Button button = new Button();
+				CommandReferenceCommandItem cmdr = (Application.QuickAccessToolbarItems[i] as CommandReferenceCommandItem);
+				if (cmdr != null)
+				{
+					Command cmd = Application.Commands[cmdr.CommandID];
+					if (cmd != null)
+					{
+						if (cmd.StockType != StockType.None)
+						{
+							button.Image = Image.FromStock(cmd.StockType, 16);
+						}
+						else if (cmd.ImageFileName != null)
+						{
+							button.Image = Image.FromName(cmd.ImageFileName, 16);
+						}
+					}
+				}
+				button.SetExtraData<CommandItem>("item", Application.QuickAccessToolbarItems[i]);
+				button.Click += delegate (object sender, EventArgs ee)
+				{
+					CommandItem ci = (sender as Button).GetExtraData<CommandItem>("item");
+					if (ci is CommandReferenceCommandItem)
+					{
+						Application.ExecuteCommand((ci as CommandReferenceCommandItem).CommandID);
+					}
+				};
+				TitleBarButtons.Add(button);
+			}
 		}
 	}
 }

@@ -374,6 +374,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
+
+					for (int i = 0; i < window.TitleBarButtons.Count; i++)
+					{
+						Button button = window.TitleBarButtons[i];
+						Engine.CreateControl(button);
+
+						IntPtr hButton = (Engine.GetHandleForControl(button) as GTKNativeControl).Handle;
+
+						if (button.HorizontalAlignment == HorizontalAlignment.Left || button.HorizontalAlignment == HorizontalAlignment.Default)
+						{
+							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hButton);
+						}
+						else if (button.HorizontalAlignment == HorizontalAlignment.Right)
+						{
+							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_end(hHeaderBar, hButton);
+						}
+					}
 				}
 
 				hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();

@@ -42,6 +42,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 			IntPtr h = _gtk_header_bar_get_subtitle(handle);
 			return Marshal.PtrToStringAuto(h);
 		}
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_header_bar_pack_start(IntPtr /*GtkHeaderBar*/ bar, IntPtr /*GtkWidget*/ child);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_header_bar_pack_end(IntPtr /*GtkHeaderBar*/ bar, IntPtr /*GtkWidget*/ child);
 	}
 }
 

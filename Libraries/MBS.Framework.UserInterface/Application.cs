@@ -424,6 +424,20 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
+			UpdateSplashScreenStatus("Loading Quick Access Toolbar items");
+
+			MarkupTagElement tagQuickAccessToolbarItems = (mvarRawMarkup.FindElement("ApplicationFramework", "QuickAccessToolbar", "Items") as MarkupTagElement);
+			if (tagQuickAccessToolbarItems != null)
+			{
+				foreach (MarkupElement elItem in tagQuickAccessToolbarItems.Elements)
+				{
+					MarkupTagElement tagItem = (elItem as MarkupTagElement);
+					if (tagItem == null) continue;
+
+					QuickAccessToolbarItems.Add(CommandItem.FromMarkup(tagItem));
+				}
+			}
+
 			UpdateSplashScreenStatus("Loading command bars");
 
 			MarkupTagElement tagCommandBars = (mvarRawMarkup.FindElement("ApplicationFramework", "CommandBars") as MarkupTagElement);
@@ -810,6 +824,8 @@ namespace MBS.Framework.UserInterface
 		private static Dictionary<string, List<EventHandler>> _CommandEventHandlers = new Dictionary<string, List<EventHandler>>();
 
 		public static Command.CommandCollection Commands { get; } = new Command.CommandCollection();
+		public static CommandItem.CommandItemCollection QuickAccessToolbarItems { get; } = new CommandItem.CommandItemCollection();
+
 		public static bool AttachCommandEventHandler(string commandID, EventHandler handler)
 		{
 			Command cmd = Commands[commandID];

@@ -375,6 +375,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 
+					IntPtr hBBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
+					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hBBox), "linked");
+
 					for (int i = 0; i < window.TitleBarButtons.Count; i++)
 					{
 						Button button = window.TitleBarButtons[i];
@@ -382,6 +385,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 						IntPtr hButton = (Engine.GetHandleForControl(button) as GTKNativeControl).Handle;
 
+						/*
 						if (button.HorizontalAlignment == HorizontalAlignment.Left || button.HorizontalAlignment == HorizontalAlignment.Default)
 						{
 							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hButton);
@@ -390,7 +394,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						{
 							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_end(hHeaderBar, hButton);
 						}
+						*/
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hBBox, hButton, false, false, 0);
 					}
+
+					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hBBox);
 				}
 
 				hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();

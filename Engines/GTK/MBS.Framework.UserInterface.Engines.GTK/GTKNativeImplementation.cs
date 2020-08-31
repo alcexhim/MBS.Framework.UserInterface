@@ -110,6 +110,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(handle, Control.TooltipText);
 
 			SetupCommonEvents (FindEventHandlingHandle ((Handle as GTKNativeControl), Control));
 

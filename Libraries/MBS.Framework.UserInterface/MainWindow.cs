@@ -51,6 +51,7 @@ namespace MBS.Framework.UserInterface
 						{
 							button.Image = Image.FromName(cmd.ImageFileName, 16);
 						}
+						button.TooltipText = cmd.Title.Replace("_", String.Empty);
 					}
 				}
 				button.SetExtraData<CommandItem>("item", Application.QuickAccessToolbarItems[i]);

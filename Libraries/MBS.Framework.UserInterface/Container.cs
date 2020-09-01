@@ -175,6 +175,14 @@ namespace MBS.Framework.UserInterface
 				case "GtkSpinButton":
 				{
 					ctl = new NumericTextBox();
+					if (item.Properties["adjustment"] != null)
+					{
+						GtkAdjustment adj = (GtkAdjustment)GetPropertyOrLocalRef(item.Properties["adjustment"].Value);
+						(ctl as NumericTextBox).Minimum = adj.Lower;
+						(ctl as NumericTextBox).Maximum = adj.Upper;
+						(ctl as NumericTextBox).Step = adj.StepIncrement;
+						// (ctl as NumericTextBox).PageStep = adj.PageIncrement;
+					}
 					break;
 				}
 				case "GtkButton":
@@ -672,6 +680,11 @@ namespace MBS.Framework.UserInterface
 					CreateTreeModelForPropertyOrLocalRef(item);
 					continue;
 				}
+				else if (item.ClassName == "GtkAdjustment")
+				{
+					CreateAdjustmentForPropertyOrLocalRef(item);
+					continue;
+				}
 			}
 
 			// I really don't want to loop twice, but sometimes GtkTreeStore / GtkListStore gets created AFTER the controls that reference them, breaking things
@@ -681,7 +694,8 @@ namespace MBS.Framework.UserInterface
 				if (className != null && (item.ClassName != className)) continue;
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 
-				if (item.ClassName == "GtkListStore" || item.ClassName == "GtkTreeStore")
+				if (item.ClassName == "GtkListStore" || item.ClassName == "GtkTreeStore"
+					|| item.ClassName == "GtkAdjustment")
 				{
 					continue;
 				}
@@ -759,6 +773,56 @@ namespace MBS.Framework.UserInterface
 				_localRefs[item.ID] = CreateTreeModel(item);
 			}
 		}
+		private void CreateAdjustmentForPropertyOrLocalRef(LayoutItem item)
+		{
+			// ugh... copypasta
+			bool found = false;
+			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			foreach (System.Reflection.FieldInfo fi in fis)
+			{
+				if (fi.FieldType.IsSubclassOf(typeof(Adjustment)))
+				{
+					// see if we have a control by that name in the list
+					if (fi.Name == item.ID)
+					{
+						fi.SetValue(this, CreateAdjustment(item));
+						found = true;
+					}
+				}
+			}
+
+			if (!found)
+			{
+				_localRefs[item.ID] = CreateAdjustment(item);
+			}
+		}
+
+		private struct GtkAdjustment
+		{
+			public double Lower;
+			public double Upper;
+			public double StepIncrement;
+			public double PageIncrement;
+		}
+
+		private GtkAdjustment CreateAdjustment(LayoutItem item)
+		{
+			GtkAdjustment adj = new GtkAdjustment();
+
+			if (item.Properties["lower"] != null)
+				adj.Lower = double.Parse(item.Properties["lower"].Value);
+
+			if (item.Properties["upper"] != null)
+				adj.Upper = double.Parse(item.Properties["upper"].Value);
+
+			if (item.Properties["step_increment"] != null)
+				adj.StepIncrement = double.Parse(item.Properties["step_increment"].Value);
+
+			if (item.Properties["page_increment"] != null)
+				adj.PageIncrement = double.Parse(item.Properties["page_increment"].Value);
+			return adj;
+		}
+
 
 		private DefaultTreeModel CreateTreeModel(LayoutItem item)
 		{

@@ -22,5 +22,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern double gtk_spin_button_get_value(IntPtr /*GtkWidget*/ spin_button);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_spin_button_set_value(IntPtr /*GtkWidget*/ spin_button, double value);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_spin_button_get_digits(IntPtr handle);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_spin_button_set_digits(IntPtr /*GtkSpinButton*/ spin_button, uint value);
 	}
 }

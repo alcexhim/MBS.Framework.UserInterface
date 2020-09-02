@@ -183,6 +183,10 @@ namespace MBS.Framework.UserInterface
 						(ctl as NumericTextBox).Step = adj.StepIncrement;
 						// (ctl as NumericTextBox).PageStep = adj.PageIncrement;
 					}
+					if (item.Properties["digits"] != null)
+					{
+						(ctl as NumericTextBox).DecimalPlaces = Int32.Parse(item.Properties["digits"].Value);
+					}
 					break;
 				}
 				case "GtkButton":

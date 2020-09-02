@@ -32,6 +32,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return (double)(((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown)?.Value);
 		}
 
+		public int GetDecimalPlaces()
+		{
+			return (((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown)?.DecimalPlaces).GetValueOrDefault(0);
+		}
+
 		public void SetMaximum(double value)
 		{
 			System.Windows.Forms.NumericUpDown nud = ((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown);
@@ -47,6 +52,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			if (nud != null)
 			{
 				nud.Minimum = CDoubleToDecimal(value);
+			}
+		}
+
+		public void SetDecimalPlaces(int value)
+		{
+			System.Windows.Forms.NumericUpDown handle = ((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown);
+			if (handle != null)
+			{
+				handle.DecimalPlaces = value;
 			}
 		}
 
@@ -96,8 +110,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			txt.Maximum = CDoubleToDecimal(ctl.Maximum);
 			txt.Minimum = CDoubleToDecimal(ctl.Minimum);
 			txt.Value = CDoubleToDecimal(ctl.Value);
+			txt.DecimalPlaces = ctl.DecimalPlaces;
+			txt.ValueChanged += txt_ValueChanged;
 
 			return new WindowsFormsNativeControl(txt);
 		}
+
+		private void txt_ValueChanged(object sender, EventArgs e)
+		{
+			InvokeMethod((Control as NumericTextBox), "OnChanged", new object[] { EventArgs.Empty });
+		}
+
 	}
 }

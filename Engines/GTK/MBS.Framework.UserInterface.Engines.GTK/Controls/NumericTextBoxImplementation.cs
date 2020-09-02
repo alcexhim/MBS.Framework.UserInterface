@@ -37,6 +37,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return step;
 		}
 
+		public int GetDecimalPlaces()
+		{
+			return (int)Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_get_digits((Handle as GTKNativeControl).Handle);
+		}
+		public void SetDecimalPlaces(int value)
+		{
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_digits((Handle as GTKNativeControl).Handle, (uint)value);
+		}
+
 		public void SetMaximum(double value)
 		{
 			double min = 0.0, max = 0.0;
@@ -74,6 +83,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			NumericTextBox txt = (control as NumericTextBox);
 			IntPtr h = Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_new_with_range(txt.Minimum, txt.Maximum, txt.Step);
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_value(h, txt.Value);
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_digits(h, (uint)txt.DecimalPlaces);
 			Internal.GObject.Methods.g_signal_connect(h, "value_changed", value_changed_d);
 			return new GTKNativeControl(h);
 		}

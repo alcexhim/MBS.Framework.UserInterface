@@ -16,6 +16,9 @@ namespace MBS.Framework.UserInterface.Controls
 
 			void SetStep(double value);
 			double GetStep();
+
+			void SetDecimalPlaces(int value);
+			int GetDecimalPlaces();
 		}
 	}
 	public class NumericTextBox : SystemControl
@@ -103,5 +106,31 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 
+		private int _DecimalPlaces = 0;
+		/// <summary>
+		/// Gets or sets the number of decimal places to allow in this <see cref="NumericTextBox" />.
+		/// </summary>
+		/// <value>The number of decimal places to allow in this <see cref="NumericTextBox" />.</value>
+		public int DecimalPlaces
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					Native.INumericTextBoxControlImplementation impl = (ControlImplementation as Native.INumericTextBoxControlImplementation);
+					if (impl != null)
+					{
+						return impl.GetDecimalPlaces();
+					}
+				}
+				return _DecimalPlaces;
+			}
+			set
+			{
+				Native.INumericTextBoxControlImplementation impl = (ControlImplementation as Native.INumericTextBoxControlImplementation);
+				impl?.SetDecimalPlaces(value);
+				_DecimalPlaces = value;
+			}
+		}
 	}
 }

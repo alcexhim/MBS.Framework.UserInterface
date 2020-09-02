@@ -427,8 +427,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
 		{
-			TreeModelRow.TreeModelRowCollection coll = (sender as TreeModelRow.TreeModelRowCollection);
-			UpdateTreeModel(coll.Model, e);
+			DefaultTreeModel coll = (sender as DefaultTreeModel);
+			UpdateTreeModel(coll, e);
 		}
 
 

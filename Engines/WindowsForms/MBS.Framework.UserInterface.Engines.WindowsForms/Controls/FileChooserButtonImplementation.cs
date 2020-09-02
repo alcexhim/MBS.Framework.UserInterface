@@ -33,11 +33,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void FileNamesChanged()
 		{
 			Internal.FileChooserButton.FileChooserButtonControl handle = (Handle as WindowsFormsNativeControl).Handle as Internal.FileChooserButton.FileChooserButtonControl;
-			if (handle.InhibitSelectedFileNameChanged) return;
-
-			handle.InhibitTextChanged = true;
-			handle.txt.Text = (Control as FileChooserButton).SelectedFileName;
-			handle.InhibitTextChanged = false;
+			if (!handle.InhibitSelectedFileNameChanged)
+			{
+				handle.InhibitTextChanged = true;
+				handle.txt.Text = (Control as FileChooserButton).SelectedFileName;
+				handle.InhibitTextChanged = false;
+			}
+			InvokeMethod(Control, "OnChanged", new object[] { EventArgs.Empty });
 		}
 
 		private bool _RequireExistingFile = true;

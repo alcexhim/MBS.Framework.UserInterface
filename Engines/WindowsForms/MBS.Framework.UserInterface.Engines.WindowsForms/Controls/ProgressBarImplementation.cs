@@ -34,19 +34,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetValues(double minimum, double maximum, double value)
 		{
 			System.Windows.Forms.ProgressBar handle = ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ProgressBar);
-			handle.Minimum = 0;
-			handle.Maximum = 100;
-			handle.Value = (int)((minimum + (value / (maximum - minimum))) * 100);
-
 			ProgressBar pb = (Control as ProgressBar);
-			if (pb.Marquee)
+
+			InvokeIfRequired(handle, new Action(delegate ()
 			{
-				handle.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-			}
-			else
-			{
-				handle.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			}
+				handle.Minimum = 0;
+				handle.Maximum = 100;
+				handle.Value = (int)((minimum + (value / (maximum - minimum))) * 100);
+
+				if (pb.Marquee)
+				{
+					handle.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+				}
+				else
+				{
+					handle.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+				}
+			}));
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

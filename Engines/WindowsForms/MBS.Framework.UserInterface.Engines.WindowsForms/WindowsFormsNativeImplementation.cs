@@ -12,6 +12,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		public WindowsFormsNativeImplementation (Engine engine, Control control) : base(engine, control)
 		{
 		}
+		protected void InvokeIfRequired(System.Windows.Forms.Control ctl, Delegate method, params object[] args)
+		{
+			if (ctl.InvokeRequired)
+			{
+				ctl.Invoke(method, args);
+			}
+			else
+			{
+				method.DynamicInvoke(args);
+			}
+		}
 
 		protected override void InvalidateInternal(int x, int y, int width, int height)
 		{
@@ -237,7 +248,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			{
 				if ((Handle as WindowsFormsNativeControl).Handle != null)
 				{
-					(Handle as WindowsFormsNativeControl).Handle.Text = text.Replace('_', '&');
+					InvokeIfRequired((Handle as WindowsFormsNativeControl).Handle, new Action<System.Windows.Forms.Control, string>(delegate (System.Windows.Forms.Control ctl, string value)
+					{
+						ctl.Text = value.Replace('_', '&');
+					}), new object[] { (Handle as WindowsFormsNativeControl).Handle, text });
 				}
 			}
 		}

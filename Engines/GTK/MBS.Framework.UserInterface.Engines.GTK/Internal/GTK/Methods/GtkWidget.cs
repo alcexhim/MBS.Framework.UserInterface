@@ -135,6 +135,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		/// <param name="widget">Widget.</param>
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_widget_is_focus(IntPtr /*GtkWidget*/ widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_margin_top(IntPtr /*GtkWidget*/ widget, int margin);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_margin_bottom(IntPtr /*GtkWidget*/ widget, int margin);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_margin_start(IntPtr /*GtkWidget*/ widget, int margin);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_widget_set_margin_end(IntPtr /*GtkWidget*/ widget, int margin);
 	}
 }
 

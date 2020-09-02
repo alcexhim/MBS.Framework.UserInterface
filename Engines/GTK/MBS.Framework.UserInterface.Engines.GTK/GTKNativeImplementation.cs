@@ -112,6 +112,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(handle, Control.TooltipText);
 
+			if (Control.Margin != Padding.Empty)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_top(handle, Control.Margin.Top);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_bottom(handle, Control.Margin.Bottom);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_start(handle, Control.Margin.Left);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_end(handle, Control.Margin.Right);
+			}
+
 			SetupCommonEvents (FindEventHandlingHandle ((Handle as GTKNativeControl), Control));
 
 			IntPtr hCtrl = handle;

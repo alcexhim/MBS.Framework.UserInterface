@@ -99,7 +99,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetValue(double value)
 		{
 			System.Windows.Forms.NumericUpDown nud = ((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown);
-			if (nud != null) nud.Value = CDoubleToDecimal(value);
+			if (nud != null)
+			{
+				if (value <= (Control as NumericTextBox).Maximum && value >= (Control as NumericTextBox).Minimum)
+				{
+					nud.Value = CDoubleToDecimal(value);
+				}
+			}
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -109,6 +115,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			System.Windows.Forms.NumericUpDown txt = new System.Windows.Forms.NumericUpDown();
 			txt.Maximum = CDoubleToDecimal(ctl.Maximum);
 			txt.Minimum = CDoubleToDecimal(ctl.Minimum);
+			if (ctl.Value < ctl.Minimum || ctl.Value > ctl.Maximum)
+			{
+				ctl.Value = ctl.Minimum;
+			}
 			txt.Value = CDoubleToDecimal(ctl.Value);
 			txt.DecimalPlaces = ctl.DecimalPlaces;
 			txt.ValueChanged += txt_ValueChanged;

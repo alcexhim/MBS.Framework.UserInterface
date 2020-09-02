@@ -20,6 +20,10 @@ namespace MBS.Framework.UserInterface
 		{
 			mvarControls = new ControlCollection(this);
 		}
+		public Container(Layout layout) : this()
+		{
+			Layout = layout;
+		}
 
 		protected internal override void OnCreating(EventArgs e)
 		{
@@ -518,6 +522,10 @@ namespace MBS.Framework.UserInterface
 				if (item.ID != null)
 					ctl.Name = item.ID;
 
+				if (item.Properties["sensitive"] != null)
+				{
+					ctl.Enabled = (item.Properties["sensitive"].Value != "False");
+				}
 				for (int i = 0; i < item.StyleClasses.Count; i++)
 				{
 					ctl.Style.Classes.Add(item.StyleClasses[i]);

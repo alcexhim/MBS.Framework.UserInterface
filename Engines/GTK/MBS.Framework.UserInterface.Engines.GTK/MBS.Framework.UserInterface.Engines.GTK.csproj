@@ -221,6 +221,8 @@
     <Compile Include="Internal\WebKit\Methods.cs" />
     <Compile Include="Controls\WebBrowser\WebBrowserImplementation.cs" />
     <Compile Include="Internal\WebKit\Constants.cs" />
+    <Compile Include="Controls\FileChooserButtonImplementation.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkFileChooserButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

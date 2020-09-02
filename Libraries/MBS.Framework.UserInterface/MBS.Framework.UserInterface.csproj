@@ -282,6 +282,7 @@
     <Compile Include="Controls\WebBrowser\WebBrowserControl.cs" />
     <Compile Include="Controls\WebBrowser\WebBrowserDialogEvent.cs" />
     <Compile Include="Controls\WebBrowser\WebBrowserDialogType.cs" />
+    <Compile Include="Controls\FileChooserButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

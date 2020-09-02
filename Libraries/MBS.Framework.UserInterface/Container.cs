@@ -142,6 +142,34 @@ namespace MBS.Framework.UserInterface
 					ctl.Text = item.Items[1].Properties["label"].Value;
 					break;
 				}
+				case "GtkFileChooserButton":
+				{
+					ctl = new FileChooserButton();
+					(ctl as FileChooserButton).DialogTitle = item.Properties["title"]?.Value;
+					(ctl as FileChooserButton).DialogMode = Dialogs.FileDialogMode.Open;
+					if (item.Properties["action"] != null)
+					{
+						switch (item.Properties["action"].Value)
+						{
+							case "save":
+							{
+								(ctl as FileChooserButton).DialogMode = Dialogs.FileDialogMode.Save;
+								break;
+							}
+							case "select-folder":
+							{
+								(ctl as FileChooserButton).DialogMode = Dialogs.FileDialogMode.SelectFolder;
+								break;
+							}
+							case "create-folder":
+							{
+								(ctl as FileChooserButton).DialogMode = Dialogs.FileDialogMode.CreateFolder;
+								break;
+							}
+						}
+					}
+					break;
+				}
 				case "GtkAlignment":
 				case "GtkScrolledWindow":
 				{

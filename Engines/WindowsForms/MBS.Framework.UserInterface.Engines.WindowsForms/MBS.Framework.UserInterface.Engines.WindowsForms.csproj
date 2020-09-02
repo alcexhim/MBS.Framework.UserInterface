@@ -244,6 +244,8 @@
     <Compile Include="WindowsFormsMonitor.cs" />
     <Compile Include="Controls\ProgressBarImplementation.cs" />
     <Compile Include="Controls\WebBrowserControlImplementation.cs" />
+    <Compile Include="Controls\Internal\FileChooserButton\FileChooserButtonControl.cs" />
+    <Compile Include="Controls\FileChooserButtonImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -279,6 +281,7 @@
     <Folder Include="Controls\Internal\CustomListView\" />
     <Folder Include="Controls\Internal\TreeView\" />
     <Folder Include="Controls\Internal\ListView\" />
+    <Folder Include="Controls\Internal\FileChooserButton\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\Internal\AboutDialog\AboutDialog.resx" />

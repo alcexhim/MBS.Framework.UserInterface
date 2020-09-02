@@ -24,10 +24,24 @@ using MBS.Framework.UserInterface.Controls;
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.Controls
 {
 	[ControlImplementation(typeof(CheckBox))]
-	public class CheckBoxImplementation : WindowsFormsNativeImplementation
+	public class CheckBoxImplementation : WindowsFormsNativeImplementation, UserInterface.Controls.Native.ICheckBoxImplementation
 	{
 		public CheckBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
+		}
+
+		public bool GetChecked()
+		{
+			return (((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.CheckBox)?.Checked).GetValueOrDefault();
+		}
+
+		public void SetChecked(bool value)
+		{
+			System.Windows.Forms.CheckBox chk = ((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.CheckBox);
+			if (chk != null)
+			{
+				chk.Checked = value;
+			}
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -35,7 +49,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 			CheckBox ctl = (control as CheckBox);
 
 			System.Windows.Forms.CheckBox chk = new System.Windows.Forms.CheckBox();
-
+			chk.CheckedChanged += delegate (object sender, EventArgs e)
+			{
+				InvokeMethod(ctl, "OnChanged", new object[] { e });
+			};
 			return new WindowsFormsNativeControl(chk);
 		}
 	}

@@ -33,9 +33,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private StackSidebar sidebar = null;
 
-		public SettingsDialog()
+		public SettingsDialog(SettingsProvider[] providers = null, SettingsProfile[] profiles = null)
 		{
-			tmOptionGroups = new DefaultTreeModel (new Type[] { typeof(string) });
+			tmOptionGroups = new DefaultTreeModel(new Type[] { typeof(string) });
 
 			this.Layout = new BoxLayout(Orientation.Vertical);
 
@@ -47,10 +47,39 @@ namespace MBS.Framework.UserInterface.Dialogs
 			this.DefaultButton = this.Buttons[0];
 
 			this.Text = "Options";
-			this.Size = new Dimension2D(600, 400);
+			this.Size = new Dimension2D(800, 500);
 
-			foreach (SettingsProvider provider in Application.SettingsProviders) {
-				this.SettingsProviders.Add (provider);
+			if (profiles == null)
+			{
+				foreach (SettingsProfile profile in Application.SettingsProfiles)
+				{
+					if (profile.ID == SettingsProfile.AllUsersGUID || profile.ID == SettingsProfile.ThisUserGUID)
+						continue;
+
+					this.SettingsProfiles.Add(profile);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < profiles.Length; i++)
+				{
+					this.SettingsProfiles.Add(profiles[i]);
+				}
+			}
+
+			if (providers == null)
+			{
+				foreach (SettingsProvider provider in Application.SettingsProviders)
+				{
+					this.SettingsProviders.Add(provider);
+				}
+			}
+			else
+			{
+				for (int i = 0;  i < providers.Length;  i++)
+				{
+					this.SettingsProviders.Add(providers[i]);
+				}
 			}
 		}
 
@@ -123,12 +152,72 @@ namespace MBS.Framework.UserInterface.Dialogs
 		/// <value>The collection of <see cref="OptionProvider" />s used to display options in this <see cref="OptionsDialog" />.</value>
 		public SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
+		public SettingsProfile.SettingsProfileCollection SettingsProfiles { get; } = new SettingsProfile.SettingsProfileCollection();
+
 		public SettingsDialogAppearance Appearance { get; set; } = SettingsDialogAppearance.VisualStudio;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether settings defined in this <see cref="SettingsDialog"/> can be loaded and saved as a profile.
+		/// </summary>
+		/// <value><c>true</c> if profiles should be enabled for this <see cref="SettingsDialog" />; otherwise, <c>false</c>.</value>
+		public bool EnableProfiles { get; set; } = true;
+
+		private ComboBox cboProfile;
+		private TextBox txtProfile;
 		Container ctDefault = new Container ();
 		internal protected override void OnCreating (EventArgs e)
 		{
 			base.OnCreating (e);
+
+			Container ctProfile = new Container(new BoxLayout(Orientation.Horizontal));
+			ctProfile.Controls.Add(new Label("_Profile "), new BoxLayout.Constraints(false, false));
+
+			/*
+			cboProfile = new ComboBox();
+			cboProfile.Changed += cboProfile_Changed;
+			cboProfile.Margin = new Padding(0, 0, 16, 16);
+			cboProfile.ReadOnly = true;
+			cboProfile.Model = new DefaultTreeModel(new Type[] { typeof(string) });
+			ctProfile.Controls.Add(cboProfile, new BoxLayout.Constraints(true, true));
+			*/
+
+			txtProfile = new TextBox();
+			txtProfile.Margin = new Padding(0, 0, 16, 16);
+			txtProfile.Enabled = false;
+			txtProfile.Text = "(none)";
+			ctProfile.Controls.Add(txtProfile, new BoxLayout.Constraints(true, true));
+
+			Button cmdChooseProfile = new Button();
+			cmdChooseProfile.Click += cmdChooseProfile_Click;
+			cmdChooseProfile.Text = "_Choose...";
+			cmdChooseProfile.Margin = new Padding(0, 0, 0, 8);
+			ctProfile.Controls.Add(cmdChooseProfile, new BoxLayout.Constraints(false, false));
+
+			Button cmdResetProfile = new Button();
+			cmdResetProfile.Text = "_Reset";
+			ctProfile.Controls.Add(cmdResetProfile, new BoxLayout.Constraints(false, false));
+
+			/*
+			Button cmdConfigureProfiles = new Button();
+			cmdConfigureProfiles.Click += cmdConfigureProfiles_Click;
+			cmdConfigureProfiles.Text = "_Configure...";
+			ctProfile.Controls.Add(cmdConfigureProfiles, new BoxLayout.Constraints(false, false));
+			*/
+
+			ctProfile.Margin = new Padding(16);
+
+			/*
+			for (int i = 0; i < SettingsProfiles.Count; i++)
+			{
+				TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
+				{
+					new TreeModelRowColumn(cboProfile.Model.Columns[0], SettingsProfiles[i].Title)
+				});
+				row.SetExtraData<SettingsProfile>("profile", SettingsProfiles[i]);
+				(cboProfile.Model as DefaultTreeModel).Rows.Add(row);
+			}
+			*/
+			this.Controls.Add(ctProfile);
 
 			if (Appearance == SettingsDialogAppearance.System)
 			{
@@ -236,12 +325,55 @@ namespace MBS.Framework.UserInterface.Dialogs
 						}
 					}
 
+					ctSettingsGroup.Visible = false;
 					optionGroupContainers [grp] = ctSettingsGroup;
 				}
 			}
 			grps.Sort ();
 			foreach (SettingsGroup grp in grps) {
 				AddOptionGroupPathPart (grp, grp.Path, 0);
+			}
+		}
+
+		private void cboProfile_Changed(object sender, EventArgs e)
+		{
+			if (cboProfile.SelectedItem == null)
+				return;
+
+			SettingsProfile profile = cboProfile.SelectedItem.GetExtraData<SettingsProfile>("profile");
+			if (profile == null)
+			{
+				MessageDialog.ShowDialog("TODO: load settings for the default profile!", "Information", MessageDialogButtons.OK, MessageDialogIcon.Information);
+				return;
+			}
+
+			MessageDialog.ShowDialog(String.Format("TODO: load settings for {0}!", profile.Title), "Information", MessageDialogButtons.OK, MessageDialogIcon.Information);
+		}
+
+
+		private void cmdChooseProfile_Click(object sender, EventArgs e)
+		{
+			SettingsProfileDialog dlg = new SettingsProfileDialog();
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				if (dlg.SelectedProfile != null)
+				{
+					txtProfile.Text = dlg.SelectedProfile.Title;
+				}
+			}
+		}
+
+
+		protected internal override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+			if (tmOptionGroups.Rows.Count == 1)
+			{
+				tv.SelectedRows.Add(tmOptionGroups.Rows[0]);
+				tv_SelectionChanged(tv, EventArgs.Empty);
+
+				vpaned.Panel1.Expanded = false;
 			}
 		}
 

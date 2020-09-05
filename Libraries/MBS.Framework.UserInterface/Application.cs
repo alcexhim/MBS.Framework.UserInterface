@@ -656,7 +656,7 @@ namespace MBS.Framework.UserInterface
 		{
 			while (splasher == null)
 			{
-				System.Threading.Thread.Sleep(500);
+				// System.Threading.Thread.Sleep(500);
 			}
 			splasher.Hide();
 			splasher = null;
@@ -680,7 +680,7 @@ namespace MBS.Framework.UserInterface
 				while (splasher != null)
 				{
 					Application.DoEvents();
-					System.Threading.Thread.Sleep(500);
+					System.Threading.Thread.Sleep(25); // don't remove this
 				}
 			}
 

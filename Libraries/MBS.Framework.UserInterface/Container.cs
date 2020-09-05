@@ -396,6 +396,23 @@ namespace MBS.Framework.UserInterface
 						DefaultTreeModel tm = GetPropertyOrLocalRef(item.Properties["model"].Value) as DefaultTreeModel;
 						(ctl as ListViewControl).Model = tm;
 					}
+
+					(ctl as ListViewControl).HeaderStyle = ColumnHeaderStyle.Clickable;
+					if (item.Properties["headers_visible"] != null)
+					{
+						if ("False".Equals(item.Properties["headers_visible"].Value))
+						{
+							(ctl as ListViewControl).HeaderStyle = ColumnHeaderStyle.None;
+						}
+					}
+					else if (item.Properties["headers_clickable"] != null)
+					{
+						if ("False".Equals(item.Properties["headers_clickable"].Value))
+						{
+							(ctl as ListViewControl).HeaderStyle = ColumnHeaderStyle.Nonclickable;
+						}
+					}
+
 					foreach (LayoutItem item2 in item.Items)
 					{
 						if (item2.ClassName == "GtkTreeViewColumn")
@@ -526,6 +543,14 @@ namespace MBS.Framework.UserInterface
 				{
 					ctl.Enabled = (item.Properties["sensitive"].Value != "False");
 				}
+
+				int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
+				margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
+				margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");
+				margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
+				margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
+				ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
+
 				for (int i = 0; i < item.StyleClasses.Count; i++)
 				{
 					ctl.Style.Classes.Add(item.StyleClasses[i]);

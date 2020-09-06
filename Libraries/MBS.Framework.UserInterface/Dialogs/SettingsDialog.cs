@@ -261,6 +261,10 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				setting.SetValue((ctl as TextBox).Text);
 			}
+			else if (ctl is FileChooserButton)
+			{
+				setting.SetValue((ctl as FileChooserButton).SelectedFileName);
+			}
 		}
 		private void chk_Changed(object sender, EventArgs e)
 		{
@@ -275,7 +279,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private void LoadOption(Setting opt, int iRow, ref Control label, ref Control control)
 		{
 
-			if (opt is TextSetting)
+			if (opt is TextSetting || opt is FileSetting)
 			{
 				TextSetting o = (opt as TextSetting);
 
@@ -284,11 +288,23 @@ namespace MBS.Framework.UserInterface.Dialogs
 				lbl.Text = o.Title + ": ";
 				label = lbl;
 
-				TextBox txt = new TextBox();
-				txt.Text = o.GetValue<string>();
-				txt.SetExtraData<Setting>("setting", o);
-				txt.Changed += txt_Changed;
-				control = txt;
+				if (opt is FileSetting)
+				{
+					FileChooserButton txt = new FileChooserButton();
+					txt.SelectedFileName = o.GetValue<string>();
+					txt.SetExtraData<Setting>("setting", o);
+					txt.RequireExistingFile = (opt as FileSetting).RequireExistingFile;
+					txt.Changed += txt_Changed;
+					control = txt;
+				}
+				else
+				{
+					TextBox txt = new TextBox();
+					txt.Text = o.GetValue<string>();
+					txt.SetExtraData<Setting>("setting", o);
+					txt.Changed += txt_Changed;
+					control = txt;
+				}
 			}
 			else if (opt is BooleanSetting)
 			{
@@ -342,8 +358,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 				label = lbl;
 
 				NumericTextBox txt = new NumericTextBox();
-				txt.Minimum = o.MinimumValue;
-				txt.Maximum = o.MaximumValue;
+				txt.Minimum = (double)o.MinimumValue.GetValueOrDefault(decimal.MinValue);
+				txt.Maximum = (double)o.MaximumValue.GetValueOrDefault(decimal.MaxValue);
 				txt.Value = o.GetValue<double>();
 				control = txt;
 			}

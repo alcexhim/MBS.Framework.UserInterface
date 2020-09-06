@@ -24,10 +24,10 @@ namespace MBS.Framework.UserInterface
 {
 	public class RangeSetting : Setting
 	{
-		public double MinimumValue { get; set; } = 0.0;
-		public double MaximumValue { get; set; } = 0.0;
+		public decimal? MinimumValue { get; set; } = null;
+		public decimal? MaximumValue { get; set; } = null;
 
-		public RangeSetting(string title, double defaultValue = 0.0, double minimumValue = 0.0, double maximumValue = 0.0) : base(title, defaultValue)
+		public RangeSetting(string title, decimal defaultValue = 0.0M, decimal? minimumValue = null, decimal? maximumValue = null) : base(title, defaultValue)
 		{
 			MinimumValue = minimumValue;
 			MaximumValue = maximumValue;
@@ -112,6 +112,15 @@ namespace MBS.Framework.UserInterface
 		public ChoiceSettingValue SelectedValue { get; set; } = null;
 
 		public bool RequireSelectionFromList { get; set; } = true;
+	}
+	public class FileSetting : TextSetting
+	{
+		public bool RequireExistingFile { get; set; } = true;
+
+		public FileSetting(string name, string title, string defaultValue = "", bool requireExistingFile = true) : base(name, title, defaultValue)
+		{
+			RequireExistingFile = requireExistingFile;
+		}
 	}
 	public class TextSetting : Setting
 	{

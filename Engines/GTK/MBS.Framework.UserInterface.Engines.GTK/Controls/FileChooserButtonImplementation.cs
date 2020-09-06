@@ -94,7 +94,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			IntPtr hFCB = Internal.GTK.Methods.GtkFileChooserButton.gtk_file_chooser_button_new(title, fca);
-			Internal.GObject.Methods.g_signal_connect(handle, "file_set", file_set_d);
+			Internal.GObject.Methods.g_signal_connect(hFCB, "file_set", file_set_d);
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(handle, hFCB, true, true, 0);
 
 			Container fallbackContainer = new Container();

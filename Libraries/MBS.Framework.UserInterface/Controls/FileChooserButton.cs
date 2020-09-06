@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface.Controls
 
 		void SelectedFileNames_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			(ControlImplementation as Native.IFileChooserButtonImplementation).FileNamesChanged();
+			(ControlImplementation as Native.IFileChooserButtonImplementation)?.FileNamesChanged();
 		}
 
 		public System.Collections.ObjectModel.ObservableCollection<string> SelectedFileNames { get; } = new System.Collections.ObjectModel.ObservableCollection<string>();

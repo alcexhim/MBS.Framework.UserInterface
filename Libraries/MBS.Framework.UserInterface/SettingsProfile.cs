@@ -1,5 +1,5 @@
 ﻿//
-//  CustomSettingsProvider.cs
+//  SettingsProfile.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -21,40 +21,18 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public class CustomSettingsProvider : SettingsProvider
+	public class SettingsProfile
 	{
-		public CustomSettingsProvider()
+		public class SettingsProfileCollection
+			: System.Collections.ObjectModel.Collection<SettingsProfile>
 		{
-		}
-		public CustomSettingsProvider(SettingsGroup[] groups)
-		{
-			for (int i = 0; i < groups.Length; i++)
-			{
-				SettingsGroups.Add(groups[i]);
-			}
+
 		}
 
-		public event EventHandler SettingsLoaded;
-		protected virtual void OnSettingsLoaded(EventArgs e)
-		{
-			SettingsLoaded?.Invoke(this, e);
-		}
-		protected override void LoadSettingsInternal()
-		{
-			base.LoadSettingsInternal();
-			OnSettingsLoaded(EventArgs.Empty);
-		}
+		public static readonly Guid AllUsersGUID = new Guid("{6c1e84c6-7cb8-4798-b000-349dba816114}");
+		public static readonly Guid ThisUserGUID = new Guid("{a550229d-05e1-4a93-96a6-98ae1c69b847}");
 
-		public event EventHandler SettingsSaved;
-		protected virtual void OnSettingsSaved(EventArgs e)
-		{
-			SettingsSaved?.Invoke(this, e);
-		}
-
-		protected override void SaveSettingsInternal()
-		{
-			base.SaveSettingsInternal();
-			OnSettingsSaved(EventArgs.Empty);
-		}
+		public Guid ID { get; set; } = Guid.Empty;
+		public string Title { get; set; } = null;
 	}
 }

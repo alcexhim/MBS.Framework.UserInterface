@@ -14,6 +14,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkProfile />
+    <ReleaseVersion>4.0.2019.12</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -219,9 +220,12 @@
     <Content Include="Themes\VisualStudio2013\Dark\Images\Commands\FileSave.png" />
     <Content Include="Themes\VisualStudio2013\Dark\Images\Commands\FileSaveAll.png" />
     <Content Include="Themes\Windows Classic\Theme.xml" />
+    <Content Include="Dialogs\SettingsDialog.glade" />
+    <Content Include="Dialogs\SettingsProfileDialog.glade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Office2007\Images\Icons\16x16\" />
+    <Folder Include="Dialogs\" />
   </ItemGroup>
   <Target Name="Build">
     <Copy SourceFiles="@(Content)" DestinationFiles="@(Content-&gt;'$(OutputPath)%(RelativeDir)%(Filename)%(Extension)')" />

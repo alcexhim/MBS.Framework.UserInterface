@@ -34,6 +34,8 @@ namespace MBS.Framework.UserInterface
 		public static string ShortName { get; set; }
 		public static string Title { get; set; } = String.Empty;
 
+		public static SettingsProfile.SettingsProfileCollection SettingsProfiles { get; } = new SettingsProfile.SettingsProfileCollection();
+
 		public static DpiAwareness DpiAwareness { get; set; } = DpiAwareness.Default;
 		internal static bool ShouldDpiScale
 		{
@@ -911,7 +913,41 @@ namespace MBS.Framework.UserInterface
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
-        // [DebuggerNonUserCode()]
+		private static void InitializeSettingsProfiles()
+		{
+			SettingsProfiles.Add(new SettingsProfile());
+			SettingsProfiles[0].ID = SettingsProfile.AllUsersGUID;
+			SettingsProfiles[0].Title = "(All Users)";
+
+			SettingsProfiles.Add(new SettingsProfile());
+			SettingsProfiles[1].ID = SettingsProfile.ThisUserGUID;
+			SettingsProfiles[1].Title = "(This User)";
+
+			string[] dataPaths = EnumerateDataPaths();
+			for (int i = 0; i < dataPaths.Length; i++)
+			{
+				if (System.IO.File.Exists(dataPaths[i] + System.IO.Path.DirectorySeparatorChar.ToString() + "settings" + System.IO.Path.DirectorySeparatorChar.ToString() + "profiles.lst"))
+				{
+					string[] lines = System.IO.File.ReadAllLines(dataPaths[i] + System.IO.Path.DirectorySeparatorChar.ToString() + "settings" + System.IO.Path.DirectorySeparatorChar.ToString() + "profiles.lst");
+					for (int j = 0; j < lines.Length; j++)
+					{
+						if (lines[j] == String.Empty || lines[j].StartsWith("#"))
+							continue;
+
+						string[] split = lines[j].Split(new char[] { '=' });
+						if (split.Length == 2)
+						{
+							SettingsProfile profile = new SettingsProfile();
+							profile.ID = new Guid(split[0].Trim());
+							profile.Title = split[1].Trim();
+							SettingsProfiles.Add(profile);
+						}
+					}
+				}
+			}
+		}
+
+		// [DebuggerNonUserCode()]
 		public static void Initialize()
 		{
 			if (mvarEngine == null)
@@ -927,6 +963,8 @@ namespace MBS.Framework.UserInterface
 				Console.WriteLine("Using engine {0}", mvarEngine.GetType().FullName);
 				mvarEngine.Initialize();
 			}
+
+			InitializeSettingsProfiles();
 
 			// after initialization, load option providers
 

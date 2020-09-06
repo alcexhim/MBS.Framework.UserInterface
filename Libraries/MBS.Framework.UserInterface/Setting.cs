@@ -27,7 +27,7 @@ namespace MBS.Framework.UserInterface
 		public decimal? MinimumValue { get; set; } = null;
 		public decimal? MaximumValue { get; set; } = null;
 
-		public RangeSetting(string title, decimal defaultValue = 0.0M, decimal? minimumValue = null, decimal? maximumValue = null) : base(title, defaultValue)
+		public RangeSetting(string name, string title, decimal defaultValue = 0.0M, decimal? minimumValue = null, decimal? maximumValue = null) : base(name, title, defaultValue)
 		{
 			MinimumValue = minimumValue;
 			MaximumValue = maximumValue;
@@ -37,9 +37,8 @@ namespace MBS.Framework.UserInterface
 	{
 		public Setting.SettingCollection Options { get; } = new Setting.SettingCollection();
 
-		public GroupSetting(string title, Setting[] options = null)
+		public GroupSetting(string name, string title, Setting[] options = null) : base(name, title)
 		{
-			Title = title;
 			if (options != null)
 			{
 				foreach (Setting option in options)
@@ -51,11 +50,11 @@ namespace MBS.Framework.UserInterface
 	}
 	public class BooleanSetting : Setting
 	{
-		public BooleanSetting(string title, bool defaultValue = false) : base(title, defaultValue)
+		public BooleanSetting(string name, string title, bool defaultValue = false) : base(name, title, defaultValue)
 		{
 		}
 
-		public override void SetValue(object value)
+		public override void SetValue(object value, Guid? scopeId = null)
 		{
 			bool val = false;
 			if (value != null)
@@ -67,7 +66,7 @@ namespace MBS.Framework.UserInterface
 	}
 	public class ChoiceSetting : Setting
 	{
-		public ChoiceSetting(string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base(title, null)
+		public ChoiceSetting(string name, string title, ChoiceSettingValue defaultValue = null, ChoiceSettingValue[] values = null) : base(name, title, null)
 		{
 			if (values == null)
 			{
@@ -98,11 +97,13 @@ namespace MBS.Framework.UserInterface
 			{
 			}
 
+			public string Name { get; set; } = String.Empty;
 			public string Title { get; set; } = String.Empty;
 			public object Value { get; set; } = null;
 
-			public ChoiceSettingValue(string title, object value)
+			public ChoiceSettingValue(string name, string title, object value)
 			{
+				Name = name;
 				Title = title;
 				Value = value;
 			}
@@ -124,7 +125,7 @@ namespace MBS.Framework.UserInterface
 	}
 	public class TextSetting : Setting
 	{
-		public TextSetting(string title, string defaultValue = "") : base(title, defaultValue)
+		public TextSetting(string name, string title, string defaultValue = "") : base(name, title, defaultValue)
 		{
 		}
 	}
@@ -133,7 +134,7 @@ namespace MBS.Framework.UserInterface
 		public Setting.SettingCollection Settings { get; } = new Setting.SettingCollection();
 		public SettingsGroup.SettingsGroupCollection Items { get; } = new SettingsGroup.SettingsGroupCollection();
 
-		public CollectionSetting(string title, SettingsGroup group) : base(title, null)
+		public CollectionSetting(string name, string title, SettingsGroup group) : base(name, title, null)
 		{
 			for (int i = 0; i < group.Settings.Count; i++)
 			{
@@ -143,12 +144,15 @@ namespace MBS.Framework.UserInterface
 	}
 	public abstract class Setting
 	{
-		public Setting(string title, object defaultValue = null)
+		public Setting(string name, string title, object defaultValue = null)
 		{
+			Name = name;
 			Title = title;
 			DefaultValue = defaultValue;
 			mvarValue = defaultValue;
 		}
+
+		public string Name { get; set; } = String.Empty;
 		public string Title { get; set; } = String.Empty;
 		public string Description { get; set; } = String.Empty;
 
@@ -177,22 +181,37 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public object DefaultValue { get; set; } = null;
+		public SettingsValue.SettingsValueCollection ScopedValues { get; } = new SettingsValue.SettingsValueCollection();
 
 		private object mvarValue = null;
 
-		public virtual object GetValue()
+		public virtual object GetValue(Guid? scopeId = null)
 		{
 			return mvarValue;
 		}
-		public virtual void SetValue(object value)
+		public virtual void SetValue(object value, Guid? scopeId = null)
 		{
-			mvarValue = value;
+			if (scopeId != null)
+			{
+				if (ScopedValues.Contains(scopeId.Value))
+				{
+					ScopedValues[scopeId.Value].Value = value;
+				}
+				else
+				{
+					ScopedValues.Add(scopeId.Value, value);
+				}
+			}
+			else
+			{
+				mvarValue = value;
+			}
 		}
-		public T GetValue<T>(T defaultValue = default(T))
+		public T GetValue<T>(T defaultValue = default(T), Guid? scopeId = null)
 		{
 			try
 			{
-				return (T)GetValue();
+				return (T)GetValue(scopeId);
 			}
 			catch
 			{

@@ -38,9 +38,9 @@ namespace MBS.Framework.UserInterface
 				List<ChoiceSetting.ChoiceSettingValue> listValues = new List<ChoiceSetting.ChoiceSettingValue>();
 				for (int j = 0; j < availablePluginsForFeature.Length; j++)
 				{
-					listValues.Add(new ChoiceSetting.ChoiceSettingValue(availablePluginsForFeature[j].Title, availablePluginsForFeature[j]));
+					listValues.Add(new ChoiceSetting.ChoiceSettingValue(availablePluginsForFeature[j].ID.ToString("b"), availablePluginsForFeature[j].Title, availablePluginsForFeature[j]));
 				}
-				SettingsGroups[1].Settings.Add(new ChoiceSetting(feature.Title, null, listValues.ToArray()));
+				SettingsGroups[1].Settings.Add(new ChoiceSetting(feature.ID.ToString("b"), feature.Title, null, listValues.ToArray()));
 			}
 		}
 		public DefaultSettingsProvider()

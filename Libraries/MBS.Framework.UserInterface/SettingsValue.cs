@@ -1,5 +1,5 @@
 ﻿//
-//  CustomSettingsProvider.cs
+//  SettingValue.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -19,42 +19,43 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+
 namespace MBS.Framework.UserInterface
 {
-	public class CustomSettingsProvider : SettingsProvider
+	public class SettingsValue
 	{
-		public CustomSettingsProvider()
+		public class SettingsValueCollection : System.Collections.ObjectModel.Collection<SettingsValue>
 		{
-		}
-		public CustomSettingsProvider(SettingsGroup[] groups)
-		{
-			for (int i = 0; i < groups.Length; i++)
+			Dictionary<Guid, SettingsValue> _itemsByGuid = new Dictionary<Guid, SettingsValue>();
+
+			public int Count { get { return _itemsByGuid.Count; } }
+
+			public bool Contains(Guid scopeId)
 			{
-				SettingsGroups.Add(groups[i]);
+				return _itemsByGuid.ContainsKey(scopeId);
+			}
+
+			public void Add(Guid scopeId, object value)
+			{
+				SettingsValue item = new SettingsValue();
+				item.ScopeId = scopeId;
+				item.Value = value;
+				Add(item);
+			}
+			public SettingsValue this[Guid scopeId]
+			{
+				get
+				{
+					if (_itemsByGuid.ContainsKey(scopeId))
+						return _itemsByGuid[scopeId];
+					return null;
+				}
 			}
 		}
 
-		public event EventHandler SettingsLoaded;
-		protected virtual void OnSettingsLoaded(EventArgs e)
-		{
-			SettingsLoaded?.Invoke(this, e);
-		}
-		protected override void LoadSettingsInternal()
-		{
-			base.LoadSettingsInternal();
-			OnSettingsLoaded(EventArgs.Empty);
-		}
+		public Guid ScopeId { get; set; }
+		public object Value { get; set; } = null;
 
-		public event EventHandler SettingsSaved;
-		protected virtual void OnSettingsSaved(EventArgs e)
-		{
-			SettingsSaved?.Invoke(this, e);
-		}
-
-		protected override void SaveSettingsInternal()
-		{
-			base.SaveSettingsInternal();
-			OnSettingsSaved(EventArgs.Empty);
-		}
 	}
 }

@@ -75,9 +75,18 @@ namespace MBS.Framework.UserInterface
 
 		public int CompareTo(SettingsGroup other)
 		{
-			string xpath = String.Join (":", this.GetPath ());
-			string ypath = String.Join (":", other.GetPath ());
-			return xpath.CompareTo (ypath);
+			int xprior = this.Priority;
+			int yprior = other.Priority;
+			if (xprior == -1 && yprior == -1)
+			{
+				string xpath = String.Join(":", this.GetPath());
+				string ypath = String.Join(":", other.GetPath());
+				return xpath.CompareTo(ypath);
+			}
+			else
+			{
+				return yprior.CompareTo(xprior);
+			}
 		}
 
 		public string[] GetPath()
@@ -96,6 +105,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 		public Setting.SettingCollection Settings { get; } = new Setting.SettingCollection();
+		public int Priority { get; set; } = -1;
 
 		public override string ToString ()
 		{

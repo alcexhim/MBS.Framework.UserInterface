@@ -102,9 +102,9 @@ namespace MBS.Framework.UserInterface
 				})
 			};
 		}
-		public static string[] EnumerateDataFiles(string filter)
+		public static Accessor[] EnumerateDataFiles(string filter)
 		{
-			List<String> xmlFilesList = new List<String>();
+			List<Accessor> xmlFilesList = new List<Accessor>();
 
 			// TODO: change "universal-editor" string to platform-dependent "universal-editor" on *nix or "Mike Becker's Software/Universal Editor" on Windowds
 			string[] paths = EnumerateDataPaths();
@@ -127,9 +127,22 @@ namespace MBS.Framework.UserInterface
 
 				foreach (string s in xmlfilesPath)
 				{
-					xmlFilesList.Add(s);
+					xmlFilesList.Add(new FileAccessor(s));
 				}
 			}
+
+			/*
+			 * FIXME: this freezes in UniversalEditor.Associations.Playlist.ASX.uexml ( UniversalEditor.Plugins.Multimedia )
+			MBS.Framework.Reflection.ManifestResourceStream[] streams = MBS.Framework.Reflection.GetAvailableManifestResourceStreams();
+			for (int j = 0; j < streams.Length; j++)
+			{
+				if (streams[j].Name.EndsWith(".uexml"))
+				{
+					StreamAccessor sa = new StreamAccessor(streams[j].Stream);
+					xmlFilesList.Add(sa);
+				}
+			}
+			*/
 			return xmlFilesList.ToArray();
 		}
 
@@ -269,15 +282,15 @@ namespace MBS.Framework.UserInterface
 			if (configurationFileNameFilter == null) configurationFileNameFilter = System.Configuration.ConfigurationManager.AppSettings["ApplicationFramework.Configuration.ConfigurationFileNameFilter"];
 			if (configurationFileNameFilter == null) configurationFileNameFilter = "*.xml";
 
-			string[] xmlfiles = EnumerateDataFiles(configurationFileNameFilter);
+			Accessor[] xmlfiles = EnumerateDataFiles(configurationFileNameFilter);
 
 			UpdateSplashScreenStatus("Loading XML configuration files", 0, 0, xmlfiles.Length);
 
 			XMLDataFormat xdf = new XMLDataFormat();
-			foreach (string xmlfile in xmlfiles)
+			foreach (Accessor xmlfile in xmlfiles)
 			{
 				MarkupObjectModel markup = new MarkupObjectModel();
-				Document doc = new Document(markup, xdf, new FileAccessor(xmlfile));
+				Document doc = new Document(markup, xdf, xmlfile);
 				doc.Accessor.DefaultEncoding = UniversalEditor.IO.Encoding.UTF8;
 
 				doc.Accessor.Open();

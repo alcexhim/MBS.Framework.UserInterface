@@ -417,7 +417,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 				Label lbl = new Label();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
-				lbl.Text = o.Title + ": ";
+				lbl.Text = o.Title;
 				label = lbl;
 
 				if (opt is FileSetting)

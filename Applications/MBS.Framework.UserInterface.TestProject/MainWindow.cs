@@ -5,6 +5,7 @@ using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Controls.ListView;
 
 namespace MBS.Framework.UserInterface.TestProject
 {
@@ -14,7 +15,7 @@ namespace MBS.Framework.UserInterface.TestProject
 		{
 			InitializeComponent();
 		}
-		private ListView tv = null;
+		private ListViewControl tv = null;
 		private void InitializeComponent()
 		{
 			this.Padding = new Padding(13);
@@ -73,7 +74,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			tabTreeView.Layout = new BoxLayout(Orientation.Horizontal);
 			tabTreeView.Text = "Tree View Test";
 
-			tv = new ListView();
+			tv = new ListViewControl();
 
 			DefaultTreeModel tm = new DefaultTreeModel(new Type[]
 			{
@@ -151,6 +152,7 @@ namespace MBS.Framework.UserInterface.TestProject
 
 			tbsTabs.TabPages.Add(tabCustom);
 
+			tbsTabs.TabPages.Add(CreateTabPageForStockIcons());
 			this.Controls.Add (tbsTabs);
 
 			BoxLayout layout = new BoxLayout(Orientation.Vertical);
@@ -368,6 +370,44 @@ namespace MBS.Framework.UserInterface.TestProject
 					})
 				})
 			});
+		}
+
+		private TabPage CreateTabPage(string title, Container content)
+		{
+			TabPage tab = new TabPage(title);
+			tab.Layout = new BoxLayout(Orientation.Vertical);
+			tab.Controls.Add(content, new BoxLayout.Constraints(true, true));
+			return tab;
+		}
+
+		private TabPage CreateTabPageForStockIcons()
+		{
+			Container ct = new Container();
+			ct.Layout = new BoxLayout(Orientation.Horizontal, 8, true);
+
+			ListViewControl lv = new ListViewControl();
+			lv.Model = new DefaultTreeModel(new Type[] { typeof(string), typeof(string) });
+			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[0], "Name"));
+			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[1], "Text"));
+
+			StockType[] stockTypes = (StockType[])Enum.GetValues(typeof(StockType));
+			for (int i = 0; i < stockTypes.Length; i++)
+			{
+				TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
+				{
+					new TreeModelRowColumn(lv.Model.Columns[0], stockTypes[i].ToString()),
+					new TreeModelRowColumn(lv.Model.Columns[1], Application.Engine.StockTypeToLabel(stockTypes[i]))
+				});
+				row.SetExtraData<StockType>("stocktype", stockTypes[i]);
+				lv.Model.Rows.Add(row);
+			}
+			ct.Controls.Add(lv, new BoxLayout.Constraints(true, true));
+
+			PictureFrame img = new PictureFrame();
+			lv.SelectionChanged += (sender, e) => img.Image = Image.FromStock(lv.SelectedRows[0].GetExtraData<StockType>("stocktype"), 48);
+			ct.Controls.Add(img, new BoxLayout.Constraints(false, false));
+
+			return CreateTabPage("Stock Items", ct);
 		}
 
 		/// <summary>

@@ -223,6 +223,7 @@
     <Compile Include="Internal\WebKit\Constants.cs" />
     <Compile Include="Controls\FileChooserButtonImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkFileChooserButton.cs" />
+    <Compile Include="Dialogs\AboutDialogImplementation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -342,7 +342,7 @@ namespace MBS.Framework.UserInterface.Drawing
 					for (int i = 0; i < fil.ColorStops.Count; i++)
 					{
 						Color color = Color.FromString(fil.ColorStops[i].Color);
-						Measurement measurement = Measurement.FromString(fil.ColorStops[i].Position);
+						Measurement measurement = Measurement.Parse(fil.ColorStops[i].Position);
 						brush.ColorStops.Add(color, measurement);
 					}
 				}

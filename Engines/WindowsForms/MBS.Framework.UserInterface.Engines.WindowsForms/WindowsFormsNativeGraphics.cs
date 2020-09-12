@@ -40,7 +40,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		private System.Drawing.Pen PenToNativePen(Pen pen)
 		{
-			return new System.Drawing.Pen(ColorToNativeColor(pen.Color), (float) pen.Width.ConvertTo(MeasurementUnit.Pixel).Value);
+			return new System.Drawing.Pen(ColorToNativeColor(pen.Color), (float) pen.Width.GetValue(MeasurementUnit.Pixel));
 		}
 
 		protected override void DrawPolygonInternal(Pen pen, Vector2D[] points)

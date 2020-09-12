@@ -207,7 +207,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 		{
 			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(pen.Color.R, pen.Color.G, pen.Color.B, pen.Color.A);
 			Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
-			Internal.Cairo.Methods.cairo_set_line_width(mvarCairoContext, pen.Width.ConvertTo(MeasurementUnit.Pixel).Value);
+			Internal.Cairo.Methods.cairo_set_line_width(mvarCairoContext, pen.Width.GetValue(MeasurementUnit.Pixel));
 
 			CheckStatus();
 		}

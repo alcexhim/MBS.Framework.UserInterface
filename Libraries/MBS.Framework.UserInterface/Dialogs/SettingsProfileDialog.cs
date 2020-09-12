@@ -40,6 +40,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 			for (int i = 0;  i < Application.SettingsProfiles.Count; i++)
 			{
 				SettingsProfile profile = Application.SettingsProfiles[i];
+				if (profile.ID == SettingsProfile.AllUsersGUID || profile.ID == SettingsProfile.ThisUserGUID)
+					continue;
+
 				TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
 				{
 					new TreeModelRowColumn(tvProfiles.Model.Columns[0], profile.Title)
@@ -49,14 +52,20 @@ namespace MBS.Framework.UserInterface.Dialogs
 			}
 		}
 
+		[EventHandler(nameof(tvProfiles), "RowActivated")]
+		private void tvProfiles_RowActivated(object sender, ListViewRowActivatedEventArgs e)
+		{
+			cmdOK_Click(sender, e);
+		}
+
 		public SettingsProfile SelectedProfile { get; set; } = null;
 
 		[EventHandler(nameof(cmdOK), "Click")]
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (tvProfiles.SelectedRows.Count == 0)
+			if (tvProfiles.SelectedRows.Count != 1)
 			{
-				MessageDialog.ShowDialog("Please select a profile before continuing.", "Error", MessageDialogButtons.OK, MessageDialogIcon.Error);
+				MessageDialog.ShowDialog("Please select EXACTLY ONE profile before continuing.", "Error", MessageDialogButtons.OK, MessageDialogIcon.Error);
 				DialogResult = DialogResult.None;
 				return;
 			}

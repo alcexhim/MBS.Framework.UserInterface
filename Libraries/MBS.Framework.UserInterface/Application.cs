@@ -131,18 +131,16 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			/*
-			 * FIXME: this freezes in UniversalEditor.Associations.Playlist.ASX.uexml ( UniversalEditor.Plugins.Multimedia )
 			MBS.Framework.Reflection.ManifestResourceStream[] streams = MBS.Framework.Reflection.GetAvailableManifestResourceStreams();
 			for (int j = 0; j < streams.Length; j++)
 			{
 				if (streams[j].Name.EndsWith(".uexml"))
 				{
 					StreamAccessor sa = new StreamAccessor(streams[j].Stream);
+					sa.FileName = streams[j].Name;
 					xmlFilesList.Add(sa);
 				}
 			}
-			*/
 			return xmlFilesList.ToArray();
 		}
 
@@ -1116,8 +1114,13 @@ namespace MBS.Framework.UserInterface
 			Shutdown?.Invoke(typeof(Application), e);
 		}
 
+		private static bool mvarStopping = false;
 		public static void Stop(int exitCode = 0)
 		{
+			if (mvarStopping)
+				return;
+
+			mvarStopping = true;
 			if (mvarEngine == null)
 				return; // why bother getting an engine? we're stopping...
 
@@ -1127,6 +1130,7 @@ namespace MBS.Framework.UserInterface
 
 			mvarEngine.Stop(exitCode);
 			OnShutdown(EventArgs.Empty);
+			mvarStopping = false;
 		}
 
 		public static void DoEvents()

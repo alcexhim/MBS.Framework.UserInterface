@@ -255,10 +255,16 @@ namespace MBS.Framework.UserInterface
 			return Text;
 		}
 
-		public void Close()
+		public bool Close()
 		{
-			// convenience method
+			// more than just a convenience method - Destroy() does not fire WindowClosing event
+			WindowClosingEventArgs ee = new WindowClosingEventArgs(Application.Stopping ? WindowCloseReason.ApplicationStop : WindowCloseReason.None);
+			OnClosing(ee);
+			if (ee.Cancel)
+				return false;
+
 			this.Destroy();
+			return true;
 		}
 
 		/// <summary>

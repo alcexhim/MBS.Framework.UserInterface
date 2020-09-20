@@ -1114,23 +1114,28 @@ namespace MBS.Framework.UserInterface
 			Shutdown?.Invoke(typeof(Application), e);
 		}
 
-		private static bool mvarStopping = false;
+		public static bool Stopping { get; private set; } = false;
+
 		public static void Stop(int exitCode = 0)
 		{
-			if (mvarStopping)
+			if (Stopping)
 				return;
 
-			mvarStopping = true;
+			Stopping = true;
 			if (mvarEngine == null)
 				return; // why bother getting an engine? we're stopping...
 
 			System.ComponentModel.CancelEventArgs ce = new System.ComponentModel.CancelEventArgs();
 			OnBeforeShutdown(ce);
-			if (ce.Cancel) return;
+			if (ce.Cancel)
+			{
+				Stopping = false;
+				return;
+			}
 
 			mvarEngine.Stop(exitCode);
 			OnShutdown(EventArgs.Empty);
-			mvarStopping = false;
+			Stopping = false;
 		}
 
 		public static void DoEvents()

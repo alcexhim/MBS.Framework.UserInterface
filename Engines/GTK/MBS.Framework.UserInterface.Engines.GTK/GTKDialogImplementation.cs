@@ -198,7 +198,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, dialog.Decorated);
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialog.Size.Width, (int)dialog.Size.Height);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)dialogSize.Width, (int)dialogSize.Height);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)dialog.MinimumSize.Width, (int)dialog.MinimumSize.Height);
 			Internal.GTK.Methods.GtkWindow.gtk_window_resize(handle, (int)dialogSize.Width, (int)dialogSize.Height);
 

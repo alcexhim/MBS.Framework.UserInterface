@@ -166,7 +166,9 @@ namespace MBS.Framework.UserInterface
 
 		public NativeControl CreateControl (Control control)
 		{
+			// if (control.ControlImplementation == null)
 			control.ControlImplementation = this;
+
 			OnCreating (EventArgs.Empty);
 
 			NativeControl handle = CreateControlInternal (control);

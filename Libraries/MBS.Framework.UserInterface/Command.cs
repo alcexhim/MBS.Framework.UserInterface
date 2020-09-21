@@ -1,4 +1,6 @@
 using System;
+using MBS.Framework.UserInterface.Input.Keyboard;
+using UniversalEditor.ObjectModels.Markup;
 
 namespace MBS.Framework.UserInterface
 {
@@ -93,7 +95,7 @@ namespace MBS.Framework.UserInterface
 		/// that reference it.
 		/// </summary>
 		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-		public bool Enabled { get; set; }
+		public bool Enabled { get; set; } = true;
 
 		/// <summary>
 		/// Determines whether this <see cref="Command" /> is visible in all <see cref="CommandBar" />s and <see cref="MenuBar" />s
@@ -113,6 +115,118 @@ namespace MBS.Framework.UserInterface
 		public override string ToString()
 		{
 			return String.Format("{0} [{1}]", ID, Title);
+		}
+
+		public static Command FromMarkup(MarkupTagElement tagCommand)
+		{
+			Command cmd = new Command();
+			cmd.ID = tagCommand.Attributes["ID"]?.Value;
+
+			MarkupAttribute attDefaultCommandID = tagCommand.Attributes["DefaultCommandID"];
+			if (attDefaultCommandID != null)
+			{
+				cmd.DefaultCommandID = attDefaultCommandID.Value;
+			}
+
+			MarkupAttribute attCommandStockType = tagCommand.Attributes["StockType"];
+			if (attCommandStockType != null)
+			{
+				StockType stockType = StockType.None;
+				string[] names = Enum.GetNames(typeof(StockType));
+				int[] values = (int[])Enum.GetValues(typeof(StockType));
+				for (int i = 0; i < names.Length; i++)
+				{
+					if (names[i].Equals(attCommandStockType.Value))
+					{
+						stockType = (StockType)values[i];
+						break;
+					}
+				}
+				cmd.StockType = stockType;
+			}
+
+			MarkupAttribute attTitle = tagCommand.Attributes["Title"];
+			if (attTitle != null)
+			{
+				cmd.Title = attTitle.Value;
+			}
+			else
+			{
+				cmd.Title = cmd.ID;
+			}
+
+			MarkupAttribute attEnabled = tagCommand.Attributes["Enabled"];
+			if (attEnabled != null)
+			{
+				cmd.Enabled = (attEnabled.Value.ToLower() == "true");
+			}
+
+			MarkupTagElement tagShortcut = (tagCommand.Elements["Shortcut"] as MarkupTagElement);
+			if (tagShortcut != null)
+			{
+				MarkupAttribute attModifiers = tagShortcut.Attributes["Modifiers"];
+				MarkupAttribute attKey = tagShortcut.Attributes["Key"];
+				if (attKey != null)
+				{
+					KeyboardModifierKey modifiers = KeyboardModifierKey.None;
+					if (attModifiers != null)
+					{
+						string[] strModifiers = attModifiers.Value.Split(new char[] { ',' });
+						foreach (string strModifier in strModifiers)
+						{
+							switch (strModifier.Trim().ToLower())
+							{
+								case "alt":
+								{
+									modifiers |= KeyboardModifierKey.Alt;
+									break;
+								}
+								case "control":
+								{
+									modifiers |= KeyboardModifierKey.Control;
+									break;
+								}
+								case "meta":
+								{
+									modifiers |= KeyboardModifierKey.Meta;
+									break;
+								}
+								case "shift":
+								{
+									modifiers |= KeyboardModifierKey.Shift;
+									break;
+								}
+								case "super":
+								{
+									modifiers |= KeyboardModifierKey.Super;
+									break;
+								}
+							}
+						}
+					}
+
+					KeyboardKey value = KeyboardKey.None;
+					if (!Enum.TryParse<KeyboardKey>(attKey.Value, out value))
+					{
+						Console.WriteLine("ue: ui: unable to parse keyboard key '{0}'", attKey.Value);
+					}
+
+					cmd.Shortcut = new Shortcut(value, modifiers);
+				}
+			}
+
+			MarkupTagElement tagItems = (tagCommand.Elements["Items"] as MarkupTagElement);
+			if (tagItems != null)
+			{
+				foreach (MarkupElement el in tagItems.Elements)
+				{
+					MarkupTagElement tag = (el as MarkupTagElement);
+					if (tag == null) continue;
+
+					Application.InitializeCommandBarItem(tag, cmd, null);
+				}
+			}
+			return cmd;
 		}
 	}
 }

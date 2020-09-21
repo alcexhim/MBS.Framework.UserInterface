@@ -202,7 +202,7 @@ namespace MBS.Framework.UserInterface
 			mvarCommandBars.Add(cb);
 		}
 
-		private static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
+		internal static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
 		{
 			CommandItem item = CommandItem.FromMarkup(tag);
 
@@ -317,108 +317,7 @@ namespace MBS.Framework.UserInterface
 					MarkupAttribute attID = tagCommand.Attributes["ID"];
 					if (attID == null) continue;
 
-					Command cmd = new Command();
-					cmd.ID = attID.Value;
-
-					MarkupAttribute attDefaultCommandID = tagCommand.Attributes["DefaultCommandID"];
-					if (attDefaultCommandID != null)
-					{
-						cmd.DefaultCommandID = attDefaultCommandID.Value;
-					}
-
-					MarkupAttribute attCommandStockType = tagCommand.Attributes["StockType"];
-					if (attCommandStockType != null)
-					{
-						StockType stockType = StockType.None;
-						string[] names = Enum.GetNames(typeof(StockType));
-						int[] values = (int[])Enum.GetValues(typeof(StockType));
-						for (int i = 0; i < names.Length; i++)
-						{
-							if (names[i].Equals(attCommandStockType.Value))
-							{
-								stockType = (StockType)values[i];
-								break;
-							}
-						}
-						cmd.StockType = stockType;
-					}
-
-					MarkupAttribute attTitle = tagCommand.Attributes["Title"];
-					if (attTitle != null)
-					{
-						cmd.Title = attTitle.Value;
-					}
-					else
-					{
-						cmd.Title = cmd.ID;
-					}
-
-					MarkupTagElement tagShortcut = (tagCommand.Elements["Shortcut"] as MarkupTagElement);
-					if (tagShortcut != null)
-					{
-						MarkupAttribute attModifiers = tagShortcut.Attributes["Modifiers"];
-						MarkupAttribute attKey = tagShortcut.Attributes["Key"];
-						if (attKey != null)
-						{
-							KeyboardModifierKey modifiers = KeyboardModifierKey.None;
-							if (attModifiers != null)
-							{
-								string[] strModifiers = attModifiers.Value.Split(new char[] { ',' });
-								foreach (string strModifier in strModifiers)
-								{
-									switch (strModifier.Trim().ToLower())
-									{
-										case "alt":
-										{
-											modifiers |= KeyboardModifierKey.Alt;
-											break;
-										}
-										case "control":
-										{
-											modifiers |= KeyboardModifierKey.Control;
-											break;
-										}
-										case "meta":
-										{
-											modifiers |= KeyboardModifierKey.Meta;
-											break;
-										}
-										case "shift":
-										{
-											modifiers |= KeyboardModifierKey.Shift;
-											break;
-										}
-										case "super":
-										{
-											modifiers |= KeyboardModifierKey.Super;
-											break;
-										}
-									}
-								}
-							}
-
-							KeyboardKey value = KeyboardKey.None;
-							if (!Enum.TryParse<KeyboardKey>(attKey.Value, out value))
-							{
-								Console.WriteLine("ue: ui: unable to parse keyboard key '{0}'", attKey.Value);
-							}
-
-							cmd.Shortcut = new Shortcut(value, modifiers);
-						}
-					}
-
-					MarkupTagElement tagItems = (tagCommand.Elements["Items"] as MarkupTagElement);
-					if (tagItems != null)
-					{
-						foreach (MarkupElement el in tagItems.Elements)
-						{
-							MarkupTagElement tag = (el as MarkupTagElement);
-							if (tag == null) continue;
-
-							InitializeCommandBarItem(tag, cmd, null);
-						}
-					}
-
+					Command cmd = Command.FromMarkup(tagCommand);
 					Application.Commands.Add(cmd);
 				}
 			}

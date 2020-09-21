@@ -97,6 +97,7 @@ namespace MBS.Framework.UserInterface
 				{
 					CommandMenuItem mi = new CommandMenuItem(cmd.Title);
 					mi.Name = cmd.ID;
+					mi.Enabled = cmd.Enabled;
 					mi.Shortcut = cmd.Shortcut;
 					mi.StockType = cmd.StockType;
 					mi.IconName = cmd.ImageFileName;

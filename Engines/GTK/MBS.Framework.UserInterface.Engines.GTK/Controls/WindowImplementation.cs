@@ -183,6 +183,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				IntPtr hMenuFile = Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_new();
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(hMenuFile, cmi.Text);
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
 
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{

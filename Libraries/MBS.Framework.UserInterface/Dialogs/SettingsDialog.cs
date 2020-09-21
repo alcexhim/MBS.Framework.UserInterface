@@ -279,17 +279,16 @@ namespace MBS.Framework.UserInterface.Dialogs
 					(ctSettingsSubgroup.Layout as ListLayout).SelectionMode = SelectionMode.None;
 
 					int iRow = 0;
+					bool lastWasCommand = false;
+					Container ctButtonContainer = null;
+
 					foreach (Setting opt in grp.Settings) {
 
 						if (opt is GroupSetting)
 						{
 							CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
 
-							ctSettingsSubgroup = new Container();
-							ctSettingsSubgroup.BorderStyle = ControlBorderStyle.FixedSingle;
-							ctSettingsSubgroup.Layout = new ListLayout();
-							(ctSettingsSubgroup.Layout as ListLayout).SelectionMode = SelectionMode.None;
-
+							ctSettingsSubgroup = CreateSettingsSubgroup();
 							GroupSetting o = (opt as GroupSetting);
 
 							int jrow = iRow;
@@ -306,6 +305,35 @@ namespace MBS.Framework.UserInterface.Dialogs
 							lblTitle.Text = o.Title;
 							ctSettingsGroup.Controls.Add(lblTitle, new BoxLayout.Constraints(true, true));
 							continue;
+						}
+						else if (opt is CommandSetting)
+						{
+							CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
+
+							Control btn = null, lbl = null;
+							LoadOption(opt, 0, ref lbl, ref btn);
+
+							if (ctButtonContainer == null)
+							{
+								ctButtonContainer = new Container(new BoxLayout(Orientation.Horizontal));
+							}
+							foreach (string s in (opt as CommandSetting).StyleClasses)
+							{
+								btn.Style.Classes.Add(s);
+							}
+							ctButtonContainer.Controls.Add(btn, new BoxLayout.Constraints(false, false, 6, BoxLayout.PackType.End));
+							lastWasCommand = true;
+							continue;
+						}
+
+						if (lastWasCommand)
+						{
+							if (ctButtonContainer != null)
+							{
+								ctSettingsGroup.Controls.Add(ctButtonContainer, new BoxLayout.Constraints(false, false));
+							}
+							ctButtonContainer = null;
+							ctSettingsSubgroup = CreateSettingsSubgroup();
 						}
 
 						LoadOptionIntoList(opt, ctSettingsSubgroup, ref iRow);
@@ -333,6 +361,15 @@ namespace MBS.Framework.UserInterface.Dialogs
 			foreach (SettingsGroup grp in grps) {
 				AddOptionGroupPathPart (grp, grp.Path, 0);
 			}
+		}
+
+		private Container CreateSettingsSubgroup()
+		{
+			Container ct = new Container();
+			ct.BorderStyle = ControlBorderStyle.FixedSingle;
+			ct.Layout = new ListLayout();
+			(ct.Layout as ListLayout).SelectionMode = SelectionMode.None;
+			return ct;
 		}
 
 		private void cboProfile_Changed(object sender, EventArgs e)
@@ -523,6 +560,23 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 				control = fra;
 			}
+			else if (opt is CommandSetting)
+			{
+				Button btn = new Button();
+				btn.Text = opt.Title;
+				btn.Click += btn_Click;
+				btn.SetExtraData<CommandSetting>("setting", opt as CommandSetting);
+				control = btn;
+			}
+		}
+
+		private void btn_Click(object sender, EventArgs e)
+		{
+			Button btn = (sender as Button);
+			CommandSetting sett = btn.GetExtraData<CommandSetting>("setting");
+
+			MessageDialog.ShowDialog(String.Format("calling command {0}", sett.CommandID), "Command Setting", MessageDialogButtons.OK, MessageDialogIcon.Information);
+			Application.ExecuteCommand(sett.CommandID);
 		}
 
 		private void clv_ItemAdding(object sender, EventArgs e)

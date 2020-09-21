@@ -22,6 +22,16 @@ using System;
 
 namespace MBS.Framework.UserInterface
 {
+	public class CommandSetting : Setting
+	{
+		public string CommandID { get; set; } = null;
+		public System.Collections.Specialized.StringCollection StyleClasses { get; } = new System.Collections.Specialized.StringCollection();
+
+		public CommandSetting(string name, string title, string commandID) : base(name, title)
+		{
+			CommandID = commandID;
+		}
+	}
 	public class RangeSetting : Setting
 	{
 		public decimal? MinimumValue { get; set; } = null;

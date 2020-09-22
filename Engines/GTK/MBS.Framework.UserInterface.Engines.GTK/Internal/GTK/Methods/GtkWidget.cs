@@ -144,6 +144,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_widget_set_margin_start(IntPtr /*GtkWidget*/ widget, int margin);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_margin_end(IntPtr /*GtkWidget*/ widget, int margin);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*PangoContext*/ gtk_widget_get_pango_context(IntPtr /*GtkWidget*/ widget);
+
 	}
 }
 

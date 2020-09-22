@@ -105,12 +105,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			Internal.Cairo.Methods.cairo_select_font_face(mvarCairoContext, font.FamilyName, (font.Italic ? Internal.Cairo.Constants.CairoFontSlant.Italic : Internal.Cairo.Constants.CairoFontSlant.Normal), (font.Weight == 800 ? Internal.Cairo.Constants.CairoFontWeight.Bold : Internal.Cairo.Constants.CairoFontWeight.Normal));
 			CheckStatus();
 
-			double fsz = font.Size;
-			if (false) // Application.DpiAwareness == DpiAwareness.Default && System.Environment.OSVersion.Platform == PlatformID.Unix)
+			if (font.Size != null)
 			{
-				fsz *= Screen.Default.PrimaryMonitor.ScaleFactor;
+				double fsz = font.Size.Value;
+				if (false) // Application.DpiAwareness == DpiAwareness.Default && System.Environment.OSVersion.Platform == PlatformID.Unix)
+				{
+					fsz *= Screen.Default.PrimaryMonitor.ScaleFactor;
+				}
+				Internal.Cairo.Methods.cairo_set_font_size(mvarCairoContext, fsz);
 			}
-			Internal.Cairo.Methods.cairo_set_font_size(mvarCairoContext, fsz);
 			CheckStatus();
 		}
 

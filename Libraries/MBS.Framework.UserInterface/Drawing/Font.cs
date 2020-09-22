@@ -7,14 +7,14 @@ namespace MBS.Framework.UserInterface.Drawing
 {
 	public class Font
 	{
-		private string mvarFamilyName = String.Empty;
+		private string mvarFamilyName = null;
 		public string FamilyName { get { return mvarFamilyName; } set { mvarFamilyName = value; } }
 
-		private string mvarFaceName = String.Empty;
+		private string mvarFaceName = null;
 		public string FaceName { get { return mvarFaceName; } set { mvarFaceName = value; } }
 
-		private double mvarSize = 0.0;
-		public double Size { get { return mvarSize; } set { mvarSize = value; } }
+		private double? mvarSize = null;
+		public double? Size { get { return mvarSize; } set { mvarSize = value; } }
 
 		private bool mvarItalic = false;
 		public bool Italic { get { return mvarItalic; } set { mvarItalic = value; } }

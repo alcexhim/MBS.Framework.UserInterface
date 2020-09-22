@@ -54,6 +54,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.Pango.Methods.pango_attr_list_insert(hAttrList, hAttr);
 			}
 
+			if (Control.Font != null)
+			{
+				IntPtr hCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_pango_context(handle);
+				IntPtr hDesc = Internal.Pango.Methods.pango_context_get_font_description(hCtx);
+				if (!String.IsNullOrEmpty(Control.Font.FamilyName))
+				{
+					Internal.Pango.Methods.pango_font_description_set_family(hDesc, Control.Font.FamilyName);
+				}
+				if (control.Font.Size != null)
+				{
+					Internal.Pango.Methods.pango_font_description_set_size(hDesc, (int)Control.Font.Size);
+				}
+
+				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
+				Internal.Pango.Methods.pango_font_description_set_weight(hDesc, (int)Control.Font.Weight);
+				Internal.Pango.Methods.pango_context_set_font_description(hCtx, hDesc);
+
+				IntPtr hAttr = Internal.Pango.Methods.pango_attr_font_desc_new(hDesc);
+				Internal.Pango.Methods.pango_attr_list_insert(hAttrList, hAttr);
+			}
+
 			if (ctl.WordWrap == WordWrapMode.Always)
 			{
 				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, true);

@@ -286,6 +286,7 @@
     <Compile Include="SettingsValue.cs" />
     <Compile Include="Dialogs\SettingsProfileDialog.cs" />
     <Compile Include="ButtonStylePresets.cs" />
+    <Compile Include="FontWeights.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

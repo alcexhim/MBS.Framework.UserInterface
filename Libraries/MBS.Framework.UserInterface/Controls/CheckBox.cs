@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.ComponentModel;
+
 namespace MBS.Framework.UserInterface.Controls
 {
 	namespace Native
@@ -29,6 +31,21 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetChecked(bool value);
 		}
 	}
+	public class CheckBoxChangingEventArgs : CancelEventArgs
+	{
+		public bool OldValue { get; private set; } = false;
+		public bool NewValue { get; set; } = false;
+		public CheckBoxChangingEventArgs(bool oldvalue, bool newvalue)
+		{
+			OldValue = oldvalue;
+			NewValue = newvalue;
+		}
+	}
+	public enum CheckBoxDisplayStyle
+	{
+		CheckBox,
+		Switch
+	}
 	public class CheckBox : SystemControl
 	{
 		public CheckBox()
@@ -37,6 +54,11 @@ namespace MBS.Framework.UserInterface.Controls
 
 		private bool mvarChecked = false;
 
+		public event EventHandler<CheckBoxChangingEventArgs> Changing;
+		protected virtual void OnChanging(CheckBoxChangingEventArgs e)
+		{
+			Changing?.Invoke(this, e);
+		}
 		public event EventHandler Changed;
 		protected virtual void OnChanged(EventArgs e)
 		{
@@ -66,5 +88,6 @@ namespace MBS.Framework.UserInterface.Controls
 		}
 
 		public bool UseMnemonic { get; set; } = true;
+		public CheckBoxDisplayStyle DisplayStyle { get; set; } = CheckBoxDisplayStyle.CheckBox;
 	}
 }

@@ -165,9 +165,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private ComboBox cboProfile;
 		private TextBox txtProfile;
 		Container ctDefault = new Container ();
-		internal protected override void OnCreating (EventArgs e)
+		internal protected override void OnCreating(EventArgs e)
 		{
-			base.OnCreating (e);
+			base.OnCreating(e);
 
 			Container ctProfile = new Container(new BoxLayout(Orientation.Horizontal));
 			ctProfile.Controls.Add(new Label("_Profile "), new BoxLayout.Constraints(false, false));
@@ -249,118 +249,176 @@ namespace MBS.Framework.UserInterface.Dialogs
 				CreateVSLayout();
 			}
 
-			Label lblNoOptions = new Label ("The selected group has no options available to configure");
+			Label lblNoOptions = new Label("The selected group has no options available to configure");
 			lblNoOptions.HorizontalAlignment = HorizontalAlignment.Center;
 			lblNoOptions.VerticalAlignment = VerticalAlignment.Middle;
 			ctDefault.Controls.Add(lblNoOptions, new BoxLayout.Constraints(true, true));
 
-			if (sidebar == null) {
-				vpaned.Panel2.Controls.Add (ctDefault, new BoxLayout.Constraints (true, true));
-			} else {
+			if (sidebar == null)
+			{
+				vpaned.Panel2.Controls.Add(ctDefault, new BoxLayout.Constraints(true, true));
+			}
+			else
+			{
 			}
 
-			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup> ();
-			foreach (SettingsProvider provider in SettingsProviders) {
+			System.Collections.Generic.List<SettingsGroup> grps = new System.Collections.Generic.List<SettingsGroup>();
+			foreach (SettingsProvider provider in SettingsProviders)
+			{
 				provider.Initialize();
-				foreach (SettingsGroup grp in provider.SettingsGroups) {
-					if (grps.Contains (grp))
+				foreach (SettingsGroup grp in provider.SettingsGroups)
+				{
+					if (grps.Contains(grp))
 						continue;
-					
-					grps.Add (grp);
 
-					Container ctSettingsGroup = new Container ();
+					grps.Add(grp);
+
+					Container ctSettingsGroupWrapper = new Container();
+					ctSettingsGroupWrapper.Layout = new BoxLayout(Orientation.Vertical);
+
+					Container ctSettingsGroup = new Container();
 					ctSettingsGroup.Layout = new BoxLayout(Orientation.Vertical);
 					ctSettingsGroup.BorderStyle = ControlBorderStyle.FixedSingle;
-					ctSettingsGroup.Margin = new Padding (16);
+					ctSettingsGroup.Margin = new Padding(16);
 
-					Container ctSettingsSubgroup = new Container();
-					ctSettingsSubgroup.BorderStyle = ControlBorderStyle.FixedSingle;
-					ctSettingsSubgroup.Layout = new ListLayout();
-					(ctSettingsSubgroup.Layout as ListLayout).SelectionMode = SelectionMode.None;
+					Container ctSettingsSubgroup = null;
 
 					int iRow = 0;
 					bool lastWasCommand = false;
 					Container ctButtonContainer = null;
 
-					foreach (Setting opt in grp.Settings) {
-
-						if (opt is GroupSetting)
-						{
-							CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
-
-							ctSettingsSubgroup = CreateSettingsSubgroup();
-							GroupSetting o = (opt as GroupSetting);
-
-							int jrow = iRow;
-							for (int j = 0; j < o.Options.Count; j++)
-							{
-								LoadOptionIntoList(((GroupSetting)opt).Options[j], ctSettingsSubgroup, ref jrow);
-								jrow++;
-							}
-
-							Label lblTitle = new Label();
-							lblTitle.HorizontalAlignment = HorizontalAlignment.Left;
-							// lblTitle.Font = SystemFonts.MenuFont;
-							// lblTitle.Font.Weight = FontWeights.Bold;
-							lblTitle.Text = o.Title;
-							ctSettingsGroup.Controls.Add(lblTitle, new BoxLayout.Constraints(true, true));
-							continue;
-						}
-						else if (opt is CommandSetting)
-						{
-							CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
-
-							Control btn = null, lbl = null;
-							LoadOption(opt, 0, ref lbl, ref btn);
-
-							if (ctButtonContainer == null)
-							{
-								ctButtonContainer = new Container(new BoxLayout(Orientation.Horizontal));
-							}
-							foreach (string s in (opt as CommandSetting).StyleClasses)
-							{
-								btn.Style.Classes.Add(s);
-							}
-							ctButtonContainer.Controls.Add(btn, new BoxLayout.Constraints(false, false, 6, BoxLayout.PackType.End));
-							lastWasCommand = true;
-							continue;
-						}
-
-						if (lastWasCommand)
-						{
-							if (ctButtonContainer != null)
-							{
-								ctSettingsGroup.Controls.Add(ctButtonContainer, new BoxLayout.Constraints(false, false));
-							}
-							ctButtonContainer = null;
-							ctSettingsSubgroup = CreateSettingsSubgroup();
-						}
-
-						LoadOptionIntoList(opt, ctSettingsSubgroup, ref iRow);
-						iRow++;
+					foreach (Setting opt in grp.Settings)
+					{
+						InsertSetting(opt, ctSettingsGroup, ref ctSettingsSubgroup, ref iRow, ref ctButtonContainer, ref lastWasCommand);
 					}
 					CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
 
-					if (sidebar == null) {
-						vpaned.Panel2.Controls.Add (ctSettingsGroup, new BoxLayout.Constraints (true, true));
-					} else {
-						if (grp.Path != null && grp.Path.Length > 0) {
-							StackSidebarPanel ctp = new StackSidebarPanel ();
-							ctSettingsGroup.Name = String.Join (":", grp.Path);
-							ctSettingsGroup.Text = grp.Path [grp.Path.Length - 1];
-							ctp.Control = ctSettingsGroup;
-							sidebar.Items.Add (ctp);
+					if (sidebar == null)
+					{
+						vpaned.Panel2.Controls.Add(ctSettingsGroupWrapper, new BoxLayout.Constraints(true, false));
+					}
+					else
+					{
+						if (grp.Path != null && grp.Path.Length > 0)
+						{
+							StackSidebarPanel ctp = new StackSidebarPanel();
+							ctSettingsGroup.Name = String.Join(":", grp.Path);
+							ctSettingsGroup.Text = grp.Path[grp.Path.Length - 1];
+							ctp.Control = ctSettingsGroupWrapper;
+							sidebar.Items.Add(ctp);
 						}
 					}
 
-					ctSettingsGroup.Visible = false;
-					optionGroupContainers [grp] = ctSettingsGroup;
+					ctSettingsGroupWrapper.Controls.Add(ctSettingsGroup, new BoxLayout.Constraints(false, false));
+					ctSettingsGroupWrapper.Visible = false;
+
+					optionGroupContainers[grp] = ctSettingsGroupWrapper;
 				}
 			}
-			grps.Sort ();
-			foreach (SettingsGroup grp in grps) {
-				AddOptionGroupPathPart (grp, grp.Path, 0);
+			grps.Sort();
+			foreach (SettingsGroup grp in grps)
+			{
+				AddOptionGroupPathPart(grp, grp.Path, 0);
 			}
+		}
+
+		private void InsertSetting(Setting opt, Container ctSettingsGroup, ref Container ctSettingsSubgroup, ref int iRow, ref Container ctButtonContainer, ref bool lastWasCommand)
+		{
+			if (lastWasCommand)
+			{
+				if (ctButtonContainer != null)
+				{
+					ctSettingsGroup.Controls.Add(ctButtonContainer, new BoxLayout.Constraints(false, false, 16));
+				}
+				ctButtonContainer = null;
+				ctSettingsSubgroup = null;
+			}
+
+			if (opt is GroupSetting)
+			{
+				InsertGroupSetting(opt as GroupSetting, ctSettingsGroup, ref ctSettingsSubgroup, iRow, ref ctButtonContainer, ref lastWasCommand);
+				return;
+			}
+			else if (opt is CommandSetting)
+			{
+				InsertCommandSetting(opt as CommandSetting, ctSettingsGroup, ctSettingsSubgroup, ref ctButtonContainer);
+				lastWasCommand = true;
+				return;
+			}
+
+			if (ctSettingsSubgroup == null)
+			{
+				ctSettingsSubgroup = CreateSettingsSubgroup();
+			}
+
+			LoadOptionIntoList(opt, ctSettingsSubgroup, ref iRow);
+			iRow++;
+		}
+
+		private void InsertGroupSetting(GroupSetting opt, Container ctSettingsGroup, ref Container ctSettingsSubgroup, int iRow, ref Container ctButtonContainer, ref bool lastWasCommand)
+		{
+			CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
+
+			ctSettingsSubgroup = CreateSettingsSubgroup();
+			GroupSetting o = (opt as GroupSetting);
+
+			Container ctTitleAndDscription = new Container(new BoxLayout(Orientation.Vertical));
+
+			Label lblTitle = new Label();
+			lblTitle.HorizontalAlignment = HorizontalAlignment.Left;
+			lblTitle.Font = SystemFonts.MenuFont;
+			lblTitle.Font.Weight = FontWeights.Bold;
+			lblTitle.Text = o.Title;
+			ctTitleAndDscription.Controls.Add(lblTitle, new BoxLayout.Constraints(false, false, 8));
+
+			if (!String.IsNullOrEmpty(opt.Description))
+			{
+				Label lblDescription = new Label();
+				lblDescription.HorizontalAlignment = HorizontalAlignment.Left;
+				lblDescription.Text = opt.Description;
+				lblDescription.WordWrap = WordWrapMode.Always;
+				ctTitleAndDscription.Controls.Add(lblDescription, new BoxLayout.Constraints(false, false, 8));
+			}
+
+			ctSettingsGroup.Controls.Add(ctTitleAndDscription, new BoxLayout.Constraints(false, false, 16));
+
+			int jrow = iRow;
+			for (int j = 0; j < o.Options.Count; j++)
+			{
+				if (o.Options[j] is GroupSetting)
+				{
+					InsertGroupSetting(o.Options[j] as GroupSetting, ctSettingsGroup, ref ctSettingsSubgroup, iRow, ref ctButtonContainer, ref lastWasCommand);
+					continue;
+				}
+				else if (o.Options[j] is CommandSetting)
+				{
+					InsertCommandSetting(o.Options[j] as CommandSetting, ctSettingsGroup, ctSettingsSubgroup, ref ctButtonContainer);
+					lastWasCommand = true;
+					continue;
+				}
+				else
+				{
+					InsertSetting(o.Options[j], ctSettingsGroup, ref ctSettingsSubgroup, ref iRow, ref ctButtonContainer, ref lastWasCommand);
+				}
+				jrow++;
+			}
+
+			ctSettingsGroup.Controls.Add(ctSettingsSubgroup, new BoxLayout.Constraints(false, false));
+		}
+
+		private void InsertCommandSetting(CommandSetting opt, Container ctSettingsGroup, Container ctSettingsSubgroup, ref Container ctButtonContainer)
+		{
+			CloseSettingsSubgroup(ctSettingsGroup, ctSettingsSubgroup);
+
+			Control btn = null, lbl = null;
+			LoadOption(opt, 0, ref lbl, ref btn);
+
+			if (ctButtonContainer == null)
+			{
+				ctButtonContainer = new Container(new BoxLayout(Orientation.Horizontal));
+			}
+			(btn as Button).StylePreset = (opt as CommandSetting).StylePreset;
+			ctButtonContainer.Controls.Add(btn, new BoxLayout.Constraints(false, false, 6, BoxLayout.PackType.End));
 		}
 
 		private Container CreateSettingsSubgroup()
@@ -416,7 +474,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private void CloseSettingsSubgroup(Container ctSettingsGroup, Container ctSettingsSubgroup)
 		{
-			ctSettingsGroup.Controls.Add(ctSettingsSubgroup, new BoxLayout.Constraints(true, false));
+			if (ctSettingsSubgroup != null)
+			{
+				BoxLayout.Constraints constraints = new BoxLayout.Constraints(true, true);
+				constraints.HorizontalExpand = true;
+				ctSettingsSubgroup.MaximumSize = new Dimension2D(1024, -1);
+				ctSettingsGroup.Controls.Add(ctSettingsSubgroup, constraints);
+			}
 		}
 
 		private System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer> optionGroupContainers = new System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer>();
@@ -485,7 +549,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				label = lbl;
 
 				CheckBox chk = new CheckBox();
-				// chk.DisplayStyle = CheckBoxDisplayStyle.Switch;
+				chk.DisplayStyle = CheckBoxDisplayStyle.Switch;
 				chk.Checked = o.GetValue<bool>();
 				chk.SetExtraData<Setting>("setting", o);
 				chk.Changed += chk_Changed;
@@ -556,7 +620,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				clv.ItemAdding += clv_ItemAdding;
 				clv.ItemEditing += clv_ItemEditing;
 				clv.SetExtraData<CollectionSetting>("setting", o);
-				fra.Controls.Add(clv, new BoxLayout.Constraints(true, true));
+				fra.Controls.Add(clv, new BoxLayout.Constraints(true, false));
 
 				control = fra;
 			}
@@ -651,13 +715,15 @@ namespace MBS.Framework.UserInterface.Dialogs
 				ct.Controls.Add(label, new GridLayout.Constraints(iRow, 0, 1, 1));
 			}
 
-
-			Label lblDescription = new Label();
-			lblDescription.HorizontalAlignment = HorizontalAlignment.Left;
-			lblDescription.Enabled = false;
-			lblDescription.Attributes.Add("scale", 0.8);
-			lblDescription.Text = opt.Description;
-			ct.Controls.Add(lblDescription, new GridLayout.Constraints(iRow + 1, 0, 1, 1));
+			if (!String.IsNullOrEmpty(opt.Description))
+			{
+				Label lblDescription = new Label();
+				lblDescription.HorizontalAlignment = HorizontalAlignment.Left;
+				lblDescription.Enabled = false;
+				lblDescription.Attributes.Add("scale", 0.8);
+				lblDescription.Text = opt.Description;
+				ct.Controls.Add(lblDescription, new GridLayout.Constraints(iRow + 1, 0, 1, 1));
+			}
 
 			if (control != null)
 			{

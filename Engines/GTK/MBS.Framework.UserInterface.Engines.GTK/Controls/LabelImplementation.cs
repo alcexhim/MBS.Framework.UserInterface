@@ -63,6 +63,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, false);
 			}
 
+			switch (ctl.HorizontalAlignment)
+			{
+				case HorizontalAlignment.Center:
+				{
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.5);
+					break;
+				}
+				case HorizontalAlignment.Left:
+				{
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.0);
+					break;
+				}
+				case HorizontalAlignment.Right:
+				{
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 1.0);
+					break;
+				}
+			}
+
 			Internal.GTK.Methods.GtkLabel.gtk_label_set_attributes(handle, hAttrList);
 
 			IntPtr hEventBox = Internal.GTK.Methods.GtkEventBox.gtk_event_box_new();

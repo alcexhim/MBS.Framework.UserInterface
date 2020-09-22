@@ -74,6 +74,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 
+			if (ctl.StylePreset == ButtonStylePresets.Destructive)
+			{
+				IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
+				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "destructive-action");
+			}
+			else if (ctl.StylePreset == ButtonStylePresets.Suggested)
+			{
+				IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
+				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "suggested-action");
+			}
+
 			PictureFrame image = null;
 			if (ctl.StockType != StockType.None)
 			{

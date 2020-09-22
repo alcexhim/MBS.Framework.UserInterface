@@ -25,7 +25,7 @@ namespace MBS.Framework.UserInterface
 	public class CommandSetting : Setting
 	{
 		public string CommandID { get; set; } = null;
-		public System.Collections.Specialized.StringCollection StyleClasses { get; } = new System.Collections.Specialized.StringCollection();
+		public ButtonStylePresets StylePreset { get; set; } = ButtonStylePresets.None;
 
 		public CommandSetting(string name, string title, string commandID) : base(name, title)
 		{

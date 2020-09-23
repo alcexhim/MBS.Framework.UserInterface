@@ -401,6 +401,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 					InsertSetting(o.Options[j], ctSettingsGroup, ref ctSettingsSubgroup, ref iRow, ref ctButtonContainer, ref lastWasCommand);
 				}
 				jrow++;
+				lastWasCommand = false;
 			}
 
 			ctSettingsGroup.Controls.Add(ctSettingsSubgroup, new BoxLayout.Constraints(false, false));

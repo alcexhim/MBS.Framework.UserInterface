@@ -205,48 +205,7 @@ namespace MBS.Framework.UserInterface
 		internal static void InitializeCommandBarItem(MarkupTagElement tag, Command parent, CommandBar parentCommandBar)
 		{
 			CommandItem item = CommandItem.FromMarkup(tag);
-
-			CommandItem.CommandItemCollection coll = null;
-			if (item != null)
-			{
-				if (parent == null)
-				{
-					if (parentCommandBar != null)
-					{
-						coll = parentCommandBar.Items;
-					}
-					else
-					{
-						coll = mvarMainMenu.Items;
-					}
-				}
-				else
-				{
-					coll = parent.Items;
-				}
-			}
-
-			if (coll != null)
-			{
-				int insertIndex = -1;
-				if (item.InsertAfterID != null)
-				{
-					insertIndex = coll.IndexOf(item.InsertAfterID) + 1;
-				}
-				else if (item.InsertBeforeID != null)
-				{
-					insertIndex = coll.IndexOf(item.InsertBeforeID);
-				}
-
-				if (insertIndex != -1)
-				{
-					coll.Insert(insertIndex, item);
-				}
-				else
-				{
-					coll.Add(item);
-				}
-			}
+			CommandItem.AddToCommandBar(item, parent, parentCommandBar);
 		}
 
 		private static ApplicationMainMenu mvarMainMenu = new ApplicationMainMenu();
@@ -659,20 +618,40 @@ namespace MBS.Framework.UserInterface
 		}
 
 		private static Dictionary<Context, List<MenuItem>> _listContextMenuItems = new Dictionary<Context, List<MenuItem>>();
+		private static Dictionary<Context, List<Command>> _listContextCommands = new Dictionary<Context, List<Command>>();
 
 		/// <summary>
 		/// Handles updating the menus, toolbars, keyboard shortcuts, and other UI elements associated with the application <see cref="Context" />.
 		/// </summary>
 		internal static void AddContext(Context ctx)
 		{
-			foreach (Command cmd in ctx.Commands)
-			{
-				Application.Commands.Add(cmd);
-			}
-
 			if (!_listContextMenuItems.ContainsKey(ctx))
 			{
 				_listContextMenuItems[ctx] = new List<MenuItem>();
+			}
+			if (!_listContextCommands.ContainsKey(ctx))
+			{
+				_listContextCommands[ctx] = new List<Command>();
+			}
+
+			foreach (Command cmd in ctx.Commands)
+			{
+				Command actual = Application.Commands[cmd.ID];
+				if (actual != null)
+				{
+					for (int i = 0; i < cmd.Items.Count; i++)
+					{
+						if (!actual.Items.Contains(cmd.Items[i]))
+						{
+							CommandItem.AddToCommandBar(cmd.Items[i], actual, null);
+						}
+					}
+				}
+				else
+				{
+					_listContextCommands[ctx].Add(cmd);
+					Application.Commands.Add(cmd);
+				}
 			}
 
 			foreach (CommandItem ci in ctx.MenuItems)
@@ -726,7 +705,7 @@ namespace MBS.Framework.UserInterface
 			}
 			_listContextMenuItems[ctx].Clear();
 
-			foreach (Command cmd in ctx.Commands)
+			foreach (Command cmd in _listContextCommands[ctx])
 			{
 				Application.Commands.Remove(cmd);
 			}

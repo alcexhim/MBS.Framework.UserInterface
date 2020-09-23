@@ -94,6 +94,51 @@ namespace MBS.Framework.UserInterface
 				return -1;
 			}
 		}
+
+		public static void AddToCommandBar(CommandItem item, Command parent, CommandBar parentCommandBar)
+		{
+			CommandItem.CommandItemCollection coll = null;
+			if (item != null)
+			{
+				if (parent == null)
+				{
+					if (parentCommandBar != null)
+					{
+						coll = parentCommandBar.Items;
+					}
+					else
+					{
+						coll = Application.MainMenu.Items;
+					}
+				}
+				else
+				{
+					coll = parent.Items;
+				}
+			}
+
+			if (coll != null)
+			{
+				int insertIndex = -1;
+				if (item.InsertAfterID != null)
+				{
+					insertIndex = coll.IndexOf(item.InsertAfterID) + 1;
+				}
+				else if (item.InsertBeforeID != null)
+				{
+					insertIndex = coll.IndexOf(item.InsertBeforeID);
+				}
+
+				if (insertIndex != -1)
+				{
+					coll.Insert(insertIndex, item);
+				}
+				else
+				{
+					coll.Add(item);
+				}
+			}
+		}
 	}
 	public class CommandReferenceCommandItem : CommandItem
 	{

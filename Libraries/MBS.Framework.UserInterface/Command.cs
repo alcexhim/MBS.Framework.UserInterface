@@ -24,7 +24,6 @@ namespace MBS.Framework.UserInterface
 
 		public Command()
 		{
-
 		}
 		public Command(string id, string title, CommandItem[] items = null)
 		{
@@ -77,13 +76,12 @@ namespace MBS.Framework.UserInterface
 		/// The file name of the image to be displayed on the command.
 		/// </summary>
 		public string ImageFileName { get { return mvarImageFileName; } set { mvarImageFileName = value; } }
-		
-		
-		private CommandItem.CommandItemCollection mvarItems = new CommandItem.CommandItemCollection();
+
+
 		/// <summary>
 		/// The child <see cref="CommandItem"/>s that are contained within this <see cref="Command"/>.
 		/// </summary>
-		public CommandItem.CommandItemCollection Items { get { return mvarItems; } }
+		public CommandItem.CommandItemCollection Items { get; } = new CommandItem.CommandItemCollection();
 		
 		/// <summary>
 		/// The event that is fired when the command is executed.

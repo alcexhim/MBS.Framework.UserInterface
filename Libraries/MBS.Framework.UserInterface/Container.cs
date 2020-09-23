@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Text;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
@@ -263,9 +263,13 @@ namespace MBS.Framework.UserInterface
 				{
 					ctl = new Label();
 
+					if (item.Properties["use_markup"] != null)
+					{
+						ctl.UseMarkup = (item.Properties["use_markup"].Value == "True");
+					}
 					if (item.Properties["label"] != null)
 					{
-						ctl.Text = item.Properties["label"].Value;
+						ctl.Text = UnescapeHTMLIf(item.Properties["label"].Value, ctl.UseMarkup);
 					}
 					if (item.Attributes["scale"] != null)
 					{
@@ -561,6 +565,67 @@ namespace MBS.Framework.UserInterface
 				Console.Error.WriteLine("uwt: ContainerLayout: control class '" + item.ClassName + "' not handled");
 			}
 			return ctl;
+		}
+
+		private string UnescapeHTML(string value)
+		{
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < value.Length; i++)
+			{
+				if (value[i] == '&')
+				{
+					i++;
+					StringBuilder sbc = new StringBuilder();
+					while (value[i] != ';')
+					{
+						sbc.Append(value[i]);
+						i++;
+					}
+
+					switch (sbc.ToString())
+					{
+						case "lt":
+						{
+							sb.Append('<');
+							break;
+						}
+						case "gt":
+						{
+							sb.Append('>');
+							break;
+						}
+						case "nbsp":
+						{
+							sb.Append(' ');
+							break;
+						}
+						case "copy":
+						{
+							sb.Append('©');
+							break;
+						}
+					}
+
+					continue;
+				}
+				else if (value[i] == '%')
+				{
+					string psz = (value[i + 1].ToString() + value[i + 2].ToString());
+					int index = Int32.Parse(psz);
+					sb.Append((char)index);
+				}
+				else
+				{
+					sb.Append(value[i]);
+				}
+			}
+			return sb.ToString();
+		}
+		private string UnescapeHTMLIf(string value, bool useMarkup)
+		{
+			if (useMarkup)
+				return UnescapeHTML(value);
+			return value;
 		}
 
 		private Dictionary<string, object> _localRefs = new Dictionary<string, object>();

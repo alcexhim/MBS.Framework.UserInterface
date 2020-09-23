@@ -11,6 +11,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 	{
 		public LabelImplementation(Engine engine, Control control) : base(engine, control)
 		{
+			activate_link_d = new Func<IntPtr, string, bool>(activate_link);
+		}
+
+		private Func<IntPtr /*GtkLabel*/, string, bool> activate_link_d;
+		private bool activate_link(IntPtr /*GtkLabel*/ label, string uri)
+		{
+			LinkClickedEventArgs ee = new LinkClickedEventArgs(uri);
+			OnLinkClicked(ee);
+			return ee.Cancel;
+		}
+
+		protected virtual void OnLinkClicked(LinkClickedEventArgs e)
+		{
+			InvokeMethod((Control as Label), "OnLinkClicked", new object[] { e });
 		}
 
 		protected override string GetControlTextInternal(Control control)
@@ -104,6 +118,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			Internal.GTK.Methods.GtkLabel.gtk_label_set_attributes(handle, hAttrList);
+			Internal.GObject.Methods.g_signal_connect(handle, "activate_link", activate_link_d);
+
+			Internal.GTK.Methods.GtkLabel.gtk_label_set_use_markup(handle, ctl.UseMarkup);
 
 			IntPtr hEventBox = Internal.GTK.Methods.GtkEventBox.gtk_event_box_new();
 			Internal.GTK.Methods.GtkContainer.gtk_container_add(hEventBox, handle);

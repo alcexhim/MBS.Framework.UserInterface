@@ -48,6 +48,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_label_get_label(IntPtr /*GtkLabel*/ label);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_label_set_label(IntPtr /*GtkLabel*/ label, IntPtr value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_label_get_use_markup(IntPtr /*GtkLabel*/ label);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_label_set_use_markup(IntPtr /*GtkLabel*/ label, bool value);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_label_set_justify(IntPtr /*GtkLabel*/ label, Constants.GtkJustification jtype);

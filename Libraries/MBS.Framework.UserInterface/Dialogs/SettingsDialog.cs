@@ -575,7 +575,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 				Label lbl = new Label();
 				lbl.HorizontalAlignment = HorizontalAlignment.Left;
 				lbl.Text = o.Title;
-				lbl.Click += (sender, e) => chk.Checked = !chk.Checked;
 				label = lbl;
 			}
 			else if (opt is ChoiceSetting)
@@ -795,6 +794,11 @@ namespace MBS.Framework.UserInterface.Dialogs
 				{
 					ct1.Controls.Add(label, new BoxLayout.Constraints(true, true));
 				}
+			}
+
+			if (opt is BooleanSetting)
+			{
+				ct1.Click += (sender, e) => (control as CheckBox).Checked = !(control as CheckBox).Checked;
 			}
 
 			ct1.Controls.Add(control, new BoxLayout.Constraints(false, false));

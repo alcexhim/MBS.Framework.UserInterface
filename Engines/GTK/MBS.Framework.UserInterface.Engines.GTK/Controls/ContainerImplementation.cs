@@ -10,6 +10,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public ContainerImplementation(Engine engine, Container control)
 			: base(engine, control)
 		{
+			_hListBox_row_activated_d = new Action<IntPtr, IntPtr>(_hListBox_row_activated);
+		}
+
+		private Action<IntPtr, IntPtr> _hListBox_row_activated_d;
+		private void _hListBox_row_activated(IntPtr listbox, IntPtr row)
+		{
+			Control ctlChild = (Engine as GTKEngine).GetControlByHandle(row);
+			InvokeMethod(ctlChild, "OnClick", new object[] { EventArgs.Empty });
 		}
 
 		private Dictionary<Layout, IntPtr> handlesByLayout = new Dictionary<Layout, IntPtr>();
@@ -18,7 +26,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		internal void ApplyLayout(IntPtr hContainer, Control ctl, Layout layout)
 		{
-			IntPtr ctlHandle = (Engine.GetHandleForControl(ctl) as GTKNativeControl).Handle;
+			GTKNativeControl hnc = (Engine.GetHandleForControl(ctl) as GTKNativeControl);
+			IntPtr ctlHandle = hnc.Handle;
 
 			Constraints cstr = layout.GetControlConstraints(ctl);
 			if (cstr != null)
@@ -95,6 +104,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else if (layout is ListLayout)
 			{
 				IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
+				hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, hListBoxRow);
 			}
@@ -166,6 +176,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else if (layout is Layouts.ListLayout)
 			{
 				hContainer = Internal.GTK.Methods.GtkListBox.gtk_list_box_new();
+				Internal.GObject.Methods.g_signal_connect(hContainer, "row_activated", _hListBox_row_activated_d);
 
 				Internal.GTK.Methods.GtkListBox.gtk_list_box_set_selection_mode(hContainer, GTKEngine.SelectionModeToGtkSelectionMode((layout as ListLayout).SelectionMode));
 
@@ -189,7 +200,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					ApplyLayout(hContainer, ctl, layout);
 				}
 			}
-
 			return new GTKNativeControl(hContainer);
 		}
 

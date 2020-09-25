@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using UniversalEditor;
 using UniversalEditor.Accessors;
@@ -1274,6 +1275,16 @@ namespace MBS.Framework.UserInterface
 		public static void ShowHelp(HelpTopic topic = null)
 		{
 			Engine.ShowHelp(topic);
+		}
+
+		public static bool ShowSettingsDialog(string[] path = null)
+		{
+			SettingsDialog dlg = new SettingsDialog();
+			if (dlg.ShowDialog(path) == DialogResult.OK)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

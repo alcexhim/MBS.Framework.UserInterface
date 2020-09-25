@@ -33,6 +33,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private StackSidebar sidebar = null;
 
+		public string[] SelectedPath { get; set; } = null;
+
 		public SettingsDialog(SettingsProvider[] providers = null, SettingsProfile[] profiles = null)
 		{
 			tmOptionGroups = new DefaultTreeModel(new Type[] { typeof(string) });
@@ -321,6 +323,67 @@ namespace MBS.Framework.UserInterface.Dialogs
 				AddOptionGroupPathPart(grp, grp.Path, 0);
 			}
 		}
+		protected internal override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			if (SelectedPath != null)
+			{
+				SettingsGroup group = FindSettingsGroup(SelectedPath);
+				if (group != null)
+				{
+					if (optionGroupContainers.ContainsKey(group))
+					{
+						ctDefault.Visible = false;
+						optionGroupContainers[group].Visible = true;
+					}
+					else
+					{
+						ctDefault.Visible = true;
+					}
+				}
+
+				foreach (TreeModelRow row in tv.Model.Rows)
+				{
+					if (SetTreeModelRowSelected(row, group))
+						break;
+				}
+			}
+		}
+
+		private bool SetTreeModelRowSelected(TreeModelRow row, SettingsGroup group)
+		{
+			if (row.GetExtraData<SettingsGroup>("group") == group)
+			{
+				// at least on gtk, must be called BEFORE adding to selected row https://stackoverflow.com/questions/11543716
+				row.EnsureVisible();
+
+				tv.SelectedRows.Clear();
+				tv.SelectedRows.Add(row);
+				return true;
+			}
+
+			foreach (TreeModelRow row2 in row.Rows)
+			{
+				if (SetTreeModelRowSelected(row2, group))
+					return true;
+			}
+			return false;
+		}
+
+		private SettingsGroup FindSettingsGroup(string[] selectedPath)
+		{
+			foreach (SettingsProvider sp in SettingsProviders)
+			{
+				foreach (SettingsGroup grp in sp.SettingsGroups)
+				{
+					if (grp.Path.Matches(selectedPath))
+						return grp;
+				}
+			}
+			return null;
+		}
+
 
 		private void InsertSetting(Setting opt, Container ctSettingsGroup, ref Container ctSettingsSubgroup, ref int iRow, ref Container ctButtonContainer, ref bool lastWasCommand)
 		{
@@ -871,6 +934,12 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				ctDefault.Visible = true;
 			}
+		}
+
+		public DialogResult ShowDialog(string[] path)
+		{
+			SelectedPath = path;
+			return ShowDialog();
 		}
 	}
 }

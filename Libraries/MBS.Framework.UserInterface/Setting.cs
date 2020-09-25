@@ -46,6 +46,7 @@ namespace MBS.Framework.UserInterface
 	public class GroupSetting : Setting
 	{
 		public Setting.SettingCollection Options { get; } = new Setting.SettingCollection();
+		public Setting.SettingCollection HeaderSettings { get; } = new Setting.SettingCollection();
 
 		public GroupSetting(string name, string title, Setting[] options = null) : base(name, title)
 		{

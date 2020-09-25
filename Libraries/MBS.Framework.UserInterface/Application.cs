@@ -21,7 +21,6 @@ namespace MBS.Framework.UserInterface
 
 		public static Feature.FeatureCollection Features { get; } = new Feature.FeatureCollection();
 
-		public static DefaultSettingsProvider DefaultSettingsProvider { get; } = new DefaultSettingsProvider();
 		public static SettingsProvider.SettingsProviderCollection SettingsProviders { get; } = new SettingsProvider.SettingsProviderCollection();
 
 		private static int mvarExitCode = 0;
@@ -134,7 +133,7 @@ namespace MBS.Framework.UserInterface
 			MBS.Framework.Reflection.ManifestResourceStream[] streams = MBS.Framework.Reflection.GetAvailableManifestResourceStreams();
 			for (int j = 0; j < streams.Length; j++)
 			{
-				if (streams[j].Name.EndsWith(".uexml"))
+				if (streams[j].Name.Match(Application.ConfigurationFileNameFilter) || streams[j].Name.EndsWith(".xml"))
 				{
 					StreamAccessor sa = new StreamAccessor(streams[j].Stream);
 					sa.FileName = streams[j].Name;
@@ -281,6 +280,17 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 			#endregion
+			#region Settings providers
+			UpdateSplashScreenStatus("Loading settings providers");
+			MarkupTagElement tagSettingsProviders = (mvarRawMarkup.FindElement("ApplicationFramework", "SettingsProviders") as MarkupTagElement);
+			if (tagSettingsProviders != null)
+			{
+				foreach (MarkupElement elSettingsProvider in tagSettingsProviders.Elements)
+				{
+					LoadSettingsProviderXML(elSettingsProvider as MarkupTagElement);
+				}
+			}
+			#endregion
 			#region Main Menu Items
 			UpdateSplashScreenStatus("Loading main menu items");
 
@@ -382,6 +392,163 @@ namespace MBS.Framework.UserInterface
 			Application.Title = DefaultLanguage?.GetStringTableEntry("Application.Title", Application.Title);
 
 			OnAfterConfigurationLoaded(EventArgs.Empty);
+		}
+
+		private static SettingsProvider LoadSettingsProviderXML(MarkupTagElement tag)
+		{
+			if (tag == null) return null;
+			if (tag.FullName != "SettingsProvider") return null;
+
+			MarkupAttribute attID = tag.Attributes["ID"];
+			if (attID == null) return null;
+
+			Guid id = new Guid(attID.Value);
+			if (Application.SettingsProviders.Contains(id))
+				return null;
+
+			CustomSettingsProvider csp = new CustomSettingsProvider();
+			csp.ID = id;
+			foreach (MarkupElement el in tag.Elements)
+			{
+				MarkupTagElement tag2 = (el as MarkupTagElement);
+				if (tag2 == null) continue;
+				if (tag2.FullName == "SettingsGroup")
+				{
+					SettingsGroup sg = new SettingsGroup();
+					sg.Path = ParsePath(tag2.Elements["Path"] as MarkupTagElement);
+
+					MarkupTagElement tagSettings = (tag2.Elements["Settings"] as MarkupTagElement);
+					if (tagSettings != null)
+					{
+						foreach (MarkupElement el2 in tagSettings.Elements)
+						{
+							Setting s = LoadSettingXML(el2 as MarkupTagElement);
+							if (s != null)
+								sg.Settings.Add(s);
+						}
+					}
+					csp.SettingsGroups.Add(sg);
+				}
+			}
+			Application.SettingsProviders.Add(csp);
+			return csp;
+		}
+
+		private static Setting LoadSettingXML(MarkupTagElement tag)
+		{
+			if (tag == null) return null;
+
+			MarkupAttribute attSettingID = tag.Attributes["ID"];
+			MarkupAttribute attSettingName = tag.Attributes["Name"];
+			MarkupAttribute attSettingTitle = tag.Attributes["Title"];
+			MarkupAttribute attSettingDescription = tag.Attributes["Description"];
+
+			MarkupAttribute attDefaultValue = tag.Attributes["DefaultValue"];
+
+			Setting s = null;
+			switch (tag.FullName)
+			{
+				case "BooleanSetting":
+				{
+					s = new BooleanSetting(attSettingName?.Value, attSettingTitle?.Value);
+					if (attDefaultValue != null)
+						s.DefaultValue = bool.Parse(attDefaultValue.Value);
+					break;
+				}
+				case "TextSetting":
+				{
+					s = new TextSetting(attSettingName?.Value, attSettingTitle?.Value);
+					if (attDefaultValue != null)
+						s.DefaultValue = attDefaultValue.Value;
+					break;
+				}
+				case "FileSetting":
+				{
+					s = new FileSetting(attSettingName?.Value, attSettingTitle?.Value);
+					if (attDefaultValue != null)
+						s.DefaultValue = attDefaultValue.Value;
+					break;
+				}
+				case "CommandSetting":
+				{
+					MarkupAttribute attCommandID = tag.Attributes["CommandID"];
+					MarkupAttribute attStylePreset = tag.Attributes["StylePreset"];
+					s = new CommandSetting(attSettingName?.Value, attSettingTitle?.Value, attCommandID?.Value);
+					if (attStylePreset != null)
+					{
+						((CommandSetting)s).StylePreset = (ButtonStylePresets)Enum.Parse(typeof(ButtonStylePresets), attStylePreset.Value);
+					}
+					break;
+				}
+				case "RangeSetting":
+				{
+					s = new RangeSetting(attSettingName?.Value, attSettingTitle?.Value);
+					MarkupAttribute attMinimumValue = tag.Attributes["MinimumValue"];
+					if (attMinimumValue != null)
+						((RangeSetting)s).MinimumValue = decimal.Parse(attMinimumValue.Value);
+
+					MarkupAttribute attMaximumValue = tag.Attributes["MaximumValue"];
+					if (attMaximumValue != null)
+						((RangeSetting)s).MaximumValue = decimal.Parse(attMaximumValue.Value);
+
+					if (attDefaultValue != null)
+						((RangeSetting)s).DefaultValue = decimal.Parse(attDefaultValue.Value);
+					break;
+				}
+				case "GroupSetting":
+				{
+					s = new GroupSetting(attSettingName?.Value, attSettingTitle?.Value);
+					MarkupTagElement tagSettings = tag.Elements["Settings"] as MarkupTagElement;
+					if (tagSettings != null)
+					{
+						foreach (MarkupElement el in tagSettings.Elements)
+						{
+							Setting s2 = LoadSettingXML(el as MarkupTagElement);
+							if (s2 != null)
+							{
+								(s as GroupSetting).Options.Add(s2);
+							}
+						}
+					}
+					MarkupTagElement tagHeaderSettings = tag.Elements["HeaderSettings"] as MarkupTagElement;
+					if (tagHeaderSettings != null)
+					{
+						foreach (MarkupElement el in tagHeaderSettings.Elements)
+						{
+							Setting s2 = LoadSettingXML(el as MarkupTagElement);
+							if (s2 != null)
+							{
+								(s as GroupSetting).HeaderSettings.Add(s2);
+							}
+						}
+					}
+					break;
+				}
+			}
+
+			if (s != null)
+			{
+				if (attSettingDescription != null)
+					s.Description = attSettingDescription.Value;
+			}
+			return s;
+		}
+
+		private static string[] ParsePath(MarkupTagElement tag)
+		{
+			if (tag == null) return null;
+			if (tag.FullName != "Path") return null;
+
+			List<string> path = new List<string>();
+			foreach (MarkupElement el in tag.Elements)
+			{
+				MarkupTagElement tag2 = (el as MarkupTagElement);
+				if (tag2 == null) continue;
+				if (tag2.FullName != "Part") continue;
+
+				path.Add(tag2.Value);
+			}
+			return path.ToArray();
 		}
 
 		public static CustomPlugin.CustomPluginCollection CustomPlugins { get; } = new CustomPlugin.CustomPluginCollection();
@@ -955,9 +1122,6 @@ namespace MBS.Framework.UserInterface
 				Feature feature = (Feature)pis[i].GetValue(null, null);
 				Features.Add(feature);
 			}
-
-			// configure UWT-provided settings
-			Application.SettingsProviders.Add(Application.DefaultSettingsProvider);
 		}
 
 		// [DebuggerNonUserCode()]

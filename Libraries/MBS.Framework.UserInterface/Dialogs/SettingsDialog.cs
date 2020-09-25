@@ -374,13 +374,32 @@ namespace MBS.Framework.UserInterface.Dialogs
 			if (!String.IsNullOrEmpty(opt.Description))
 			{
 				Label lblDescription = new Label();
+				lblDescription.Enabled = false;
 				lblDescription.HorizontalAlignment = HorizontalAlignment.Left;
 				lblDescription.Text = opt.Description;
 				lblDescription.WordWrap = WordWrapMode.Always;
 				ctTitleAndDscription.Controls.Add(lblDescription, new BoxLayout.Constraints(false, false, 8));
 			}
 
-			ctSettingsGroup.Controls.Add(ctTitleAndDscription, new BoxLayout.Constraints(false, false, 16));
+			// ctSettingsGroup.Controls.Add(ctTitleAndDscription, new BoxLayout.Constraints(false, false, 16));
+			Container ctTitleAndHeaderSettings = new Container(new BoxLayout(Orientation.Horizontal));
+			Container ctHeaderSettings = new Container(new BoxLayout(Orientation.Horizontal));
+			
+			for (int i = 0; i < o.HeaderSettings.Count; i++)
+			{
+				Control lbl = null, ctl = null;
+				LoadOption(o.HeaderSettings[i], 0, ref lbl, ref ctl);
+				if (ctl != null)
+				{
+					ctl.VerticalAlignment = VerticalAlignment.Middle;
+					ctHeaderSettings.Controls.Add(ctl, new BoxLayout.Constraints(false, false, 8));
+				}
+			}
+			ctTitleAndHeaderSettings.Controls.Add(ctTitleAndDscription, new BoxLayout.Constraints(true, true));
+			ctTitleAndHeaderSettings.Controls.Add(ctHeaderSettings, new BoxLayout.Constraints(false, false));
+
+			ctSettingsGroup.Controls.Add(ctTitleAndHeaderSettings, new BoxLayout.Constraints(false, false, 16));
+
 
 			int jrow = iRow;
 			for (int j = 0; j < o.Options.Count; j++)
@@ -388,6 +407,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				if (o.Options[j] is GroupSetting)
 				{
 					InsertGroupSetting(o.Options[j] as GroupSetting, ctSettingsGroup, ref ctSettingsSubgroup, iRow, ref ctButtonContainer, ref lastWasCommand);
+					lastWasCommand = false;
 					continue;
 				}
 				else if (o.Options[j] is CommandSetting)
@@ -418,7 +438,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				ctButtonContainer = new Container(new BoxLayout(Orientation.Horizontal));
 			}
-			(btn as Button).StylePreset = (opt as CommandSetting).StylePreset;
 			ctButtonContainer.Controls.Add(btn, new BoxLayout.Constraints(false, false, 6, BoxLayout.PackType.End));
 		}
 
@@ -628,6 +647,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			else if (opt is CommandSetting)
 			{
 				Button btn = new Button();
+				btn.StylePreset = (opt as CommandSetting).StylePreset;
 				btn.Text = opt.Title;
 				btn.Click += btn_Click;
 				btn.SetExtraData<CommandSetting>("setting", opt as CommandSetting);
@@ -640,7 +660,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 			Button btn = (sender as Button);
 			CommandSetting sett = btn.GetExtraData<CommandSetting>("setting");
 
-			MessageDialog.ShowDialog(String.Format("calling command {0}", sett.CommandID), "Command Setting", MessageDialogButtons.OK, MessageDialogIcon.Information);
 			Application.ExecuteCommand(sett.CommandID);
 		}
 

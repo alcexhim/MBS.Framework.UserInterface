@@ -1,10 +1,10 @@
 ﻿//
-//  DefaultOptionProvider.cs
+//  Default.xml.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace MBS.Framework.UserInterface
+namespace MBS.Framework.UserInterface.SettingsProviders
 {
-	public class DefaultSettingsProvider : ApplicationSettingsProvider
+	public class DefaultSettingsProvider : SettingsProvider
 	{
 		protected override void InitializeInternal()
 		{
 			base.InitializeInternal();
-
 			SettingsGroups[1].Settings.Clear();
 			for (int i = 0; i < Application.Features.Count; i++)
 			{
@@ -43,24 +42,5 @@ namespace MBS.Framework.UserInterface
 				SettingsGroups[1].Settings.Add(new ChoiceSetting(feature.ID.ToString("b"), feature.Title, null, listValues.ToArray()));
 			}
 		}
-		public DefaultSettingsProvider()
-		{
-			SettingsGroups.Add("Application:Language", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Application:Features", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Application:Keyboard", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Application:Theme", new Setting[]
-			{
-			});
-			SettingsGroups.Add("Plugins:Security", new Setting[]
-			{
-			});
-		}
 	}
 }
-

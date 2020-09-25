@@ -188,7 +188,6 @@
     <Compile Include="SettingsProvider.cs" />
     <Compile Include="SettingsGroup.cs" />
     <Compile Include="Setting.cs" />
-    <Compile Include="DefaultSettingsProvider.cs" />
     <Compile Include="ApplicationSettingsProvider.cs" />
     <Compile Include="Controls\StackSidebarPanel.cs" />
     <Compile Include="Controls\FileBrowser\FileBrowserControl.cs" />
@@ -288,6 +287,7 @@
     <Compile Include="ButtonStylePresets.cs" />
     <Compile Include="FontWeights.cs" />
     <Compile Include="LinkClickedEventArgs.cs" />
+    <Compile Include="SettingsProviders\Default.xml.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -330,5 +330,9 @@
     <Folder Include="Controls\HexEditor\" />
     <Folder Include="Controls\ListView\" />
     <Folder Include="Controls\WebBrowser\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />
+    <EmbeddedResource Include="SettingsProviders\Default.xml" />
   </ItemGroup>
 </Project>

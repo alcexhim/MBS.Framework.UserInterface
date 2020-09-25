@@ -1,0 +1,34 @@
+﻿<ApplicationFramework>
+	<SettingsProviders>
+		<SettingsProvider ID="{A7F7C7A0-17A7-4C0E-BFAA-F3A8C861EE00}">
+			<!-- CommandBarSettingsProvider -->
+			<SettingsGroup ID="{FA5E1C5A-50F7-4F5A-9A55-D9A5FB7111BF}">
+				<Path>
+					<Part>Application</Part>
+					<Part>Command Bars</Part>
+				</Path>
+				<Settings>
+					<BooleanSetting ID="{55C86E61-E4CC-423A-9F1A-3518F4BEE8C1}" Name="StandardFormattingSingleRow" Title="Show Standard and Formatting command bars on a single row" />
+					<BooleanSetting ID="{5C154B6D-8B24-4795-834F-8809A3A5DAAF}" Name="UseLargeIcons" Title="Use _large (48x48) icons" />
+					<BooleanSetting ID="{00F51344-A7CC-4DD0-8B79-0CE1B9D26BC7}" Name="FontListUseFont" Title="List _font names in their font" />
+					<GroupSetting ID="{935A035C-8616-4AAF-B221-8EFC484330AC}" Name="SmartMenus" Title="Smart Menus" Description="Smart menus hide seldom-used commands to help you focus on the commands you use most.">
+						<Settings>
+							<BooleanSetting ID="{725D1DB4-B280-4B55-A46F-DA1BBFA8CA45}" Name="AlwaysShowFullMenus" Title="Always show full me_nus" />
+							<BooleanSetting ID="{97DDCA32-4CC5-4B03-99D6-9A24945373BB}" Name="ShowFullMenusAfterDelay" Title="Show f_ull menus after a delay" DependentUponID="{725D1DB4-B280-4B55-A46F-DA1BBFA8CA45}" />
+							<RangeSetting ID="{EC0CCD3D-5517-43D8-91E7-1D06B5A7DA44}" Name="FullMenuShowDelay" Title="_Delay time" DefaultValue="500.0" MinimumValue="0.0" MaximumValue="10000.0" />
+						</Settings>
+						<HeaderSettings>
+							<CommandSetting ID="{5B5C0B59-0605-4384-B3C6-DC7F88BEC342}" Name="ResetUsageData" Title="_Reset usage data" CommandID="CommandBarsResetUsageData" StylePreset="Destructive" />
+						</HeaderSettings>
+					</GroupSetting>
+					<GroupSetting ID="{CFC9D1F2-33E3-49FA-93DE-DA8983975244}" Name="ScreenTips" Title="ScreenTips" Description="ScreenTips display short lines of help text when you hover over a toolbar button or command item.">
+						<Settings>
+							<BooleanSetting ID="{8584BD04-9692-447C-BA4B-25BBC04131F5}" Name="ToolbarScreenTipsEnabled" Title="Show Screen_Tips on toolbars" />
+							<BooleanSetting ID="{5CD77153-F05E-4142-A54A-341731DFA096}" Name="ToolbarScreenTipsShowShortcutKeys" Title="Show s_hortcut keys in ScreenTips" />
+						</Settings>
+					</GroupSetting>
+				</Settings>
+			</SettingsGroup>
+		</SettingsProvider>
+	</SettingsProviders>
+</ApplicationFramework>

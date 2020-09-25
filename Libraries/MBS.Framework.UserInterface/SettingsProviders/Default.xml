@@ -1,0 +1,47 @@
+﻿<ApplicationFramework>
+	<SettingsProviders>
+		<SettingsProvider ID="{777DE57B-3E89-4FDA-8918-6AFC14AEC107}">
+			<!-- DefaultSettingsProvider -->
+			<SettingsGroup ID="{29BBCB31-1AAC-4162-AC3A-FCB07B64B4F9}">
+				<Path>
+					<Part>Application</Part>
+					<Part>Language</Part>
+				</Path>
+				<Settings>
+				</Settings>
+			</SettingsGroup>
+			<SettingsGroup ID="{C48442BF-0BA5-42A9-8E50-B324B2E59DFB}">
+				<Path>
+					<Part>Application</Part>
+					<Part>Features</Part>
+				</Path>
+				<Settings>
+				</Settings>
+			</SettingsGroup>
+			<SettingsGroup ID="{0338B524-BFE4-4B59-8952-D691BD22D4DC}">
+				<Path>
+					<Part>Application</Part>
+					<Part>Keyboard</Part>
+				</Path>
+				<Settings>
+				</Settings>
+			</SettingsGroup>
+			<SettingsGroup ID="{CF896D04-3AC8-4060-ABF0-959B81796494}">
+				<Path>
+					<Part>Application</Part>
+					<Part>Theme</Part>
+				</Path>
+				<Settings>
+				</Settings>
+			</SettingsGroup>
+			<SettingsGroup ID="{7373C08C-5E72-4B8D-9F53-89CFFEDE9F4B}">
+				<Path>
+					<Part>Plugins</Part>
+					<Part>Security</Part>
+				</Path>
+				<Settings>
+				</Settings>
+			</SettingsGroup>
+		</SettingsProvider>
+	</SettingsProviders>
+</ApplicationFramework>

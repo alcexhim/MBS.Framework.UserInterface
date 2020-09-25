@@ -27,7 +27,29 @@ namespace MBS.Framework.UserInterface
 		public class SettingsProviderCollection
 			: System.Collections.ObjectModel.Collection<SettingsProvider>
 		{
+			private System.Collections.Generic.Dictionary<Guid, SettingsProvider> _itemsByID = new System.Collections.Generic.Dictionary<Guid, SettingsProvider>();
+			public bool Contains(Guid id)
+			{
+				return _itemsByID.ContainsKey(id);
+			}
+			protected override void ClearItems()
+			{
+				base.ClearItems();
+				_itemsByID.Clear();
+			}
+			protected override void InsertItem(int index, SettingsProvider item)
+			{
+				_itemsByID[item.ID] = item;
+				base.InsertItem(index, item);
+			}
+			protected override void RemoveItem(int index)
+			{
+				_itemsByID.Remove(this[index].ID);
+				base.RemoveItem(index);
+			}
 		}
+
+		public Guid ID { get; set; } = Guid.Empty;
 
 		public SettingsGroup.SettingsGroupCollection SettingsGroups { get; } = new SettingsGroup.SettingsGroupCollection();
 

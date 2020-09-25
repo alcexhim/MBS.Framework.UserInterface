@@ -366,5 +366,15 @@ namespace MBS.Framework.UserInterface
 		{
 			SetExtraData<object>(key, value);
 		}
+
+		public void EnsureVisible()
+		{
+			TreeModelRow parentRow = ParentRow;
+			while (parentRow != null)
+			{
+				parentRow.Expanded = true;
+				parentRow = parentRow.ParentRow;
+			}
+		}
 	}
 }

@@ -60,7 +60,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			else if (ctl.DisplayStyle == CheckBoxDisplayStyle.Switch)
 			{
-				Internal.GTK.Methods.GtkSwitch.gtk_switch_set_state(handle, value);
+				bool state = Internal.GTK.Methods.GtkSwitch.gtk_switch_get_state(handle);
+				bool changed = (state != value);
+
+				if (changed)
+					Internal.GObject.Methods.g_signal_emit_by_name(handle, "activate");
+				// Internal.GTK.Methods.GtkSwitch.gtk_switch_set_active(handle, value);
 			}
 		}
 

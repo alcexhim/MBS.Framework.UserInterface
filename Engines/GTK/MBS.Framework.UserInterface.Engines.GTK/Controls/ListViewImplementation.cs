@@ -899,58 +899,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
-		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, IntPtr hTreeStore, out Internal.GTK.Structures.GtkTreeIter hIter, Internal.GTK.Structures.GtkTreeIter? parent, int position, bool append = false)
-		{
-			if (parent == null)
-			{
-				if (append)
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, IntPtr.Zero);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, position);
-				}
-			}
-			else
-			{
-				Internal.GTK.Structures.GtkTreeIter hIterParent = parent.Value;
-				if (append)
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, ref hIterParent);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, ref hIterParent, position);
-				}
-			}
-
-			(Engine as GTKEngine).RegisterGtkTreeIter(row, hIter);
-
-			foreach (TreeModelRowColumn rc in row.RowColumns)
-			{
-				// since "Marshalling of type object is not implemented"
-				// (mono/metadata/marshal.c:6507) we have to do it ourselves
-
-				Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
-
-				// Internal.GTK.Methods.Methods.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, 0);
-				Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
-
-				// this can only be good, right...?
-				// val.Dispose();
-
-				// I thought this caused "malloc() : smallbin doubly linked list corrupted" error, but apparently it doesn't...?
-				// back to square one...
-			}
-
-			foreach (TreeModelRow row2 in row.Rows)
-			{
-				Internal.GTK.Structures.GtkTreeIter hIter2 = new Internal.GTK.Structures.GtkTreeIter();
-				RecursiveTreeStoreInsertRow(tm, row2, hTreeStore, out hIter2, hIter, row.Rows.Count - 1);
-			}
-		}
-
 		protected override void OnCreated (EventArgs e)
 		{
 			base.OnCreated (e);

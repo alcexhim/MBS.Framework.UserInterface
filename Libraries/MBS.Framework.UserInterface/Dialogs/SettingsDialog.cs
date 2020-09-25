@@ -563,11 +563,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				BooleanSetting o = (opt as BooleanSetting);
 
-				Label lbl = new Label();
-				lbl.HorizontalAlignment = HorizontalAlignment.Left;
-				lbl.Text = o.Title;
-				label = lbl;
-
 				CheckBox chk = new CheckBox();
 				chk.DisplayStyle = CheckBoxDisplayStyle.Switch;
 				chk.Checked = o.GetValue<bool>();
@@ -576,6 +571,12 @@ namespace MBS.Framework.UserInterface.Dialogs
 				// chk.Text = o.Title;
 				// ct.Controls.Add(chk, new GridLayout.Constraints(iRow, 0, 1, 2, ExpandMode.Horizontal));
 				control = chk;
+
+				Label lbl = new Label();
+				lbl.HorizontalAlignment = HorizontalAlignment.Left;
+				lbl.Text = o.Title;
+				lbl.Click += (sender, e) => chk.Checked = !chk.Checked;
+				label = lbl;
 			}
 			else if (opt is ChoiceSetting)
 			{
@@ -759,6 +760,11 @@ namespace MBS.Framework.UserInterface.Dialogs
 			Control control = null;
 			LoadOption(opt, iRow, ref label, ref control);
 
+			if (label != null)
+			{
+				label.VerticalAlignment = VerticalAlignment.Middle;
+			}
+
 			Label lblDescription = new Label();
 			lblDescription.HorizontalAlignment = HorizontalAlignment.Left;
 			lblDescription.Enabled = false;
@@ -769,19 +775,28 @@ namespace MBS.Framework.UserInterface.Dialogs
 			ct1.Layout = new BoxLayout(Orientation.Horizontal);
 			ct1.Margin = new Framework.Drawing.Padding(16);
 
-			Container ct2 = new Container();
-			ct2.Layout = new BoxLayout(Orientation.Vertical);
-
-			if (label != null)
-			{
-				label.VerticalAlignment = VerticalAlignment.Middle;
-				ct2.Controls.Add(label, new BoxLayout.Constraints(false, true));
-			}
-
 			if (!String.IsNullOrEmpty(opt.Description))
+			{
+				Container ct2 = new Container();
+				ct2.Layout = new BoxLayout(Orientation.Vertical);
+
+				if (label != null)
+				{
+					ct2.Controls.Add(label, new BoxLayout.Constraints(false, true));
+				}
+
 				ct2.Controls.Add(lblDescription, new BoxLayout.Constraints(false, true));
 
-			ct1.Controls.Add(ct2, new BoxLayout.Constraints(true, true));
+				ct1.Controls.Add(ct2, new BoxLayout.Constraints(true, true));
+			}
+			else
+			{
+				if (label != null)
+				{
+					ct1.Controls.Add(label, new BoxLayout.Constraints(true, true));
+				}
+			}
+
 			ct1.Controls.Add(control, new BoxLayout.Constraints(false, false));
 			control.VerticalAlignment = VerticalAlignment.Middle;
 

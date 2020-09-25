@@ -228,6 +228,10 @@ namespace MBS.Framework.UserInterface
 					{
 						ctl.Text = item.Properties["label"].Value;
 					}
+					if (item.Properties["image"] != null)
+					{
+						(ctl as Button).Image = (GetPropertyOrLocalRef(item.Properties["image"].Value) as Image);
+					}
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
 						(ctl as Button).StockType = (StockType)Application.Engine.StockTypeFromString(item.Properties["label"].Value);
@@ -815,6 +819,11 @@ namespace MBS.Framework.UserInterface
 					CreateAdjustmentForPropertyOrLocalRef(item);
 					continue;
 				}
+				else if (item.ClassName == "GtkImage")
+				{
+					CreateImageForPropertyOrLocalRef(item);
+					continue;
+				}
 			}
 
 			// I really don't want to loop twice, but sometimes GtkTreeStore / GtkListStore gets created AFTER the controls that reference them, breaking things
@@ -925,6 +934,39 @@ namespace MBS.Framework.UserInterface
 			{
 				_localRefs[item.ID] = CreateAdjustment(item);
 			}
+		}
+		private void CreateImageForPropertyOrLocalRef(LayoutItem item)
+		{
+			// ugh... copypasta
+			bool found = false;
+			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			foreach (System.Reflection.FieldInfo fi in fis)
+			{
+				if (fi.FieldType.IsSubclassOf(typeof(Image)))
+				{
+					// see if we have a control by that name in the list
+					if (fi.Name == item.ID)
+					{
+						fi.SetValue(this, CreateImage(item));
+						found = true;
+					}
+				}
+			}
+
+			if (!found)
+			{
+				_localRefs[item.ID] = CreateImage(item);
+			}
+		}
+
+		private Image CreateImage(LayoutItem item)
+		{
+			Image image = null;
+			if (item.Properties["stock"] != null)
+			{
+				image = Image.FromName(item.Properties["stock"].Value, 16);
+			}
+			return image;
 		}
 
 		private struct GtkAdjustment

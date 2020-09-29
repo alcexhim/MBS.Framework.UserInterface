@@ -26,6 +26,7 @@ namespace MBS.Framework.UserInterface
 	{
 		public string PathName { get; private set; } = String.Empty;
 		public string ClassName { get; private set; } = null;
+		public Type ResourceType { get; private set; } = null;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:MBS.Framework.UserInterface.WindowLayoutAttribute"/> class.
@@ -35,6 +36,13 @@ namespace MBS.Framework.UserInterface
 		{
 			PathName = pathName;
 			ClassName = className;
+			ResourceType = null;
+		}
+		public ContainerLayoutAttribute(Type resourceType, string pathName, string className = null)
+		{
+			PathName = pathName;
+			ClassName = className;
+			ResourceType = resourceType;
 		}
 	}
 }

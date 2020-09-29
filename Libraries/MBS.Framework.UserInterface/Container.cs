@@ -40,14 +40,29 @@ namespace MBS.Framework.UserInterface
 
 		private void InitContainerLayout(ContainerLayoutAttribute wla)
 		{
-			string fileName = Application.ExpandRelativePath(wla.PathName);
-			if (fileName == null)
+			Accessor acc = null;
+			if (wla.ResourceType != null)
 			{
-				Console.WriteLine("container layout file not found: '{0}'", wla.PathName);
-				return;
+				System.IO.Stream st = wla.ResourceType.Assembly.GetManifestResourceStream(wla.PathName);
+				if (st == null)
+				{
+					Console.WriteLine("container layout stream not found: [{0}]'{1}'", wla.ResourceType.FullName, wla.PathName);
+					return;
+				}
+				acc = new StreamAccessor(st);
+			}
+			else
+			{
+				string fileName = Application.ExpandRelativePath(wla.PathName);
+				if (fileName == null)
+				{
+					Console.WriteLine("container layout file not found: '{0}'", wla.PathName);
+					return;
+				}
+				acc = new FileAccessor(fileName);
 			}
 
-			this.LoadFromMarkup(fileName, wla.ClassName);
+			this.LoadFromMarkup(acc, wla.ClassName);
 
 			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)
@@ -800,12 +815,11 @@ namespace MBS.Framework.UserInterface
 			return null;
 		}
 
-		public void LoadFromMarkup(string filename, string className = null, string id = null)
+		public void LoadFromMarkup(Accessor acc, string className = null, string id = null)
 		{
 			GladeXMLDataFormat xml = new GladeXMLDataFormat();
 			LayoutObjectModel layout = new LayoutObjectModel();
-			FileAccessor fa = new FileAccessor(filename);
-			Document.Load(layout, xml, fa);
+			Document.Load(layout, xml, acc);
 
 			foreach (LayoutItem item in layout.Items)
 			{

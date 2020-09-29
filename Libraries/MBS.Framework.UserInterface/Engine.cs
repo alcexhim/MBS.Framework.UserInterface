@@ -17,6 +17,8 @@ namespace MBS.Framework.UserInterface
 		protected abstract int Priority { get; }
 		public abstract SystemSettings SystemSettings { get; }
 
+		public MainWindow LastWindow { get; internal set; }
+
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
 
 		protected abstract Graphics CreateGraphicsInternal(Image image);

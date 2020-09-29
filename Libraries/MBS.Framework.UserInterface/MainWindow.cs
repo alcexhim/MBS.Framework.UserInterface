@@ -91,5 +91,29 @@ namespace MBS.Framework.UserInterface
 				TitleBarButtons.Add(button);
 			}
 		}
+
+		protected internal override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+
+			// Application.Engine.Windows.Add(this);
+			Application.Engine.LastWindow = this;
+		}
+		protected internal override void OnGotFocus(EventArgs e)
+		{
+			base.OnGotFocus(e);
+			Application.Engine.LastWindow = this;
+		}
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			/*
+			Application.Engine.Windows.Remove(this);
+			if (Application.Engine.Windows.Count <= 0)
+			{
+				MBS.Framework.UserInterface.Application.Stop();
+			}
+			*/
+		}
 	}
 }

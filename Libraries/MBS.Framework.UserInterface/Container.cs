@@ -566,6 +566,10 @@ namespace MBS.Framework.UserInterface
 				{
 					ctl.Enabled = (item.Properties["sensitive"].Value != "False");
 				}
+				if (item.Properties["visible"] != null)
+				{
+					ctl.Visible = (item.Properties["visible"].Value == "True");
+				}
 
 				int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
 				margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");

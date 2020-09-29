@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
@@ -168,6 +169,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkEntry.gtk_entry_set_width_chars(handle, ctl.WidthChars);
 				}
 
+				switch (ctl.TextAlignment)
+				{
+					case HorizontalAlignment.Left:
+					{
+						Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 0.0f);
+						break;
+					}
+					case HorizontalAlignment.Center:
+					{
+						Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 0.5f);
+						break;
+					}
+					case HorizontalAlignment.Right:
+					{
+						Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 1.0f);
+						break;
+					}
+				}
+
 				if (ctl.BorderStyle == ControlBorderStyle.None)
 				{
 					Internal.GTK.Methods.GtkEntry.gtk_entry_set_has_frame(handle, false);
@@ -191,6 +211,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				});
 			}
 		}
+
+		
 
 		private Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
 		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;
@@ -345,6 +367,47 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else
 			{
 				Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, value);
+			}
+		}
+		
+		public HorizontalAlignment GetTextAlignment()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			float value = Internal.GTK.Methods.GtkEntry.gtk_entry_get_alignment(handle);
+			if (value < 0.4f)
+			{
+				return HorizontalAlignment.Left;
+			}
+			else if (value > 0.4f || value < 0.6f)
+			{
+				return HorizontalAlignment.Center;
+			}
+			else if (value > 0.6f)
+			{
+				return HorizontalAlignment.Right;
+			}
+			return HorizontalAlignment.Default;
+		}
+		public void SetTextAlignment(HorizontalAlignment value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			switch (value)
+			{
+				case HorizontalAlignment.Left:
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 0.0f);
+					break;
+				}
+				case HorizontalAlignment.Center:
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 0.5f);
+					break;
+				}
+				case HorizontalAlignment.Right:
+				{
+					Internal.GTK.Methods.GtkEntry.gtk_entry_set_alignment(handle, 1.0f);
+					break;
+				}
 			}
 		}
 	}

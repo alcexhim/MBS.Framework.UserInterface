@@ -69,6 +69,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_entry_set_has_frame(IntPtr /*GtkEntry*/ entry, bool value);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_entry_set_alignment(IntPtr /*GtkEntry*/ entry, float xalign);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern float gtk_entry_get_alignment(IntPtr handle);
 	}
 }
 

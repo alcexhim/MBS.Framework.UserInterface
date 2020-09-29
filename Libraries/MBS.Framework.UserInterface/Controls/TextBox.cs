@@ -20,6 +20,9 @@ namespace MBS.Framework.UserInterface.Controls
 
 			bool IsEditable();
 			void SetEditable(bool value);
+
+			HorizontalAlignment GetTextAlignment();
+			void SetTextAlignment(HorizontalAlignment value);
 		}
 	}
 	public class TextBox : SystemControl
@@ -43,11 +46,24 @@ namespace MBS.Framework.UserInterface.Controls
 		/// <value><c>true</c> if multiline; otherwise, <c>false</c>.</value>
 		public bool Multiline {  get { return mvarMultiline;  } set { mvarMultiline = value; } }
 
-		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Default;
-		public HorizontalAlignment HorizontalAlignment {  get { return mvarHorizontalAlignment;  } set { mvarHorizontalAlignment = value; } }
-
-		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Default;
-		public VerticalAlignment VerticalAlignment {  get { return mvarVerticalAlignment;  } set { mvarVerticalAlignment = value; } }
+		private HorizontalAlignment _TextAlignment = HorizontalAlignment.Default;
+		public HorizontalAlignment TextAlignment
+		{
+			get
+			{
+				ITextBoxImplementation impl = (ControlImplementation as ITextBoxImplementation);
+				if (impl != null && IsCreated)
+				{
+					return impl.GetTextAlignment();
+				}
+				return _TextAlignment;
+			}
+			set
+			{
+				_TextAlignment = value;
+				(ControlImplementation as ITextBoxImplementation)?.SetTextAlignment(value);
+			}
+		}
 
 		private bool mvarUseSystemPasswordChar = false;
 

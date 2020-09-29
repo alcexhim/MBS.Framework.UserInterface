@@ -96,5 +96,26 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).ReadOnly = !value;
 		}
+
+		public HorizontalAlignment GetTextAlignment()
+		{
+			switch (((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).TextAlign)
+			{
+				case System.Windows.Forms.HorizontalAlignment.Center: return HorizontalAlignment.Center;
+				case System.Windows.Forms.HorizontalAlignment.Left: return HorizontalAlignment.Left;
+				case System.Windows.Forms.HorizontalAlignment.Right: return HorizontalAlignment.Right;
+			}
+			return HorizontalAlignment.Default;
+		}
+
+		public void SetTextAlignment(HorizontalAlignment value)
+		{
+			switch (value)
+			{
+				case HorizontalAlignment.Center: ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).TextAlign = System.Windows.Forms.HorizontalAlignment.Center; return;
+				case HorizontalAlignment.Left: ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).TextAlign = System.Windows.Forms.HorizontalAlignment.Left; return;
+				case HorizontalAlignment.Right: ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).TextAlign = System.Windows.Forms.HorizontalAlignment.Right; return;
+			}
+		}
 	}
 }

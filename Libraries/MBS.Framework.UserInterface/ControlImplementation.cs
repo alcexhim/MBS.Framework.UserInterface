@@ -79,6 +79,18 @@ namespace MBS.Framework.UserInterface
 			SetAdjustmentValueInternal(orientation, value);
 		}
 
+		protected abstract AdjustmentScrollType GetAdjustmentScrollTypeInternal(Orientation orientation);
+		public AdjustmentScrollType GetAdjustmentScrollType(Orientation orientation)
+		{
+			return GetAdjustmentScrollTypeInternal(orientation);
+		}
+
+		protected abstract void SetAdjustmentScrollTypeInternal(Orientation orientation, AdjustmentScrollType value);
+		public void SetAdjustmentScrollType(Orientation orientation, AdjustmentScrollType value)
+		{
+			SetAdjustmentScrollTypeInternal(orientation, value);
+		}
+
 		private Control mvarControl = null;
 		public Control Control { get { return mvarControl; } }
 

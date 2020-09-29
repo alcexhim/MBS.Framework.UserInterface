@@ -31,6 +31,27 @@ namespace MBS.Framework.UserInterface
 			_orientation = orientation;
 		}
 
+		private AdjustmentScrollType _ScrollType = AdjustmentScrollType.Never;
+		public AdjustmentScrollType ScrollType
+		{
+			get
+			{
+				if (_parent.IsCreated)
+				{
+					return _parent.ControlImplementation?.GetAdjustmentScrollType(_orientation) ?? _ScrollType;
+				}
+				return _ScrollType;
+			}
+			set
+			{
+				if (_parent.IsCreated)
+				{
+					_parent.ControlImplementation?.SetAdjustmentScrollType(_orientation, value);
+				}
+				_ScrollType = value;
+			}
+		}
+
 		public double Value
 		{
 			get

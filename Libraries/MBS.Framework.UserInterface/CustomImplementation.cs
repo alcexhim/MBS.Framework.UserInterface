@@ -60,6 +60,15 @@ namespace MBS.Framework.UserInterface
 		{
 			// FIXME: not implemented
 		}
+		protected override AdjustmentScrollType GetAdjustmentScrollTypeInternal(Orientation orientation)
+		{
+			// FIXME: not implemented
+			return AdjustmentScrollType.Never;
+		}
+		protected override void SetAdjustmentScrollTypeInternal(Orientation orientation, AdjustmentScrollType value)
+		{
+			// FIXME: not implemented
+		}
 
 		protected override void SetVerticalAlignmentInternal(VerticalAlignment value)
 		{

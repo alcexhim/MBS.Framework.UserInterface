@@ -200,18 +200,44 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					ApplyLayout(hContainer, ctl, layout);
 				}
 			}
-			return new GTKNativeControl(hContainer);
+
+			IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
+
+			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+			switch (container.HorizontalAdjustment.ScrollType)
+			{
+				case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
+				case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+				case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
+				case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
+			}
+			switch (container.VerticalAdjustment.ScrollType)
+			{
+				case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
+				case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+				case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
+				case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
+			}
+			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hContainerWrapper, policyH, policyV);
+
+			return new GTKNativeControl(hContainerWrapper, new KeyValuePair<string, IntPtr>[]
+			{
+				new KeyValuePair<string, IntPtr>("Container", hContainer),
+				new KeyValuePair<string, IntPtr>("ScrolledWindow", hContainerWrapper)
+			});
 		}
 
 		public void InsertChildControl(Control child)
 		{
-			ApplyLayout((Handle as GTKNativeControl).Handle, child, (Control as Container).Layout);
+			ApplyLayout((Handle as GTKNativeControl).GetNamedHandle("Container"), child, (Control as Container).Layout);
 		}
 		public void ClearChildControls()
 		{
 			Control[] ctls = (Control as IControlContainer).GetAllControls();
 
-			IntPtr hContainer = (Handle as GTKNativeControl).Handle;
+			IntPtr hContainer = (Handle as GTKNativeControl).GetNamedHandle("Container");
 			List<IntPtr> _list = new List<IntPtr>();
 			Internal.GTK.Methods.GtkContainer.gtk_container_forall(hContainer, delegate (IntPtr /*GtkWidget*/ widget, IntPtr data)
 			{

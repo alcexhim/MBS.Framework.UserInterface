@@ -288,6 +288,7 @@
     <Compile Include="FontWeights.cs" />
     <Compile Include="LinkClickedEventArgs.cs" />
     <Compile Include="SettingsProviders\Default.xml.cs" />
+    <Compile Include="AdjustmentScrollType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

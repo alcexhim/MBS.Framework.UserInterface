@@ -46,6 +46,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Container ct1 = new Container ();
 			ct1.Layout = ctl.Panel1.Layout;
+			ct1.HorizontalAdjustment.ScrollType = ctl.Panel1.HorizontalAdjustment.ScrollType;
+			ct1.VerticalAdjustment.ScrollType = ctl.Panel1.VerticalAdjustment.ScrollType;
 			foreach (Control ctl1 in ctl.Panel1.Controls)
 			{
 				ct1.Controls.Add (ctl1, ctl.Panel1.Layout.GetControlConstraints(ctl1));
@@ -54,6 +56,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Container ct2 = new Container ();
 			ct2.Layout = ctl.Panel2.Layout;
+			ct2.HorizontalAdjustment.ScrollType = ctl.Panel2.HorizontalAdjustment.ScrollType;
+			ct2.VerticalAdjustment.ScrollType = ctl.Panel2.VerticalAdjustment.ScrollType;
 			foreach (Control ctl1 in ctl.Panel2.Controls)
 			{
 				ct2.Controls.Add (ctl1, ctl.Panel2.Layout.GetControlConstraints(ctl1));

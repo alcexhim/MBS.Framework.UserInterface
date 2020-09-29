@@ -721,6 +721,78 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			// FIXME: only implemented for certain controls
 		}
 
+		protected override AdjustmentScrollType GetAdjustmentScrollTypeInternal(Orientation orientation)
+		{
+			IntPtr hScrolledWindow = (Handle as GTKNativeControl).GetNamedHandle("ScrolledWindow");
+			if (hScrolledWindow == IntPtr.Zero)
+				return AdjustmentScrollType.Never;
+
+			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_get_policy(hScrolledWindow, ref policyH, ref policyV);
+			switch (orientation)
+			{
+				case Orientation.Horizontal:
+				{
+					switch (policyH)
+					{
+						case Internal.GTK.Constants.GtkPolicyType.Always: return AdjustmentScrollType.Always;
+						case Internal.GTK.Constants.GtkPolicyType.Automatic: return AdjustmentScrollType.Automatic;
+						case Internal.GTK.Constants.GtkPolicyType.External: return AdjustmentScrollType.External;
+						case Internal.GTK.Constants.GtkPolicyType.Never: return AdjustmentScrollType.Never;
+					}
+					throw new ArgumentOutOfRangeException(nameof(policyH));
+				}
+				case Orientation.Vertical:
+				{
+					switch (policyV)
+					{
+						case Internal.GTK.Constants.GtkPolicyType.Always: return AdjustmentScrollType.Always;
+						case Internal.GTK.Constants.GtkPolicyType.Automatic: return AdjustmentScrollType.Automatic;
+						case Internal.GTK.Constants.GtkPolicyType.External: return AdjustmentScrollType.External;
+						case Internal.GTK.Constants.GtkPolicyType.Never: return AdjustmentScrollType.Never;
+					}
+					throw new ArgumentOutOfRangeException(nameof(policyV));
+				}
+			}
+			throw new ArgumentOutOfRangeException(nameof(orientation));
+		}
+		protected override void SetAdjustmentScrollTypeInternal(Orientation orientation, AdjustmentScrollType value)
+		{
+			IntPtr hScrolledWindow = (Handle as GTKNativeControl).GetNamedHandle("ScrolledWindow");
+			if (hScrolledWindow == IntPtr.Zero)
+				return;
+			
+			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_get_policy(hScrolledWindow, ref policyH, ref policyV);
+			switch (orientation)
+			{
+				case Orientation.Horizontal:
+				{
+					switch (value)
+					{
+						case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
+						case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+						case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
+						case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
+					}
+					Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hScrolledWindow, policyH, policyV);
+					break;
+				}
+				case Orientation.Vertical:
+				{
+					switch (value)
+					{
+						case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
+						case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+						case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
+						case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
+					}
+					Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hScrolledWindow, policyH, policyV);
+					break;
+				}
+			}
+		}
+
 		protected override void UpdateControlFontInternal(Font font)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;

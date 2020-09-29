@@ -367,6 +367,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
+		protected override AdjustmentScrollType GetAdjustmentScrollTypeInternal(Orientation orientation)
+		{
+			// FIXME: not implemented
+			return AdjustmentScrollType.Never;
+		}
+		protected override void SetAdjustmentScrollTypeInternal(Orientation orientation, AdjustmentScrollType value)
+		{
+			// FIXME: not implemented
+		}
+
 		protected override HorizontalAlignment GetHorizontalAlignmentInternal()
 		{
 			// FIXME: not implemented

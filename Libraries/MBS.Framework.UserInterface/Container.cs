@@ -275,6 +275,22 @@ namespace MBS.Framework.UserInterface
 					{
 						(ctl as TextBox).Editable = (item.Properties["editable"].Value == "True");
 					}
+					if (item.Properties["xalign"] != null)
+					{
+						decimal xalign = Decimal.Parse(item.Properties["xalign"].Value);
+						if (xalign < 0.5M)
+						{
+							(ctl as TextBox).TextAlignment = HorizontalAlignment.Left;
+						}
+						else if (xalign == 0.5M)
+						{
+							(ctl as TextBox).TextAlignment = HorizontalAlignment.Center;
+						}
+						else if (xalign > 0.5M)
+						{
+							(ctl as TextBox).TextAlignment = HorizontalAlignment.Right;
+						}
+					}
 					break;
 				}
 				case "GtkLabel":

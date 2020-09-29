@@ -1265,7 +1265,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
-					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_right_justified(hMenuFile, true);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(hMenuFile, true);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(hMenuFile, Constants.GtkAlign.End);
 				}
 
 				if (cmi.Items.Count > 0)

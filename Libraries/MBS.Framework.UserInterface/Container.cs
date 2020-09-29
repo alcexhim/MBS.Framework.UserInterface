@@ -1030,6 +1030,12 @@ namespace MBS.Framework.UserInterface
 			List<Type> types = new List<Type>();
 
 			LayoutItem columns = item.Items.FirstOfClassName("columns");
+			if (columns == null)
+			{
+				Console.WriteLine("warning: cannot create TreeModel, columns == null");
+				return null;
+			}
+
 			LayoutItem rows = item.Items.FirstOfClassName("data");
 
 			for (int j = 0; j < columns.Items.Count; j++)

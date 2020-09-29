@@ -28,6 +28,31 @@ namespace MBS.Framework.UserInterface
 	{
 		public MainWindow()
 		{
+			InitializeMainMenu();
+		}
+
+		private void InitializeMainMenu()
+		{
+			foreach (CommandItem ci in Application.MainMenu.Items)
+			{
+				MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
+				if (mi == null || mi.Length == 0)
+					continue;
+
+				for (int i = 0; i < mi.Length; i++)
+				{
+					this.MenuBar.Items.Add(mi[i]);
+				}
+			}
+		}
+
+		private void MainWindow_MenuBar_Item_Click(object sender, EventArgs e)
+		{
+			CommandMenuItem mi = (sender as CommandMenuItem);
+			if (mi == null)
+				return;
+
+			Application.ExecuteCommand(mi.Name);
 		}
 
 		protected internal override void OnCreating(EventArgs e)

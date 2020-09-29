@@ -5,6 +5,8 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class CommandItem
 	{
+		public MenuItemHorizontalAlignment HorizontalAlignment { get; set; }
+
 		public static CommandItem FromMarkup(MarkupTagElement tag)
 		{
 			CommandItem item = null;
@@ -20,6 +22,15 @@ namespace MBS.Framework.UserInterface
 					if (attCommandID != null)
 					{
 						item = new CommandReferenceCommandItem(attCommandID.Value);
+					}
+
+					MarkupAttribute attHorizontalAlignment = tag.Attributes["HorizontalAlignment"];
+					if (attHorizontalAlignment != null)
+					{
+						if (Enum.TryParse<MenuItemHorizontalAlignment>(attHorizontalAlignment.Value, out MenuItemHorizontalAlignment value))
+						{
+							item.HorizontalAlignment = value;
+						}
 					}
 					break;
 				}

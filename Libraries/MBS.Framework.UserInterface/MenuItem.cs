@@ -101,6 +101,7 @@ namespace MBS.Framework.UserInterface
 					mi.Shortcut = cmd.Shortcut;
 					mi.StockType = cmd.StockType;
 					mi.IconName = cmd.ImageFileName;
+					mi.HorizontalAlignment = crci.HorizontalAlignment;
 					if (cmd.Items.Count > 0)
 					{
 						foreach (CommandItem ci1 in cmd.Items)

@@ -36,6 +36,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Pango
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*PangoAttrFontDesc*/ pango_attr_font_desc_new(IntPtr font);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*PangoAttrFontDesc*/ pango_attr_size_new(int size);
 	}
 }
 

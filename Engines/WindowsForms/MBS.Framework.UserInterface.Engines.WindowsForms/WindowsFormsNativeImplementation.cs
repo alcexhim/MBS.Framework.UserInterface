@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.DragDrop;
+using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 
@@ -364,6 +365,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		protected override void SetScrollBoundsInternal(Dimension2D bounds)
 		{
+		}
+
+		protected override void UpdateControlFontInternal(Font font)
+		{
+			System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular;
+			if (font.Italic)
+				style |= System.Drawing.FontStyle.Italic;
+			if (font.Weight >= FontWeights.Bold)
+				style |= System.Drawing.FontStyle.Bold;
+			(Handle as WindowsFormsNativeControl).Handle.Font = new System.Drawing.Font(new System.Drawing.FontFamily(font.FamilyName), (int)font.Size, style);
 		}
 
 	}

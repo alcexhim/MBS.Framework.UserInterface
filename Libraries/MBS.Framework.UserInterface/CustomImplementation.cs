@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
@@ -46,6 +47,10 @@ namespace MBS.Framework.UserInterface
 			(Handle as CustomNativeControl).Handle.Size = value;
 		}
 
+		protected override void UpdateControlFontInternal(Font font)
+		{
+			(Handle as CustomNativeControl).Handle.Font = font;
+		}
 		protected override double GetAdjustmentValueInternal(Orientation orientation)
 		{
 			// FIXME: not implemented

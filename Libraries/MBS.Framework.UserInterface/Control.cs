@@ -220,7 +220,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		private Font mvarFont = null;
-		public Font Font { get { return mvarFont; } set { mvarFont = value; } }
+		public Font Font { get { return mvarFont; } set { mvarFont = value; ControlImplementation?.UpdateControlFont(mvarFont); } }
 
 
 		/// <summary>

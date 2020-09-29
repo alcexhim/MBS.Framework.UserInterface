@@ -25,6 +25,7 @@ using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.Drawing;
 using System.Text;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
@@ -202,6 +203,12 @@ namespace MBS.Framework.UserInterface
 			SetControlVisibilityInternal (visible);
 		}
 		protected abstract void SetControlVisibilityInternal (bool visible);
+
+		protected abstract void UpdateControlFontInternal(Font font);
+		public void UpdateControlFont(Font font)
+		{
+			UpdateControlFontInternal(font);
+		}
 
 		protected abstract void RegisterDragSourceInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
 		public void RegisterDragSource (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)

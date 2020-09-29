@@ -25,6 +25,7 @@ using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
@@ -718,6 +719,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override void SetScrollBoundsInternal(Dimension2D value)
 		{
 			// FIXME: only implemented for certain controls
+		}
+
+		protected override void UpdateControlFontInternal(Font font)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			IntPtr hPangoContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_pango_context(handle);
+			IntPtr hFontDesc = Internal.Pango.Methods.pango_context_get_font_description(hPangoContext);
+			if (font.FamilyName != null)
+				Internal.Pango.Methods.pango_font_description_set_family(hFontDesc, font.FamilyName);
+			if (font.Size != null)
+				Internal.Pango.Methods.pango_font_description_set_size(hFontDesc, (int)(font.Size * Internal.Pango.Constants.PangoScale));
+			if (font.Weight != null)
+				Internal.Pango.Methods.pango_font_description_set_weight(hFontDesc, (int)font.Weight);
 		}
 
 	}

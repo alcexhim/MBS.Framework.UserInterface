@@ -225,6 +225,7 @@
     <Compile Include="Internal\GTK\Methods\GtkFileChooserButton.cs" />
     <Compile Include="Dialogs\AboutDialogImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSwitch.cs" />
+    <Compile Include="Internal\Pango\Constants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

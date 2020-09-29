@@ -19,16 +19,24 @@ namespace MBS.Framework.UserInterface.Drawing
 		private bool mvarItalic = false;
 		public bool Italic { get { return mvarItalic; } set { mvarItalic = value; } }
 
-		private double mvarWeight = FontWeights.Normal;
-		public double Weight { get { return mvarWeight; } set { mvarWeight = value; } }
+		private double? mvarWeight = null;
+		public double? Weight { get { return mvarWeight; } set { mvarWeight = value; } }
 
-		public static Font FromFamily(string familyName, double size, double weight = 400)
+		public static Font FromFamily(string familyName, double size, double? weight = null)
 		{
 			Font font = new Font();
 			font.FamilyName = familyName;
 			font.Size = size;
 			font.Weight = weight;
 			return font;
+		}
+		public static Font FromFont(Font font, double size, double? weight = null)
+		{
+			Font font2 = new Font();
+			font2.FamilyName = font.FamilyName;
+			font2.Size = size;
+			font2.Weight = weight;
+			return font2;
 		}
 
 		public override string ToString ()

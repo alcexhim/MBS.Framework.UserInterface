@@ -96,6 +96,7 @@ namespace MBS.Framework.UserInterface.Controls
 		public string Title { get; set; } = String.Empty;
 		public StockType StockType { get; set; } = StockType.None;
 		public string IconName { get; set; } = null;
+		public bool Enabled { get; set; } = true;
 
 		public ToolbarItem(string name = "", string title = "")
 		{

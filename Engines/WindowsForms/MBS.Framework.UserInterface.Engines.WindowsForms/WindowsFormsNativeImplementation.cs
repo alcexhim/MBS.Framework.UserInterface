@@ -367,6 +367,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
+		protected override HorizontalAlignment GetHorizontalAlignmentInternal()
+		{
+			// FIXME: not implemented
+			return HorizontalAlignment.Default;
+		}
+		protected override void SetHorizontalAlignmentInternal(HorizontalAlignment value)
+		{
+			// FIXME: not implemented
+		}
+		protected override VerticalAlignment GetVerticalAlignmentInternal()
+		{
+			// FIXME: not implemented
+			return VerticalAlignment.Default;
+		}
+		protected override void SetVerticalAlignmentInternal(VerticalAlignment value)
+		{
+			// FIXME: not implemented
+		}
+
 		protected override void UpdateControlFontInternal(Font font)
 		{
 			System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular;

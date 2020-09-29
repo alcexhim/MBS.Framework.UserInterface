@@ -222,6 +222,28 @@ namespace MBS.Framework.UserInterface
 			RegisterDropTargetInternal (control, targets, actions, buttons, modifierKeys);
 		}
 
+		protected abstract HorizontalAlignment GetHorizontalAlignmentInternal();
+		protected internal HorizontalAlignment GetHorizontalAlignment()
+		{
+			return GetHorizontalAlignmentInternal();
+		}
+		protected abstract void SetHorizontalAlignmentInternal(HorizontalAlignment value);
+		protected internal void SetHorizontalAlignment(HorizontalAlignment value)
+		{
+			SetHorizontalAlignmentInternal(value);
+		}
+
+		protected abstract VerticalAlignment GetVerticalAlignmentInternal();
+		protected internal VerticalAlignment GetVerticalAlignment()
+		{
+			return GetVerticalAlignmentInternal();
+		}
+		protected abstract void SetVerticalAlignmentInternal(VerticalAlignment value);
+		protected internal void SetVerticalAlignment(VerticalAlignment value)
+		{
+			SetVerticalAlignmentInternal(value);
+		}
+
 		protected internal virtual void OnDragDropDataRequest (DragDropDataRequestEventArgs e)
 		{
 			Control.OnDragDropDataRequest (e);

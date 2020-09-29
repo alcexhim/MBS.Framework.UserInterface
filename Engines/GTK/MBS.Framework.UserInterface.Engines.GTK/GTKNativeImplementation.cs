@@ -734,5 +734,91 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.Pango.Methods.pango_font_description_set_weight(hFontDesc, (int)font.Weight);
 		}
 
+		protected override HorizontalAlignment GetHorizontalAlignmentInternal()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Constants.GtkAlign align = Internal.GTK.Methods.GtkWidget.gtk_widget_get_valign(handle);
+			switch (align)
+			{
+				case Internal.GTK.Constants.GtkAlign.Center: return HorizontalAlignment.Center;
+				case Internal.GTK.Constants.GtkAlign.End: return HorizontalAlignment.Right;
+				case Internal.GTK.Constants.GtkAlign.Start: return HorizontalAlignment.Left;
+			}
+			return HorizontalAlignment.Default;
+		}
+		protected override void SetHorizontalAlignmentInternal(HorizontalAlignment value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			switch (Control.HorizontalAlignment)
+			{
+				case HorizontalAlignment.Center:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Center);
+					break;
+				}
+				case HorizontalAlignment.Default:
+				case HorizontalAlignment.Justify:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Fill);
+					break;
+				}
+				case HorizontalAlignment.Left:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.Start);
+					break;
+				}
+				case HorizontalAlignment.Right:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(handle, Internal.GTK.Constants.GtkAlign.End);
+					break;
+				}
+			}
+		}
+		protected override VerticalAlignment GetVerticalAlignmentInternal()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Constants.GtkAlign align = Internal.GTK.Methods.GtkWidget.gtk_widget_get_valign(handle);
+			switch (align)
+			{
+				case Internal.GTK.Constants.GtkAlign.Baseline: return VerticalAlignment.Baseline;
+				case Internal.GTK.Constants.GtkAlign.Center: return VerticalAlignment.Middle;
+				case Internal.GTK.Constants.GtkAlign.End: return VerticalAlignment.Bottom;
+				case Internal.GTK.Constants.GtkAlign.Start: return VerticalAlignment.Top;
+			}
+			return VerticalAlignment.Default;
+		}
+		protected override void SetVerticalAlignmentInternal(VerticalAlignment value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			switch (value)
+			{
+				case VerticalAlignment.Baseline:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Baseline);
+					break;
+				}
+				case VerticalAlignment.Bottom:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.End);
+					break;
+				}
+				case VerticalAlignment.Default:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Fill);
+					break;
+				}
+				case VerticalAlignment.Middle:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Center);
+					break;
+				}
+				case VerticalAlignment.Top:
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_valign(handle, Internal.GTK.Constants.GtkAlign.Start);
+					break;
+				}
+			}
+		}
+
 	}
 }

@@ -61,6 +61,23 @@ namespace MBS.Framework.UserInterface
 			// FIXME: not implemented
 		}
 
+		protected override void SetVerticalAlignmentInternal(VerticalAlignment value)
+		{
+			(Handle as CustomNativeControl).Handle.VerticalAlignment = value;
+		}
+		protected override VerticalAlignment GetVerticalAlignmentInternal()
+		{
+			return (Handle as CustomNativeControl).Handle.VerticalAlignment;
+		}
+		protected override void SetHorizontalAlignmentInternal(HorizontalAlignment value)
+		{
+			(Handle as CustomNativeControl).Handle.HorizontalAlignment = value;
+		}
+		protected override HorizontalAlignment GetHorizontalAlignmentInternal()
+		{
+			return (Handle as CustomNativeControl).Handle.HorizontalAlignment;
+		}
+
 		protected override bool SupportsEngineInternal(Type engineType)
 		{
 			return true;

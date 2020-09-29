@@ -168,8 +168,42 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Default;
-		public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Default;
+
+		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Default;
+		public HorizontalAlignment HorizontalAlignment
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					return ControlImplementation.GetHorizontalAlignment();
+				}
+				return mvarHorizontalAlignment;
+			}
+			set
+			{
+				mvarHorizontalAlignment = value;
+				ControlImplementation?.SetHorizontalAlignment(value);
+			}
+		}
+
+		private VerticalAlignment mvarVerticalAlignment = VerticalAlignment.Default;
+		public VerticalAlignment VerticalAlignment
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					return ControlImplementation.GetVerticalAlignment();
+				}
+				return mvarVerticalAlignment;
+			}
+			set
+			{
+				mvarVerticalAlignment = value;
+				ControlImplementation?.SetVerticalAlignment(value);
+			}
+		}
 
 		private ControlImplementation mvarControlImplementation = null;
 		public ControlImplementation ControlImplementation

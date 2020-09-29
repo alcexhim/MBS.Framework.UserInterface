@@ -91,7 +91,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_widget_set_halign(IntPtr widget, Constants.GtkAlign value);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern Constants.GtkAlign gtk_widget_set_valign(IntPtr widget);
+		public static extern Constants.GtkAlign gtk_widget_get_valign(IntPtr widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_set_valign(IntPtr widget, Constants.GtkAlign value);
 

@@ -571,6 +571,17 @@ namespace MBS.Framework.UserInterface
 					ctl.Visible = (item.Properties["visible"].Value == "True");
 				}
 
+				int width_request = -1, height_request = -1;
+				if (item.Properties["width_request"] != null)
+				{
+					width_request = Int32.Parse(item.Properties["width_request"].Value);
+				}
+				if (item.Properties["height_request"] != null)
+				{
+					height_request = Int32.Parse(item.Properties["height_request"].Value);
+				}
+				ctl.MinimumSize = new Dimension2D(width_request, height_request);
+
 				int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
 				margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
 				margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");

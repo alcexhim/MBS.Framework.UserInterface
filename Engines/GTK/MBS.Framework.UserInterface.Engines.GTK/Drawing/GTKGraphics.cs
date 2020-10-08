@@ -180,6 +180,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 				Internal.Cairo.Methods.cairo_raster_source_pattern_set_acquire(hPattern, hPattern_Acquire, hPattern_Release);
 				CheckStatus();
 			}
+			else if (brush is LinearGradientBrush)
+			{
+				LinearGradientBrush lgb = (brush as LinearGradientBrush);
+				hPattern = Internal.Cairo.Methods.cairo_pattern_create_linear(lgb.Bounds.X, lgb.Bounds.Y, lgb.Bounds.Right, lgb.Bounds.Bottom);
+				CheckStatus();
+
+				foreach (LinearGradientBrushColorStop colorStop in lgb.ColorStops)
+				{
+					Internal.Cairo.Methods.cairo_pattern_add_color_stop_rgba(hPattern, colorStop.Position.GetValue(MeasurementUnit.Percentage), colorStop.Color.R, colorStop.Color.G, colorStop.Color.B, colorStop.Color.A);
+					CheckStatus();
+				}
+			}
 
 			if (hPattern == IntPtr.Zero)
 			{

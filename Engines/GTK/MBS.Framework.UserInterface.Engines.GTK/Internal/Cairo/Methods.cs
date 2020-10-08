@@ -105,6 +105,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		public static extern IntPtr /*cairo_pattern_t*/ cairo_pattern_create_rgba(double red, double green, double blue, double alpha);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_pattern_add_color_stop_rgba(IntPtr /*cairo_pattern_t*/ pattern, double offset, double red, double green, double blue, double alpha);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*cairo_pattern_t*/ cairo_pattern_create_for_surface(IntPtr /*cairo_surface_t*/ surface);
 
 		[DllImport(LIBRARY_FILENAME)]

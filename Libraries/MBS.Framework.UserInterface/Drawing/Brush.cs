@@ -140,10 +140,17 @@ namespace MBS.Framework.UserInterface.Drawing
 		private LinearGradientBrushOrientation mvarOrientation = LinearGradientBrushOrientation.Horizontal;
 		public LinearGradientBrushOrientation Orientation { get { return mvarOrientation; } set { mvarOrientation = value; } }
 
-		public LinearGradientBrush(Rectangle bounds, LinearGradientBrushOrientation orientation = LinearGradientBrushOrientation.Horizontal)
+		public LinearGradientBrush(Rectangle bounds, LinearGradientBrushOrientation orientation = LinearGradientBrushOrientation.Horizontal, LinearGradientBrushColorStop[] colorStops = null)
 		{
 			mvarBounds = bounds;
 			mvarOrientation = orientation;
+			if (colorStops != null)
+			{
+				for (int i = 0; i < colorStops.Length; i++)
+				{
+					ColorStops.Add(colorStops[i]);
+				}
+			}
 		}
 		public LinearGradientBrush(Rectangle bounds, Color startColor, Color endColor, LinearGradientBrushOrientation orientation = LinearGradientBrushOrientation.Horizontal)
 		{

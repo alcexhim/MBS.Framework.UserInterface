@@ -28,6 +28,15 @@ namespace MBS.Framework.UserInterface
 	{
 		private double cx, cy, dx, dy;
 
+		public double InitialX { get { return cx; } }
+		public double InitialY { get { return cy; } }
+
+		public double CurrentX { get { return dx; } }
+		public double CurrentY { get { return dy; } }
+
+		public double DeltaX { get { return dx - cx; } }
+		public double DeltaY {  get { return dy - cy; } }
+
 		private Control _control = null;
 
 		private bool _Enabled = true;
@@ -36,6 +45,12 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		/// <value><c>true</c> if this <see cref="DragManager" /> should handle drag events; otherwise, <c>false</c>.</value>
 		public bool Enabled { get { return _Enabled; } set { _Enabled = value; _control.Refresh(); } }
+
+		public event PaintEventHandler BeforeControlPaint;
+		protected virtual void OnBeforeControlPaint(PaintEventArgs e)
+		{
+			BeforeControlPaint?.Invoke(this, e);
+		}
 
 		public void Register(Control control)
 		{
@@ -88,7 +103,8 @@ namespace MBS.Framework.UserInterface
 
 		private void control_Paint(object sender, PaintEventArgs e)
 		{
-			if (Dragging && Enabled)
+			OnBeforeControlPaint(e);
+			if (Dragging && Enabled && DrawSelection)
 			{
 				Pen pSelectionBorder = new Pen(SystemColors.HighlightBackground);
 				SolidBrush bSelectionFill = new SolidBrush(Color.FromRGBADouble(SystemColors.HighlightBackground.R, SystemColors.HighlightBackground.G, SystemColors.HighlightBackground.B, 0.5));
@@ -100,5 +116,16 @@ namespace MBS.Framework.UserInterface
 
 		private bool _Dragging = false;
 		public bool Dragging { get { return _Dragging; } }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the selection rectangle should be drawn.
+		/// </summary>
+		/// <value><c>true</c> if the selection rectangle should be drawn; otherwise, <c>false</c>.</value>
+		public bool DrawSelection { get; set; } = true;
+
+		public double ObjectInitialX { get; set; } = 0.0;
+		public double ObjectInitialY { get; set; } = 0.0;
+		public double ObjectDeltaX { get { return ObjectInitialX + DeltaX; } }
+		public double ObjectDeltaY { get { return ObjectInitialY + DeltaY; } }
 	}
 }

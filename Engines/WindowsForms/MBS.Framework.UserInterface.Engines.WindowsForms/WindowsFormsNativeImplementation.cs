@@ -406,5 +406,26 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			(Handle as WindowsFormsNativeControl).Handle.Font = new System.Drawing.Font(new System.Drawing.FontFamily(font.FamilyName), (int)font.Size, style);
 		}
 
+		protected override IControlContainer GetParentControlInternal()
+		{
+			if ((Handle as WindowsFormsNativeControl).Handle.Parent == null)
+				return null;
+
+			Control ctl = (Engine as WindowsFormsEngine).GetControlByHandle((Handle as WindowsFormsNativeControl).Handle.Parent);
+			if (ctl is IControlContainer)
+				return ctl as IControlContainer;
+			return new WindowsFormsNativeControlContainer((Handle as WindowsFormsNativeControl).Handle.Parent);
+		}
+		protected override Rectangle GetControlBoundsInternal()
+		{
+			return new Rectangle((Handle as WindowsFormsNativeControl).Handle.Bounds.X, (Handle as WindowsFormsNativeControl).Handle.Bounds.Y, (Handle as WindowsFormsNativeControl).Handle.Bounds.Width, (Handle as WindowsFormsNativeControl).Handle.Bounds.Height);
+		}
+		protected override void SetControlBoundsInternal(Rectangle bounds)
+		{
+			base.SetControlBoundsInternal(bounds);
+
+			(Handle as WindowsFormsNativeControl).Handle.SetBounds((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
+		}
+
 	}
 }

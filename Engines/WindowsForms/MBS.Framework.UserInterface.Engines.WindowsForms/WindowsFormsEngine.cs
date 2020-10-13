@@ -307,6 +307,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 			return hMenuFileMenu;
 		}
+
+		public Control GetControlByHandle(System.Windows.Forms.Control handle)
+		{
+			foreach (KeyValuePair<NativeControl, Control> kvp in controlsByHandle)
+			{
+				if (kvp.Key is WindowsFormsNativeControl)
+				{
+					if ((kvp.Key as WindowsFormsNativeControl).ContainsHandle(handle))
+					{
+						return kvp.Value;
+					}
+				}
+			}
+			return null;
+		}
+
 		public ContextMenuStrip BuildContextMenuStrip(CommandMenuItem cmi, IntPtr hMenuFile, string accelPath = null)
 		{
 			ContextMenuStrip hMenuFileMenu = new ContextMenuStrip();

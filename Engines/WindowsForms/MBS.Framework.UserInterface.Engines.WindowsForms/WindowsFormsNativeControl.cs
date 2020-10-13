@@ -36,5 +36,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return defaultValue;
 		}
 
+		public bool ContainsHandle(System.Windows.Forms.Control handle)
+		{
+			return Handle == handle || _NamedHandles.ContainsValue(handle);
+		}
 	}
 }

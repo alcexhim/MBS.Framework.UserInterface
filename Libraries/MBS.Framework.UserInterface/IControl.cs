@@ -1,4 +1,6 @@
 ﻿using System;
+using MBS.Framework.Drawing;
+
 namespace MBS.Framework.UserInterface
 {
 	public interface IControl
@@ -7,6 +9,7 @@ namespace MBS.Framework.UserInterface
 		bool Visible { get; set; }
 		ControlImplementation ControlImplementation { get; }
 		IControlContainer Parent { get; }
-		MBS.Framework.Drawing.Padding Padding { get; set; }
+		Padding Padding { get; set; }
+		Rectangle Bounds { get; }
 	}
 }

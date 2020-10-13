@@ -1,5 +1,4 @@
 ﻿using System;
-using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
@@ -8,6 +7,5 @@ namespace MBS.Framework.UserInterface
 		Control[] GetAllControls();
 		Control.ControlCollection Controls { get; }
 		Layout Layout { get; set; }
-		Rectangle Bounds { get; }
 	}
 }

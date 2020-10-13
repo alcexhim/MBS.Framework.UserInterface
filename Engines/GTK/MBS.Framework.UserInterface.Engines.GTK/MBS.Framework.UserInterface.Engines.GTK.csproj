@@ -226,6 +226,7 @@
     <Compile Include="Dialogs\AboutDialogImplementation.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSwitch.cs" />
     <Compile Include="Internal\Pango\Constants.cs" />
+    <Compile Include="GTKNativeControlContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

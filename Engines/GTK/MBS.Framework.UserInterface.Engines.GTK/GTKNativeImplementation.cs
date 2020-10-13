@@ -536,6 +536,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
+		protected override IControlContainer GetParentControlInternal()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			IntPtr hParent = Internal.GTK.Methods.GtkWidget.gtk_widget_get_parent(handle);
+
+			Control ctl = (Engine as GTKEngine).GetControlByHandle(handle);
+			if (ctl != null)
+			{
+				if (ctl is IControlContainer)
+					return (ctl as IControlContainer);
+				return null;
+			}
+			return new GTKNativeControlContainer(hParent);
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="GTKNativeImplementation" /> uses context menu handling provided by the subclass.
 		/// </summary>

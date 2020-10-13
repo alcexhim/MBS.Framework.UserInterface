@@ -253,6 +253,12 @@ namespace MBS.Framework.UserInterface
 			RegisterDropTargetInternal (control, targets, actions, buttons, modifierKeys);
 		}
 
+		protected abstract IControlContainer GetParentControlInternal();
+		protected internal IControlContainer GetParentControl()
+		{
+			return GetParentControlInternal();
+		}
+
 		protected abstract HorizontalAlignment GetHorizontalAlignmentInternal();
 		protected internal HorizontalAlignment GetHorizontalAlignment()
 		{

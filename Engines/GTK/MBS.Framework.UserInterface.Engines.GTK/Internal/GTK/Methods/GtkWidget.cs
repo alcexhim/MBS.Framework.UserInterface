@@ -99,10 +99,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_widget_destroy(IntPtr widget);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_widget_set_focus_on_click (IntPtr /*GtkWidget*/ widget, bool focusOnClick);
+		public static extern void gtk_widget_set_focus_on_click(IntPtr /*GtkWidget*/ widget, bool focusOnClick);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_widget_get_style_context (IntPtr view);
+		public static extern IntPtr gtk_widget_get_style_context(IntPtr view);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_grab_focus(IntPtr /*GtkWidget*/ widget);
@@ -148,6 +148,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*PangoContext*/ gtk_widget_get_pango_context(IntPtr /*GtkWidget*/ widget);
 
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_widget_get_parent(IntPtr handle);
 	}
 }
 

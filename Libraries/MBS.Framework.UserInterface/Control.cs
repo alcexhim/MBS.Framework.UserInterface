@@ -290,7 +290,14 @@ namespace MBS.Framework.UserInterface
 
 		private IControlContainer mvarParent = null;
 		public IControlContainer Parent {
-			get { return mvarParent; }
+			get
+			{
+				if (IsCreated && ControlImplementation != null)
+				{
+					mvarParent = ControlImplementation.GetParentControl();
+				}
+				return mvarParent;
+			}
 			internal set {
 				mvarParent = value;
 				Application.Engine.UpdateControlLayout (this);

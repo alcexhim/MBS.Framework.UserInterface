@@ -253,6 +253,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle, hTitle);
 		}
 
+		protected override void SetControlBoundsInternal(Rectangle bounds)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Window window = (Control as Window);
+			Internal.GTK.Methods.GtkWindow.gtk_window_move(handle, (int)bounds.X, (int)bounds.Y);
+		}
+
 		protected internal virtual void OnClosed(EventArgs e)
 		{
 			InvokeMethod((Control as Window), "OnClosed", e);

@@ -82,6 +82,31 @@ namespace MBS.Framework.UserInterface
 
 		public string Name { get; set; } = String.Empty;
 
+		private Rectangle _Bounds = Rectangle.Empty;
+		public Rectangle Bounds
+		{
+			get
+			{
+				if (Parent?.Layout != null)
+				{
+					return Parent.Layout.GetControlBounds(this);
+				}
+				if (IsCreated && ControlImplementation != null)
+				{
+					_Bounds = ControlImplementation.GetControlBounds();
+				}
+				return _Bounds;
+			}
+			set
+			{
+				if (IsCreated)
+				{
+					ControlImplementation?.SetControlBounds(value);
+				}
+				_Bounds = value;
+			}
+		}
+
 		public Rectangle ClientRectangle
 		{
 			get

@@ -202,7 +202,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_grab_focus (hCtrl);
 		}
 
-
+		protected override Rectangle GetControlBoundsInternal()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GDK.Structures.GdkRectangle alloc = new Internal.GDK.Structures.GdkRectangle();
+			Internal.GTK.Methods.GtkWidget.gtk_widget_get_allocation(handle, ref alloc);
+			return new Rectangle(alloc.x, alloc.y, alloc.width, alloc.height);
+		}
 
 		protected override Dimension2D GetControlSizeInternal()
 		{

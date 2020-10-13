@@ -32,11 +32,11 @@ namespace MBS.Framework.UserInterface
 	}
 	public class Window : Container
 	{
-		private RibbonControl mvarRibbon = new RibbonControl ();
+		private RibbonControl mvarRibbon = new RibbonControl();
 		public RibbonControl Ribbon { get { return mvarRibbon; } }
 
 		public bool Modal { get; set; } = false;
-	
+
 		private void tsbCommand_Click(object sender, EventArgs e)
 		{
 			ToolbarItemButton tsb = (sender as ToolbarItemButton);
@@ -94,7 +94,7 @@ namespace MBS.Framework.UserInterface
 			return tb;
 		}
 
-		internal protected override void OnCreating (EventArgs e)
+		internal protected override void OnCreating(EventArgs e)
 		{
 			switch (CommandDisplayMode) {
 				case CommandDisplayMode.Ribbon:
@@ -105,7 +105,7 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			base.OnCreating (e);
+			base.OnCreating(e);
 		}
 
 		public Menu MenuBar { get; private set; } = null;
@@ -162,7 +162,7 @@ namespace MBS.Framework.UserInterface
 				mvarIconName = value;
 			}
 		}
-		
+
 		/// <summary>
 		/// Determines if this <see cref="Window" /> should be decorated (i.e., have a title bar and border) by the window manager.
 		/// </summary>
@@ -170,8 +170,6 @@ namespace MBS.Framework.UserInterface
 		public bool Decorated { get; set; } = true;
 
 		public bool Resizable { get; set; } = true;
-
-		public Rectangle Bounds { get; set; } = Rectangle.Empty;
 
 		public bool HasFocus => Application.Engine.WindowHasFocus(this);
 		

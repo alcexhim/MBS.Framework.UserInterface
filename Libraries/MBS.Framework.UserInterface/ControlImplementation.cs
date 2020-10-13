@@ -136,7 +136,26 @@ namespace MBS.Framework.UserInterface
 			DestroyInternal();
 		}
 
+		protected virtual Rectangle GetControlBoundsInternal()
+		{
+			return new Rectangle(0, 0, 0, 0);
+		}
+		protected virtual void SetControlBoundsInternal(Rectangle bounds)
+		{
+			// TODO: implement
+		}
+
 		private Dictionary<Control, string> _controlText = new Dictionary<Control, string> ();
+
+		public Rectangle GetControlBounds()
+		{
+			return GetControlBoundsInternal();
+		}
+		public void SetControlBounds(Rectangle bounds)
+		{
+			SetControlBoundsInternal(bounds);
+		}
+
 		protected virtual string GetControlTextInternal (Control control)
 		{
 			if (_controlText.ContainsKey (control))

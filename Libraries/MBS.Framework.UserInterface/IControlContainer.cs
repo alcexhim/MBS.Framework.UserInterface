@@ -1,4 +1,6 @@
 ﻿using System;
+using MBS.Framework.Drawing;
+
 namespace MBS.Framework.UserInterface
 {
 	public interface IControlContainer : IControl
@@ -6,5 +8,6 @@ namespace MBS.Framework.UserInterface
 		Control[] GetAllControls();
 		Control.ControlCollection Controls { get; }
 		Layout Layout { get; set; }
+		Rectangle Bounds { get; }
 	}
 }

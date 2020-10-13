@@ -745,14 +745,7 @@ namespace MBS.Framework.UserInterface
 			if (mi == null)
 				return;
 
-			Command cmd = Application.Commands[mi.Name];
-			if (cmd == null)
-			{
-				Console.WriteLine("unknown cmd '" + mi.Name + "'");
-				return;
-			}
-
-			cmd.Execute();
+			Application.ExecuteCommand(mi.Name);
 		}
 
 		private static List<Window> _windows = new List<Window>();

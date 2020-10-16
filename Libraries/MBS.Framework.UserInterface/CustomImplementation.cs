@@ -92,7 +92,7 @@ namespace MBS.Framework.UserInterface
 			return true;
 		}
 
-		protected override IControlContainer GetParentControlInternal()
+		protected override IVirtualControlContainer GetParentControlInternal()
 		{
 			return (Handle as CustomNativeControl).Handle.Parent;
 		}

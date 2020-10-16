@@ -21,7 +21,7 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public interface IVirtualControlContainer
+	public interface IVirtualControlContainer : IControl
 	{
 		Control[] GetAllControls();
 	}

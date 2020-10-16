@@ -14,7 +14,7 @@ using UniversalEditor.Accessors;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Container : Control, IVirtualControlContainer, IControlContainer
+	public class Container : Control, IControlContainer
 	{
 		public Container()
 		{

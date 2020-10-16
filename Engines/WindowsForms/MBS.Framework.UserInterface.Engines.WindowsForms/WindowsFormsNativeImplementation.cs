@@ -406,14 +406,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			(Handle as WindowsFormsNativeControl).Handle.Font = new System.Drawing.Font(new System.Drawing.FontFamily(font.FamilyName), (int)font.Size, style);
 		}
 
-		protected override IControlContainer GetParentControlInternal()
+		protected override IVirtualControlContainer GetParentControlInternal()
 		{
 			if ((Handle as WindowsFormsNativeControl).Handle.Parent == null)
 				return null;
 
 			Control ctl = (Engine as WindowsFormsEngine).GetControlByHandle((Handle as WindowsFormsNativeControl).Handle.Parent);
-			if (ctl is IControlContainer)
-				return ctl as IControlContainer;
+			if (ctl is IVirtualControlContainer)
+				return ctl as IVirtualControlContainer;
 			return new WindowsFormsNativeControlContainer((Handle as WindowsFormsNativeControl).Handle.Parent);
 		}
 		protected override Rectangle GetControlBoundsInternal()

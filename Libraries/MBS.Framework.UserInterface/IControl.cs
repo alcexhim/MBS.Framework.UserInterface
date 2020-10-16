@@ -8,7 +8,7 @@ namespace MBS.Framework.UserInterface
 		bool IsCreated { get; }
 		bool Visible { get; set; }
 		ControlImplementation ControlImplementation { get; }
-		IControlContainer Parent { get; }
+		IVirtualControlContainer Parent { get; }
 		Padding Padding { get; set; }
 		Rectangle Bounds { get; }
 	}

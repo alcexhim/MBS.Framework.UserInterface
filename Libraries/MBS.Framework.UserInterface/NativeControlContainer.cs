@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface
 		public abstract bool IsCreated { get; }
 		public abstract bool Visible { get; set; }
 		public abstract ControlImplementation ControlImplementation { get; }
-		public abstract IControlContainer Parent { get; }
+		public abstract IVirtualControlContainer Parent { get; }
 		public abstract Padding Padding { get; set; }
 
 		public abstract Control[] GetAllControls();

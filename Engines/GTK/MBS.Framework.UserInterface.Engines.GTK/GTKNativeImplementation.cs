@@ -536,16 +536,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
-		protected override IControlContainer GetParentControlInternal()
+		protected override IVirtualControlContainer GetParentControlInternal()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			IntPtr hParent = Internal.GTK.Methods.GtkWidget.gtk_widget_get_parent(handle);
+			if (hParent == IntPtr.Zero)
+				return null;
 
-			Control ctl = (Engine as GTKEngine).GetControlByHandle(handle);
+			Control ctl = (Engine as GTKEngine).GetControlByHandle(hParent);
 			if (ctl != null)
 			{
-				if (ctl is IControlContainer)
-					return (ctl as IControlContainer);
+				if (ctl is IVirtualControlContainer)
+					return (ctl as IVirtualControlContainer);
 				return null;
 			}
 			return new GTKNativeControlContainer(hParent);

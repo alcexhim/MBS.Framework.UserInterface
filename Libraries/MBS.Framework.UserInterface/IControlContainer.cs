@@ -2,9 +2,8 @@
 
 namespace MBS.Framework.UserInterface
 {
-	public interface IControlContainer : IControl
+	public interface IControlContainer : IVirtualControlContainer
 	{
-		Control[] GetAllControls();
 		Control.ControlCollection Controls { get; }
 		Layout Layout { get; set; }
 	}

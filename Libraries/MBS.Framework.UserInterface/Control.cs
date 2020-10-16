@@ -87,10 +87,12 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
+				/*
 				if (Parent?.Layout != null)
 				{
 					return Parent.Layout.GetControlBounds(this);
 				}
+				*/
 				if (IsCreated && ControlImplementation != null)
 				{
 					_Bounds = ControlImplementation.GetControlBounds();
@@ -119,7 +121,11 @@ namespace MBS.Framework.UserInterface
 				{
 					return Rectangle.Empty;
 				}
-				return Parent.Layout.GetControlBounds(this);
+				if (Parent is IControlContainer)
+				{
+					return (Parent as IControlContainer).Layout.GetControlBounds(this);
+				}
+				return Rectangle.Empty;
 			}
 		}
 
@@ -288,15 +294,26 @@ namespace MBS.Framework.UserInterface
 		/// <value>The attributes.</value>
 		public System.Collections.Generic.Dictionary<string, object> Attributes { get; } = new Dictionary<string, object>();
 
-		private IControlContainer mvarParent = null;
-		public IControlContainer Parent {
-			get
+		protected virtual IVirtualControlContainer GetControlParent()
+		{
+			// jesus h christ on a popsicle stick
+			if (mvarParent == null)
 			{
+				// if we have not explicitly set a parent (e.g. through a ControlCollection.Add call), see if we can
+				// query the operating system to determine the native control parent
 				if (IsCreated && ControlImplementation != null)
 				{
 					mvarParent = ControlImplementation.GetParentControl();
 				}
-				return mvarParent;
+			}
+			return mvarParent;
+		}
+
+		private IVirtualControlContainer mvarParent = null;
+		public IVirtualControlContainer Parent {
+			get
+			{
+				return GetControlParent();
 			}
 			internal set {
 				mvarParent = value;
@@ -304,7 +321,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		internal void SetParent(IControlContainer parent)
+		internal void SetParent(IVirtualControlContainer parent)
 		{
 			mvarParent = parent;
 		}
@@ -651,7 +668,7 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
-				IControlContainer ctl = Parent;
+				IVirtualControlContainer ctl = Parent;
 				if (ctl == null)
 					return null;
 

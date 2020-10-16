@@ -44,7 +44,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		public ControlImplementation ControlImplementation => throw new NotImplementedException();
 
-		public IControlContainer Parent => throw new NotImplementedException();
+		public IVirtualControlContainer Parent => throw new NotImplementedException();
 
 		public Padding Padding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

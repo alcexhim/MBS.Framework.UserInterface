@@ -33,7 +33,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public override Control.ControlCollection Controls => throw new NotImplementedException();
 
-		public override Layout Layout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public override Layout Layout { get => null; set => throw new NotImplementedException(); }
 
 		public override Rectangle Bounds => throw new NotImplementedException();
 
@@ -43,7 +43,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public override ControlImplementation ControlImplementation => throw new NotImplementedException();
 
-		public override IControlContainer Parent => throw new NotImplementedException();
+		public override IVirtualControlContainer Parent => throw new NotImplementedException();
 
 		public override Padding Padding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

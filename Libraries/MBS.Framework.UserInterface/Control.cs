@@ -675,6 +675,7 @@ namespace MBS.Framework.UserInterface
 				while (ctl.Parent != null)
 				{
 					ctl = ctl.Parent;
+					if (ctl is Window) return (ctl as Window); // hmmm...
 				}
 				if (ctl is Window) return (ctl as Window);
 				return null;

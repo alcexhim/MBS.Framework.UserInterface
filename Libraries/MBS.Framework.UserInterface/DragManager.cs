@@ -37,6 +37,8 @@ namespace MBS.Framework.UserInterface
 		public double DeltaX { get { return dx - cx; } }
 		public double DeltaY {  get { return dy - cy; } }
 
+		public Rectangle DragLimitBounds { get; set; } = Rectangle.Empty;
+
 		private Control _control = null;
 
 		private bool _Enabled = true;
@@ -84,6 +86,30 @@ namespace MBS.Framework.UserInterface
 			{
 				dx = e.X;
 				dy = e.Y;
+
+				if (DragLimitBounds != Rectangle.Empty)
+				{
+					if (DragLimitBounds.X > -1)
+					{
+						if (dx <= DragLimitBounds.X)
+							dx = DragLimitBounds.X;
+					}
+					if (DragLimitBounds.Y > -1)
+					{
+						if (dy <= DragLimitBounds.Y)
+							dy = DragLimitBounds.Y;
+					}
+					if (DragLimitBounds.Width > -1)
+					{
+						if (dx >= DragLimitBounds.Right)
+							dx = DragLimitBounds.Right;
+					}
+					if (DragLimitBounds.Height > -1)
+					{
+						if (dy >= DragLimitBounds.Bottom)
+							dy = DragLimitBounds.Bottom;
+					}
+				}
 
 				if (Enabled)
 				{

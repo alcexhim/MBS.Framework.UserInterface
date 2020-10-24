@@ -663,5 +663,31 @@ namespace MBS.Framework.UserInterface
 		{
 			Timer_StopInternal(timer);
 		}
+
+		protected virtual Process LaunchApplicationInternal(string path)
+		{
+			Process p = new Process();
+			p.StartInfo.FileName = path;
+			p.Start();
+
+			return p;
+		}
+		protected virtual Process LaunchApplicationInternal(string path, string arguments)
+		{
+			Process p = new Process();
+			p.StartInfo.FileName = path;
+			p.StartInfo.Arguments = arguments;
+			p.Start();
+
+			return p;
+		}
+		public Process LaunchApplication(string path)
+		{
+			return LaunchApplicationInternal(path);
+		}
+		public Process LaunchApplication(string path, string arguments)
+		{
+			return LaunchApplicationInternal(path, arguments);
+		}
 	}
 }

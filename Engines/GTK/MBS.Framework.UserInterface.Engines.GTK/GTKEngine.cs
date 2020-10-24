@@ -1989,6 +1989,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWindow.gtk_window_present(handle);
 			// Internal.GTK.Methods.GtkWindow.gtk_window_present_with_time(handle, (uint)((timestamp - UNIX_EPOCH).TotalMilliseconds));
 		}
+
+		protected override Process LaunchApplicationInternal(string path)
+		{
+			try
+			{
+				return base.LaunchApplicationInternal(path);
+			}
+			catch (Exception ex)
+			{
+				Process p = Process.Start(new ProcessStartInfo()
+				{
+					FileName = "xdg-open",
+					Arguments = path,
+					UseShellExecute = true,
+					Verb = "open"
+				});
+				return p;
+			}
+		}
 	}
 }
 

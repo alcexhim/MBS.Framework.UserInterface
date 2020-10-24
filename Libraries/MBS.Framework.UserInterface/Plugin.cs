@@ -51,7 +51,7 @@ namespace MBS.Framework.UserInterface
 		private static Plugin[] _plugins = null;
 		public static Plugin[] Get()
 		{
-			_plugins = null; // should not be cached?
+			// _plugins = null; // should not be cached? // actually, yes it should...
 			if (_plugins == null)
 			{
 				Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(Plugin) });

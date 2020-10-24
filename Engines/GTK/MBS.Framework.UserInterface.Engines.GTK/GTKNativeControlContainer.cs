@@ -43,7 +43,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public override ControlImplementation ControlImplementation => throw new NotImplementedException();
 
-		public override IVirtualControlContainer Parent => throw new NotImplementedException();
+		public override IVirtualControlContainer Parent => null; // FIXME: implement this
 
 		public override Padding Padding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

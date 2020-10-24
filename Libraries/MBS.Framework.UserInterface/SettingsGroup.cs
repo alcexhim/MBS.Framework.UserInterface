@@ -52,24 +52,30 @@ namespace MBS.Framework.UserInterface
 		public SettingsGroup()
 		{
 		}
-		public SettingsGroup(string path, Setting[] options)
+		public SettingsGroup(string path, Setting[] options = null)
 		{
 			string[] paths = new string[0];
 			if (!String.IsNullOrEmpty (path)) {
 				paths = path.Split (new char[] { ':' });
 			}
 			Path = paths;
-			foreach (Setting option in options)
+			if (options != null)
 			{
-				Settings.Add (option);
+				foreach (Setting option in options)
+				{
+					Settings.Add(option);
+				}
 			}
 		}
-		public SettingsGroup(string[] paths, Setting[] options)
+		public SettingsGroup(string[] paths, Setting[] options = null)
 		{
 			Path = paths;
-			foreach (Setting option in options)
+			if (options != null)
 			{
-				Settings.Add (option);
+				foreach (Setting option in options)
+				{
+					Settings.Add(option);
+				}
 			}
 		}
 

@@ -31,19 +31,20 @@ namespace MBS.Framework.UserInterface.Layouts
 				Rectangle rect = new Rectangle(0, 0, 0, 0);
 				if (ctl.Parent != null)
 				{
-					for (int i = 0; i < ctl.Parent.Controls.Count; i++)
+					Control[] ctls = ctl.Parent.GetAllControls();
+					for (int i = 0; i < ctls.Length; i++)
 					{
-						if (ctl.Parent.Controls[i] == ctl) break;
+						if (ctls[i] == ctl) break;
 
 						// TODO:	figure out how to get rid of the dependency on ctl.ParentWindow (it should be just ctl.Parent since
 						//			we are looking at it strictly from a Container point of view)
-						Rectangle rect2 = GetControlBounds(ctl.Parent.Controls[i]);
+						Rectangle rect2 = GetControlBounds(ctls[i]);
 						rect.X += rect2.Right;
 
 						if (rect.Right > (ctl.ParentWindow.Bounds.Width - ctl.ParentWindow.Padding.Left - ctl.ParentWindow.Padding.Right - ctl.Margin.Left - ctl.Margin.Right))
 						{
 							rect.X = 0;
-							rect.Y += (rect2.Height + ctl.Parent.Controls[i].Margin.Bottom);
+							rect.Y += (rect2.Height + ctls[i].Margin.Bottom);
 						}
 					}
 				}

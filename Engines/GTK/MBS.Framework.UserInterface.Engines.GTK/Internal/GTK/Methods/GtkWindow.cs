@@ -29,6 +29,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_window_new(Constants.GtkWindowType windowType);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_get_position(IntPtr /*GtkWindow*/ window, ref int root_x, ref int root_y);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_window_get_title(IntPtr window);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_title(IntPtr window, IntPtr title);

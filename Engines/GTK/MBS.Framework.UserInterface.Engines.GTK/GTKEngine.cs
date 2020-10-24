@@ -143,7 +143,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point)
 		{
-			return point;
+			// ohoho
+			IntPtr hCtl = (GetHandleForControl(control) as GTKNativeControl).Handle;
+			IntPtr hCtlToplevel = Internal.GTK.Methods.GtkWidget.gtk_widget_get_toplevel(hCtl);
+
+			int rootX = 0, rootY = 0;
+			Internal.GTK.Methods.GtkWindow.gtk_window_get_position(hCtlToplevel, ref rootX, ref rootY);
+
+			int x = 0, y = 0;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_translate_coordinates(hCtl, hCtlToplevel, (int)point.X, (int)point.Y, ref x, ref y);
+			return new Vector2D(rootX + x, rootY + y);
 		}
 
 		protected override bool IsControlEnabledInternal(Control control)

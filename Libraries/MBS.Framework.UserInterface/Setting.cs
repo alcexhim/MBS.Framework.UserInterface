@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.UserInterface.Dialogs;
 
 namespace MBS.Framework.UserInterface
 {
@@ -128,6 +129,7 @@ namespace MBS.Framework.UserInterface
 	public class FileSetting : TextSetting
 	{
 		public bool RequireExistingFile { get; set; } = true;
+		public FileDialogMode Mode { get; set; } = FileDialogMode.Open;
 
 		public FileSetting(string name, string title, string defaultValue = "", bool requireExistingFile = true) : base(name, title, defaultValue)
 		{

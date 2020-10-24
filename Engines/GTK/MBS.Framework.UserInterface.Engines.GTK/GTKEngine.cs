@@ -839,10 +839,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
 			IntPtr hCtrl = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			if (control.Parent != null && control.Parent.Layout != null) {
-				Constraints constraints = control.Parent.Layout.GetControlConstraints(control);
+			IControlContainer parent = (control.Parent as IControlContainer);
+			if (parent != null && parent.Layout != null) {
+				Constraints constraints = parent.Layout.GetControlConstraints(control);
 				if (constraints != null) {
-					if (control.Parent.Layout is Layouts.BoxLayout) {
+					if (parent.Layout is Layouts.BoxLayout) {
 						Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
 						if (cs != null) {
 							Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
@@ -858,8 +859,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 							}
 
 							IntPtr hLayout = IntPtr.Zero;
-							if (handlesByLayout.ContainsKey(control.Parent.Layout)) {
-								hLayout = handlesByLayout[control.Parent.Layout];
+							if (handlesByLayout.ContainsKey(parent.Layout)) {
+								hLayout = handlesByLayout[parent.Layout];
 							} else {
 								hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new(true, 0);
 							}

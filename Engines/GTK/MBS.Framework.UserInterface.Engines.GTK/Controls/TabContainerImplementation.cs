@@ -30,6 +30,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Console.WriteLine("TabContainer: unregistering TabPage {0} with handle {1}", page, _TabPageHandles.GetValue2(page));
 				_TabPageHandles.RemoveByValue1(page);
 			}
+			if (_TabPageHandles.ContainsValue2(handle))
+			{
+				Console.WriteLine("TabContainer: unregistering TabPage {0} with handle {1}", _TabPageHandles.GetValue1(handle), handle);
+				_TabPageHandles.RemoveByValue2(handle);
+			}
 
 			Console.WriteLine("TabContainer: registering TabPage {0} with handle {1}", page, handle);
 			_TabPageHandles.Add(page, handle);

@@ -309,6 +309,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 		public static void DrawRoundedRectangle(this Graphics graphics, Pen pen, int x, int y, int width, int height, int radiusTopLeft, int radiusTopRight, int radiusBottomLeft, int radiusBottomRight)
 		{
+
+			// 	FIXME : this doesn't actually work right
 			int right = x + width;
 			int bottom = y + height;
 
@@ -320,7 +322,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			graphics.DrawLine(pen, x, y + radiusTopLeft, x, bottom - radiusBottomRight - 1);
 			// bottom line
 			graphics.DrawLine(pen, x + radiusTopLeft, bottom - radiusBottomLeft, right - radiusBottomRight, bottom - radiusBottomLeft);
+			// top-right connector
 			graphics.DrawLine(pen, right - radiusTopRight - 1, y, right - 1, y + radiusTopRight); //added
+
 			graphics.DrawLine(pen, right - radiusBottomRight, y + radiusTopLeft, right - radiusBottomRight, bottom - radiusBottomRight);
 		}
 

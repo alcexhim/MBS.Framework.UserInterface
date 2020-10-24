@@ -28,7 +28,7 @@ namespace MBS.Framework.UserInterface
 	* you are not allowed to draw on widgets until you get the first expose, map_event is insufficient.
 	*/
 
-	public abstract class Control : IDisposable, ISupportsExtraData
+	public abstract class Control : IDisposable, ISupportsExtraData, IControl
 	{
 		public class ControlCollection
 			: System.Collections.ObjectModel.Collection<Control>

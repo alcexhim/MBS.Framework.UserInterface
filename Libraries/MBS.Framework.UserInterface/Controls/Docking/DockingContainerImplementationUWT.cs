@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls.Docking.Native;
 using MBS.Framework.UserInterface.DragDrop;
@@ -32,6 +33,11 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			{
 				(_dcc?.ControlImplementation as DockingContainerImplementationUWT)._CurrentTabPage = e.NewTab;
 				InvokeMethod(_dcc, "OnSelectionChanged", new object[] { e });
+			}
+
+			protected override IVirtualControlContainer GetControlParent()
+			{
+				return _dcc;
 			}
 
 			private Menu _DockingContainerContextMenu = null;
@@ -76,6 +82,8 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				// this.TabPosition = TabPosition.Bottom;
 				GroupName = "UwtDockingTabContainer";
 			}
+
+			public IControlContainer OldParent { get; internal set; }
 		}
 		private class DockingSplitContainer : SplitContainer
 		{
@@ -88,6 +96,13 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				this.SplitterPosition = 100;
 			}
 		}
+		private class DockingTabPopupWindow : Window
+		{
+			public DockingTabPopupWindow()
+			{
+				Layout = new BoxLayout(Orientation.Vertical);
+			}
+		}
 		private class DockingPanelTitleBar : Container
 		{
 			private Label lblTitleBar = null;
@@ -96,8 +111,12 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 			private DockingTabContainer _tabContainer = null;
 
+			private DockingTabPopupWindow _popupWindow = null;
+
 			public DockingPanelTitleBar(DockingTabContainer tabContainer)
 			{
+				Contract.Requires(tabContainer != null);
+
 				this.Layout = new BoxLayout(Orientation.Horizontal);
 
 				lblTitleBar = new Label();
@@ -118,6 +137,63 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 				_tabContainer = tabContainer;
 				_tabContainer.SelectedTabChanged += (sender, e) => lblTitleBar.Text = _tabContainer.SelectedTab?.Text;
+				if (_tabContainer.TabPages.Count > 0)
+				{
+					lblTitleBar.Text = _tabContainer.TabPages[0].Text;
+				}
+
+				MouseDown += _MouseDown;
+				lblTitleBar.MouseDown += _MouseDown;
+
+				MouseMove += _MouseMove;
+				lblTitleBar.MouseMove += _MouseMove;
+			}
+
+			protected internal override void OnCreated(EventArgs e)
+			{
+				Contract.Requires(_tabContainer != null);
+				base.OnCreated(e);
+
+				if (_tabContainer.TabPages.Count > 0)
+				{
+					lblTitleBar.Text = _tabContainer.TabPages[0].Text;
+				}
+			}
+
+			private void _MouseDown(object sender, MouseEventArgs e)
+			{
+				if (e.Buttons == MouseButtons.Primary)
+				{
+					// begin dragging the associated tabcontainer
+					if (_popupWindow == null)
+					{
+						_popupWindow = new DockingTabPopupWindow();
+						_popupWindow.Text = _tabContainer.SelectedTab?.Text;
+					}
+					// _tabContainer.OldParent = _tabContainer.Parent;
+					// _tabContainer.Parent.Controls.Remove(_tabContainer);
+
+					// _popupWindow.Controls.Add(_tabContainer, new BoxLayout.Constraints(true, true));
+
+					_popupWindow.Bounds = new Rectangle(ClientToScreenCoordinates(new Vector2D(e.X, e.Y)), new Dimension2D(-1, -1));
+
+					_popupWindow.Show();
+					_popupWindow.Present(DateTime.Now);
+				}
+			}
+			private void _MouseMove(object sender, MouseEventArgs e)
+			{
+				if (e.Buttons == MouseButtons.Primary)
+				{
+					Console.WriteLine("mouse moved whilst dragging");
+					if (_popupWindow != null)
+					{
+						_popupWindow.Bounds = new Rectangle(ClientToScreenCoordinates(new Vector2D(e.X, e.Y)), new Dimension2D(-1, -1));
+					}
+				}
+			}
+			private void _MouseUp(object sender, MouseEventArgs e)
+			{
 			}
 		}
 

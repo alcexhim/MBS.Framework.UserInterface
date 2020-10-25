@@ -250,7 +250,7 @@ namespace MBS.Framework.UserInterface
 		{
 			List<Engine> list = new List<Engine>();
 
-			Plugin[] enginePlugins = Plugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
+			UserInterfacePlugin[] enginePlugins = UserInterfacePlugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
 			for (int i = 0; i < enginePlugins.Length; i++)
 			{
 				if (enginePlugins[i] is EnginePlugin)

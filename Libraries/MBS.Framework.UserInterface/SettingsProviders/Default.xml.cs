@@ -33,7 +33,7 @@ namespace MBS.Framework.UserInterface.SettingsProviders
 			{
 				Feature feature = Application.Features[i];
 
-				Plugin[] availablePluginsForFeature = Plugin.Get(new Feature[] { feature });
+				UserInterfacePlugin[] availablePluginsForFeature = UserInterfacePlugin.Get(new Feature[] { feature });
 				List<ChoiceSetting.ChoiceSettingValue> listValues = new List<ChoiceSetting.ChoiceSettingValue>();
 				for (int j = 0; j < availablePluginsForFeature.Length; j++)
 				{

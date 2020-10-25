@@ -220,7 +220,7 @@
     <Compile Include="ContextChangedEvent.cs" />
     <Compile Include="IVirtualControlContainer.cs" />
     <Compile Include="Drawing\Drawing2D\WrapMode.cs" />
-    <Compile Include="Plugin.cs" />
+    <Compile Include="UserInterfacePlugin.cs" />
     <Compile Include="ApplicationActivatedEvent.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="DefaultCommandLine.cs" />
@@ -248,7 +248,6 @@
     <Compile Include="Theming\ControlState.cs" />
     <Compile Include="Dialogs\TaskDialog.cs" />
     <Compile Include="HelpTopic.cs" />
-    <Compile Include="Feature.cs" />
     <Compile Include="KnownFeatures.cs" />
     <Compile Include="EnginePlugin.cs" />
     <Compile Include="WindowCloseReason.cs" />

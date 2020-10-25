@@ -1072,7 +1072,7 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			Plugin[] plugins = Plugin.Get();
+			UserInterfacePlugin[] plugins = UserInterfacePlugin.Get();
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				Console.WriteLine("initializing plugin '{0}'", plugins[i].GetType().FullName);

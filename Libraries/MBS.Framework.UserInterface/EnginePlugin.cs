@@ -21,7 +21,7 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public abstract class EnginePlugin : Plugin
+	public abstract class EnginePlugin : UserInterfacePlugin
 	{
 		public abstract Type EngineType { get; }
 	}

@@ -24,45 +24,28 @@ using UniversalEditor.ObjectModels.PropertyList;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Plugin
+	public class UserInterfacePlugin : Plugin
 	{
-		public virtual string Title { get; set; } = null;
-		public Feature.FeatureCollection ProvidedFeatures { get; } = new Feature.FeatureCollection();
 		public PropertyListObjectModel Configuration { get; set; } = new PropertyListObjectModel();
-
-		public bool Initialized { get; private set; } = false;
-		public void Initialize()
-		{
-			if (Initialized)
-				return;
-
-			InitializeInternal();
-			Initialized = true;
-		}
-
-		public Guid ID { get; set; } = Guid.Empty;
 		public Context Context { get; protected set; }
 
-		protected virtual void InitializeInternal()
-		{
-			// this method intentionally left blank
-		}
 
-		private static Plugin[] _plugins = null;
-		public static Plugin[] Get()
+
+		private static UserInterfacePlugin[] _plugins = null;
+		public static UserInterfacePlugin[] Get()
 		{
 			// _plugins = null; // should not be cached? // actually, yes it should...
 			if (_plugins == null)
 			{
-				Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(Plugin) });
-				List<Plugin> plugins = new List<Plugin>();
+				Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(UserInterfacePlugin) });
+				List<UserInterfacePlugin> plugins = new List<UserInterfacePlugin>();
 				for (int i = 0; i < types.Length; i++)
 				{
 					try
 					{
 						if (types[i] == typeof(CustomPlugin)) continue;
 
-						Plugin plg = (Plugin)types[i].Assembly.CreateInstance(types[i].FullName);
+						UserInterfacePlugin plg = (UserInterfacePlugin)types[i].Assembly.CreateInstance(types[i].FullName);
 						plugins.Add(plg);
 					}
 					catch (Exception ex)
@@ -79,10 +62,10 @@ namespace MBS.Framework.UserInterface
 			return _plugins;
 		}
 
-		public static Plugin[] Get(Feature[] providedFeatures)
+		public static UserInterfacePlugin[] Get(Feature[] providedFeatures)
 		{
-			List<Plugin> list = new List<Plugin>();
-			Plugin[] plugins = Get();
+			List<UserInterfacePlugin> list = new List<UserInterfacePlugin>();
+			UserInterfacePlugin[] plugins = Get();
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				if (!plugins[i].IsSupported())
@@ -97,24 +80,15 @@ namespace MBS.Framework.UserInterface
 			return list.ToArray();
 		}
 
-		public static Plugin Get(Guid id)
+		public static UserInterfacePlugin Get(Guid id)
 		{
-			Plugin[] plugins = Get();
+			UserInterfacePlugin[] plugins = Get();
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				if (plugins[i].ID == id)
 					return plugins[i];
 			}
 			return null;
-		}
-
-		protected virtual bool IsSupportedInternal()
-		{
-			return true;
-		}
-		public bool IsSupported()
-		{
-			return IsSupportedInternal();
 		}
 	}
 }

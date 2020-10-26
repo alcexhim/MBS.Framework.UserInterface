@@ -164,7 +164,7 @@ namespace MBS.Framework.UserInterface
 		}
 		public string GetControlText (Control control)
 		{
-			if (!Application.Engine.IsControlCreated (control))
+			if (!((UIApplication)Application.Instance).Engine.IsControlCreated (control))
 				return null;
 			return GetControlTextInternal (control);
 		}

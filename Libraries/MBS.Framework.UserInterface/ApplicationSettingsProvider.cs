@@ -27,7 +27,7 @@ using UniversalEditor;
 namespace MBS.Framework.UserInterface
 {
 	/// <summary>
-	/// Represents a <see cref="SettingsProvider" /> that controls settings for the entire <see cref="Application" /> (i.e., is added to <see cref="Application.SettingsProviders"/> collection).
+	/// Represents a <see cref="SettingsProvider" /> that controls settings for the entire <see cref="UIApplication" /> (i.e., is added to <see cref="((UIApplication)Application.Instance).SettingsProviders"/> collection).
 	/// </summary>
 	public abstract class ApplicationSettingsProvider : SettingsProvider
 	{
@@ -85,8 +85,8 @@ namespace MBS.Framework.UserInterface
 				MarkupAttribute attValue = tagSetting.Attributes ["value"];
 				if (attValue != null)
 					value = attValue.Value;
-				
-				Application.SetSetting (attGroupName.Value + ":" + attName.Value, value);
+
+				((UIApplication)Application.Instance).SetSetting (attGroupName.Value + ":" + attName.Value, value);
 			}
 		}
 

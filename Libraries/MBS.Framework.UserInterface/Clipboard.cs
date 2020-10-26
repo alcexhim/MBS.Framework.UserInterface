@@ -32,7 +32,7 @@ namespace MBS.Framework.UserInterface
 			{
 				if (_Default == null)
 				{
-					_Default = Application.Engine.GetDefaultClipboard();
+					_Default = ((UIApplication)Application.Instance).Engine.GetDefaultClipboard();
 				}
 				return _Default;
 			}

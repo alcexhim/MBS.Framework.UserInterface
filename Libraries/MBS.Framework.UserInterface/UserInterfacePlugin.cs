@@ -53,9 +53,9 @@ namespace MBS.Framework.UserInterface
 					}
 				}
 
-				for (int i = 0; i < Application.CustomPlugins.Count; i++)
+				for (int i = 0; i < ((UIApplication)Application.Instance).CustomPlugins.Count; i++)
 				{
-					plugins.Add(Application.CustomPlugins[i]);
+					plugins.Add(((UIApplication)Application.Instance).CustomPlugins[i]);
 				}
 				_plugins = plugins.ToArray();
 			}

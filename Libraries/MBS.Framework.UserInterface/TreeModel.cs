@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace MBS.Framework.UserInterface
 {
@@ -46,7 +46,7 @@ namespace MBS.Framework.UserInterface
 						for (int i = 0; i < e.NewItems.Count; i++)
 						{
 							items[i] = (e.NewItems[i] as TreeModelRow);
-							Application.Engine.CreateTreeModelRow(e.NewItems[i] as TreeModelRow, this);
+							((UIApplication)Application.Instance).Engine.CreateTreeModelRow(e.NewItems[i] as TreeModelRow, this);
 						}
 						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Add, items, (TreeModelRow)null);
 						break;

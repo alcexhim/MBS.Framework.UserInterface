@@ -124,7 +124,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		
 		private void Window_Activate(IntPtr handle, IntPtr data)
 		{
-			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
+			Window window = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(handle) as Window;
 			if (window == null)
 				return;
 
@@ -133,7 +133,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private bool Window_Closing(IntPtr handle, IntPtr data)
 		{
-			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
+			Window window = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(handle) as Window;
 			if (window != null)
 			{
 				WindowClosingEventArgs e = new WindowClosingEventArgs(WindowCloseReason.UserClosing);
@@ -146,7 +146,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private void Window_Closed(IntPtr handle, IntPtr data)
 		{
-			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(handle) as Window);
+			Window window = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(handle) as Window;
 			if (window != null)
 			{
 				InvokeMethod(window, "OnClosed", EventArgs.Empty);
@@ -185,10 +185,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
 
+				/*
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_right_justified(hMenuFile, true);
 				}
+				*/
 
 				if (cmi.Items.Count > 0)
 				{
@@ -271,7 +273,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Window window = (control as Window);
 			if (window == null) throw new InvalidOperationException();
 
-			IntPtr handle = Internal.GTK.Methods.GtkApplicationWindow.gtk_application_window_new((Application.Engine as GTKEngine).ApplicationHandle);
+			IntPtr handle = Internal.GTK.Methods.GtkApplicationWindow.gtk_application_window_new((((UIApplication)Application.Instance).Engine as GTKEngine).ApplicationHandle);
 			GTKNativeControl ncContainer = (base.CreateControlInternal(control) as GTKNativeControl);
 			IntPtr hContainer = ncContainer.Handle;
 
@@ -324,9 +326,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				#region Toolbars
 				if ((control as MainWindow).CommandDisplayMode == CommandDisplayMode.CommandBar || (control as MainWindow).CommandDisplayMode == CommandDisplayMode.Both)
 				{
-					for (int i = 0; i < Application.CommandBars.Count; i++)
+					for (int i = 0; i < ((UIApplication)Application.Instance).CommandBars.Count; i++)
 					{
-						Toolbar tb = window.LoadCommandBar(Application.CommandBars[i]);
+						Toolbar tb = window.LoadCommandBar(((UIApplication)Application.Instance).CommandBars[i]);
 						Engine.CreateControl(tb);
 
 						IntPtr hToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl).Handle;
@@ -429,7 +431,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
-				foreach (CommandBar cb in Application.CommandBars)
+				foreach (CommandBar cb in ((UIApplication)Application.Instance).CommandBars)
 				{
 					window.Controls.Add(window.LoadCommandBar(cb));
 				}

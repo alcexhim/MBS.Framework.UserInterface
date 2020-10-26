@@ -25,9 +25,9 @@ namespace MBS.Framework.UserInterface
 {
 	public sealed class SystemColors
 	{
-		public static Color HighlightBackground { get { return Application.Engine.GetSystemColor(SystemColor.HighlightBackground); } }
-		public static Color HighlightForeground { get { return Application.Engine.GetSystemColor(SystemColor.HighlightForeground); } }
-		public static Color WindowBackground { get { return Application.Engine.GetSystemColor(SystemColor.WindowBackground); } }
-		public static Color WindowForeground { get { return Application.Engine.GetSystemColor(SystemColor.WindowForeground); } }
+		public static Color HighlightBackground { get { return ((UIApplication)Application.Instance).Engine.GetSystemColor(SystemColor.HighlightBackground); } }
+		public static Color HighlightForeground { get { return ((UIApplication)Application.Instance).Engine.GetSystemColor(SystemColor.HighlightForeground); } }
+		public static Color WindowBackground { get { return ((UIApplication)Application.Instance).Engine.GetSystemColor(SystemColor.WindowBackground); } }
+		public static Color WindowForeground { get { return ((UIApplication)Application.Instance).Engine.GetSystemColor(SystemColor.WindowForeground); } }
 	}
 }

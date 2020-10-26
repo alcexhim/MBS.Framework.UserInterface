@@ -69,7 +69,7 @@ namespace MBS.Framework.UserInterface.Printing
 		/// </summary>
 		public void Send()
 		{
-			Application.Engine.Print(this);
+			((UIApplication)Application.Instance).Engine.Print(this);
 		}
 	}
 }

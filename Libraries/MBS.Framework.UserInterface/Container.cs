@@ -53,7 +53,7 @@ namespace MBS.Framework.UserInterface
 			}
 			else
 			{
-				string fileName = Application.ExpandRelativePath(wla.PathName);
+				string fileName = ((UIApplication)Application.Instance).ExpandRelativePath(wla.PathName);
 				if (fileName == null)
 				{
 					Console.WriteLine("container layout file not found: '{0}'", wla.PathName);
@@ -249,7 +249,7 @@ namespace MBS.Framework.UserInterface
 					}
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
-						(ctl as Button).StockType = (StockType)Application.Engine.StockTypeFromString(item.Properties["label"].Value);
+						(ctl as Button).StockType = (StockType)((UIApplication)Application.Instance).Engine.StockTypeFromString(item.Properties["label"].Value);
 						switch ((ctl as Button).StockType)
 						{
 							case StockType.Cancel:
@@ -556,7 +556,7 @@ namespace MBS.Framework.UserInterface
 								LayoutItemProperty propStockId = item.Items[i].Properties["stock_id"];
 								if (propStockId != null)
 								{
-									StockType stockType = Application.Engine.StockTypeFromString(propStockId.Value);
+									StockType stockType = ((UIApplication)Application.Instance).Engine.StockTypeFromString(propStockId.Value);
 									ToolbarItemButton tsb = new ToolbarItemButton(item.Items[i].ID, stockType);
 									(ctl as Toolbar).Items.Add(tsb);
 								}

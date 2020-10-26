@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace MBS.Framework.UserInterface
 {
@@ -15,7 +15,7 @@ namespace MBS.Framework.UserInterface
 
 		public void Show()
 		{
-			Application.Engine.ShowNotificationPopup (this);
+			((UIApplication)Application.Instance).Engine.ShowNotificationPopup (this);
 		}
 
 		public static void Show(string summary, string content = "", string iconName = "")

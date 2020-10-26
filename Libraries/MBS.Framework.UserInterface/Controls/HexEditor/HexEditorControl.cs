@@ -827,9 +827,9 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		private System.Threading.Thread _tCursorBlinkThread = null;
 		private void _tCursorBlinkThread_ThreadStart()
 		{
-			while (!Application.Exited)
+			while (!((UIApplication)Application.Instance).Exited)
 			{
-				System.Threading.Thread.Sleep(Application.Engine.SystemSettings.CursorBlinkTime);
+				System.Threading.Thread.Sleep(((UIApplication)Application.Instance).Engine.SystemSettings.CursorBlinkTime);
 				cursorBlinking = !cursorBlinking;
 
 				if (IsCreated)

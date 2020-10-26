@@ -57,11 +57,11 @@ namespace MBS.Framework.UserInterface
 
 		public void Start()
 		{
-			Application.Engine.Timer_Start(this);
+			((UIApplication)Application.Instance).Engine.Timer_Start(this);
 		}
 		public void Stop()
 		{
-			Application.Engine.Timer_Stop(this);
+			((UIApplication)Application.Instance).Engine.Timer_Stop(this);
 		}
 
 

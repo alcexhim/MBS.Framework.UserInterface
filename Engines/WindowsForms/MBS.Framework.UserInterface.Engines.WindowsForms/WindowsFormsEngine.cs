@@ -236,20 +236,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				string imageFileName = null;
 				if (cmi.StockType != StockType.None)
 				{
-					imageFileName = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, StockTypeToString(cmi.StockType)));
+					imageFileName = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, StockTypeToString(cmi.StockType)));
 				}
 				else if (cmi.IconName != null)
 				{
-					imageFileName = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, cmi.IconName));
+					imageFileName = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, cmi.IconName));
 				}
 
 				if (imageFileName != null)
 					hMenuFile.Image = System.Drawing.Image.FromFile(imageFileName);
 
+				/*
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					hMenuFile.Alignment = ToolStripItemAlignment.Right;
 				}
+				*/
 
 				if (cmi.Items.Count > 0)
 				{
@@ -784,7 +786,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			{
 				ApplicationActivatedEventArgs ee = new ApplicationActivatedEventArgs(false);
 				ee.CommandLine = new WindowsFormsCommandLine(e.CommandLineArgs);
-				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { ee });
+				InvokeMethod(Application.Instance, "OnActivated", new object[] { ee });
 
 				/*
 				if (LastWindow != null)
@@ -804,7 +806,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override int StartInternal(Window waitForClose = null)
 		{
-			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
+			InvokeMethod(Application.Instance, "OnStartup", new object[] { EventArgs.Empty });
 
 			string INSTANCEID = GetType().FullName + "$2d429aa3371c421fb63b42525e51a50c$92751853175891031214292357218181357901238$";
 			/*
@@ -826,7 +828,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			{
 				ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs();
 				e.CommandLine = new WindowsFormsCommandLine(Environment.GetCommandLineArgs());
-				InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
+				InvokeMethod(Application.Instance, "OnActivated", new object[] { e });
 				System.Windows.Forms.Application.Run();
 			}
 			return 0;
@@ -926,7 +928,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
 			{
-				switch (Application.DpiAwareness)
+				switch (((UIApplication)Application.Instance).DpiAwareness)
 				{
 					case DpiAwareness.Unaware:
 					{

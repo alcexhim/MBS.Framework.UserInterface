@@ -40,7 +40,7 @@ namespace MBS.Framework.UserInterface
 			{
 				if (_Command == null && _CommandID != null)
 				{
-					_Command = Application.Commands[_CommandID];
+					_Command = ((UIApplication)Application.Instance).Commands[_CommandID];
 				}
 				return _Command;
 			}
@@ -54,9 +54,9 @@ namespace MBS.Framework.UserInterface
 			set
 			{
 				_CommandID = value;
-				if (Application.Commands[_CommandID] != null)
+				if (((UIApplication)Application.Instance).Commands[_CommandID] != null)
 				{
-					_Command = Application.Commands[_CommandID];
+					_Command = ((UIApplication)Application.Instance).Commands[_CommandID];
 				}
 			}
 		}

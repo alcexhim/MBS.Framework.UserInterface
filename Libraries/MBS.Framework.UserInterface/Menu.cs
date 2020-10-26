@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
@@ -70,7 +70,7 @@ namespace MBS.Framework.UserInterface
 			if (mi == null)
 				return;
 
-			Application.ExecuteCommand(mi.Name);
+			((UIApplication)Application.Instance).ExecuteCommand(mi.Name);
 		}
 
 		public static Menu FromCommand(Command cmd)

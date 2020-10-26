@@ -37,9 +37,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			DefaultButton = cmdOK;
 
-			for (int i = 0;  i < Application.SettingsProfiles.Count; i++)
+			for (int i = 0;  i < ((UIApplication)Application.Instance).SettingsProfiles.Count; i++)
 			{
-				SettingsProfile profile = Application.SettingsProfiles[i];
+				SettingsProfile profile = ((UIApplication)Application.Instance).SettingsProfiles[i];
 				if (profile.ID == SettingsProfile.AllUsersGUID || profile.ID == SettingsProfile.ThisUserGUID)
 					continue;
 

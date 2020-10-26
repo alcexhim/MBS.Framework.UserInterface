@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface
 
 			protected override void ClearItems()
 			{
-				if (_parent != null) Application.Engine.ClearChildControls(_parent);
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.ClearChildControls(_parent);
 				foreach (Control ctl in this)
 				{
 					ctl.Parent = null;
@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface
 			{
 				base.InsertItem(index, item);
 				item.Parent = _parent;
-				if (_parent != null) Application.Engine.InsertChildControl(_parent, item);
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.InsertChildControl(_parent, item);
 			}
 			protected override void RemoveItem(int index)
 			{
@@ -178,7 +178,7 @@ namespace MBS.Framework.UserInterface
 		/// <param name="point">Point.</param>
 		public Vector2D ClientToScreenCoordinates(Vector2D point)
 		{
-			return Application.Engine.ClientToScreenCoordinates(this, point);
+			return ((UIApplication)Application.Instance).Engine.ClientToScreenCoordinates(this, point);
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
@@ -251,7 +251,7 @@ namespace MBS.Framework.UserInterface
 			internal set { mvarControlImplementation = value; }
 		}
 
-		public bool IsCreated { get { return Application.Engine.IsControlCreated(this); } }
+		public bool IsCreated { get { return ((UIApplication)Application.Instance).Engine.IsControlCreated(this); } }
 
 		private Padding mvarMargin = new Padding();
 		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; } }
@@ -270,15 +270,15 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
-				if (Application.Engine == null) return mvarEnabled;
-				if (!Application.Engine.IsControlCreated(this)) return mvarEnabled;
-				return Application.Engine.IsControlEnabled(this);
+				if (((UIApplication)Application.Instance).Engine == null) return mvarEnabled;
+				if (!((UIApplication)Application.Instance).Engine.IsControlCreated(this)) return mvarEnabled;
+				return ((UIApplication)Application.Instance).Engine.IsControlEnabled(this);
 			}
 			set
 			{
-				if (Application.Engine != null && Application.Engine.IsControlCreated(this))
+				if (((UIApplication)Application.Instance).Engine != null && ((UIApplication)Application.Instance).Engine.IsControlCreated(this))
 				{
-					Application.Engine.SetControlEnabled(this, value);
+					((UIApplication)Application.Instance).Engine.SetControlEnabled(this, value);
 				}
 				mvarEnabled = value;
 			}
@@ -317,7 +317,7 @@ namespace MBS.Framework.UserInterface
 			}
 			internal set {
 				mvarParent = value;
-				Application.Engine.UpdateControlLayout (this);
+				((UIApplication)Application.Instance).Engine.UpdateControlLayout (this);
 			}
 		}
 
@@ -408,7 +408,7 @@ namespace MBS.Framework.UserInterface
 			set
 			{
 				mvarVisible = value;
-				if (!IsCreated) Application.Engine.CreateControl (this);
+				if (!IsCreated) ((UIApplication)Application.Instance).Engine.CreateControl (this);
 				(this.ControlImplementation)?.SetControlVisibility (value);
 			}
 		}
@@ -653,7 +653,7 @@ namespace MBS.Framework.UserInterface
 
 		private void ReloadContextMenu()
 		{
-			Command cmd = Application.Commands[_ContextMenuCommandID];
+			Command cmd = ((UIApplication)Application.Instance).Commands[_ContextMenuCommandID];
 			if (cmd == null)
 			{
 				_ContextMenu = null;
@@ -708,8 +708,8 @@ namespace MBS.Framework.UserInterface
 		{
 			get
 			{
-				if (Application.Engine != null)
-					return Application.Engine.IsControlDisposed(this);
+				if (((UIApplication)Application.Instance).Engine != null)
+					return (((UIApplication)Application.Instance)).Engine.IsControlDisposed(this);
 				return mvarIsDisposed;
 			}
 		}

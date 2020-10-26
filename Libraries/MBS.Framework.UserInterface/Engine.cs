@@ -331,7 +331,7 @@ namespace MBS.Framework.UserInterface
 		public int Start(Window waitForClose = null)
 		{
 			int retval = StartInternal(waitForClose);
-			Application.Exited = true;
+			((UIApplication)Application.Instance).Exited = true;
 			return retval;
 		}
 		public void Stop(int exitCode = 0)

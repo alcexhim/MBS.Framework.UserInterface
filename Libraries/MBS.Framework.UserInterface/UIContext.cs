@@ -1,10 +1,10 @@
 ﻿//
-//  ContextChangedEvent.cs
+//  UIContext.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public class ContextChangedEventArgs
+	public class UIContext : Context
 	{
-		public Context Context { get; private set; } = null;
-		public ContextChangedEventArgs(Context ctx)
+		public UIContext(Guid id, string name) : base(id, name)
 		{
-			Context = ctx;
 		}
+
+		public CommandItem.CommandItemCollection MenuItems { get; } = new CommandItem.CommandItemCollection();
+		public KeyBinding.KeyBindingCollection KeyBindings { get; } = new KeyBinding.KeyBindingCollection();
 	}
-	public delegate void ContextChangedEventHandler(object sender, ContextChangedEventArgs e);
 }

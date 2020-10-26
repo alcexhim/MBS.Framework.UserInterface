@@ -28,10 +28,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		internal WindowsFormsCommandLine(string[] arguments) : base(arguments)
 		{
 			bool processFileList = false;
-			for (int i = 0; i < Application.CommandLine.Options.Count; i++)
+			for (int i = 0; i < Application.Instance.CommandLine.Options.Count; i++)
 			{
 				// reset the value of options
-				Application.CommandLine.Options[i].Value = null;
+				Application.Instance.CommandLine.Options[i].Value = null;
 			}
 
 			for (int i = 1; i < arguments.Length; i++) // not off-by-one, first argument is full path to exe
@@ -42,9 +42,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					{
 						// expecting full name invocation
 						string argname = arguments[i].Substring(1);
-						if (Application.CommandLine.Options.Contains(argname))
+						if (Application.Instance.CommandLine.Options.Contains(argname))
 						{
-							CommandLineOption option = Application.CommandLine.Options[argname];
+							CommandLineOption option = Application.Instance.CommandLine.Options[argname];
 							if (option.Type != CommandLineOptionValueType.None && i < arguments.Length - 1)
 							{
 								if (option.Type == CommandLineOptionValueType.Multiple)
@@ -72,7 +72,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					else if (arguments[i].StartsWith("/", StringComparison.InvariantCulture) && arguments[i].Length == 2)
 					{
 						// expecting single-character invocation
-						if (Application.CommandLine.Options.Contains(arguments[i].Substring(1)))
+						if (Application.Instance.CommandLine.Options.Contains(arguments[i].Substring(1)))
 						{
 						}
 						else

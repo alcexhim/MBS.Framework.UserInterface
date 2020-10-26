@@ -39,7 +39,7 @@ namespace MBS.Framework.UserInterface.Input.Mouse
 		
 		public MouseEventArgs(double x, double y, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			if (Application.ShouldDpiScale)
+			if (((UIApplication)Application.Instance).ShouldDpiScale)
 			{
 				x /= Screen.Default.PrimaryMonitor.ScaleFactor;
 				y /= Screen.Default.PrimaryMonitor.ScaleFactor;

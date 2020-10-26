@@ -42,7 +42,7 @@ namespace MBS.Framework.UserInterface
 
 		public static Monitor[] Get()
 		{
-			return Application.Engine.GetMonitors();
+			return ((UIApplication)Application.Instance).Engine.GetMonitors();
 		}
 	}
 }

@@ -82,10 +82,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 							{
 								try
 								{
-									string filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, stockTypeID));
+									string filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, stockTypeID));
 									if (filename == null)
 									{
-										filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", stockTypeID));
+										filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", stockTypeID));
 									}
 									if (filename != null)
 										iconWidget = System.Drawing.Image.FromFile(filename);
@@ -97,10 +97,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 							}
 							else if (tsb.IconName != null)
 							{
-								string filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, tsb.IconName));
+								string filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, tsb.IconName));
 								if (filename == null)
 								{
-									filename = Application.ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", tsb.IconName));
+									filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", tsb.IconName));
 								}
 								if (filename != null)
 									iconWidget = System.Drawing.Image.FromFile(filename);

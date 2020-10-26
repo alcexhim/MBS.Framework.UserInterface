@@ -53,7 +53,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (profiles == null)
 			{
-				foreach (SettingsProfile profile in Application.SettingsProfiles)
+				foreach (SettingsProfile profile in ((UIApplication)Application.Instance).SettingsProfiles)
 				{
 					if (profile.ID == SettingsProfile.AllUsersGUID || profile.ID == SettingsProfile.ThisUserGUID)
 						continue;
@@ -71,7 +71,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (providers == null)
 			{
-				foreach (SettingsProvider provider in Application.SettingsProviders)
+				foreach (SettingsProvider provider in ((UIApplication)Application.Instance).SettingsProviders)
 				{
 					this.SettingsProviders.Add(provider);
 				}
@@ -724,7 +724,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			Button btn = (sender as Button);
 			CommandSetting sett = btn.GetExtraData<CommandSetting>("setting");
 
-			Application.ExecuteCommand(sett.CommandID);
+			((UIApplication)Application.Instance).ExecuteCommand(sett.CommandID);
 		}
 
 		private void clv_ItemAdding(object sender, EventArgs e)

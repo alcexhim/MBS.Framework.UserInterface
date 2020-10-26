@@ -407,7 +407,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 
-			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
+			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.Instance.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
 
 			return check;
 		}
@@ -436,7 +436,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private void WaitForClose_Closed(object sender, EventArgs e)
 		{
-			Application.Stop();
+			((UIApplication)Application.Instance).Stop();
 		}
 
 		protected override void StopInternal(int exitCode)
@@ -470,7 +470,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private void Application_Startup(IntPtr application, IntPtr user_data)
 		{
 			Console.WriteLine("Application_Startup");
-			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
+			InvokeMethod(Application.Instance, "OnStartup", new object[] { EventArgs.Empty });
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -507,7 +507,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			e.CommandLine = new GTKCommandLine(arguments);
 
 			_firstRun = false;
-			InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
+			InvokeMethod(Application.Instance, "OnActivated", new object[] { e });
 			return e.ExitCode;
 		}
 
@@ -1127,7 +1127,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			while (printing)
 			{
 				System.Threading.Thread.Sleep(500);
-				Application.DoEvents();
+				((UIApplication)Application.Instance).DoEvents();
 			}
 
 			Internal.Cairo.Methods.cairo_destroy(cr);
@@ -1273,11 +1273,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
 
+				/*
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(hMenuFile, true);
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(hMenuFile, Constants.GtkAlign.End);
 				}
+				*/
 
 				if (cmi.Items.Count > 0)
 				{
@@ -1604,10 +1606,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					
 						// as written we currently cannot do this...
 						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
-						if (e.ParentRow != null && (Application.Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
+						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = (Application.Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(e.ParentRow);
+							Internal.GTK.Structures.GtkTreeIter iterParent = GetGtkTreeIterForTreeModelRow(e.ParentRow);
 							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
 						}
 						else
@@ -1623,7 +1625,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					foreach (TreeModelRow row in e.Rows)
 					{
-						Internal.GTK.Structures.GtkTreeIter iter = (Application.Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
+						Internal.GTK.Structures.GtkTreeIter iter = GetGtkTreeIterForTreeModelRow(row);
 						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
 						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
 					}
@@ -1941,7 +1943,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", Application.ShortName + "/" + topic.Name);
+					Process.Start("yelp", String.Format("{0}/{1}", Application.Instance.ShortName, topic.Name));
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)
@@ -1952,7 +1954,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", Application.ShortName);
+					Process.Start("yelp", Application.Instance.ShortName);
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)

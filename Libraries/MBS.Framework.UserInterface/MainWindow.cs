@@ -33,7 +33,7 @@ namespace MBS.Framework.UserInterface
 
 		private void InitializeMainMenu()
 		{
-			foreach (CommandItem ci in Application.MainMenu.Items)
+			foreach (CommandItem ci in ((UIApplication)Application.Instance).MainMenu.Items)
 			{
 				MenuItem[] mi = MenuItem.LoadMenuItem(ci, MainWindow_MenuBar_Item_Click);
 				if (mi == null || mi.Length == 0)
@@ -52,20 +52,20 @@ namespace MBS.Framework.UserInterface
 			if (mi == null)
 				return;
 
-			Application.ExecuteCommand(mi.Name);
+			((UIApplication)Application.Instance).ExecuteCommand(mi.Name);
 		}
 
 		protected internal override void OnCreating(EventArgs e)
 		{
 			base.OnCreating(e);
 
-			for (int i = 0; i < Application.QuickAccessToolbarItems.Count; i++)
+			for (int i = 0; i < ((UIApplication)Application.Instance).QuickAccessToolbarItems.Count; i++)
 			{
 				Button button = new Button();
-				CommandReferenceCommandItem cmdr = (Application.QuickAccessToolbarItems[i] as CommandReferenceCommandItem);
+				CommandReferenceCommandItem cmdr = (((UIApplication)Application.Instance).QuickAccessToolbarItems[i] as CommandReferenceCommandItem);
 				if (cmdr != null)
 				{
-					Command cmd = Application.Commands[cmdr.CommandID];
+					Command cmd = ((UIApplication)Application.Instance).Commands[cmdr.CommandID];
 					if (cmd != null)
 					{
 						if (cmd.StockType != StockType.None)
@@ -79,13 +79,13 @@ namespace MBS.Framework.UserInterface
 						button.TooltipText = cmd.Title.Replace("_", String.Empty);
 					}
 				}
-				button.SetExtraData<CommandItem>("item", Application.QuickAccessToolbarItems[i]);
+				button.SetExtraData<CommandItem>("item", ((UIApplication)Application.Instance).QuickAccessToolbarItems[i]);
 				button.Click += delegate (object sender, EventArgs ee)
 				{
 					CommandItem ci = (sender as Button).GetExtraData<CommandItem>("item");
 					if (ci is CommandReferenceCommandItem)
 					{
-						Application.ExecuteCommand((ci as CommandReferenceCommandItem).CommandID);
+						((UIApplication)Application.Instance).ExecuteCommand((ci as CommandReferenceCommandItem).CommandID);
 					}
 				};
 				TitleBarButtons.Add(button);
@@ -97,12 +97,12 @@ namespace MBS.Framework.UserInterface
 			base.OnCreated(e);
 
 			// Application.Engine.Windows.Add(this);
-			Application.Engine.LastWindow = this;
+			((UIApplication)Application.Instance).Engine.LastWindow = this;
 		}
 		protected internal override void OnGotFocus(EventArgs e)
 		{
 			base.OnGotFocus(e);
-			Application.Engine.LastWindow = this;
+			((UIApplication)Application.Instance).Engine.LastWindow = this;
 		}
 		protected override void OnClosed(EventArgs e)
 		{

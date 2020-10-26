@@ -1,5 +1,5 @@
 ﻿//
-//  Screen.cs
+//  CommandItemExtensions.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -21,39 +21,50 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public abstract class Screen
+	public static class CommandItemExtensions
 	{
-		private static Screen _Default = null;
-		public static Screen Default
+		public static void AddToCommandBar(this CommandItem item, Command parent, CommandBar parentCommandBar)
 		{
-			get
+			CommandItem.CommandItemCollection coll = null;
+			if (item != null)
 			{
-				if (_Default == null)
+				if (parent == null)
 				{
-					_Default = ((UIApplication)Application.Instance).Engine.GetDefaultScreen();
+					if (parentCommandBar != null)
+					{
+						coll = parentCommandBar.Items;
+					}
+					else
+					{
+						coll = ((UIApplication)Application.Instance).MainMenu.Items;
+					}
 				}
-				return _Default;
+				else
+				{
+					coll = parent.Items;
+				}
 			}
-		}
 
-		protected abstract int GetMonitorCountInternal();
-		internal int GetMonitorCount() { return GetMonitorCountInternal(); }
-
-		public Monitor.MonitorCollection Monitors { get; private set; } = null;
-
-		protected abstract Monitor GetPrimaryMonitorInternal();
-
-		protected abstract double GetDpiInternal();
-		public double Dpi => GetDpiInternal();
-
-		private Monitor _PrimaryMonitor = null;
-		public Monitor PrimaryMonitor
-		{
-			get
+			if (coll != null)
 			{
-				if (_PrimaryMonitor == null)
-					_PrimaryMonitor = GetPrimaryMonitorInternal();
-				return _PrimaryMonitor;
+				int insertIndex = -1;
+				if (item.InsertAfterID != null)
+				{
+					insertIndex = coll.IndexOf(item.InsertAfterID) + 1;
+				}
+				else if (item.InsertBeforeID != null)
+				{
+					insertIndex = coll.IndexOf(item.InsertBeforeID);
+				}
+
+				if (insertIndex != -1)
+				{
+					coll.Insert(insertIndex, item);
+				}
+				else
+				{
+					coll.Add(item);
+				}
 			}
 		}
 	}

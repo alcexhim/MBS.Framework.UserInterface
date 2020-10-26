@@ -441,7 +441,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
 		{
 			TreeModelRow.TreeModelRowCollection coll = (sender as TreeModelRow.TreeModelRowCollection);
-			(Application.Engine as GTKEngine).UpdateTreeModel(coll.Model, e);
+			(((UIApplication)Application.Instance).Engine as GTKEngine).UpdateTreeModel(coll.Model, e);
 		}
 
 
@@ -854,7 +854,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
 			}
 			TreeModel tm = TreeModelFromHandle(hTreeModel);
-			(Application.Engine as GTKEngine).UpdateTreeModel(tm, e);
+			(((UIApplication)Application.Instance).Engine as GTKEngine).UpdateTreeModel(tm, e);
 		}
 
 		private IntPtr GetHTreeView(IntPtr hScrolledWindow)

@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alignment.cs" />
-    <Compile Include="Application.cs" />
+    <Compile Include="UIApplication.cs" />
     <Compile Include="CommonDialog.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Control.cs" />
@@ -98,7 +98,6 @@
     <Compile Include="MenuItem.cs" />
     <Compile Include="CommandMenuItem.cs" />
     <Compile Include="SeparatorMenuItem.cs" />
-    <Compile Include="StockType.cs" />
     <Compile Include="Dialogs\FileDialog.cs" />
     <Compile Include="Dialogs\ColorDialog.cs" />
     <Compile Include="Dialogs\FontDialog.cs" />
@@ -107,7 +106,6 @@
     <Compile Include="Controls\TabContainer.cs" />
     <Compile Include="Controls\TabPage.cs" />
     <Compile Include="Constraints.cs" />
-    <Compile Include="MenuItemHorizontalAlignment.cs" />
     <Compile Include="Shortcut.cs" />
     <Compile Include="Input\Keyboard\KeyboardKey.cs" />
     <Compile Include="Input\Keyboard\KeyboardModifierKey.cs" />
@@ -160,8 +158,6 @@
     <Compile Include="ContainerLayoutAttribute.cs" />
     <Compile Include="EventHandlerAttribute.cs" />
     <Compile Include="TreeModelRowItemRequestedEvent.cs" />
-    <Compile Include="CommandItem.cs" />
-    <Compile Include="Command.cs" />
     <Compile Include="CommandDisplayStyle.cs" />
     <Compile Include="ResizeEvent.cs" />
     <Compile Include="OpenGLCanvasRenderEvent.cs" />
@@ -214,18 +210,12 @@
     <Compile Include="Controls\HexEditor\HexEditorHitTestSection.cs" />
     <Compile Include="SystemColors.cs" />
     <Compile Include="SystemColor.cs" />
-    <Compile Include="Context.cs" />
     <Compile Include="KnownContexts.cs" />
     <Compile Include="KeyBinding.cs" />
-    <Compile Include="ContextChangedEvent.cs" />
     <Compile Include="IVirtualControlContainer.cs" />
     <Compile Include="Drawing\Drawing2D\WrapMode.cs" />
     <Compile Include="UserInterfacePlugin.cs" />
     <Compile Include="ApplicationActivatedEvent.cs" />
-    <Compile Include="CommandLine.cs" />
-    <Compile Include="DefaultCommandLine.cs" />
-    <Compile Include="CommandLineOption.cs" />
-    <Compile Include="CommandLineOptionValueType.cs" />
     <Compile Include="Controls\FileBrowser\IFileBrowserControl.cs" />
     <Compile Include="TreeModelRowColumnEvent.cs" />
     <Compile Include="CustomDialog.cs" />
@@ -237,7 +227,6 @@
     <Compile Include="Controls\Docking\DockingContainerImplementationUWT.cs" />
     <Compile Include="TabContainerSelectedTabChangedEvent.cs" />
     <Compile Include="TabContextMenuEvent.cs" />
-    <Compile Include="CommandEvent.cs" />
     <Compile Include="TabPosition.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="CommandBar.cs" />
@@ -269,7 +258,6 @@
     <Compile Include="DragManager.cs" />
     <Compile Include="DragDrop\DragDropTargetType.cs" />
     <Compile Include="DragDrop\DragDropTargetTypes.cs" />
-    <Compile Include="CustomPlugin.cs" />
     <Compile Include="Controls\ListView\ListViewRowActivatedEvent.cs" />
     <Compile Include="Controls\ListView\ListViewColumn.cs" />
     <Compile Include="Controls\ListView\ListViewControl.cs" />
@@ -289,6 +277,13 @@
     <Compile Include="SettingsProviders\Default.xml.cs" />
     <Compile Include="AdjustmentScrollType.cs" />
     <Compile Include="NativeControlContainer.cs" />
+    <Compile Include="ApplicationExtensions.cs" />
+    <Compile Include="CustomPlugin.cs" />
+    <Compile Include="UIContext.cs" />
+    <Compile Include="CommandItemLoader.cs" />
+    <Compile Include="CommandLoader.cs" />
+    <Compile Include="UICommand.cs" />
+    <Compile Include="CommandItemExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

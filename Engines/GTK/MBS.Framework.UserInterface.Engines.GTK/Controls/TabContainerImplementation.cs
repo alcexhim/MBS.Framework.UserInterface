@@ -68,7 +68,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public void SetTabText(TabPage page, string text)
 		{
 			TabContainer tc = page.Parent;
-			IntPtr hNotebook = (Application.Engine.GetHandleForControl(tc) as GTKNativeControl).Handle;
+			IntPtr hNotebook = (((UIApplication)Application.Instance).Engine.GetHandleForControl(tc) as GTKNativeControl).Handle;
 
 			IntPtr hPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(hNotebook, tc.TabPages.IndexOf(page));
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_label_text(hNotebook, hPage, text);
@@ -104,7 +104,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			string rndgroupname = ctl.GroupName;
 			if (rndgroupname == null)
 			{
-				rndgroupname = Application.ID.ToString() + "_TabContainer_" + (rnd.Next().ToString());
+				rndgroupname = Application.Instance.ID.ToString() + "_TabContainer_" + (rnd.Next().ToString());
 			}
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_group_name(handle, rndgroupname);
 
@@ -210,7 +210,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static Action<IntPtr /*GtkNotebook*/, IntPtr /*GtkWidget*/, uint> page_reordered_d = null;
 		private static void page_reordered(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ child, uint page_num)
 		{
-			TabContainer tbsParent = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabContainer tbsParent = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer;
 			TabPage tabPage = GetTabPageByHandle(child);
 
 			if (tbsParent == null) return;
@@ -218,7 +218,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			int oldIndex = tbsParent.TabPages.IndexOf(tabPage);
 			int newIndex = (int)page_num;
 
-			Application.DoEvents();
+			((UIApplication)Application.Instance).DoEvents();
 
 			tbsParent.TabPages.Reorder(oldIndex, newIndex);
 		}
@@ -227,7 +227,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> create_window_d = null;
 		private static IntPtr /*GtkNotebook*/ create_window(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ page, int x, int y, IntPtr user_data)
 		{
-			TabContainer tbsParent = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabContainer tbsParent = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer;
 			TabPage tabPage = GetTabPageByHandle(page);
 			if (tbsParent == null) return IntPtr.Zero;
 
@@ -252,11 +252,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			tbs.TabPageDetached += tbsOurWindow_TabPageDetached;
 			window.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
 
-			Application.Engine.CreateControl(tbs);
-			Application.Engine.CreateControl(window);
+			((UIApplication)Application.Instance).Engine.CreateControl(tbs);
+			((UIApplication)Application.Instance).Engine.CreateControl(window);
 
-			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_group_name((Application.Engine.GetHandleForControl(tbs) as GTKNativeControl).Handle, groupName);
-			return (Application.Engine.GetHandleForControl(tbs) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_group_name((((UIApplication)Application.Instance).Engine.GetHandleForControl(tbs) as GTKNativeControl).Handle, groupName);
+			return (((UIApplication)Application.Instance).Engine.GetHandleForControl(tbs) as GTKNativeControl).Handle;
 		}
 
 		static void tbsOurWindow_TabPageDetached(object sender, TabPageDetachedEventArgs e)
@@ -281,7 +281,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static void switch_page(IntPtr /*GtkNotebook*/ notebook, IntPtr /*GtkWidget*/ page, uint page_num)
 		{
 			// FIXME: this gets called during a tab detach, apparently, and we haven't yet updated the new TabContainer's TabPages collection yet
-			TabContainer tc = ((Application.Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer);
+			TabContainer tc = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(notebook) as TabContainer;
 			TabPage oldTab = tc.SelectedTab;
 			TabPage newTab = tc.TabPages[(int)page_num];
 
@@ -295,7 +295,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private static bool change_current_page(IntPtr /*GtkNotebook*/ notebook, int index, IntPtr user_data)
 		{
 			GTKNativeControl nc = new GTKNativeControl(notebook);
-			TabContainer tc = (Application.Engine.GetControlByHandle(nc) as TabContainer);
+			TabContainer tc = (((UIApplication)Application.Instance).Engine.GetControlByHandle(nc) as TabContainer);
 			TabPage oldTab = tc.SelectedTab;
 			TabPage newTab = tc.TabPages[index];
 

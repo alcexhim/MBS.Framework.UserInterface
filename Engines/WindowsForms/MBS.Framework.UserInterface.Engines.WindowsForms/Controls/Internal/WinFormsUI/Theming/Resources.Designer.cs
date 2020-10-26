@@ -1,4 +1,5 @@
-﻿using MBS.Framework.UserInterface;
+﻿using MBS.Framework;
+using MBS.Framework.UserInterface;
 
 namespace WeifenLuo.WinFormsUI.Theming
 {
@@ -11,7 +12,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/DockIndicator_PaneDiamond_Hotspot.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/DockIndicator_PaneDiamond_Hotspot.png"));
 			}
 		}
 
@@ -22,7 +23,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/DockIndicator_PaneDiamond_HotspotIndex.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/DockIndicator_PaneDiamond_HotspotIndex.png"));
 			}
 		}
 
@@ -33,7 +34,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowBottom.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowBottom.png"));
 			}
 		}
 
@@ -44,7 +45,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowLeft.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowLeft.png"));
 			}
 		}
 
@@ -55,7 +56,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowRight.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowRight.png"));
 			}
 		}
 
@@ -66,7 +67,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowTop.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskArrowTop.png"));
 			}
 		}
 
@@ -77,7 +78,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreBottom.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreBottom.png"));
 			}
 		}
 
@@ -88,7 +89,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreCenter.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreCenter.png"));
 			}
 		}
 
@@ -99,7 +100,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreLeft.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreLeft.png"));
 			}
 		}
 
@@ -110,7 +111,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreRight.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreRight.png"));
 			}
 		}
 
@@ -121,7 +122,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreTop.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskCoreTop.png"));
 			}
 		}
 
@@ -132,7 +133,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskDock.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskDock.png"));
 			}
 		}
 
@@ -143,7 +144,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskDockFive.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskDockFive.png"));
 			}
 		}
 
@@ -154,7 +155,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabClose.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabClose.png"));
 			}
 		}
 
@@ -165,7 +166,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabList.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabList.png"));
 			}
 		}
 
@@ -176,7 +177,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabOverflow.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskTabOverflow.png"));
 			}
 		}
 
@@ -187,7 +188,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowAutoHide.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowAutoHide.png"));
 			}
 		}
 
@@ -198,7 +199,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowClose.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowClose.png"));
 			}
 		}
 
@@ -209,7 +210,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowDock.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowDock.png"));
 			}
 		}
 
@@ -220,7 +221,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowOption.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskToolWindowOption.png"));
 			}
 		}
 
@@ -231,7 +232,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowBottom.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowBottom.png"));
 			}
 		}
 
@@ -242,7 +243,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowCenter.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowCenter.png"));
 			}
 		}
 
@@ -253,7 +254,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowLeft.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowLeft.png"));
 			}
 		}
 
@@ -264,7 +265,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowRight.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowRight.png"));
 			}
 		}
 
@@ -275,7 +276,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 		{
 			get
 			{
-				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(Application.ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowTop.png"));
+				return (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/MaskWindowTop.png"));
 			}
 		}
 
@@ -289,7 +290,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 			{
 				if (_vs2012blue_vstheme == null)
 				{
-					_vs2012blue_vstheme = System.IO.File.ReadAllBytes(Application.ExpandRelativePath("~/Themes/VisualStudio2012/Blue/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
+					_vs2012blue_vstheme = System.IO.File.ReadAllBytes(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/Blue/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
 				}
 				return _vs2012blue_vstheme;
 			}
@@ -305,7 +306,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 			{
 				if (_vs2012dark_vstheme == null)
 				{
-					_vs2012dark_vstheme = System.IO.File.ReadAllBytes(Application.ExpandRelativePath("~/Themes/VisualStudio2012/Dark/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
+					_vs2012dark_vstheme = System.IO.File.ReadAllBytes(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/Dark/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
 				}
 				return _vs2012dark_vstheme;
 			}
@@ -321,7 +322,7 @@ namespace WeifenLuo.WinFormsUI.Theming
 			{
 				if (_vs2012light_vstheme == null)
 				{
-					_vs2012light_vstheme = System.IO.File.ReadAllBytes(Application.ExpandRelativePath("~/Themes/VisualStudio2012/Light/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
+					_vs2012light_vstheme = System.IO.File.ReadAllBytes(((UIApplication)Application.Instance).ExpandRelativePath("~/Themes/VisualStudio2012/Light/WeifenLuo.WinFormsUI.DockPanelSuite.Theme.xml"));
 				}
 				return _vs2012light_vstheme;
 			}

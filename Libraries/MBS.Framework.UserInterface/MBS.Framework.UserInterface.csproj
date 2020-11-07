@@ -284,6 +284,7 @@
     <Compile Include="CommandLoader.cs" />
     <Compile Include="UICommand.cs" />
     <Compile Include="CommandItemExtensions.cs" />
+    <Compile Include="ContainerLayoutLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

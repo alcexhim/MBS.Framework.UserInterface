@@ -1,5 +1,5 @@
 ﻿//
-//  GTKSystemSettings.cs
+//  AppIndicatorStatus.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -19,31 +19,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Engines.GTK
+namespace MBS.Framework.UserInterface.Engines.GTK.InternalAPI.AppIndicator
 {
-	public class GTKSystemSettings : SystemSettings
+	/// <summary>
+	/// These are the states that the indicator can be on in the user's panel. The indicator by default starts
+	/// in the state @APP_INDICATOR_STATUS_PASSIVE and can be shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
+	/// </summary>
+	public enum AppIndicatorStatus
 	{
-		private static class Handles
-		{
-			private static InternalAPI.GTK.GSettings _org_gnome_desktop_interface = null;
-			public static InternalAPI.GTK.GSettings org_gnome_desktop_interface
-			{
-				get
-				{
-					if (_org_gnome_desktop_interface == null)
-						_org_gnome_desktop_interface = new InternalAPI.GTK.GSettings("org.gnome.desktop.interface");
-
-					return _org_gnome_desktop_interface;
-				}
-			}
-		}
-		public override int CursorBlinkTime
-		{
-			get
-			{
-				int value = Handles.org_gnome_desktop_interface.GetInt32("cursor-blink-time");
-				return value;
-			}
-		}
+		/// <summary>
+		/// The indicator should not be shown to the user.
+		/// </summary>
+		Passive,
+		/// <summary>
+		/// The indicator should be shown in it's default state.
+		/// </summary>
+		Active,
+		/// <summary>
+		/// The indicator should show it's attention icon.
+		/// </summary>
+		Attention
 	}
 }

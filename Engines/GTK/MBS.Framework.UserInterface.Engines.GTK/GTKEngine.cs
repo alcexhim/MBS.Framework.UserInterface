@@ -1391,7 +1391,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				NotificationIconInfo nii = new NotificationIconInfo();
 				if (!notificationIconInfo.ContainsKey(nid))
 				{
-					nii.hIndicator = Internal.AppIndicator.Methods.app_indicator_new(nid.Name, nid.IconNameDefault, Internal.AppIndicator.Constants.AppIndicatorCategory.ApplicationStatus);
+					nii.hIndicator = new InternalAPI.AppIndicator.Indicator(nid.Name, nid.IconNameDefault, InternalAPI.AppIndicator.AppIndicatorCategory.ApplicationStatus);
 					notificationIconInfo.Add(nid, nii);
 
 					// Internal.AppIndicator.Methods.app_indicator_set_label(hIndicator, nid.Text, "I don't know what this is for");
@@ -1425,7 +1425,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenu);
 
-					Internal.AppIndicator.Methods.app_indicator_set_menu(nii.hIndicator, hMenu);
+					nii.hIndicator.HMenu = hMenu;
 				}
 
 				if (nii.hMenuItemTitle != IntPtr.Zero)
@@ -1433,22 +1433,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(nii.hMenuItemTitle, nid.Text);
 				}
 
-				Internal.AppIndicator.Methods.app_indicator_set_attention_icon(nii.hIndicator, nid.IconNameAttention);
+				nii.hIndicator.IconName = nid.IconNameAttention;
 				switch (nid.Status)
 				{
 					case NotificationIconStatus.Hidden:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Passive);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Passive;
 						break;
 					}
 					case NotificationIconStatus.Visible:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Active);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Active;
 						break;
 					}
 					case NotificationIconStatus.Attention:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Attention);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Attention;
 						break;
 					}
 				}
@@ -1906,7 +1906,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				GTKCursorInfo info = cursorInfo[i];
 				IntPtr hCursor = Internal.GDK.Methods.gdk_cursor_new_from_name(display, info.Name);
-				Console.WriteLine("setting cursor {0} for {1} to {2}", info.Name, info.UniversalCursor, hCursor);
 				info.Handle = hCursor;
 				RegisterCursor(info.Name, info.UniversalCursor, hCursor);
 				cursorInfo[i] = info; // structs are weird

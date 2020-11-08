@@ -97,7 +97,7 @@ namespace MBS.Framework.UserInterface
 			System.Reflection.FieldInfo[] fis = container.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)
 			{
-				if (fi.FieldType.IsSubclassOf(typeof(T)))
+				if (fi.FieldType.IsAssignableFrom(typeof(T)))
 				{
 					// see if we have a control by that name in the list
 					if (fi.Name == item.ID)

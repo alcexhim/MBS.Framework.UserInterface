@@ -47,7 +47,7 @@ namespace MBS.Framework.UserInterface
 
 			LoadFromMarkup(acc, wla.ClassName);
 
-			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			System.Reflection.FieldInfo[] fis = container.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)
 			{
 				if (fi.FieldType.IsSubclassOf(typeof(Control)))
@@ -58,7 +58,7 @@ namespace MBS.Framework.UserInterface
 					{
 						if (fi.FieldType == ctl.GetType())
 						{
-							fi.SetValue(this, ctl);
+							fi.SetValue(container, ctl);
 						}
 						else
 						{
@@ -68,7 +68,7 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			System.Reflection.MethodInfo[] mis = this.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			System.Reflection.MethodInfo[] mis = container.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.MethodInfo mi in mis)
 			{
 				object[] atts = mi.GetCustomAttributes(typeof(EventHandlerAttribute), false);
@@ -83,7 +83,7 @@ namespace MBS.Framework.UserInterface
 						System.Reflection.EventInfo ei = ctl.GetType().GetEvent(eha.EventName);
 						if (ei != null)
 						{
-							Delegate delg = Delegate.CreateDelegate(ei.EventHandlerType, this, mi.Name);
+							Delegate delg = Delegate.CreateDelegate(ei.EventHandlerType, container, mi.Name);
 							ei.AddEventHandler(ctl, delg);
 						}
 					}
@@ -91,19 +91,18 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		private void CreateTreeModelForPropertyOrLocalRef(LayoutItem item)
+		private void CreateForPropertyOrLocalRef<T>(LayoutItem item, Func<LayoutItem, T> func)
 		{
-			// ugh... copypasta
 			bool found = false;
-			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			System.Reflection.FieldInfo[] fis = container.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)
 			{
-				if (fi.FieldType.IsSubclassOf(typeof(TreeModel)))
+				if (fi.FieldType.IsSubclassOf(typeof(T)))
 				{
 					// see if we have a control by that name in the list
 					if (fi.Name == item.ID)
 					{
-						fi.SetValue(this, CreateTreeModel(item));
+						fi.SetValue(container, func(item));
 						found = true;
 					}
 				}
@@ -111,53 +110,7 @@ namespace MBS.Framework.UserInterface
 
 			if (!found)
 			{
-				_localRefs[item.ID] = CreateTreeModel(item);
-			}
-		}
-		private void CreateAdjustmentForPropertyOrLocalRef(LayoutItem item)
-		{
-			// ugh... copypasta
-			bool found = false;
-			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-			foreach (System.Reflection.FieldInfo fi in fis)
-			{
-				if (fi.FieldType.IsSubclassOf(typeof(Adjustment)))
-				{
-					// see if we have a control by that name in the list
-					if (fi.Name == item.ID)
-					{
-						fi.SetValue(this, CreateAdjustment(item));
-						found = true;
-					}
-				}
-			}
-
-			if (!found)
-			{
-				_localRefs[item.ID] = CreateAdjustment(item);
-			}
-		}
-		private void CreateImageForPropertyOrLocalRef(LayoutItem item)
-		{
-			// ugh... copypasta
-			bool found = false;
-			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-			foreach (System.Reflection.FieldInfo fi in fis)
-			{
-				if (fi.FieldType.IsSubclassOf(typeof(Image)))
-				{
-					// see if we have a control by that name in the list
-					if (fi.Name == item.ID)
-					{
-						fi.SetValue(this, CreateImage(item));
-						found = true;
-					}
-				}
-			}
-
-			if (!found)
-			{
-				_localRefs[item.ID] = CreateImage(item);
+				_localRefs[item.ID] = func(item);
 			}
 		}
 
@@ -181,17 +134,17 @@ namespace MBS.Framework.UserInterface
 			{
 				if (item.ClassName == "GtkTreeStore" || item.ClassName == "GtkListStore")
 				{
-					CreateTreeModelForPropertyOrLocalRef(item);
+					CreateForPropertyOrLocalRef(item, CreateTreeModel);
 					continue;
 				}
 				else if (item.ClassName == "GtkAdjustment")
 				{
-					CreateAdjustmentForPropertyOrLocalRef(item);
+					CreateForPropertyOrLocalRef(item, CreateAdjustment);
 					continue;
 				}
 				else if (item.ClassName == "GtkImage")
 				{
-					CreateImageForPropertyOrLocalRef(item);
+					CreateForPropertyOrLocalRef(item, CreateImage);
 					continue;
 				}
 			}
@@ -221,6 +174,15 @@ namespace MBS.Framework.UserInterface
 				{
 					Console.WriteLine("warning: layout designer did not specify a container; using GtkBox");
 					itemBox = item;
+				}
+
+				LayoutItem itemHeaderBar = item.Items.FirstOfClassName(new string[] { "GtkHeaderBar" });
+				if (itemHeaderBar != null && container is Window)
+				{
+					string title = itemHeaderBar.Properties["title"]?.Value ?? String.Empty;
+					string subtitle = itemHeaderBar.Properties["subtitle"]?.Value ?? String.Empty;
+					(container as Window).Text = title;
+					(container as Window).DocumentFileName = subtitle;
 				}
 				RecursiveLoadContainer(layout, itemBox, container);
 
@@ -265,15 +227,14 @@ namespace MBS.Framework.UserInterface
 
 		private object GetPropertyOrLocalRef(string id)
 		{
-			// ugh... copypasta
 			bool found = false;
-			System.Reflection.FieldInfo[] fis = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			System.Reflection.FieldInfo[] fis = container.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 			foreach (System.Reflection.FieldInfo fi in fis)
 			{
 				// see if we have a control by that name in the list
 				if (fi.Name == id)
 				{
-					object obj = fi.GetValue(this);
+					object obj = fi.GetValue(container);
 					return obj;
 				}
 			}
@@ -600,16 +561,34 @@ namespace MBS.Framework.UserInterface
 					for (int i = 0; i < item.Items.Count; i += 2)
 					{
 						LayoutItem itemContent = item.Items[i];
-						LayoutItem itemTab = item.Items[i + 1];
-						if (itemTab.ClassName == "GtkLabel")
+						if (i + 1 < item.Items.Count)
 						{
-							TabPage tabPage = new TabPage();
-							if (itemTab.Properties["label"] != null)
+							LayoutItem itemTab = item.Items[i + 1];
+							if (itemTab.ClassName == "GtkLabel")
 							{
-								tabPage.Text = itemTab.Properties["label"].Value;
+								TabPage tabPage = new TabPage();
+								if (itemTab.Properties["label"] != null)
+								{
+									tabPage.Text = itemTab.Properties["label"].Value;
+								}
+								RecursiveLoadContainer(layout, itemContent, tabPage);
+								(ctl as TabContainer).TabPages.Add(tabPage);
 							}
-							RecursiveLoadContainer(layout, itemContent, tabPage);
-							(ctl as TabContainer).TabPages.Add(tabPage);
+						}
+						else
+						{
+							// single tab, but no content, so we add placeholder
+							if (itemContent.ClassName == "GtkLabel")
+							{
+								TabPage tabPage = new TabPage();
+								if (itemContent.Properties["label"] != null)
+								{
+									tabPage.Text = itemContent.Properties["label"].Value;
+								}
+								tabPage.Layout = new BoxLayout(Orientation.Vertical);
+								tabPage.Controls.Add(new Label(), new BoxLayout.Constraints(true, true));
+								(ctl as TabContainer).TabPages.Add(tabPage);
+							}
 						}
 					}
 					break;

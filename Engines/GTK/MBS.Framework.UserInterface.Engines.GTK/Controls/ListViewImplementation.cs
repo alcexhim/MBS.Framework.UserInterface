@@ -303,16 +303,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 
 			TreeModelRow row = (Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(iter);
-			TreeModelRowColumn rc = row.RowColumns[user_data.ToInt32()];
-			if (row != null)
+			int columnIndex = user_data.ToInt32();
+			if (columnIndex < row.RowColumns.Count)
 			{
-				TreeModelRowColumnEditingEventArgs ee = new TreeModelRowColumnEditingEventArgs(row, rc, rc.Value, new_text);
-				OnRowColumnEditing(ee);
-				if (!ee.Cancel)
+				TreeModelRowColumn rc = row.RowColumns[user_data.ToInt32()];
+				if (row != null)
 				{
-					// we don't simply  `if (cancel) return;`  here because we need to free the tree path
-					rc.Value = new_text;
-					OnRowColumnEdited(new TreeModelRowColumnEditedEventArgs(row, rc, rc.Value, new_text));
+					TreeModelRowColumnEditingEventArgs ee = new TreeModelRowColumnEditingEventArgs(row, rc, rc.Value, new_text);
+					OnRowColumnEditing(ee);
+					if (!ee.Cancel)
+					{
+						// we don't simply  `if (cancel) return;`  here because we need to free the tree path
+						rc.Value = new_text;
+						OnRowColumnEdited(new TreeModelRowColumnEditedEventArgs(row, rc, rc.Value, new_text));
+					}
 				}
 			}
 

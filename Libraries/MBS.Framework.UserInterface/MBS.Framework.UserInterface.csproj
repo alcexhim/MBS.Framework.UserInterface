@@ -284,6 +284,10 @@
     <Compile Include="CommandLoader.cs" />
     <Compile Include="UICommand.cs" />
     <Compile Include="CommandItemExtensions.cs" />
+    <Compile Include="Dragging\DragOperation.cs" />
+    <Compile Include="Dragging\DragManagerDragEvent.cs" />
+    <Compile Include="Dragging\DragArea.cs" />
+    <Compile Include="Dragging\DragResizable.cs" />
     <Compile Include="ContainerLayoutLoader.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -327,6 +331,7 @@
     <Folder Include="Controls\HexEditor\" />
     <Folder Include="Controls\ListView\" />
     <Folder Include="Controls\WebBrowser\" />
+    <Folder Include="Dragging\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />

@@ -1,4 +1,4 @@
-﻿using System;
+﻿	using System;
 using System.Collections.Generic;
 using System.Text;
 using MBS.Framework.Drawing;
@@ -393,6 +393,14 @@ namespace MBS.Framework.UserInterface
 				case "GtkButton":
 				{
 					ctl = new Button();
+					if (item.StyleClasses.Contains("suggested-action"))
+					{
+						(ctl as Button).StylePreset = ButtonStylePresets.Suggested;
+					}
+					else if (item.StyleClasses.Contains("destructive-action"))
+					{
+						(ctl as Button).StylePreset = ButtonStylePresets.Destructive;
+					}
 					if (item.Properties["label"] != null)
 					{
 						ctl.Text = item.Properties["label"].Value;
@@ -476,10 +484,26 @@ namespace MBS.Framework.UserInterface
 							}
 						}
 						ctl.Attributes.Add("weight", weight);
+						if (ctl.Font != null)
+						{
+							ctl.Font.Weight = weight;
+						}
+						else
+						{
+							ctl.Font = new Font();
+							ctl.Font.Weight = weight;
+						}
 					}
 					if (item.Properties["wrap"] != null)
 					{
 						(ctl as Label).WordWrap = (item.Properties["wrap"].Value == "True") ? WordWrapMode.Always : WordWrapMode.Never;
+					}
+					if (item.Properties["width_chars"] != null)
+					{
+						if (Int32.TryParse(item.Properties["width_chars"].Value, out int wc))
+						{
+							(ctl as Label).WidthChars = wc;
+						}
 					}
 					if (item.Properties["xalign"] != null)
 					{
@@ -511,14 +535,18 @@ namespace MBS.Framework.UserInterface
 				case "GtkImage":
 				{
 					ctl = new Controls.PictureFrame();
+					int size = 16;
+					if (item.Properties["pixel_size"] != null)
+					{
+						size = Int32.Parse(item.Properties["pixel_size"].Value);
+					}
 					if (item.Properties["icon_name"] != null)
 					{
-						int size = 32;
-						if (item.Properties["pixel_size"] != null)
-						{
-							size = Int32.Parse(item.Properties["pixel_size"].Value);
-						}
 						(ctl as Controls.PictureFrame).Image = Image.FromName(item.Properties["icon_name"].Value, size);
+					}
+					else if (item.Properties["stock"] != null)
+					{
+						(ctl as Controls.PictureFrame).Image = Image.FromName(item.Properties["stock"].Value, size);
 					}
 					break;
 				}
@@ -776,6 +804,11 @@ namespace MBS.Framework.UserInterface
 				margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
 				margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
 				ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
+				
+				if (item.Properties["valign"] != null)
+				{
+					ctl.VerticalAlignment = ParseVerticalAlignment(item.Properties["valign"].Value);
+				}
 
 				for (int i = 0; i < item.StyleClasses.Count; i++)
 				{
@@ -787,6 +820,16 @@ namespace MBS.Framework.UserInterface
 				Console.Error.WriteLine("uwt: ContainerLayout: control class '" + item.ClassName + "' not handled");
 			}
 			return ctl;
+		}
+
+		private VerticalAlignment ParseVerticalAlignment(string value)
+		{
+			switch (value.ToLower())
+			{
+				case "start": return VerticalAlignment.Top;
+				case "end": return VerticalAlignment.Bottom;
+			}
+			return VerticalAlignment.Default;
 		}
 
 		private string UnescapeHTML(string value)
@@ -865,6 +908,13 @@ namespace MBS.Framework.UserInterface
 			}
 			container.Size = new Dimension2D(width, height);
 
+			int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
+			margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
+			margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");
+			margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
+			margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
+			container.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
+
 			switch (item.ClassName)
 			{
 				case "GtkBox":
@@ -880,7 +930,18 @@ namespace MBS.Framework.UserInterface
 							case "horizontal": orientation = Orientation.Horizontal; break;
 						}
 					}
+					if (item.Properties["default_height"] != null)
+					{
+						height = Double.Parse(item.Properties["default_height"].Value);
+					}
 					container.Layout = new BoxLayout(orientation);
+					if (item.Properties["spacing"] != null)
+					{
+						if (Int32.TryParse(item.Properties["spacing"].Value, out int p))
+						{
+							(container.Layout as BoxLayout).Spacing = p;
+						}
+					}
 					break;
 				}
 				case "GtkGrid":
@@ -938,7 +999,19 @@ namespace MBS.Framework.UserInterface
 						LayoutItemProperty propFill = item2.PackingProperties["fill"];
 						bool fill = (propFill != null && propFill.Value == "True");
 
-						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(expand, fill));
+						BoxLayout.PackType packType = BoxLayout.PackType.Start;
+						LayoutItemProperty propPackType = item2.PackingProperties["pack_type"];
+						if (propPackType != null)
+						{
+							switch (propPackType.Value.ToLower())
+							{
+								case "start": packType = BoxLayout.PackType.Start; break;
+								case "end": packType = BoxLayout.PackType.End; break;
+							}
+						}
+
+						int padding = 0;
+						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(expand, fill, padding, packType));
 					}
 					else if (container.Layout is GridLayout)
 					{

@@ -289,6 +289,7 @@
     <Compile Include="Dragging\DragArea.cs" />
     <Compile Include="Dragging\DragResizable.cs" />
     <Compile Include="ContainerLayoutLoader.cs" />
+    <Compile Include="Dialogs\SearchableDropdownListDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

@@ -284,6 +284,11 @@
     <Compile Include="CommandLoader.cs" />
     <Compile Include="UICommand.cs" />
     <Compile Include="CommandItemExtensions.cs" />
+    <Compile Include="Controls\Timeline\TimelineControl.cs" />
+    <Compile Include="Controls\Timeline\TimelineGroup.cs" />
+    <Compile Include="Controls\Timeline\TimelineObject.cs" />
+    <Compile Include="Controls\Timeline\TimelineObjectActivatedEvent.cs" />
+    <Compile Include="Controls\Timeline\TimelineItem.cs" />
     <Compile Include="Dragging\DragOperation.cs" />
     <Compile Include="Dragging\DragManagerDragEvent.cs" />
     <Compile Include="Dragging\DragArea.cs" />

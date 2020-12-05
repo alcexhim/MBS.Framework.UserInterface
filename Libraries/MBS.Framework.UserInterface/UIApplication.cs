@@ -382,6 +382,13 @@ namespace MBS.Framework.UserInterface
 			#endregion
 
 			Title = DefaultLanguage?.GetStringTableEntry("Application.Title", ((UIApplication)Application.Instance).Title);
+
+
+			foreach (SettingsProvider provider in ((UIApplication)Application.Instance).SettingsProviders)
+			{
+				provider.LoadSettings();
+			}
+
 			OnAfterConfigurationLoaded(EventArgs.Empty);
 		}
 
@@ -397,7 +404,7 @@ namespace MBS.Framework.UserInterface
 			if (((UIApplication)Application.Instance).SettingsProviders.Contains(id))
 				return null;
 
-			CustomSettingsProvider csp = new CustomSettingsProvider();
+			ApplicationSettingsProvider csp = new ApplicationSettingsProvider();
 			csp.ID = id;
 			foreach (MarkupElement el in tag.Elements)
 			{
@@ -405,7 +412,15 @@ namespace MBS.Framework.UserInterface
 				if (tag2 == null) continue;
 				if (tag2.FullName == "SettingsGroup")
 				{
+					Guid id2 = new Guid(tag2.Attributes["ID"].Value);
+
+					if (csp.SettingsGroups.Contains(id2))
+					{
+						continue;
+					}
+
 					SettingsGroup sg = new SettingsGroup();
+					sg.ID = id2;
 					sg.Path = ParsePath(tag2.Elements["Path"] as MarkupTagElement);
 
 					MarkupTagElement tagSettings = (tag2.Elements["Settings"] as MarkupTagElement);
@@ -415,7 +430,12 @@ namespace MBS.Framework.UserInterface
 						{
 							Setting s = LoadSettingXML(el2 as MarkupTagElement);
 							if (s != null)
+							{
+								if (sg.Settings.Contains(s.ID))
+									continue;
+
 								sg.Settings.Add(s);
+							}
 						}
 					}
 					csp.SettingsGroups.Add(sg);
@@ -519,6 +539,7 @@ namespace MBS.Framework.UserInterface
 
 			if (s != null)
 			{
+				s.ID = new Guid(attSettingID.Value);
 				if (attSettingDescription != null)
 					s.Description = attSettingDescription.Value;
 			}
@@ -876,7 +897,6 @@ namespace MBS.Framework.UserInterface
 		// [DebuggerNonUserCode()]
 		protected override void InitializeInternal()
 		{
-
 			Type tKnownContexts = typeof(KnownContexts);
 			System.Reflection.PropertyInfo[] pis = tKnownContexts.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
 			for (int i = 0; i < pis.Length; i++)
@@ -970,7 +990,6 @@ namespace MBS.Framework.UserInterface
 				if (provider is ApplicationSettingsProvider)
 				{
 					((UIApplication)Application.Instance).SettingsProviders.Add(provider);
-					provider.LoadSettings();
 				}
 			}
 
@@ -1040,83 +1059,34 @@ namespace MBS.Framework.UserInterface
 			mvarEngine?.DoEvents();
 		}
 
-		public T GetSetting<T>(string name, T defaultValue = default(T))
+		private Dictionary<Guid, object> _settings = new Dictionary<Guid, object>();
+		public T GetSetting<T>(Guid id, T defaultValue = default(T))
 		{
-			try
-			{
-				object value = GetSetting(name);
-				if (value == null) {
-					return defaultValue;
-				}
+			object value = GetSetting(id, defaultValue);
+			if (value is T)
 				return (T)value;
-			}
-			catch {
-				return defaultValue;
-			}
+
+			return defaultValue;
 		}
-		public void SetSetting<T>(string name, T value)
+		public object GetSetting(Guid id, object defaultValue = null)
 		{
-			SetSetting (name, (object)value);
+			if (_settings.ContainsKey(id))
+				return _settings[id];
+			return defaultValue;
 		}
-
-		public SettingsGroup FindSettingGroup(string name, out string realName, out string groupPath)
+		public void SetSetting<T>(Guid id, T value)
 		{
-			string[] namePath = name.Split (new char[] { ':' });
-			realName = namePath [namePath.Length - 1];
-			groupPath = String.Join (":", namePath, 0, namePath.Length - 1);
-
-			foreach (SettingsProvider provider in SettingsProviders)
-			{
-				foreach (SettingsGroup group in provider.SettingsGroups)
-				{
-					string path = String.Join(":", group.Path);
-					path = path.Replace(' ', '_');
-					if (path.Equals(group.Path))
-					{
-						return group;
-					}
-				}
-			}
-
-			realName = null;
-			groupPath = null;
-			return null;
-		}
-
-		public object GetSetting(string name)
-		{
-			string realName = null;
-			string groupPath = null;
-
-			SettingsGroup group = FindSettingGroup(name, out realName, out groupPath);
-			if (group == null)
-				return null;
-
-			if (group.Settings[realName] != null)
-			{
-				return group.Settings[realName].GetValue();
-			}
-			return null;
-		}
-		public void SetSetting(string name, object value)
-		{
-			string realName = null;
-			string groupPath = null;
-
-			SettingsGroup group = FindSettingGroup (name, out realName, out groupPath);
-			if (group == null) return;
-			if (group.Settings [realName] != null) {
-				group.Settings [realName].SetValue (value);
-			}
+			_settings[id] = value;
 		}
 
 		public Process Launch(Uri uri)
 		{
 			return Launch(uri.ToString());
 		}
-		/// <summarpublic / Launch the application represented by the given path.
+		/// <summary>
+		/// Launch the application represented by the given path.
 		/// </summary>
-		/// <public ame="path">Path.</param>
+		/// <param name="path">Path.</param>
 		public Process Launch(string path)
 		{
 			return Engine.LaunchApplication(path);
@@ -1127,7 +1097,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		/// <summary>
-		/// Displays the application's Help ipublic ystem native Help viewer, navigating to the appropriate <see cref="HelpTopicpublic  specified.
+		/// Displays the application's system native Help viewer, navigating to the appropriate <see cref="HelpTopic" /> if specified.
 		/// </summary>
 		public void ShowHelp(HelpTopic topic = null)
 		{

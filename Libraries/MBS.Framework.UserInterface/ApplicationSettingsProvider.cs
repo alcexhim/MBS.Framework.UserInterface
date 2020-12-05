@@ -27,30 +27,46 @@ using UniversalEditor;
 namespace MBS.Framework.UserInterface
 {
 	/// <summary>
-	/// Represents a <see cref="SettingsProvider" /> that controls settings for the entire <see cref="UIApplication" /> (i.e., is added to <see cref="((UIApplication)Application.Instance).SettingsProviders"/> collection).
+	/// Represents a <see cref="SettingsProvider" /> that controls settings for the entire <see cref="UIApplication" />
+	/// (i.e., is added to <see cref="UIApplication.SettingsProviders"/> collection).
 	/// </summary>
-	public abstract class ApplicationSettingsProvider : SettingsProvider
+	public class ApplicationSettingsProvider : SettingsProvider
 	{
 		public virtual string FileName { get { return null; } }
 
-		protected override void LoadSettingsInternal ()
+		protected override void InitializeInternal()
 		{
-			try {
-				string settingsDir = System.Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+			base.InitializeInternal();
+
+			foreach (SettingsGroup grp in SettingsGroups)
+			{
+				foreach (Setting s in grp.Settings)
+				{
+					s.SetValue((Application.Instance as UIApplication).GetSetting(s.ID));
+				}
+			}
+		}
+
+		protected override void LoadSettingsInternal()
+		{
+			try
+			{
+				string settingsDir = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				settingsDir += System.IO.Path.DirectorySeparatorChar.ToString() + "settings";
 
 				string fileName = FileName;
-				if (fileName == null) {
-					fileName = this.GetType ().FullName;
-					fileName = fileName.Replace ('.', System.IO.Path.DirectorySeparatorChar);
+				if (fileName == null)
+				{
+					fileName = this.GetType().FullName;
+					fileName = fileName.Replace('.', System.IO.Path.DirectorySeparatorChar);
 				}
-				fileName = settingsDir + System.IO.Path.DirectorySeparatorChar.ToString () + fileName + ".xml";
+				fileName = settingsDir + System.IO.Path.DirectorySeparatorChar.ToString() + ID.ToString("B") + ".xml";
 
-				MarkupObjectModel mom = new MarkupObjectModel ();
-				XMLDataFormat xdf = new XMLDataFormat ();
-				FileAccessor fa = new FileAccessor (fileName);
+				MarkupObjectModel mom = new MarkupObjectModel();
+				XMLDataFormat xdf = new XMLDataFormat();
+				FileAccessor fa = new FileAccessor(fileName);
 
-				Document.Load (mom, xdf, fa);
+				Document.Load(mom, xdf, fa);
 
 				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings", "settings") as MarkupTagElement);
 				if (tagSettings == null) return;
@@ -61,81 +77,94 @@ namespace MBS.Framework.UserInterface
 					LoadGroup(tagGroup);
 				}
 			}
-			catch (System.IO.DirectoryNotFoundException ex) {
+			catch (System.IO.DirectoryNotFoundException ex)
+			{
 			}
 		}
 
 		private void LoadGroup(MarkupTagElement tagGroup)
 		{
-			MarkupAttribute attGroupName = tagGroup.Attributes ["name"];
-			if (attGroupName == null)
-				return;
-			
-			foreach (MarkupElement elSetting in tagGroup.Elements) {
+			foreach (MarkupElement elSetting in tagGroup.Elements)
+			{
 				MarkupTagElement tagSetting = (elSetting as MarkupTagElement);
 				if (tagSetting == null)
 					continue;
 
-				MarkupAttribute attName = tagSetting.Attributes ["name"];
-				if (attName == null)
+				MarkupAttribute attID = tagSetting.Attributes["id"];
+				if (attID == null)
 					continue;
 
 				object value = null;
 
-				MarkupAttribute attValue = tagSetting.Attributes ["value"];
+				MarkupAttribute attValue = tagSetting.Attributes["value"];
 				if (attValue != null)
 					value = attValue.Value;
 
-				((UIApplication)Application.Instance).SetSetting (attGroupName.Value + ":" + attName.Value, value);
+				((UIApplication)Application.Instance).SetSetting(new Guid(attID.Value), value);
 			}
 		}
 
-		protected override void SaveSettingsInternal ()
+		protected override void SaveSettingsInternal()
 		{
-			string settingsDir = System.Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+			string settingsDir = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			settingsDir += System.IO.Path.DirectorySeparatorChar.ToString() + "settings";
 
 			string fileName = FileName;
-			if (fileName == null) {
-				fileName = this.GetType ().FullName;
-				fileName = fileName.Replace ('.', System.IO.Path.DirectorySeparatorChar);
+			if (fileName == null)
+			{
+				fileName = this.GetType().FullName;
+				fileName = fileName.Replace('.', System.IO.Path.DirectorySeparatorChar);
 			}
-			fileName = settingsDir + System.IO.Path.DirectorySeparatorChar.ToString () + fileName + ".xml";
+			fileName = settingsDir + System.IO.Path.DirectorySeparatorChar.ToString() + ID.ToString("B") + ".xml";
 
-			string dir = System.IO.Path.GetDirectoryName (fileName);
-			if (!System.IO.Directory.Exists (dir)) {
-				System.IO.Directory.CreateDirectory (dir);
+			string dir = System.IO.Path.GetDirectoryName(fileName);
+			if (!System.IO.Directory.Exists(dir))
+			{
+				System.IO.Directory.CreateDirectory(dir);
 			}
 
-			MarkupObjectModel mom = new MarkupObjectModel ();
-			XMLDataFormat xdf = new XMLDataFormat ();
-			FileAccessor fa = new FileAccessor (fileName, true, true);
+			MarkupObjectModel mom = new MarkupObjectModel();
+			XMLDataFormat xdf = new XMLDataFormat();
+			FileAccessor fa = new FileAccessor(fileName, true, true);
 
-			MarkupTagElement tagSettings = new MarkupTagElement ();
+			MarkupTagElement tagSettings = new MarkupTagElement();
 			tagSettings.FullName = "uwt:settings";
-			tagSettings.Attributes.Add ("xmlns:uwt", "urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings");
+			tagSettings.Attributes.Add("xmlns:uwt", "urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings");
 
-			foreach (SettingsGroup group in SettingsGroups) {
-				MarkupTagElement tagGroup = new MarkupTagElement ();
+			foreach (SettingsGroup group in SettingsGroups)
+			{
+				if (group.Settings.Count == 0)
+					continue;
+
+				MarkupTagElement tagGroup = new MarkupTagElement();
 				tagGroup.FullName = "group";
-				tagGroup.Attributes.Add ("name", String.Join (":", group.Path).Replace (" ", "_"));
-
-				foreach (Setting setting in group.Settings) {
-					MarkupTagElement tagSetting = new MarkupTagElement ();
-					tagSetting.FullName = "setting";
-					tagSetting.Attributes.Add ("name", setting.Title.Replace("_", String.Empty).Replace (" ", "_"));
-					object value = setting.GetValue ();
-					if (value != null) {
-						tagSetting.Attributes.Add ("value", value.ToString ());
-					}
-					tagGroup.Elements.Add (tagSetting);
+				if (group.ID != Guid.Empty)
+				{
+					tagGroup.Attributes.Add("id", group.ID.ToString("B"));
 				}
-				tagSettings.Elements.Add (tagGroup);
+				// tagGroup.Attributes.Add("name", String.Join(":", group.Path).Replace(" ", "_"));
+
+				foreach (Setting setting in group.Settings)
+				{
+					MarkupTagElement tagSetting = new MarkupTagElement();
+					tagSetting.FullName = "setting";
+					if (setting.ID == Guid.Empty)
+						continue;
+
+					tagSetting.Attributes.Add("id", setting.ID.ToString("B"));
+					object value = setting.GetValue();
+					if (value != null)
+					{
+						tagSetting.Attributes.Add("value", value.ToString());
+					}
+					tagGroup.Elements.Add(tagSetting);
+				}
+				tagSettings.Elements.Add(tagGroup);
 			}
 
-			mom.Elements.Add (tagSettings);
+			mom.Elements.Add(tagSettings);
 
-			Document.Save (mom, xdf, fa);
+			Document.Save(mom, xdf, fa);
 		}
 	}
 }

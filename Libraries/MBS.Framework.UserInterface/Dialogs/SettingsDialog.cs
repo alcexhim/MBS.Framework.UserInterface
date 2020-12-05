@@ -862,7 +862,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (opt is BooleanSetting)
 			{
-				ct1.Click += (sender, e) => (control as CheckBox).Checked = !(control as CheckBox).Checked;
+				// ct1.Click += (sender, e) => (control as CheckBox).Checked = !(control as CheckBox).Checked;
+				ct1.Click += chkBooleanSetting_Click;
+				ct1.SetExtraData<CheckBox>("checkbox", control as CheckBox);
 			}
 
 			ct1.Controls.Add(control, new BoxLayout.Constraints(false, false));
@@ -871,6 +873,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 			ct.Controls.Add(ct1);
 
 			iRow++;
+		}
+
+		private void chkBooleanSetting_Click(object sender, EventArgs e)
+		{
+			Container ct1 = (Container)sender;
+			CheckBox chk = ct1.GetExtraData<CheckBox>("checkbox");
+			chk.Checked = !chk.Checked;
 		}
 
 		private void AddOptionGroupPathPart(SettingsGroup grp, string[] path, int index, TreeModelRow parent = null)

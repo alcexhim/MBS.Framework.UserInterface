@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Drawing;
 
@@ -107,13 +108,12 @@ namespace MBS.Framework.UserInterface
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			/*
-			Application.Engine.Windows.Remove(this);
-			if (Application.Engine.Windows.Count <= 0)
+
+			(Application.Instance as UIApplication).RemoveWindow(this);
+			if ((Application.Instance as UIApplication).Windows.OfType<MainWindow>().Length <= 0)
 			{
-				MBS.Framework.UserInterface.Application.Stop();
+				(Application.Instance as UIApplication).Stop();
 			}
-			*/
 		}
 	}
 }

@@ -105,6 +105,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterDragSourceGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
 		}
 
+		protected override void SetMarginInternal(Padding value)
+		{
+			if (value != Padding.Empty)
+			{
+				IntPtr handle = (Handle as GTKNativeControl).Handle;
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_top(handle, value.Top);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_bottom(handle, value.Bottom);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_start(handle, value.Left);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_end(handle, value.Right);
+			}
+		}
+
 		protected override void OnCreated (EventArgs e)
 		{
 			base.OnCreated (e);
@@ -297,20 +309,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Control ctl = (Engine as GTKEngine).GetControlByHandle(widget);
 			if (ctl != null)
 			{
-				if ((int)ctl.Size.Width != e.width || (int)ctl.Size.Height != e.height)
+				if (ctl.ControlImplementation != null)
 				{
-					Dimension2D oldSize = ctl.Size;
-					Dimension2D newSize = new Framework.Drawing.Dimension2D(e.width, e.height);
-					ResizingEventArgs ee = new ResizingEventArgs(oldSize, newSize);
-					InvokeMethod(ctl.ControlImplementation, "OnResizing", new object[] { ee });
+					if ((int)ctl.Size.Width != e.width || (int)ctl.Size.Height != e.height)
+					{
+						Dimension2D oldSize = ctl.Size;
+						Dimension2D newSize = new Framework.Drawing.Dimension2D(e.width, e.height);
+						ResizingEventArgs ee = new ResizingEventArgs(oldSize, newSize);
+						InvokeMethod(ctl.ControlImplementation, "OnResizing", new object[] { ee });
 
-					if (ee.Cancel)
-						return true;
+						if (ee.Cancel)
+							return true;
 
-					MBS.Framework.Reflection.SetField(ctl, "mvarSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy, newSize);
+						MBS.Framework.Reflection.SetField(ctl, "mvarSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy, newSize);
 
-					ResizedEventArgs ee1 = new ResizedEventArgs(oldSize, newSize);
-					InvokeMethod(ctl.ControlImplementation, "OnResized", new object[] { ee1 });
+						ResizedEventArgs ee1 = new ResizedEventArgs(oldSize, newSize);
+						InvokeMethod(ctl.ControlImplementation, "OnResized", new object[] { ee1 });
+					}
 				}
 			}
 			return false;

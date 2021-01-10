@@ -1876,7 +1876,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			new GTKCursorInfo("move", Cursors.Move),
 			new GTKCursorInfo("not-allowed", Cursors.NotAllowed),
 			new GTKCursorInfo("grab", Cursors.Grab),
-			new GTKCursorInfo( "grabbing", Cursors.Grabbing),
+			new GTKCursorInfo("grabbing", Cursors.Grabbing),
 			new GTKCursorInfo("all-scroll", Cursors.AllScroll),
 			new GTKCursorInfo("col-resize", Cursors.ResizeColumn),
 			new GTKCursorInfo("row-resize", Cursors.ResizeRow),
@@ -2008,6 +2008,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				});
 				return p;
 			}
+		}
+
+		protected override void PlaySystemSoundInternal(SystemSound sound)
+		{
+			// there is only one system sound on Linux
+			IntPtr hDpy = Internal.GDK.Methods.gdk_display_get_default();
+			Internal.GDK.Methods.gdk_display_beep(hDpy);
 		}
 	}
 }

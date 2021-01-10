@@ -154,7 +154,6 @@
     <Compile Include="Controls\OpenGLCanvas.cs" />
     <Compile Include="WordWrapMode.cs" />
     <Compile Include="WindowBorderStyle.cs" />
-    <Compile Include="ISupportsExtraData.cs" />
     <Compile Include="ContainerLayoutAttribute.cs" />
     <Compile Include="EventHandlerAttribute.cs" />
     <Compile Include="TreeModelRowItemRequestedEvent.cs" />
@@ -295,6 +294,10 @@
     <Compile Include="Dragging\DragResizable.cs" />
     <Compile Include="ContainerLayoutLoader.cs" />
     <Compile Include="Dialogs\SearchableDropdownListDialog.cs" />
+    <Compile Include="Dialogs\UpdateDropDownListEvent.cs" />
+    <Compile Include="ITabPageContainer.cs" />
+    <Compile Include="Printing\PrintPreviewEvent.cs" />
+    <Compile Include="SystemSound.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

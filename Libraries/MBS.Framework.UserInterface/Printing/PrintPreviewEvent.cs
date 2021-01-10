@@ -1,10 +1,10 @@
 ﻿//
-//  GTKNativeImage.cs
+//  PrintPreviewEvent.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,20 +19,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using MBS.Framework.UserInterface.Drawing;
-
-namespace MBS.Framework.UserInterface.Engines.GTK
+namespace MBS.Framework.UserInterface.Printing
 {
-	public class GDKPixbufImage : Image
+	public class PrintPreviewEventArgs : PrintEventArgs
 	{
-		public IntPtr Handle { get; private set; }
+		public bool Handled { get; set; } = false;
 
-		internal GDKPixbufImage(IntPtr handle)
+		public PrintPreviewEventArgs(Drawing.Graphics graphics) : base(graphics)
 		{
-			Handle = handle;
-
-			Width = Internal.GDK.Methods.gdk_pixbuf_get_width(handle);
-			Height = Internal.GDK.Methods.gdk_pixbuf_get_height(handle);
 		}
 	}
+	public delegate void PrintPreviewEventHandler(object sender, PrintPreviewEventArgs e);
 }

@@ -171,6 +171,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
 					Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
 					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_homogeneous(hContainer, grid.RowHomogeneous);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_homogeneous(hContainer, grid.ColumnHomogeneous);
 				}
 			}
 			else if (layout is Layouts.FlowLayout)

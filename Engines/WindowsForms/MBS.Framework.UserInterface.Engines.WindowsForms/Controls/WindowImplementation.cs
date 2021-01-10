@@ -298,5 +298,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			System.Windows.Forms.ToolStripItem tsi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle;
 			mb.Items.Remove(tsi);
 		}
+
+		public bool IsFullScreen()
+		{
+			return false;
+		}
+		public void SetFullScreen(bool value)
+		{
+			
+		}
 	}
 }

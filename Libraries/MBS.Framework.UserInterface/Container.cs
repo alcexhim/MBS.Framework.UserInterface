@@ -3,7 +3,7 @@ using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface
 {
-	public class Container : Control, IControlContainer
+	public partial class Container : Control, IControlContainer
 	{
 		public Container()
 		{

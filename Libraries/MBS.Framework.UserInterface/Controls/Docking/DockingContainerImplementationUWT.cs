@@ -514,5 +514,10 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		{
 			return (_TabPagesForDockingItem.ContainsKey(item) ? _TabPagesForDockingItem[item] : null);
 		}
+
+		protected override void SetMarginInternal(Padding value)
+		{
+			(Handle as CustomNativeControl).Handle.Margin = value;
+		}
 	}
 }

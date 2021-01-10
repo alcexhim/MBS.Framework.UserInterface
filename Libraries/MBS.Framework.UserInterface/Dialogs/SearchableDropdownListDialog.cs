@@ -35,7 +35,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private ListViewControl lv = null;
 
 		private Container ctSearchAndShowAll = null;
-		private DefaultTreeModel tm = null;
 
 		public SearchableDropdownListDialog()
 		{
@@ -65,13 +64,12 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.Controls.Add(ctSearchAndShowAll, new BoxLayout.Constraints(false, true));
 
-			this.tm = new DefaultTreeModel(new Type[] { typeof(string), typeof(string) });
-
 			this.lv = new ListViewControl();
-			lv.Columns.Add(new ListViewColumnText(tm.Columns[0], "Name"));
-			lv.Columns.Add(new ListViewColumnText(tm.Columns[1], "Description"));
+			this.lv.Model = new DefaultTreeModel(new Type[] { typeof(string), typeof(string) });
+
+			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[0], "Name"));
+			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[1], "Description"));
 			lv.RowActivated += this.lv_RowActivated;
-			this.lv.Model = tm;
 			this.Controls.Add(this.lv, new BoxLayout.Constraints(true, true));
 
 			this.MinimumSize = new Dimension2D(300, 200);
@@ -81,6 +79,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		public event EventHandler SelectionChanged;
 		public bool AutoClose { get; set; } = true;
+
+		public bool ShowSearch {  get { return txtSearch.Visible; } set { txtSearch.Visible = value; } }
+		public string Query
+		{
+			get { return txtSearch.Text; }
+			set { txtSearch.Text = value; }
+		}
 
 		protected internal override void OnCreated(EventArgs e)
 		{
@@ -104,25 +109,65 @@ namespace MBS.Framework.UserInterface.Dialogs
 		}
 		*/
 
+		private string[] _Columns = null;
+		public string[] Columns
+		{
+			get { return _Columns; }
+			set
+			{
+				_Columns = value;
+
+				Type[] types = new Type[value.Length];
+				for (int i = 0; i < value.Length; i++)
+				{
+					types[i] = typeof(string);
+				}
+				lv.Model = new DefaultTreeModel(types);
+
+				lv.Columns.Clear();
+				for (int i = 0; i < value.Length; i++)
+				{
+					lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[i], value[i]));
+				}
+			}
+		}
+
+		public event EventHandler<UpdateDropDownListEventArgs> Update;
+
 		protected virtual void UpdateSearchInternal(string query)
 		{
+			UpdateDropDownListEventArgs e = new UpdateDropDownListEventArgs(query);
+			Update?.Invoke(this, e);
+
+			if (!e.Cancel)
+			{
+				for (int i = 0; i < e.Items.Count; i++)
+				{
+					TreeModelRow row = new TreeModelRow();
+					for (int j = 0; j < e.Items[i].Length; j++)
+					{
+						row.RowColumns.Add(new TreeModelRowColumn(lv.Model.Columns[j], e.Items[i][j]));
+					}
+					AddRow(row);
+				}
+			}
 		}
 		protected void UpdateSearch()
 		{
-			tm.Rows.Clear();
+			lv.Model.Rows.Clear();
 			UpdateSearchInternal(txtSearch.Text);
 
-			if (tm.Rows.Count == 1)
+			if (lv.Model.Rows.Count == 1)
 			{
 				lv.SelectedRows.Clear();
-				lv.SelectedRows.Add(tm.Rows[0]);
+				lv.SelectedRows.Add(lv.Model.Rows[0]);
 			}
 			// lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 
 		protected void AddRow(TreeModelRow row)
 		{
-			tm.Rows.Add(row);
+			lv.Model.Rows.Add(row);
 		}
 
 		private void txtSearch_Changed(object sender, EventArgs e)
@@ -159,7 +204,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		protected TreeModelRowColumn CreateColumn(int index, string value)
 		{
-			return new TreeModelRowColumn(tm.Columns[index], value);
+			return new TreeModelRowColumn(lv.Model.Columns[index], value);
 		}
 
 		private void cmdReset_Click(object sender, EventArgs e)

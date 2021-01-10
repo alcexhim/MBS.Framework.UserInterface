@@ -67,7 +67,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		public void SetTabText(TabPage page, string text)
 		{
-			TabContainer tc = page.Parent;
+			TabContainer tc = page.Parent as TabContainer;
 			IntPtr hNotebook = (((UIApplication)Application.Instance).Engine.GetHandleForControl(tc) as GTKNativeControl).Handle;
 
 			IntPtr hPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_nth_page(hNotebook, tc.TabPages.IndexOf(page));
@@ -133,7 +133,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Control lbl = (sender as Control);
 
 			TabPage page = (lbl.Parent as TabPage);
-			TabContainer tbs = page.Parent;
+			TabContainer tbs = page.Parent as TabContainer;
 
 			BeforeTabContextMenuEventArgs ee = new BeforeTabContextMenuEventArgs(tbs, page);
 			ee.ContextMenu = lbl.ContextMenu;

@@ -32,9 +32,28 @@ namespace MBS.Framework.UserInterface
 
 
 		private static UserInterfacePlugin[] _plugins = null;
-		public static UserInterfacePlugin[] Get()
+		public static UserInterfacePlugin[] Get(bool resetCache = false)
 		{
-			// _plugins = null; // should not be cached? // actually, yes it should...
+			if (resetCache)
+			{
+				_plugins = null; // should not be cached? // actually, yes it should...
+
+				// 2020-12-12 20:54 by beckermj
+				// ACTUALLY, it depends on whether the configuration needs to be persisted across calls to Get()
+				// 				[it does] and whether the list of plugins needs to be reloaded when CustomPlugins is modified
+				//				[it shouldn't, but it does] .
+				//
+				// The safest way we can handle this RIGHT NOW is to prevent any plugin from being loaded until after CustomPlugins
+				// is initialized by UIApplication.
+				//
+				// We call Plugins.Get(new Feature[] { KnownFeatures.UWTPlatform }) to retrieve the available User Interface plugins
+				// that supply the UWT Platform implementation (e.g. GTK, Windows Forms, etc.) - and this causes CustomPlugins to not
+				// load properly since it loads AFTER this initial call to Plugins.Get().
+				//
+				// So I add ed a resetCache parameter that when specified TRUE will clear the cache and then return the appropriate
+				// plugin. This way we can continue caching future calls to Get() without missing out on CustomPlugins.
+			}
+
 			if (_plugins == null)
 			{
 				Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(UserInterfacePlugin) });
@@ -58,14 +77,20 @@ namespace MBS.Framework.UserInterface
 					plugins.Add(((UIApplication)Application.Instance).CustomPlugins[i]);
 				}
 				_plugins = plugins.ToArray();
+
+				if (resetCache)
+				{
+					_plugins = null;
+					return plugins.ToArray();
+				}
 			}
 			return _plugins;
 		}
 
-		public static UserInterfacePlugin[] Get(Feature[] providedFeatures)
+		public static UserInterfacePlugin[] Get(Feature[] providedFeatures, bool resetCache = false)
 		{
 			List<UserInterfacePlugin> list = new List<UserInterfacePlugin>();
-			UserInterfacePlugin[] plugins = Get();
+			UserInterfacePlugin[] plugins = Get(resetCache);
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				if (!plugins[i].IsSupported())

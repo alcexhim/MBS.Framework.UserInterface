@@ -427,5 +427,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			(Handle as WindowsFormsNativeControl).Handle.SetBounds((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
 		}
 
+		protected override void SetMarginInternal(Padding value)
+		{
+			(Handle as WindowsFormsNativeControl).Handle.Margin = new System.Windows.Forms.Padding(value.Left, value.Top, value.Right, value.Bottom);
+		}
+
 	}
 }

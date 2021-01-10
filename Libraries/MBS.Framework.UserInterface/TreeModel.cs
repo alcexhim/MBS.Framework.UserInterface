@@ -41,42 +41,42 @@ namespace MBS.Framework.UserInterface
 				switch (e.Action)
 				{
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-					{
-						TreeModelRow[] items = new TreeModelRow[e.NewItems.Count];
-						for (int i = 0; i < e.NewItems.Count; i++)
 						{
-							items[i] = (e.NewItems[i] as TreeModelRow);
-							((UIApplication)Application.Instance).Engine.CreateTreeModelRow(e.NewItems[i] as TreeModelRow, this);
+							TreeModelRow[] items = new TreeModelRow[e.NewItems.Count];
+							for (int i = 0; i < e.NewItems.Count; i++)
+							{
+								items[i] = (e.NewItems[i] as TreeModelRow);
+								((UIApplication)Application.Instance).Engine.CreateTreeModelRow(e.NewItems[i] as TreeModelRow, this);
+							}
+							ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Add, items, (TreeModelRow)null);
+							break;
 						}
-						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Add, items, (TreeModelRow)null);
-						break;
-					}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
-					{
-						Console.WriteLine("NotifyCollection: treemodel: move not supported");
-						break;
-					}
-					case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-					{
-						TreeModelRow[] items = new TreeModelRow[e.OldItems.Count];
-						for (int i = 0; i < e.OldItems.Count; i++)
 						{
-							items[i] = (e.OldItems[i] as TreeModelRow);
+							Console.WriteLine("NotifyCollection: treemodel: move not supported");
+							break;
 						}
-						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, items, (TreeModelRow)null);
-						break;
-					}
+					case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+						{
+							TreeModelRow[] items = new TreeModelRow[e.OldItems.Count];
+							for (int i = 0; i < e.OldItems.Count; i++)
+							{
+								items[i] = (e.OldItems[i] as TreeModelRow);
+							}
+							ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, items, (TreeModelRow)null);
+							break;
+						}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-					{
-						ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Clear);
-						break;
-					}
+						{
+							ee = new TreeModelChangedEventArgs(TreeModelChangedAction.Clear);
+							break;
+						}
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
-					{
-						// ee = new TreeModelChangedEventArgs(e.Action, e.NewItems, e.OldItems, e.NewStartingIndex, (TreeModelRow)null);
-						// not sure what to do here
-						break;
-					}
+						{
+							// ee = new TreeModelChangedEventArgs(e.Action, e.NewItems, e.OldItems, e.NewStartingIndex, (TreeModelRow)null);
+							// not sure what to do here
+							break;
+						}
 				}
 
 				if (ee != null)
@@ -84,6 +84,16 @@ namespace MBS.Framework.UserInterface
 					OnTreeModelChanged(ee);
 				}
 			};
+		}
+
+		public static DefaultTreeModel Create(int columnCount)
+		{
+			Type[] types = new Type[columnCount];
+			for (int i = 0; i < types.Length; i++)
+			{
+				types[i] = typeof(string);
+			}
+			return new DefaultTreeModel(types);
 		}
 
 		private TreeModelRow RecursiveCreateTreeModelRow(TreeModelColumn displayColumn, string[] titles, TreeModelRowColumn[] additionalColumns, TreeModelRow parent, int titleIndex)

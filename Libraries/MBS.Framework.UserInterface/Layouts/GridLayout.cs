@@ -37,6 +37,9 @@ namespace MBS.Framework.UserInterface.Layouts
 		private int mvarColumnSpacing = 6;
 		public int ColumnSpacing { get { return mvarColumnSpacing; } set { mvarColumnSpacing = value; } }
 
+		public bool RowHomogeneous { get; set; } = false;
+		public bool ColumnHomogeneous { get; set; } = false;
+
 		protected override Rectangle GetControlBoundsInternal (Control ctl)
 		{
 			throw new NotImplementedException ();

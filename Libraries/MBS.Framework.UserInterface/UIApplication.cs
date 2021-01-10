@@ -643,7 +643,7 @@ namespace MBS.Framework.UserInterface
 		/// The event that is called the first time an application is started.
 		/// </summary>
 		public event EventHandler Startup;
-		private void OnStartup(EventArgs e)
+		protected virtual void OnStartup(EventArgs e)
 		{
 			Startup?.Invoke(this, e);
 		}
@@ -728,6 +728,10 @@ namespace MBS.Framework.UserInterface
 		internal void AddWindow(Window window)
 		{
 			_windows.Add(window);
+		}
+		internal void RemoveWindow(Window window)
+		{
+			_windows.Remove(window);
 		}
 
 		private Dictionary<Context, List<MenuItem>> _listContextMenuItems = new Dictionary<Context, System.Collections.Generic.List<MenuItem>>();
@@ -993,7 +997,7 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			UserInterfacePlugin[] plugins = UserInterfacePlugin.Get();
+			UserInterfacePlugin[] plugins = UserInterfacePlugin.Get(true);
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				Console.WriteLine("initializing plugin '{0}'", plugins[i].GetType().FullName);
@@ -1112,6 +1116,11 @@ namespace MBS.Framework.UserInterface
 				return true;
 			}
 			return false;
+		}
+
+		public void PlaySystemSound(SystemSound sound)
+		{
+			Engine.PlaySystemSound(sound);
 		}
 	}
 }

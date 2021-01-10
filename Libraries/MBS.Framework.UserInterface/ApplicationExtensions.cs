@@ -63,11 +63,10 @@ namespace MBS.Framework.UserInterface
 				ma.Position = 0;
 
 				Document.Load(plom, new UniversalEditor.DataFormats.PropertyList.XML.XMLPropertyListDataFormat(), ma);
-
-				// plugin.Configuration = plom;
+				plugin.Configuration = plom;
 			}
 
-			// app.CustomPlugins.Add(plugin);
+			app.CustomPlugins.Add(plugin);
 		}
 
 	}

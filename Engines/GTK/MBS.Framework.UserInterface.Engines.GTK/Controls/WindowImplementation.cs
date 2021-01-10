@@ -267,6 +267,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			InvokeMethod((Control as Window), "OnClosed", e);
 		}
 
+		private Func<IntPtr, IntPtr, IntPtr, bool> window_state_event_d;
+		private bool window_state_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEvent*/ evt, IntPtr user_data)
+		{
+			Internal.GDK.Structures.GdkEventWindowState s_evt =
+				(Internal.GDK.Structures.GdkEventWindowState)Marshal.PtrToStructure(evt, typeof(Internal.GDK.Structures.GdkEventWindowState));
+
+			return true;
+		}
+
 		// [System.Diagnostics.DebuggerNonUserCode()]
 		protected override NativeControl CreateControlInternal(Control control)
 		{
@@ -274,6 +283,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (window == null) throw new InvalidOperationException();
 
 			IntPtr handle = Internal.GTK.Methods.GtkApplicationWindow.gtk_application_window_new((((UIApplication)Application.Instance).Engine as GTKEngine).ApplicationHandle);
+
+			window_state_event_d = new Func<IntPtr, IntPtr, IntPtr, bool>(window_state_event);
+			Internal.GObject.Methods.g_signal_connect(handle, "window-state-event", window_state_event_d);
+
 			GTKNativeControl ncContainer = (base.CreateControlInternal(control) as GTKNativeControl);
 			IntPtr hContainer = ncContainer.Handle;
 
@@ -383,7 +396,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
-					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
+					// Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 
 					IntPtr hBBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hBBox), "linked");
@@ -513,6 +526,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hMenuBar = (Handle as GTKNativeControl).GetNamedHandle("MenuBar");
 			IntPtr hMenuItem = ((Engine as GTKEngine).GetHandleForMenuItem(item) as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(hMenuItem);
+		}
+
+		private bool _FullScreen = false;
+		public bool IsFullScreen()
+		{
+			return _FullScreen;
+		}
+		public void SetFullScreen(bool value)
+		{
+			if (value)
+			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_fullscreen((Handle as GTKNativeControl).Handle);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_unfullscreen((Handle as GTKNativeControl).Handle);
+			}
+			_FullScreen = value;
 		}
 	}
 }

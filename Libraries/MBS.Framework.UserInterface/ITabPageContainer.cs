@@ -1,10 +1,10 @@
 ﻿//
-//  GTKNativeImage.cs
+//  ITabPageContainer.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,20 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using MBS.Framework.UserInterface.Drawing;
+using MBS.Framework.UserInterface.Controls;
 
-namespace MBS.Framework.UserInterface.Engines.GTK
+namespace MBS.Framework.UserInterface
 {
-	public class GDKPixbufImage : Image
+	public interface ITabPageContainer : IControl
 	{
-		public IntPtr Handle { get; private set; }
-
-		internal GDKPixbufImage(IntPtr handle)
-		{
-			Handle = handle;
-
-			Width = Internal.GDK.Methods.gdk_pixbuf_get_width(handle);
-			Height = Internal.GDK.Methods.gdk_pixbuf_get_height(handle);
-		}
+		TabPage.TabPageCollection TabPages { get; }
+		TabPage SelectedTab { get; set; }
 	}
 }

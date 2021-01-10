@@ -219,6 +219,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			return (tbs?.Focused).GetValueOrDefault();
 		}
+
+		protected override void SetMarginInternal(Padding value)
+		{
+			tbs.Margin = value;
+		}
 	}
 }
 

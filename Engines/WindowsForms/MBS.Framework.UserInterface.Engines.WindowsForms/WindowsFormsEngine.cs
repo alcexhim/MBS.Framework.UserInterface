@@ -1096,5 +1096,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			handle.BringToFront();
 		}
 
+		protected override void PlaySystemSoundInternal(SystemSound sound)
+		{
+			switch (sound)
+			{
+				case SystemSound.Asterisk: System.Media.SystemSounds.Asterisk.Play(); break;
+				case SystemSound.Beep: System.Media.SystemSounds.Beep.Play(); break;
+				case SystemSound.Exclamation: System.Media.SystemSounds.Exclamation.Play(); break;
+				case SystemSound.Hand: System.Media.SystemSounds.Hand.Play(); break;
+				case SystemSound.Question: System.Media.SystemSounds.Question.Play(); break;
+			}
+		}
+
 	}
 }

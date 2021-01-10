@@ -17,6 +17,9 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetStep(double value);
 			double GetStep();
 
+			void SetLargeIncrement(double value);
+			double GetLargeIncrement();
+
 			void SetDecimalPlaces(int value);
 			int GetDecimalPlaces();
 		}
@@ -64,7 +67,7 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 		private double _Step = 1.0;
-		public double Step
+		public double SmallIncrement
 		{
 			get
 			{
@@ -78,6 +81,24 @@ namespace MBS.Framework.UserInterface.Controls
 			{
 				_Step = value;
 				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetStep(value);
+			}
+		}
+
+		private double _LargeIncrement = 1.0;
+		public double LargeIncrement
+		{
+			get
+			{
+				if (IsCreated && ControlImplementation is Native.INumericTextBoxControlImplementation)
+				{
+					_LargeIncrement = (ControlImplementation as Native.INumericTextBoxControlImplementation).GetLargeIncrement();
+				}
+				return _LargeIncrement;
+			}
+			set
+			{
+				_LargeIncrement = value;
+				(ControlImplementation as Native.INumericTextBoxControlImplementation)?.SetLargeIncrement(value);
 			}
 		}
 

@@ -94,6 +94,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_present(IntPtr handle);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_fullscreen(IntPtr /*GtkWindow*/ window);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_unfullscreen(IntPtr /*GtkWindow*/ window);
 	}
 }
 

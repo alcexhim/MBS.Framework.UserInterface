@@ -233,6 +233,13 @@ namespace MBS.Framework.UserInterface
 		{
 			SetControlVisibilityInternal (visible);
 		}
+
+		protected abstract void SetMarginInternal(Padding value);
+		public void SetMargin(Padding value)
+		{
+			SetMarginInternal(value);
+		}
+
 		protected abstract void SetControlVisibilityInternal (bool visible);
 
 		protected abstract void UpdateControlFontInternal(Font font);

@@ -250,7 +250,7 @@ namespace MBS.Framework.UserInterface
 		{
 			List<Engine> list = new List<Engine>();
 
-			UserInterfacePlugin[] enginePlugins = UserInterfacePlugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
+			UserInterfacePlugin[] enginePlugins = UserInterfacePlugin.Get(new Feature[] { KnownFeatures.UWTPlatform }, true);
 			for (int i = 0; i < enginePlugins.Length; i++)
 			{
 				if (enginePlugins[i] is EnginePlugin)
@@ -688,6 +688,12 @@ namespace MBS.Framework.UserInterface
 		public Process LaunchApplication(string path, string arguments)
 		{
 			return LaunchApplicationInternal(path, arguments);
+		}
+
+		protected abstract void PlaySystemSoundInternal(SystemSound sound);
+		public void PlaySystemSound(SystemSound sound)
+		{
+			PlaySystemSoundInternal(sound);
 		}
 	}
 }

@@ -251,6 +251,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					}
 					case (int)Internal.GTK.Constants.GtkResponseType.Apply:
 					{
+						result = DialogResult.Apply;
 						break;
 					}
 					case (int)Internal.GTK.Constants.GtkResponseType.Cancel:

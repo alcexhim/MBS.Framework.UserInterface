@@ -28,12 +28,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	/// In order to print something with GtkPrintUnixDialog, you need to use gtk_print_unix_dialog_get_selected_printer() to obtain a GtkPrinter object and use it to construct a GtkPrintJob using gtk_print_job_new().
 	/// GtkPrintUnixDialog uses the following response values: GTK_RESPONSE_OK: for the “Print” button, GTK_RESPONSE_APPLY: for the “Preview” button, GTK_RESPONSE_CANCEL: for the “Cancel” button
 	/// </summary>
-	public static class GtkPrintUnixDialog
+	internal static class GtkPrintUnixDialog
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkWidget*/ gtk_print_unix_dialog_new(string title, IntPtr /*GtkWindow*/ parent);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkPrinter*/ gtk_print_unix_dialog_get_selected_printer(IntPtr /*GtkPrintUnixDialog*/ dialog);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_print_unix_dialog_add_custom_tab(IntPtr /*GtkPrintUnixDialog*/ dialog, IntPtr /*GtkWidget*/ child, IntPtr /*GtkWidget*/ tab_label);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_print_unix_dialog_set_manual_capabilities(IntPtr /*GtkPrintUnixDialog*/ handle, Constants.GtkPrintCapabilities caps);
 	}
 }

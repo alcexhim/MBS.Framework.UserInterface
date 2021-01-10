@@ -198,6 +198,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 			/// </summary>
 			public int height;
 		}
+		/// <summary>
+		/// Generated when the state of a toplevel window changes.
+		/// </summary>
+		public struct GdkEventWindowState
+		{
+			#region GdkEvent members
+			/// <summary>
+			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
+			/// </summary>
+			public Constants.GdkEventType type;
+			/// <summary>
+			/// the window which received the event.
+			/// </summary>
+			public IntPtr /*GdkWindow*/ window;
+			/// <summary>
+			/// <c>true</c> if the event was sent explicitly.
+			/// </summary>
+			public byte send_event;
+			#endregion
+
+			public Constants.GdkWindowState changed_mask;
+			public Constants.GdkWindowState new_window_state;
+		}
 	}
 }
 

@@ -187,8 +187,8 @@ namespace MBS.Framework.UserInterface
 			get
 			{
 				if (IsCreated)
+					mvarSize = ControlImplementation?.GetControlSize();
 				{
-					mvarSize = ControlImplementation.GetControlSize();
 				}
 				return mvarSize;
 			}
@@ -254,7 +254,7 @@ namespace MBS.Framework.UserInterface
 		public bool IsCreated { get { return ((UIApplication)Application.Instance).Engine.IsControlCreated(this); } }
 
 		private Padding mvarMargin = new Padding();
-		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; } }
+		public Padding Margin { get { return mvarMargin; } set { mvarMargin = value; ControlImplementation?.SetMargin(value); } }
 
 		private Padding mvarPadding = new Padding();
 		public Padding Padding { get { return mvarPadding; } set { mvarPadding = value; } }
@@ -396,12 +396,42 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		private bool IsCreatedWithParent
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					IVirtualControlContainer parent = Parent;
+					while (parent != null)
+					{
+						if (!parent.IsCreated)
+							return false;
+						parent = parent.Parent;
+					}
+				}
+				return false;
+			}
+		}
+
+		public bool ActuallyVisible
+		{
+			get
+			{
+				if (IsCreated)
+				{
+					return ((this.ControlImplementation)?.IsControlVisible()).GetValueOrDefault(mvarVisible);
+				}
+				return false;
+			}
+		}
+
 		private bool mvarVisible = true;
 		public bool Visible
 		{
 			get
 			{
-				//  if (IsCreated)
+				// if (IsCreatedWithParent)
 					// mvarVisible = ((this.ControlImplementation)?.IsControlVisible()).GetValueOrDefault(mvarVisible);
 				return mvarVisible;
 			}

@@ -30,6 +30,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_get_value((Handle as GTKNativeControl).Handle);
 		}
 
+		public double GetLargeIncrement()
+		{
+			double step = 0.0, page = 0.0;
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_get_increments((Handle as GTKNativeControl).Handle, out step, out page);
+			return page;
+		}
+
 		public double GetStep()
 		{
 			double step = 0.0, page = 0.0;
@@ -72,6 +79,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments((Handle as GTKNativeControl).Handle, value, page);
 		}
 
+		public void SetLargeIncrement(double value)
+		{
+			double step = 0.0, page = 0.0;
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_get_increments((Handle as GTKNativeControl).Handle, out step, out page);
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments((Handle as GTKNativeControl).Handle, step, value);
+		}
+
 		private Internal.GObject.Delegates.GCallbackV1I value_changed_d;
 		private void value_changed(IntPtr handle)
 		{
@@ -81,9 +95,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			NumericTextBox txt = (control as NumericTextBox);
-			IntPtr h = Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_new_with_range(txt.Minimum, txt.Maximum, txt.Step);
+			IntPtr h = Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_new_with_range(txt.Minimum, txt.Maximum, txt.LargeIncrement);
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_value(h, txt.Value);
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_digits(h, (uint)txt.DecimalPlaces);
+ 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments(h, txt.SmallIncrement, txt.LargeIncrement);
 			Internal.GObject.Methods.g_signal_connect(h, "value_changed", value_changed_d);
 			return new GTKNativeControl(h);
 		}

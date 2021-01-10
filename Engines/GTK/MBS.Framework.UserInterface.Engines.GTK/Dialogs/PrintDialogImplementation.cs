@@ -85,10 +85,38 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 
 		protected override GTKNativeControl CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
+			PrintDialog dlg = (dialog as PrintDialog);
 			GTKNativeControl nc = (Engine.GetHandleForControl(dialog.ParentWindow) as GTKNativeControl);
 			IntPtr hParentWindow = (nc == null ? IntPtr.Zero : nc.Handle);
 
 			IntPtr handle = Internal.GTK.Methods.GtkPrintUnixDialog.gtk_print_unix_dialog_new(dialog.Text, hParentWindow);
+
+			Internal.GTK.Constants.GtkPrintCapabilities caps = Internal.GTK.Constants.GtkPrintCapabilities.None;
+			if (dlg.EnablePreview)
+			{
+				caps |= Internal.GTK.Constants.GtkPrintCapabilities.Preview;
+			}
+
+			Internal.GTK.Methods.GtkPrintUnixDialog.gtk_print_unix_dialog_set_manual_capabilities(handle, caps);
+
+			foreach (TabPage tab in dlg.TabPages)
+			{
+				bool created = Engine.CreateControl(tab);
+				if (!created)
+					continue;
+
+				Label lbl = new Label();
+				lbl.Text = tab.Text;
+
+				created &= Engine.CreateControl(lbl);
+				if (!created)
+					continue;
+
+				IntPtr hTabChild = (Engine.GetHandleForControl(tab) as GTKNativeControl).Handle;
+				IntPtr hTabLabel = (Engine.GetHandleForControl(lbl) as GTKNativeControl).Handle;
+
+				Internal.GTK.Methods.GtkPrintUnixDialog.gtk_print_unix_dialog_add_custom_tab(handle, hTabChild, hTabLabel);
+			}
 
 			// Internal.GObject.Methods.g_signal_connect(handle, "begin_print", begin_print_handler);
 			return new GTKNativeControl(handle);

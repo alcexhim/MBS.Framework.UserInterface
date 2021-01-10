@@ -1,4 +1,5 @@
 ﻿using System;
+using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs.Native;
 using MBS.Framework.UserInterface.Printing;
 
@@ -15,9 +16,18 @@ namespace MBS.Framework.UserInterface.Dialogs
 			void SetSettings(PrintSettings value);
 		}
 	}
-	public class PrintDialog : CommonDialog
+	public class PrintDialog : CommonDialog, ITabPageContainer
 	{
 		public bool AutoUpgradeEnabled { get; set; } = true;
+		public TabPage.TabPageCollection TabPages { get; private set; } = null;
+		public TabPage SelectedTab { get; set; } = null;
+
+		public bool EnablePreview { get; set; } = false;
+
+		public PrintDialog()
+		{
+			TabPages = new TabPage.TabPageCollection(this);
+		}
 
 		private Printer mvarSelectedPrinter = null;
 		public Printer SelectedPrinter

@@ -35,6 +35,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern uint gtk_grid_get_column_spacing(IntPtr /*GtkGrid*/ grid);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_grid_set_column_spacing(IntPtr /*GtkGrid*/ grid, uint spacing);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_grid_set_column_homogeneous (IntPtr /*GtkGrid*/ grid, bool homogeneous);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_grid_set_row_homogeneous (IntPtr /*GtkGrid*/ grid, bool homogeneous);
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_grid_attach(IntPtr /*GtkGrid*/ grid, IntPtr /*GtkWidget*/ widget, int left, int top, int width, int height);
 	}

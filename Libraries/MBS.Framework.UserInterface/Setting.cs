@@ -257,7 +257,14 @@ namespace MBS.Framework.UserInterface
 		{
 			try
 			{
-				return (T)GetValue(scopeId);
+				object val = GetValue(scopeId);
+				if (val is T)
+					return (T)val;
+				if (val is string)
+				{
+					return (val as string).Parse<T>();
+				}
+				return defaultValue;
 			}
 			catch
 			{

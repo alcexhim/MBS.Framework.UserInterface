@@ -117,6 +117,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Contract.Assert(control is TextBox);
 
 			TextBox ctl = (control as TextBox);
+			ctl.CompletionModel.TreeModelChanged += CompletionModel_TreeModelChanged;
+
 			IntPtr handle = IntPtr.Zero;
 			if (ctl.Multiline)
 			{
@@ -127,6 +129,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				handle = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
 				Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
 			}
+
+			IntPtr /*GtkEntryCompletion*/ hCompletion = Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_new();
+			Internal.GTK.Methods.GtkEntry.gtk_entry_set_completion(handle, hCompletion);
+
+			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_model(hCompletion, (Engine.CreateTreeModel(ctl.CompletionModel) as GTKNativeTreeModel).Handle);
+			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_text_column(hCompletion, 0);
+
 
 			string ctlText = ctl.Text;
 			if (ctl.Multiline)
@@ -212,7 +221,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
-		
+		void CompletionModel_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
+		{
+			if (e.Action == TreeModelChangedAction.Add)
+			{
+				DefaultTreeModel coll = (sender as DefaultTreeModel);
+				(((UIApplication)Application.Instance).Engine as GTKEngine).UpdateTreeModel(coll, e);
+			}
+		}
+
+
 
 		private Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
 		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;

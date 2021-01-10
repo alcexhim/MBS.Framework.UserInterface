@@ -28,6 +28,9 @@ namespace MBS.Framework.UserInterface
 
 			string GetDocumentFileName();
 			void SetDocumentFileName(string value);
+
+			bool IsFullScreen();
+			void SetFullScreen(bool value);
 		}
 	}
 	public class Window : Container
@@ -244,6 +247,24 @@ namespace MBS.Framework.UserInterface
 		public void Present(DateTime timestamp)
 		{
 			((UIApplication)Application.Instance).Engine.PresentWindow(this, timestamp);
+		}
+
+		private bool _FullScreen = false;
+		public bool FullScreen
+		{
+			get
+			{
+				Native.IWindowNativeImplementation impl = (ControlImplementation as Native.IWindowNativeImplementation);
+				if (impl == null)
+					return _FullScreen;
+
+				return impl.IsFullScreen();
+			}
+			set
+			{
+				_FullScreen = value;
+				(ControlImplementation as Native.IWindowNativeImplementation)?.SetFullScreen(value);
+			}
 		}
 	}
 }

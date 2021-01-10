@@ -27,6 +27,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return (double)(((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown)?.Increment);
 		}
 
+		public double GetLargeIncrement()
+		{
+			// not support on win forms?
+			return 0.0;
+		}
+
 		public double GetValue()
 		{
 			return (double)(((Handle as WindowsFormsNativeControl)?.Handle as System.Windows.Forms.NumericUpDown)?.Value);
@@ -62,6 +68,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			{
 				handle.DecimalPlaces = value;
 			}
+		}
+
+		public void SetLargeIncrement(double value)
+		{
+			// not support on win forms?e
 		}
 
 		private decimal CDoubleToDecimal(double value)

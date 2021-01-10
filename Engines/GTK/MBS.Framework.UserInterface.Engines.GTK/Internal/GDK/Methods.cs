@@ -9,6 +9,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gdk_display_get_default();
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_display_beep(IntPtr /*GdkDisplay*/ display);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkMonitor*/ gdk_display_get_monitor(IntPtr /*GdkDisplay*/ display, int index);
@@ -75,6 +77,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern IntPtr gdk_pixbuf_new_from_data(byte[] data, Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height, int rowstride, Action<byte[], IntPtr> destroy_fn, IntPtr destroy_fn_data);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gdk_pixbuf_new_from_data(IntPtr data, Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height, int rowstride, Action<byte[], IntPtr> destroy_fn, IntPtr destroy_fn_data);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gdk_pixbuf_get_width(IntPtr /*GdkPixbuf*/ pixbuf);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern int gdk_pixbuf_get_height(IntPtr /*GdkPixbuf*/ pixbuf);
 	}
 }
 

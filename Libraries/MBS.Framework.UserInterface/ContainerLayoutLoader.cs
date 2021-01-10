@@ -21,7 +21,7 @@ namespace MBS.Framework.UserInterface
 			this.container = container;
 		}
 
-		public void InitContainerLayout(ContainerLayoutAttribute wla)
+		public void InitContainerLayout(Container.ContainerLayoutAttribute wla)
 		{
 			Accessor acc = null;
 			if (wla.ResourceType != null)
@@ -116,11 +116,7 @@ namespace MBS.Framework.UserInterface
 
 		private Image CreateImage(LayoutItem item)
 		{
-			Image image = null;
-			if (item.Properties["stock"] != null)
-			{
-				image = Image.FromName(item.Properties["stock"].Value, 16);
-			}
+			Image image = ImageFromGtkImage(item);
 			return image;
 		}
 
@@ -381,8 +377,8 @@ namespace MBS.Framework.UserInterface
 						GtkAdjustment adj = (GtkAdjustment)GetPropertyOrLocalRef(item.Properties["adjustment"].Value);
 						(ctl as NumericTextBox).Minimum = adj.Lower;
 						(ctl as NumericTextBox).Maximum = adj.Upper;
-						(ctl as NumericTextBox).Step = adj.StepIncrement;
-						// (ctl as NumericTextBox).PageStep = adj.PageIncrement;
+						(ctl as NumericTextBox).SmallIncrement = adj.StepIncrement;
+						(ctl as NumericTextBox).LargeIncrement = adj.PageIncrement;
 					}
 					if (item.Properties["digits"] != null)
 					{
@@ -535,19 +531,7 @@ namespace MBS.Framework.UserInterface
 				case "GtkImage":
 				{
 					ctl = new Controls.PictureFrame();
-					int size = 16;
-					if (item.Properties["pixel_size"] != null)
-					{
-						size = Int32.Parse(item.Properties["pixel_size"].Value);
-					}
-					if (item.Properties["icon_name"] != null)
-					{
-						(ctl as Controls.PictureFrame).Image = Image.FromName(item.Properties["icon_name"].Value, size);
-					}
-					else if (item.Properties["stock"] != null)
-					{
-						(ctl as Controls.PictureFrame).Image = Image.FromName(item.Properties["stock"].Value, size);
-					}
+					(ctl as Controls.PictureFrame).Image = ImageFromGtkImage(item);
 					break;
 				}
 				case "GtkPaned":
@@ -822,6 +806,36 @@ namespace MBS.Framework.UserInterface
 			return ctl;
 		}
 
+		private Image ImageFromGtkImage(LayoutItem item)
+		{
+			int size = 16;
+			if (item.Properties["pixel_size"] != null)
+			{
+				size = Int32.Parse(item.Properties["pixel_size"].Value);
+			}
+			else if (item.Properties["icon_size"] != null)
+			{
+				int sizePreset = Int32.Parse(item.Properties["icon_size"].Value);
+				switch (sizePreset)
+				{
+					case 6: // dialog
+						{
+							size = 48;
+							break;
+						}
+				}
+			}
+			if (item.Properties["icon_name"] != null)
+			{
+				return Image.FromName(item.Properties["icon_name"].Value, size);
+			}
+			else if (item.Properties["stock"] != null)
+			{
+				return Image.FromName(item.Properties["stock"].Value, size);
+			}
+			return null;
+		}
+
 		private VerticalAlignment ParseVerticalAlignment(string value)
 		{
 			switch (value.ToLower())
@@ -942,12 +956,25 @@ namespace MBS.Framework.UserInterface
 							(container.Layout as BoxLayout).Spacing = p;
 						}
 					}
+					if (item.Properties["homogeneous"] != null)
+					{
+						(container.Layout as BoxLayout).Homogeneous = (item.Properties["homogeneous"].Value == "True");
+					}
 					break;
 				}
 				case "GtkGrid":
 				{
 					// layout is a GridLayout
 					container.Layout = new GridLayout();
+
+					if (item.Properties["row_homogeneous"] != null)
+					{
+						(container.Layout as GridLayout).RowHomogeneous = (item.Properties["row_homogeneous"].Value == "True");
+					}
+					if (item.Properties["column_homogeneous"] != null)
+					{
+						(container.Layout as GridLayout).ColumnHomogeneous = (item.Properties["column_homogeneous"].Value == "True");
+					}
 					break;
 				}
 			}

@@ -21,7 +21,7 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public sealed class CustomPlugin : Plugin
+	public sealed class CustomPlugin : UserInterfacePlugin
 	{
 		public class CustomPluginCollection
 			: System.Collections.ObjectModel.Collection<CustomPlugin>

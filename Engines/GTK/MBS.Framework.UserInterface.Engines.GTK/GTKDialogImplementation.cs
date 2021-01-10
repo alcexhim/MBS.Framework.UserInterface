@@ -156,7 +156,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
 		private bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
 		{
-			Window window = ((Application.Engine as GTKEngine).GetControlByHandle(widget) as Window);
+			Window window = ((((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(widget) as Window);
 			if (window != null)
 			{
 				WindowClosingEventArgs e = new WindowClosingEventArgs(WindowCloseReason.UserClosing);
@@ -251,6 +251,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					}
 					case (int)Internal.GTK.Constants.GtkResponseType.Apply:
 					{
+						result = DialogResult.Apply;
 						break;
 					}
 					case (int)Internal.GTK.Constants.GtkResponseType.Cancel:

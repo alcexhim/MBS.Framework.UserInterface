@@ -164,7 +164,7 @@ namespace MBS.Framework.UserInterface
 		}
 		public string GetControlText (Control control)
 		{
-			if (!Application.Engine.IsControlCreated (control))
+			if (!((UIApplication)Application.Instance).Engine.IsControlCreated (control))
 				return null;
 			return GetControlTextInternal (control);
 		}
@@ -233,6 +233,13 @@ namespace MBS.Framework.UserInterface
 		{
 			SetControlVisibilityInternal (visible);
 		}
+
+		protected abstract void SetMarginInternal(Padding value);
+		public void SetMargin(Padding value)
+		{
+			SetMarginInternal(value);
+		}
+
 		protected abstract void SetControlVisibilityInternal (bool visible);
 
 		protected abstract void UpdateControlFontInternal(Font font);

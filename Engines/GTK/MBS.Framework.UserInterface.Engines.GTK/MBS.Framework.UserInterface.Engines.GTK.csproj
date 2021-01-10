@@ -73,8 +73,6 @@
     <Compile Include="Controls\WindowImplementation.cs" />
     <Compile Include="Dialogs\PrintDialogImplementation.cs" />
     <Compile Include="Drawing\GTKGraphics.cs" />
-    <Compile Include="Internal\AppIndicator\Constants.cs" />
-    <Compile Include="Internal\AppIndicator\Methods.cs" />
     <Compile Include="Internal\Cairo\Constants.cs" />
     <Compile Include="Internal\Cairo\Methods.cs" />
     <Compile Include="Internal\Cairo\Structures.cs" />
@@ -227,6 +225,11 @@
     <Compile Include="Internal\GTK\Methods\GtkSwitch.cs" />
     <Compile Include="Internal\Pango\Constants.cs" />
     <Compile Include="GTKNativeControlContainer.cs" />
+    <Compile Include="InternalAPI\GTK\GSettings.cs" />
+    <Compile Include="InternalAPI\AppIndicator\AppIndicatorCategory.cs" />
+    <Compile Include="InternalAPI\AppIndicator\Indicator.cs" />
+    <Compile Include="InternalAPI\AppIndicator\AppIndicatorStatus.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkEntryCompletion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -237,6 +240,9 @@
     <Folder Include="Printing\" />
     <Folder Include="Internal\WebKit\" />
     <Folder Include="Controls\WebBrowser\" />
+    <Folder Include="InternalAPI\" />
+    <Folder Include="InternalAPI\GTK\" />
+    <Folder Include="InternalAPI\AppIndicator\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\UniversalEditor\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">

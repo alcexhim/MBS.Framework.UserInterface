@@ -1,10 +1,10 @@
 ﻿//
-//  DefaultCommandLine.cs
+//  UICommand.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2020 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public class DefaultCommandLine : CommandLine
+	public class UICommand : Command
 	{
+		public bool EnableTearoff { get; set; } = false;
+		public Shortcut Shortcut { get; set; } = null;
 	}
 }

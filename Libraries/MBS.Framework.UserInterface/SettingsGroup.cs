@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
 {
@@ -46,6 +47,27 @@ namespace MBS.Framework.UserInterface
 				}
 				Add (grp);
 				return grp;
+			}
+
+			private Dictionary<Guid, SettingsGroup> _itemsByID = new Dictionary<Guid, SettingsGroup>();
+			protected override void ClearItems()
+			{
+				base.ClearItems();
+				_itemsByID.Clear();
+			}
+			protected override void InsertItem(int index, SettingsGroup item)
+			{
+				base.InsertItem(index, item);
+				_itemsByID[item.ID] = item;
+			}
+			protected override void RemoveItem(int index)
+			{
+				_itemsByID.Remove(this[index].ID);
+				base.RemoveItem(index);
+			}
+			public bool Contains(Guid id)
+			{
+				return _itemsByID.ContainsKey(id);
 			}
 		}
 
@@ -94,6 +116,8 @@ namespace MBS.Framework.UserInterface
 				return yprior.CompareTo(xprior);
 			}
 		}
+
+		public Guid ID { get; set; } = Guid.Empty;
 
 		public string[] GetPath()
 		{

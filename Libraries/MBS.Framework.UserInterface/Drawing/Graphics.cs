@@ -13,7 +13,7 @@ namespace MBS.Framework.UserInterface.Drawing
 	{
 		public static Graphics FromImage(Image image)
 		{
-			return Application.Engine.CreateGraphics(image);
+			return ((UIApplication)Application.Instance).Engine.CreateGraphics(image);
 		}
 
 		protected abstract void DrawImageInternal(Image image, double x, double y, double width, double height);
@@ -36,7 +36,7 @@ namespace MBS.Framework.UserInterface.Drawing
 
 		private Vector2D DpiScale(Vector2D point)
 		{
-			if (Application.ShouldDpiScale)
+			if (((UIApplication)Application.Instance).ShouldDpiScale)
 			{
 				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
 				return new Vector2D(point.X * sf, point.Y * sf);
@@ -45,7 +45,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		}
 		private Rectangle DpiScale(Rectangle rect)
 		{
-			if (Application.ShouldDpiScale)
+			if (((UIApplication)Application.Instance).ShouldDpiScale)
 			{
 				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
 				return new Rectangle(rect.X * sf, rect.Y * sf, rect.Width * sf, rect.Height * sf);
@@ -54,7 +54,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		}
 		private void DpiScale(ref double x, ref double y, ref double w, ref double h)
 		{
-			if (Application.ShouldDpiScale)
+			if (((UIApplication)Application.Instance).ShouldDpiScale)
 			{
 				double sf = Screen.Default.PrimaryMonitor.ScaleFactor;
 				x *= sf;

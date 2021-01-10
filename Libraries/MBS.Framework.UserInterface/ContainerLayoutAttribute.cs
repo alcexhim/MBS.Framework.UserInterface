@@ -21,28 +21,31 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class ContainerLayoutAttribute : Attribute
+	public partial class Container
 	{
-		public string PathName { get; private set; } = String.Empty;
-		public string ClassName { get; private set; } = null;
-		public Type ResourceType { get; private set; } = null;
+		[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+		public class ContainerLayoutAttribute : Attribute
+		{
+			public string PathName { get; private set; } = String.Empty;
+			public string ClassName { get; private set; } = null;
+			public Type ResourceType { get; private set; } = null;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:MBS.Framework.UserInterface.WindowLayoutAttribute"/> class.
-		/// </summary>
-		/// <param name="pathName">Path name.</param>
-		public ContainerLayoutAttribute(string pathName, string className = null)
-		{
-			PathName = pathName;
-			ClassName = className;
-			ResourceType = null;
-		}
-		public ContainerLayoutAttribute(Type resourceType, string pathName, string className = null)
-		{
-			PathName = pathName;
-			ClassName = className;
-			ResourceType = resourceType;
+			/// <summary>
+			/// Initializes a new instance of the <see cref="T:MBS.Framework.UserInterface.WindowLayoutAttribute"/> class.
+			/// </summary>
+			/// <param name="pathName">Path name.</param>
+			public ContainerLayoutAttribute(string pathName, string className = null)
+			{
+				PathName = pathName;
+				ClassName = className;
+				ResourceType = null;
+			}
+			public ContainerLayoutAttribute(Type resourceType, string pathName, string className = null)
+			{
+				PathName = pathName;
+				ClassName = className;
+				ResourceType = resourceType;
+			}
 		}
 	}
 }

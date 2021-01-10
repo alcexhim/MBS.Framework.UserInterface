@@ -101,7 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						if (item is RibbonCommandItemButton) {
 							RibbonCommandItemButton tsb = (item as RibbonCommandItemButton);
 
-							Command cmd = Application.Commands [tsb.CommandID];
+							Command cmd = ((UIApplication)Application.Instance).Commands [tsb.CommandID];
 
 							if (cmd == null)
 								continue;
@@ -162,7 +162,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			RibbonCommandItemButton rcib = btn.GetExtraData<RibbonCommandItemButton> ("rcib");
 			if (rcib == null) return;
 
-			Application.ExecuteCommand (rcib.CommandID);
+			((UIApplication)Application.Instance).ExecuteCommand (rcib.CommandID);
 		}
 
 
@@ -218,6 +218,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override bool HasFocusInternal()
 		{
 			return (tbs?.Focused).GetValueOrDefault();
+		}
+
+		protected override void SetMarginInternal(Padding value)
+		{
+			tbs.Margin = value;
 		}
 	}
 }

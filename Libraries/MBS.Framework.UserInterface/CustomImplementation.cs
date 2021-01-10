@@ -96,6 +96,11 @@ namespace MBS.Framework.UserInterface
 		{
 			return (Handle as CustomNativeControl).Handle.Parent;
 		}
+
+		protected override void SetMarginInternal(Padding value)
+		{
+			// FIXME: not implemented
+		}
 	}
 }
 

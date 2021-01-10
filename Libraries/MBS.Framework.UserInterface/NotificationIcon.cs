@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace MBS.Framework.UserInterface
 {
@@ -29,7 +29,7 @@ namespace MBS.Framework.UserInterface
 		/// icons must be installed to the system's icon repository (on Ubuntu, this is /usr/share/icons ).
 		/// </summary>
 		/// <value>The name of the icon.</value>
-		public string IconNameDefault { get { return mvarIconNameDefault; } set { mvarIconNameDefault = value; Application.Engine.UpdateNotificationIcon (this);} }
+		public string IconNameDefault { get { return mvarIconNameDefault; } set { mvarIconNameDefault = value; ((UIApplication)Application.Instance).Engine.UpdateNotificationIcon (this);} }
 
 		private string mvarIconNameAttention = String.Empty;
 		/// <summary>
@@ -38,20 +38,20 @@ namespace MBS.Framework.UserInterface
 		/// icons must be installed to the system's icon repository (on Ubuntu, this is /usr/share/icons ).
 		/// </summary>
 		/// <value>The name of the icon.</value>
-		public string IconNameAttention { get { return mvarIconNameAttention; } set { mvarIconNameAttention = value; Application.Engine.UpdateNotificationIcon (this); } }
+		public string IconNameAttention { get { return mvarIconNameAttention; } set { mvarIconNameAttention = value; ((UIApplication)Application.Instance).Engine.UpdateNotificationIcon (this); } }
 
 		private string mvarText = String.Empty;
-		public string Text { get { return mvarText; } set { mvarText = value; Application.Engine.UpdateNotificationIcon (this); } }
+		public string Text { get { return mvarText; } set { mvarText = value; ((UIApplication)Application.Instance).Engine.UpdateNotificationIcon (this); } }
 
 		private NotificationIconStatus mvarStatus = NotificationIconStatus.Hidden;
-		public NotificationIconStatus Status { get { return mvarStatus; } set { mvarStatus = value; Application.Engine.UpdateNotificationIcon (this); } }
+		public NotificationIconStatus Status { get { return mvarStatus; } set { mvarStatus = value; ((UIApplication)Application.Instance).Engine.UpdateNotificationIcon (this); } }
 
 		private Menu mvarContextMenu = null;
 		public Menu ContextMenu {
 			get { return mvarContextMenu; }
 			set {
 				mvarContextMenu = value;
-				Application.Engine.UpdateNotificationIcon (this, true);
+				((UIApplication)Application.Instance).Engine.UpdateNotificationIcon (this, true);
 			}
 		}
 

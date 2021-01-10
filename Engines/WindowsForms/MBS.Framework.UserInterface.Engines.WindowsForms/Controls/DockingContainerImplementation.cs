@@ -100,7 +100,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Engines.WindowsForms.
 
 				DockContent dcontent = new DockContent();
 
-				dcontent.TabPageContextMenuStrip = (Application.Engine as WindowsFormsEngine).BuildContextMenuStrip(Menu.FromCommand(Application.Commands["DockingWindowTabPageContextMenu"]));
+				dcontent.TabPageContextMenuStrip = (((UIApplication)Application.Instance).Engine as WindowsFormsEngine).BuildContextMenuStrip(Menu.FromCommand(((UIApplication)Application.Instance).Commands["DockingWindowTabPageContextMenu"]));
 				dcontent.Text = item.Title;
 				wfcChild.Dock = System.Windows.Forms.DockStyle.Fill;
 

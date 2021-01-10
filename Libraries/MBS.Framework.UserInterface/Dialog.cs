@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using MBS.Framework.UserInterface.Controls;
@@ -28,7 +28,7 @@ namespace MBS.Framework.UserInterface
 		// [DebuggerNonUserCode()]
 		public DialogResult ShowDialog(Window parent = null)
 		{
-			DialogResult result = Application.Engine.ShowDialog(this, parent);
+			DialogResult result = ((UIApplication)Application.Instance).Engine.ShowDialog(this, parent);
 			if (result == DialogResult.None)
 				return DialogResult;
 			return result;

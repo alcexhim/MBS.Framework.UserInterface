@@ -46,10 +46,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 
 		protected override void DrawImageInternal(Image image, double x, double y, double width, double height)
 		{
-			Internal.GDK.Methods.gdk_cairo_set_source_pixbuf(mvarCairoContext, (image as GDKPixbufImage).Handle, x, y);
+			double width_ratio = width / image.Width;
+			double height_ratio = height / image.Height;
+
+			Internal.Cairo.Methods.cairo_save(mvarCairoContext);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, x, y);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_scale(mvarCairoContext, width_ratio, height_ratio);
+			CheckStatus();
+
+			Internal.GDK.Methods.gdk_cairo_set_source_pixbuf(mvarCairoContext, (image as GDKPixbufImage).Handle, 0, 0);
 			CheckStatus();
 
 			Internal.Cairo.Methods.cairo_paint(mvarCairoContext);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_restore(mvarCairoContext);
 			CheckStatus();
 		}
 

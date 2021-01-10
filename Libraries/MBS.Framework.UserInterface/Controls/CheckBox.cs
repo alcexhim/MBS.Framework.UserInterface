@@ -69,7 +69,7 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			get
 			{
-				if (!Application.Engine.IsControlCreated (this)) {
+				if (!((UIApplication)Application.Instance).Engine.IsControlCreated (this)) {
 					return mvarChecked;
 				}
 

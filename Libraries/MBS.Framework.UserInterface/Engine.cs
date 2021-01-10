@@ -251,7 +251,7 @@ namespace MBS.Framework.UserInterface
 		{
 			List<Engine> list = new List<Engine>();
 
-			Plugin[] enginePlugins = Plugin.Get(new Feature[] { KnownFeatures.UWTPlatform });
+			UserInterfacePlugin[] enginePlugins = UserInterfacePlugin.Get(new Feature[] { KnownFeatures.UWTPlatform }, true);
 			for (int i = 0; i < enginePlugins.Length; i++)
 			{
 				if (enginePlugins[i] is EnginePlugin)
@@ -332,7 +332,7 @@ namespace MBS.Framework.UserInterface
 		public int Start(Window waitForClose = null)
 		{
 			int retval = StartInternal(waitForClose);
-			Application.Exited = true;
+			((UIApplication)Application.Instance).Exited = true;
 			return retval;
 		}
 		public void Stop(int exitCode = 0)
@@ -690,6 +690,12 @@ namespace MBS.Framework.UserInterface
 		public Process LaunchApplication(string path, string arguments)
 		{
 			return LaunchApplicationInternal(path, arguments);
+		}
+
+		protected abstract void PlaySystemSoundInternal(SystemSound sound);
+		public void PlaySystemSound(SystemSound sound)
+		{
+			PlaySystemSoundInternal(sound);
 		}
 	}
 }

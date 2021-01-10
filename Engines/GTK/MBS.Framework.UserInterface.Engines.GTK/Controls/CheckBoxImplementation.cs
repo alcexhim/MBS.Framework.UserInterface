@@ -64,7 +64,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				bool changed = (state != value);
 
 				if (changed)
+				{
+					_inhibit_state_set = true;
 					Internal.GObject.Methods.g_signal_emit_by_name(handle, "activate");
+					_inhibit_state_set = false;
+				}
 				// Internal.GTK.Methods.GtkSwitch.gtk_switch_set_active(handle, value);
 			}
 		}
@@ -72,6 +76,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Action<IntPtr> toggled_d = null;
 		private void toggled(IntPtr handle)
 		{
+			if (_inhibit_state_set) return;
 			OnChanged(EventArgs.Empty);
 		}
 		private bool _inhibit_state_set = false;

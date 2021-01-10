@@ -29,11 +29,11 @@ namespace MBS.Framework.UserInterface.SettingsProviders
 		{
 			base.InitializeInternal();
 			SettingsGroups[1].Settings.Clear();
-			for (int i = 0; i < Application.Features.Count; i++)
+			for (int i = 0; i < ((UIApplication)Application.Instance).Features.Count; i++)
 			{
-				Feature feature = Application.Features[i];
+				Feature feature = ((UIApplication)Application.Instance).Features[i];
 
-				Plugin[] availablePluginsForFeature = Plugin.Get(new Feature[] { feature });
+				UserInterfacePlugin[] availablePluginsForFeature = UserInterfacePlugin.Get(new Feature[] { feature });
 				List<ChoiceSetting.ChoiceSettingValue> listValues = new List<ChoiceSetting.ChoiceSettingValue>();
 				for (int j = 0; j < availablePluginsForFeature.Length; j++)
 				{

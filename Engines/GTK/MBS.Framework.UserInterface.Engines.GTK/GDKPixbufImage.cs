@@ -30,6 +30,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		internal GDKPixbufImage(IntPtr handle)
 		{
 			Handle = handle;
+
+			Width = Internal.GDK.Methods.gdk_pixbuf_get_width(handle);
+			Height = Internal.GDK.Methods.gdk_pixbuf_get_height(handle);
 		}
 	}
 }

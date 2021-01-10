@@ -54,12 +54,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GIO
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_action_map_add_action (IntPtr /*GActionMap*/ action_map, IntPtr  /*GAction*/ action);
 		#endregion
-
-
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern IntPtr /*GSettings*/ g_settings_new(string schema_id);
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern int g_settings_get_int(IntPtr /*GSettings*/ settings, string key);
 	}
 }
 

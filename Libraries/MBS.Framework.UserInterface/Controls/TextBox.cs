@@ -46,6 +46,8 @@ namespace MBS.Framework.UserInterface.Controls
 		/// <value><c>true</c> if multiline; otherwise, <c>false</c>.</value>
 		public bool Multiline {  get { return mvarMultiline;  } set { mvarMultiline = value; } }
 
+		public DefaultTreeModel CompletionModel { get; } = new DefaultTreeModel(new Type[] { typeof(string) });
+
 		private HorizontalAlignment _TextAlignment = HorizontalAlignment.Default;
 		public HorizontalAlignment TextAlignment
 		{

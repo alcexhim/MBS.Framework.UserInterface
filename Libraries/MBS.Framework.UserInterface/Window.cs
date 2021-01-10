@@ -28,6 +28,9 @@ namespace MBS.Framework.UserInterface
 
 			string GetDocumentFileName();
 			void SetDocumentFileName(string value);
+
+			bool IsFullScreen();
+			void SetFullScreen(bool value);
 		}
 	}
 	public class Window : Container
@@ -41,7 +44,7 @@ namespace MBS.Framework.UserInterface
 		{
 			ToolbarItemButton tsb = (sender as ToolbarItemButton);
 			CommandReferenceCommandItem crci = tsb.GetExtraData<CommandReferenceCommandItem>("crci");
-			Command cmd = Application.Commands[crci.CommandID];
+			Command cmd = ((UIApplication)Application.Instance).Commands[crci.CommandID];
 			cmd.Execute();
 		}
 
@@ -56,7 +59,7 @@ namespace MBS.Framework.UserInterface
 			else if (ci is CommandReferenceCommandItem)
 			{
 				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
-				Command cmd = Application.Commands[crci.CommandID];
+				Command cmd = ((UIApplication)Application.Instance).Commands[crci.CommandID];
 				if (cmd == null) return null;
 
 				ToolbarItemButton tsb = new ToolbarItemButton(cmd.ID, (StockType)cmd.StockType);
@@ -137,7 +140,7 @@ namespace MBS.Framework.UserInterface
 			MenuBar = new Menu(this);
 			TitleBarButtons = new Button.ButtonCollection(this);
 
-			Application.AddWindow(this);
+			((UIApplication)Application.Instance).AddWindow(this);
 		}
 
 		private string mvarIconName = null;
@@ -171,7 +174,7 @@ namespace MBS.Framework.UserInterface
 
 		public bool Resizable { get; set; } = true;
 
-		public bool HasFocus => Application.Engine.WindowHasFocus(this);
+		public bool HasFocus => ((UIApplication)Application.Instance).Engine.WindowHasFocus(this);
 		
 		public event EventHandler Activate;
 		protected virtual void OnActivate(EventArgs e)
@@ -199,7 +202,7 @@ namespace MBS.Framework.UserInterface
 
 		public static Window[] GetToplevelWindows()
 		{
-			return Application.Engine.GetToplevelWindows(); 
+			return ((UIApplication)Application.Instance).Engine.GetToplevelWindows(); 
 		}
 
 		private string _DocumentFileName = null;
@@ -228,7 +231,7 @@ namespace MBS.Framework.UserInterface
 		public bool Close()
 		{
 			// more than just a convenience method - Destroy() does not fire WindowClosing event
-			WindowClosingEventArgs ee = new WindowClosingEventArgs(Application.Stopping ? WindowCloseReason.ApplicationStop : WindowCloseReason.None);
+			WindowClosingEventArgs ee = new WindowClosingEventArgs(((UIApplication)Application.Instance).Stopping ? WindowCloseReason.ApplicationStop : WindowCloseReason.None);
 			OnClosing(ee);
 			if (ee.Cancel)
 				return false;
@@ -243,7 +246,25 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public void Present(DateTime timestamp)
 		{
-			Application.Engine.PresentWindow(this, timestamp);
+			((UIApplication)Application.Instance).Engine.PresentWindow(this, timestamp);
+		}
+
+		private bool _FullScreen = false;
+		public bool FullScreen
+		{
+			get
+			{
+				Native.IWindowNativeImplementation impl = (ControlImplementation as Native.IWindowNativeImplementation);
+				if (impl == null)
+					return _FullScreen;
+
+				return impl.IsFullScreen();
+			}
+			set
+			{
+				_FullScreen = value;
+				(ControlImplementation as Native.IWindowNativeImplementation)?.SetFullScreen(value);
+			}
 		}
 	}
 }

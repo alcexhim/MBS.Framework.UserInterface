@@ -1,10 +1,10 @@
 ﻿//
-//  CommandLineOptionValueType.cs
+//  PrintPreviewEvent.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,12 +19,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface
+namespace MBS.Framework.UserInterface.Printing
 {
-	public enum CommandLineOptionValueType
+	public class PrintPreviewEventArgs : PrintEventArgs
 	{
-		None = 0,
-		Single = 1,
-		Multiple = 2
+		public bool Handled { get; set; } = false;
+
+		public PrintPreviewEventArgs(Drawing.Graphics graphics) : base(graphics)
+		{
+		}
 	}
+	public delegate void PrintPreviewEventHandler(object sender, PrintPreviewEventArgs e);
 }

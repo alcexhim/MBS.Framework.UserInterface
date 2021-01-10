@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
@@ -78,11 +78,8 @@ namespace MBS.Framework.UserInterface
 		/// <value>The data.</value>
 		public object Data { get { return mvarData; } set { mvarData = value; } }
 
-		private MenuItemHorizontalAlignment mvarHorizontalAlignment = MenuItemHorizontalAlignment.Left;
-		public MenuItemHorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
-
 		private bool _Visible = true;
-		public bool Visible { get { return _Visible; } set { _Visible = value; Application.Engine.SetMenuItemVisibility(this, value); } }
+		public bool Visible { get { return _Visible; } set { _Visible = value; ((UIApplication)Application.Instance).Engine.SetMenuItemVisibility(this, value); } }
 
 		public static MenuItem[] LoadMenuItem(CommandItem ci, EventHandler onclick = null)
 		{
@@ -92,16 +89,19 @@ namespace MBS.Framework.UserInterface
 			{
 				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
 
-				Command cmd = Application.Commands[crci.CommandID];
+				Command cmd = Application.Instance.Commands[crci.CommandID];
 				if (cmd != null)
 				{
 					CommandMenuItem mi = new CommandMenuItem(cmd.Title);
 					mi.Name = cmd.ID;
 					mi.Enabled = cmd.Enabled;
-					mi.Shortcut = cmd.Shortcut;
+					if (cmd is UICommand)
+					{
+						mi.Shortcut = ((UICommand)cmd).Shortcut;
+					}
 					mi.StockType = cmd.StockType;
 					mi.IconName = cmd.ImageFileName;
-					mi.HorizontalAlignment = crci.HorizontalAlignment;
+					// mi.HorizontalAlignment = crci.HorizontalAlignment;
 					if (cmd.Items.Count > 0)
 					{
 						foreach (CommandItem ci1 in cmd.Items)

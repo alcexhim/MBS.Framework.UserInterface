@@ -14,7 +14,8 @@ namespace MBS.Framework.UserInterface
 		Ignore,
 		TryAgain,
 		Continue,
-		Help
+		Help,
+		Apply
 	}
 	
 }

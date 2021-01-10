@@ -27,7 +27,7 @@ namespace MBS.Framework.UserInterface
 
 		// definitions from System.Windows.Forms.CloseReason
 		/// <summary>
-		/// The window is being closed due to a call to <see cref="Application.Stop(int)" />.
+		/// The window is being closed due to a call to <see cref="UIApplication.Stop(int)" />.
 		/// </summary>
 		ApplicationStop = 6,
 		/// <summary>

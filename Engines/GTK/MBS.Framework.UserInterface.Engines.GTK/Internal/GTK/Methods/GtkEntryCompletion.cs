@@ -1,10 +1,10 @@
 ﻿//
-//  ISupportsExtraData.cs
+//  GtkEntryCompletion.cs - declares P/Invoke methods for the GtkEntryCompletion control
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2020 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,17 +18,23 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-namespace MBS.Framework.UserInterface
+using System.Runtime.InteropServices;
+
+namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
 	/// <summary>
-	/// Provides methods to store and retrieve extra data parameters on objects.
+	/// Declares P/Invoke methods for the GtkEntryCompletion control.
 	/// </summary>
-	public interface ISupportsExtraData
+	internal static class GtkEntryCompletion
 	{
-		T GetExtraData<T>(string key, T defaultValue = default(T));
-		void SetExtraData<T>(string key, T value);
-		object GetExtraData(string key, object defaultValue = null);
-		void SetExtraData(string key, object value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr gtk_entry_completion_new();
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_entry_completion_set_model(IntPtr /*GtkEntryCompletion*/ completion, IntPtr /*GtkTreeModel*/ treeModel);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_entry_completion_set_text_column(IntPtr /*GtkEntryCompletion*/ completion, int column);
 	}
 }

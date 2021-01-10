@@ -647,6 +647,52 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			Never = 2,
 			External = 3
 		}
+
+		[Flags()]
+		public enum GtkPrintCapabilities
+		{
+			None = 0,
+			/// <summary>
+			/// Print dialog will offer printing even/odd pages.
+			/// </summary>
+			PageSet = 1 << 0,
+			/// <summary>
+			/// Print dialog will allow to print multiple copies.
+			/// </summary>
+			Copies = 1 << 1,
+			/// <summary>
+			/// Print dialog will allow to collate multiple copies.
+			/// </summary>
+			Collate = 1 << 2,
+			/// <summary>
+			/// Print dialog will allow to print pages in reverse order.
+			/// </summary>
+			Reverse = 1 << 3,
+			/// <summary>
+			/// Print dialog will allow to scale the output.
+			/// </summary>
+			Scale = 1 << 4,
+			/// <summary>
+			/// The program will send the document to the printer in PDF format
+			/// </summary>
+			GeneratePDF = 1 << 5,
+			/// <summary>
+			/// The program will send the document to the printer in Postscript format
+			/// </summary>
+			GeneratePostScript = 1 << 6,
+			/// <summary>
+			/// Print dialog will offer a preview
+			/// </summary>
+			Preview = 1 << 7,
+			/// <summary>
+			/// Print dialog will offer printing multiple pages per sheet. Since 2.12
+			/// </summary>
+			MultiplePagesPerSheet = 1 << 8,
+			/// <summary>
+			/// Print dialog will allow to rearrange pages when printing multiple pages per sheet. Since 2.14
+			/// </summary>
+			MultiplePagesPerSheetLayout = 1 << 9
+		}
 	}
 }
 

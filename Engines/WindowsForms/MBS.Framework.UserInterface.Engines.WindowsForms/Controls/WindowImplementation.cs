@@ -100,7 +100,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			foreach (MenuItem m in window.MenuBar.Items)
 			{
-				System.Windows.Forms.ToolStripItem tsmi = (Application.Engine as WindowsFormsEngine).InitMenuItem(m);
+				System.Windows.Forms.ToolStripItem tsmi = (((UIApplication)Application.Instance).Engine as WindowsFormsEngine).InitMenuItem(m);
 				if (tsmi != null)
 					mb.Items.Add(tsmi);
 			}
@@ -110,7 +110,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
-				foreach (CommandBar cb in Application.CommandBars)
+				foreach (CommandBar cb in ((UIApplication)Application.Instance).CommandBars)
 				{
 					Toolbar tbCommandBar = window.LoadCommandBar(cb);
 					if (!tbCommandBar.IsCreated)
@@ -298,6 +298,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			System.Windows.Forms.ToolStripItem tsi = ((Engine as WindowsFormsEngine).GetHandleForMenuItem(item) as WindowsFormsNativeMenuItem).Handle;
 			mb.Items.Remove(tsi);
+		}
+
+		public bool IsFullScreen()
+		{
+			return false;
+		}
+		public void SetFullScreen(bool value)
+		{
+			
 		}
 	}
 }

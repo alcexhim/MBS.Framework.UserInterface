@@ -56,7 +56,14 @@ namespace MBS.Framework.UserInterface.Controls
 							}
 							else if (this == Parent.Panel2)
 							{
-								Parent.mvarSplitterPosition = (int)Parent.Size.Width;
+								if (Parent.Orientation == Orientation.Horizontal)
+								{
+									Parent.mvarSplitterPosition = (int)Parent.Size.Height;
+								}
+								else
+								{
+									Parent.mvarSplitterPosition = (int)Parent.Size.Width;
+								}
 							}
 						}
 						(Parent.ControlImplementation as Native.ISplitContainerImplementation)?.SetSplitterPosition(Parent.mvarSplitterPosition);

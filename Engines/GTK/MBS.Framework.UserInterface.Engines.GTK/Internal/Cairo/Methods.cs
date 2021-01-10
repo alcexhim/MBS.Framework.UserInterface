@@ -37,6 +37,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_stroke(IntPtr /*cairo_t*/ cc);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_scale(IntPtr /*cairo_t*/ cr, double sx, double sy);
+
 		/// <summary>
 		/// A drawing operator that strokes the current path according to the current line width, line join, line cap, and dash settings. Unlike <see cref="cairo_stroke"/>, <see cref="cairo_stroke_preserve"/> preserves the path within the cairo context.
 		/// </summary>
@@ -168,5 +171,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		public static extern int cairo_image_surface_get_height(IntPtr /*cairo_surface_t*/ surface);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int cairo_image_surface_get_width(IntPtr /*cairo_surface_t*/ surface);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_save(IntPtr /*cairo_t*/ cr);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_restore(IntPtr /*cairo_t*/ cr);
 	}
 }

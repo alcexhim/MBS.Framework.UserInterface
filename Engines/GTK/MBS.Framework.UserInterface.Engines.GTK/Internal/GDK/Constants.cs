@@ -166,6 +166,79 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		{
 			RGB
 		}
+
+		[Flags()]
+		public enum GdkWindowState
+		{
+			/// <summary>
+			/// The window is not shown.
+			/// </summary>
+			Withdrawn,
+			/// <summary>
+			/// The window is minimized.
+			/// </summary>
+			Iconified,
+			/// <summary>
+			/// The window is maximized.
+			/// </summary>
+			Maximized,
+			/// <summary>
+			/// The window is sticky.
+			/// </summary>
+			Sticky,
+			/// <summary>
+			/// The window is maximized without decorations.
+			/// </summary>
+			Fullscreen,
+			/// <summary>
+			/// The window is kept above other windows.
+			/// </summary>
+			Above,
+			/// <summary>
+			/// The window is kept below other windows.
+			/// </summary>
+			Below,
+			/// <summary>
+			/// The window is presented as focused (with active decorations).
+			/// </summary>
+			Focused,
+			/// <summary>
+			/// The window is in a tiled state, Since 3.10. Since 3.22.23, this is deprecated in favor of per-edge information.
+			/// </summary>
+			Tiled,
+			/// <summary>
+			/// Whether the top edge is tiled, Since 3.22.23
+			/// </summary>
+			TopTiled,
+			/// <summary>
+			/// Whether the top edge is resizable, Since 3.22.23
+			/// </summary>
+			TopResizable,
+			/// <summary>
+			/// Whether the right edge is tiled, Since 3.22.23
+			/// </summary>
+			RightTiled,
+			/// <summary>
+			/// Whether the right edge is resizable, Since 3.22.23
+			/// </summary>
+			RightResizable,
+			/// <summary>
+			/// Whether the bottom edge is tiled, Since 3.22.23
+			/// </summary>
+			BottomTiled,
+			/// <summary>
+			/// Whether the bottom edge is resizable, Since 3.22.23
+			/// </summary>
+			BottomResizable,
+			/// <summary>
+			/// Whether the left edge is tiled, Since 3.22.23
+			/// </summary>
+			LeftTiled,
+			/// <summary>
+			/// Whether the left edge is resizable, Since 3.22.23
+			/// </summary>
+			LeftResizable
+		}
 	}
 }
 

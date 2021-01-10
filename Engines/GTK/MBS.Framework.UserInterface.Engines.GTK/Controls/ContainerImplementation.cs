@@ -17,7 +17,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private void _hListBox_row_activated(IntPtr listbox, IntPtr row)
 		{
 			Control ctlChild = (Engine as GTKEngine).GetControlByHandle(row);
-			InvokeMethod(ctlChild, "OnClick", new object[] { EventArgs.Empty });
+			Console.WriteLine("activating row {0} for child {1}", row, (ctlChild as Container).Controls[0].Text);
+
+			// FIXME: for some reason the SettingsDialog gets confused, perhaps by GetControlByHandle function
+			// FIXME: also there is some really weird voodoo going on, second time SettingsDialog EVERYTHING is screwed up
+			// ............ resulting in crash if we try to derefeerence ^^^ Text
+			// InvokeMethod(ctlChild, "OnClick", new object[] { EventArgs.Empty });
 		}
 
 		private Dictionary<Layout, IntPtr> handlesByLayout = new Dictionary<Layout, IntPtr>();
@@ -166,6 +171,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					// hContainer = Internal.GTK.Methods.Methods.gtk_table_new();
 					Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_spacing(hContainer, (uint)grid.RowSpacing);
 					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_spacing(hContainer, (uint)grid.ColumnSpacing);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_row_homogeneous(hContainer, grid.RowHomogeneous);
+					Internal.GTK.Methods.GtkGrid.gtk_grid_set_column_homogeneous(hContainer, grid.ColumnHomogeneous);
 				}
 			}
 			else if (layout is Layouts.FlowLayout)

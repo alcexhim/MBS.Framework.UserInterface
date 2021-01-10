@@ -23,12 +23,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 {
 	public class GTKSystemSettings : SystemSettings
 	{
+		private static class Handles
+		{
+			private static InternalAPI.GTK.GSettings _org_gnome_desktop_interface = null;
+			public static InternalAPI.GTK.GSettings org_gnome_desktop_interface
+			{
+				get
+				{
+					if (_org_gnome_desktop_interface == null)
+						_org_gnome_desktop_interface = new InternalAPI.GTK.GSettings("org.gnome.desktop.interface");
+
+					return _org_gnome_desktop_interface;
+				}
+			}
+		}
 		public override int CursorBlinkTime
 		{
 			get
 			{
-				IntPtr hSettings = Internal.GIO.Methods.g_settings_new("org.gnome.desktop.interface");
-				int value = Internal.GIO.Methods.g_settings_get_int(hSettings, "cursor-blink-time");
+				int value = Handles.org_gnome_desktop_interface.GetInt32("cursor-blink-time");
 				return value;
 			}
 		}

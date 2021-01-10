@@ -57,6 +57,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_label_set_justify(IntPtr /*GtkLabel*/ label, Constants.GtkJustification jtype);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern Constants.GtkJustification gtk_label_get_justify(IntPtr /*GtkLabel*/ label);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_label_set_width_chars(IntPtr /*GtkLabel*/ handle, int n_chars);
 	}
 }
 

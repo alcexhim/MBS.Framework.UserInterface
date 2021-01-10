@@ -55,13 +55,13 @@ namespace MBS.Framework.UserInterface
 			Tick?.Invoke(this, EventArgs.Empty);
 		}
 
-		public void Start()
+		private void Start()
 		{
-			Application.Engine.Timer_Start(this);
+			((UIApplication)Application.Instance).Engine.Timer_Start(this);
 		}
-		public void Stop()
+		private void Stop()
 		{
-			Application.Engine.Timer_Stop(this);
+			((UIApplication)Application.Instance).Engine.Timer_Stop(this);
 		}
 
 

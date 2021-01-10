@@ -151,9 +151,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				}
 			}
 
-			Application.Engine.CreateControl(dlg);
+			((UIApplication)Application.Instance).Engine.CreateControl(dlg);
 
-			return (Application.Engine.GetHandleForControl(dlg) as GTKNativeControl);
+			return (((UIApplication)Application.Instance).Engine.GetHandleForControl(dlg) as GTKNativeControl);
 		}
 	}
 }

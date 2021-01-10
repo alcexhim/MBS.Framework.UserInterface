@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using MBS.Framework.UserInterface.Dialogs;
 
 namespace MBS.Framework.UserInterface
@@ -165,7 +166,11 @@ namespace MBS.Framework.UserInterface
 			mvarValue = defaultValue;
 		}
 
+		public Guid ID { get; set; } = Guid.Empty;
+
+		[Obsolete("This is no longer implemented. Please set a proper ID in order for your setting to be saved.")]
 		public string Name { get; set; } = String.Empty;
+
 		public string Title { get; set; } = String.Empty;
 		public string Description { get; set; } = String.Empty;
 
@@ -187,6 +192,27 @@ namespace MBS.Framework.UserInterface
 					return null;
 				}
 			}
+
+			private Dictionary<Guid, Setting> _itemsByID = new Dictionary<Guid, Setting>();
+			protected override void ClearItems()
+			{
+				base.ClearItems();
+				_itemsByID.Clear();
+			}
+			protected override void InsertItem(int index, Setting item)
+			{
+				base.InsertItem(index, item);
+				_itemsByID[item.ID] = item;
+			}
+			protected override void RemoveItem(int index)
+			{
+				_itemsByID.Remove(this[index].ID);
+				base.RemoveItem(index);
+			}
+			public bool Contains(Guid id)
+			{
+				return _itemsByID.ContainsKey(id);
+			}
 		}
 
 		protected Setting()
@@ -200,6 +226,13 @@ namespace MBS.Framework.UserInterface
 
 		public virtual object GetValue(Guid? scopeId = null)
 		{
+			if (scopeId != null)
+			{
+				if (ScopedValues.Contains(scopeId.Value))
+				{
+					return ScopedValues[scopeId.Value].Value;
+				}
+			}
 			return mvarValue;
 		}
 		public virtual void SetValue(object value, Guid? scopeId = null)
@@ -224,7 +257,14 @@ namespace MBS.Framework.UserInterface
 		{
 			try
 			{
-				return (T)GetValue(scopeId);
+				object val = GetValue(scopeId);
+				if (val is T)
+					return (T)val;
+				if (val is string)
+				{
+					return (val as string).Parse<T>();
+				}
+				return defaultValue;
 			}
 			catch
 			{

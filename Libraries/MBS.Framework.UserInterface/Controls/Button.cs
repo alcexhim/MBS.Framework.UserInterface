@@ -121,7 +121,7 @@ namespace MBS.Framework.UserInterface.Controls
 		}
 
 		private ButtonBorderStyle mvarBorderStyle = ButtonBorderStyle.Normal;
-		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; Application.Engine.UpdateControlProperties (this); } }
+		public ButtonBorderStyle BorderStyle { get { return mvarBorderStyle; } set { mvarBorderStyle = value; ((UIApplication)Application.Instance).Engine.UpdateControlProperties (this); } }
 
 		public StockType StockType { get; set; } = StockType.None;
 

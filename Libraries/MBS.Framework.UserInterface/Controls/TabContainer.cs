@@ -20,7 +20,7 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetTabPosition(TabPosition position);
 		}
 	}
-	public class TabContainer : SystemControl, IVirtualControlContainer
+	public class TabContainer : SystemControl, IVirtualControlContainer, ITabPageContainer
 	{
 		private TabPosition _TabPosition = TabPosition.Top;
 		public TabPosition TabPosition

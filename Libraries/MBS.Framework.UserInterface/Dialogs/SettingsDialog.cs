@@ -53,7 +53,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (profiles == null)
 			{
-				foreach (SettingsProfile profile in Application.SettingsProfiles)
+				foreach (SettingsProfile profile in ((UIApplication)Application.Instance).SettingsProfiles)
 				{
 					if (profile.ID == SettingsProfile.AllUsersGUID || profile.ID == SettingsProfile.ThisUserGUID)
 						continue;
@@ -71,7 +71,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (providers == null)
 			{
-				foreach (SettingsProvider provider in Application.SettingsProviders)
+				foreach (SettingsProvider provider in ((UIApplication)Application.Instance).SettingsProviders)
 				{
 					this.SettingsProviders.Add(provider);
 				}
@@ -724,7 +724,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			Button btn = (sender as Button);
 			CommandSetting sett = btn.GetExtraData<CommandSetting>("setting");
 
-			Application.ExecuteCommand(sett.CommandID);
+			((UIApplication)Application.Instance).ExecuteCommand(sett.CommandID);
 		}
 
 		private void clv_ItemAdding(object sender, EventArgs e)
@@ -862,7 +862,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			if (opt is BooleanSetting)
 			{
-				ct1.Click += (sender, e) => (control as CheckBox).Checked = !(control as CheckBox).Checked;
+				// ct1.Click += (sender, e) => (control as CheckBox).Checked = !(control as CheckBox).Checked;
+				ct1.Click += chkBooleanSetting_Click;
+				ct1.SetExtraData<CheckBox>("checkbox", control as CheckBox);
 			}
 
 			ct1.Controls.Add(control, new BoxLayout.Constraints(false, false));
@@ -871,6 +873,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 			ct.Controls.Add(ct1);
 
 			iRow++;
+		}
+
+		private void chkBooleanSetting_Click(object sender, EventArgs e)
+		{
+			Container ct1 = (Container)sender;
+			CheckBox chk = ct1.GetExtraData<CheckBox>("checkbox");
+			chk.Checked = !chk.Checked;
 		}
 
 		private void AddOptionGroupPathPart(SettingsGroup grp, string[] path, int index, TreeModelRow parent = null)

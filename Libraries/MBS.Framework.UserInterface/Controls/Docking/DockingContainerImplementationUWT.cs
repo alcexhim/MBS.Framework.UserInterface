@@ -10,7 +10,7 @@ using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Controls.Docking
 {
-	[ControlImplementation(typeof(DockingContainerControl))]
+	// [ControlImplementation(typeof(DockingContainerControl))]
 	public class DockingContainerImplementationUWT : CustomImplementation, IDockingContainerNativeImplementation
 	{
 		public DockingContainerImplementationUWT(Engine engine, Control control) : base(engine, control)
@@ -45,15 +45,15 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			private void _DockingContainerContextMenu_Close(object sender, EventArgs e)
 			{
 				DockingWindow dw = _DockingContainerContextMenu.GetExtraData<DockingWindow>("dw");
-				Application.ExecuteCommand("DockingContainerContextMenu_Close", new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("Item", dw) });
+				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_Close", new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("Item", dw) });
 			}
 			private void _DockingContainerContextMenu_CloseAllButThis(object sender, EventArgs e)
 			{
-				Application.ExecuteCommand("DockingContainerContextMenu_CloseAllButThis");
+				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_CloseAllButThis");
 			}
 			private void _DockingContainerContextMenu_CloseAll(object sender, EventArgs e)
 			{
-				Application.ExecuteCommand("DockingContainerContextMenu_CloseAll");
+				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_CloseAll");
 			}
 
 			private void tbs_BeforeTabContextMenu(object sender, BeforeTabContextMenuEventArgs e)
@@ -513,6 +513,11 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		private TabPage GetTabPageForDockingItem(DockingItem item)
 		{
 			return (_TabPagesForDockingItem.ContainsKey(item) ? _TabPagesForDockingItem[item] : null);
+		}
+
+		protected override void SetMarginInternal(Padding value)
+		{
+			(Handle as CustomNativeControl).Handle.Margin = value;
 		}
 	}
 }

@@ -28,27 +28,27 @@ namespace MBS.Framework.UserInterface.Drawing
 
 		public static Image FromStock(StockType stockType, int size)
 		{
-			return Application.Engine.LoadImage(stockType, size);
+			return ((UIApplication)Application.Instance).Engine.LoadImage(stockType, size);
 		}
 		public static Image FromName(string name, int size)
 		{
-			Image image = Application.Engine.LoadImageByName(name, size);
+			Image image = ((UIApplication)Application.Instance).Engine.LoadImageByName(name, size);
 			return image;
 		}
 		public static Image FromBytes(byte[] data, string type)
 		{
-			Image image = Application.Engine.LoadImage(data, type);
+			Image image = ((UIApplication)Application.Instance).Engine.LoadImage(data, type);
 			return image;
 		}
 		public static Image FromBytes(byte[] data, int width, int height, int rowstride)
 		{
-			Image image = Application.Engine.LoadImage(data, width, height, rowstride);
+			Image image = ((UIApplication)Application.Instance).Engine.LoadImage(data, width, height, rowstride);
 			return image;
 		}
 
 		public static Image Create(int width, int height)
 		{
-			Image image = Application.Engine.CreateImage(width, height);
+			Image image = ((UIApplication)Application.Instance).Engine.CreateImage(width, height);
 			return image;
 		}
 
@@ -57,8 +57,10 @@ namespace MBS.Framework.UserInterface.Drawing
 			if (type == null)
 			{
 				type = System.IO.Path.GetExtension(filename).ToLower().Substring(1);
+				if (type == "jpg")
+					type = "jpeg";
 			}
-			Image image = Application.Engine.LoadImage(filename, type);
+			Image image = ((UIApplication)Application.Instance).Engine.LoadImage(filename, type);
 			return image;
 		}
 	}

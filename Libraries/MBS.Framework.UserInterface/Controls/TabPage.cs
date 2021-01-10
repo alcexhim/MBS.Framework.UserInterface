@@ -7,7 +7,7 @@ namespace MBS.Framework.UserInterface.Controls
 		public class TabPageCollection
 			: System.Collections.ObjectModel.Collection<TabPage>
 		{
-			private TabContainer _parentContainer = null;
+			private ITabPageContainer _parentContainer = null;
 
 			protected override void ClearItems ()
 			{
@@ -49,7 +49,7 @@ namespace MBS.Framework.UserInterface.Controls
 					(_parentContainer.ControlImplementation as Native.ITabContainerControlImplementation)?.InsertTabPage(index, item);
 			}
 
-			public TabPageCollection(TabContainer parentContainer) {
+			public TabPageCollection(ITabPageContainer parentContainer) {
 				_parentContainer = parentContainer;
 			}
 
@@ -78,7 +78,7 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 
-		public new TabContainer Parent { get; private set; } = null;
+		public new ITabPageContainer Parent { get; private set; } = null;
 
 		private string _Text = null;
 		public new string Text { get { return _Text; } set { ((Parent as TabContainer)?.ControlImplementation as Native.ITabContainerControlImplementation)?.SetTabText(this, value); _Text = value; } }

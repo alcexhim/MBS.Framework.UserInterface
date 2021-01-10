@@ -30,7 +30,7 @@ namespace MBS.Framework.UserInterface
 			{
 				if (_Default == null)
 				{
-					_Default = Application.Engine.GetDefaultScreen();
+					_Default = ((UIApplication)Application.Instance).Engine.GetDefaultScreen();
 				}
 				return _Default;
 			}

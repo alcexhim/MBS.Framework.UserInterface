@@ -98,6 +98,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkLabel.gtk_label_set_line_wrap(handle, false);
 			}
 
+			if (ctl.WidthChars > -1)
+			{
+				Internal.GTK.Methods.GtkLabel.gtk_label_set_width_chars(handle, ctl.WidthChars);
+			}
+
 			switch (ctl.HorizontalAlignment)
 			{
 				case HorizontalAlignment.Center:

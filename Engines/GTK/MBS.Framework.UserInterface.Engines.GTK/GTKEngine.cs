@@ -407,7 +407,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 
-			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
+			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.Instance.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
 
 			return check;
 		}
@@ -436,7 +436,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		private void WaitForClose_Closed(object sender, EventArgs e)
 		{
-			Application.Stop();
+			((UIApplication)Application.Instance).Stop();
 		}
 
 		protected override void StopInternal(int exitCode)
@@ -470,7 +470,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private void Application_Startup(IntPtr application, IntPtr user_data)
 		{
 			Console.WriteLine("Application_Startup");
-			InvokeStaticMethod(typeof(Application), "OnStartup", new object[] { EventArgs.Empty });
+			InvokeMethod(Application.Instance, "OnStartup", new object[] { EventArgs.Empty });
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -507,7 +507,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			e.CommandLine = new GTKCommandLine(arguments);
 
 			_firstRun = false;
-			InvokeStaticMethod(typeof(Application), "OnActivated", new object[] { e });
+			InvokeMethod(Application.Instance, "OnActivated", new object[] { e });
 			return e.ExitCode;
 		}
 
@@ -1127,7 +1127,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			while (printing)
 			{
 				System.Threading.Thread.Sleep(500);
-				Application.DoEvents();
+				((UIApplication)Application.Instance).DoEvents();
 			}
 
 			Internal.Cairo.Methods.cairo_destroy(cr);
@@ -1273,11 +1273,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
 
+				/*
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(hMenuFile, true);
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(hMenuFile, Constants.GtkAlign.End);
 				}
+				*/
 
 				if (cmi.Items.Count > 0)
 				{
@@ -1389,7 +1391,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				NotificationIconInfo nii = new NotificationIconInfo();
 				if (!notificationIconInfo.ContainsKey(nid))
 				{
-					nii.hIndicator = Internal.AppIndicator.Methods.app_indicator_new(nid.Name, nid.IconNameDefault, Internal.AppIndicator.Constants.AppIndicatorCategory.ApplicationStatus);
+					nii.hIndicator = new InternalAPI.AppIndicator.Indicator(nid.Name, nid.IconNameDefault, InternalAPI.AppIndicator.AppIndicatorCategory.ApplicationStatus);
 					notificationIconInfo.Add(nid, nii);
 
 					// Internal.AppIndicator.Methods.app_indicator_set_label(hIndicator, nid.Text, "I don't know what this is for");
@@ -1423,7 +1425,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hMenu);
 
-					Internal.AppIndicator.Methods.app_indicator_set_menu(nii.hIndicator, hMenu);
+					nii.hIndicator.HMenu = hMenu;
 				}
 
 				if (nii.hMenuItemTitle != IntPtr.Zero)
@@ -1431,22 +1433,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(nii.hMenuItemTitle, nid.Text);
 				}
 
-				Internal.AppIndicator.Methods.app_indicator_set_attention_icon(nii.hIndicator, nid.IconNameAttention);
+				nii.hIndicator.IconName = nid.IconNameAttention;
 				switch (nid.Status)
 				{
 					case NotificationIconStatus.Hidden:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Passive);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Passive;
 						break;
 					}
 					case NotificationIconStatus.Visible:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Active);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Active;
 						break;
 					}
 					case NotificationIconStatus.Attention:
 					{
-						Internal.AppIndicator.Methods.app_indicator_set_status(nii.hIndicator, Internal.AppIndicator.Constants.AppIndicatorStatus.Attention);
+						nii.hIndicator.Status = InternalAPI.AppIndicator.AppIndicatorStatus.Attention;
 						break;
 					}
 				}
@@ -1604,10 +1606,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					
 						// as written we currently cannot do this...
 						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
-						if (e.ParentRow != null && (Application.Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
+						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = (Application.Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(e.ParentRow);
+							Internal.GTK.Structures.GtkTreeIter iterParent = GetGtkTreeIterForTreeModelRow(e.ParentRow);
 							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
 						}
 						else
@@ -1623,7 +1625,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					foreach (TreeModelRow row in e.Rows)
 					{
-						Internal.GTK.Structures.GtkTreeIter iter = (Application.Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
+						Internal.GTK.Structures.GtkTreeIter iter = GetGtkTreeIterForTreeModelRow(row);
 						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
 						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
 					}
@@ -1874,7 +1876,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			new GTKCursorInfo("move", Cursors.Move),
 			new GTKCursorInfo("not-allowed", Cursors.NotAllowed),
 			new GTKCursorInfo("grab", Cursors.Grab),
-			new GTKCursorInfo( "grabbing", Cursors.Grabbing),
+			new GTKCursorInfo("grabbing", Cursors.Grabbing),
 			new GTKCursorInfo("all-scroll", Cursors.AllScroll),
 			new GTKCursorInfo("col-resize", Cursors.ResizeColumn),
 			new GTKCursorInfo("row-resize", Cursors.ResizeRow),
@@ -1904,7 +1906,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				GTKCursorInfo info = cursorInfo[i];
 				IntPtr hCursor = Internal.GDK.Methods.gdk_cursor_new_from_name(display, info.Name);
-				Console.WriteLine("setting cursor {0} for {1} to {2}", info.Name, info.UniversalCursor, hCursor);
 				info.Handle = hCursor;
 				RegisterCursor(info.Name, info.UniversalCursor, hCursor);
 				cursorInfo[i] = info; // structs are weird
@@ -1941,7 +1942,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", Application.ShortName + "/" + topic.Name);
+					Process.Start("yelp", String.Format("{0}/{1}", Application.Instance.ShortName, topic.Name));
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)
@@ -1952,7 +1953,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", Application.ShortName);
+					Process.Start("yelp", Application.Instance.ShortName);
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)
@@ -2007,6 +2008,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				});
 				return p;
 			}
+		}
+
+		protected override void PlaySystemSoundInternal(SystemSound sound)
+		{
+			// there is only one system sound on Linux
+			IntPtr hDpy = Internal.GDK.Methods.gdk_display_get_default();
+			Internal.GDK.Methods.gdk_display_beep(hDpy);
 		}
 	}
 }

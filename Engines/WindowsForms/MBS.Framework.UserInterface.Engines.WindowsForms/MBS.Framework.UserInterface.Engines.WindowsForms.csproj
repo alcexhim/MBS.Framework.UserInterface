@@ -47,6 +47,11 @@
     <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Internal\CommandBars\HiDpi\MenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Internal\Windows\UWP\Constants.cs" />
+    <Compile Include="Internal\Windows\UWP\Methods.cs" />
     <Compile Include="WindowsFormsEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsFormsNativeControl.cs" />
@@ -267,23 +272,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Controls\" />
-    <Folder Include="Dialogs\" />
-    <Folder Include="Theming\" />
-    <Folder Include="Theming\BuiltinThemes\" />
-    <Folder Include="Dialogs\" />
-    <Folder Include="Dialogs\Internal\" />
-    <Folder Include="Controls\Internal\" />
-    <Folder Include="Controls\Internal\CommandBars\" />
-    <Folder Include="Dialogs\Internal\AboutDialog\" />
-    <Folder Include="Controls\Internal\WinFormsUI\" />
-    <Folder Include="Controls\Internal\CustomListView\" />
-    <Folder Include="Controls\Internal\TreeView\" />
-    <Folder Include="Controls\Internal\ListView\" />
-    <Folder Include="Controls\Internal\FileChooserButton\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\Internal\AboutDialog\AboutDialog.resx" />
   </ItemGroup>

@@ -26,6 +26,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 	internal static class Methods
 	{
 		public const string LIBRARY_FILENAME_USER32 = "user32";
+		public const string LIBRARY_FILENAME_SHELL32 = "shell32";
 
 		[DllImport(LIBRARY_FILENAME_USER32)]
 		public static extern int MessageBox(IntPtr /*HWND*/ hWnd, string lpText, string lpCaption, uint uType);
@@ -79,5 +80,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 		/// <returns></returns>
 		[DllImport(LIBRARY_FILENAME_USER32)]
 		public static extern bool SetProcessDpiAwarenessContext(Constants.DpiAwarenessContext value);
+
+		/// <summary>
+		/// Specifies a unique application-defined Application User Model ID (AppUserModelID) that identifies the current process to the taskbar. This identifier
+		/// allows an application to group its associated processes and windows under a single taskbar button.
+		/// </summary>
+		/// <param name="AppID">Pointer to the AppUserModelID to assign to the current process.</param>
+		/// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+		[DllImport(LIBRARY_FILENAME_SHELL32)]
+		public static extern int /*HRESULT*/ SetCurrentProcessExplicitAppUserModelID(string /*PCWSTR*/ AppID);
 	}
 }

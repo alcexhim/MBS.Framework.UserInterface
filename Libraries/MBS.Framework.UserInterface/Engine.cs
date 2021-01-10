@@ -86,7 +86,8 @@ namespace MBS.Framework.UserInterface
 		}
 		public bool IsControlCreated(Control control)
 		{
-			return handlesByControl.ContainsKey(control);
+			return control.ControlImplementation?.Handle != null;
+			// return handlesByControl.ContainsKey(control);
 		}
 
 		protected abstract void SetMenuItemVisibilityInternal(MenuItem item, bool visible);
@@ -667,6 +668,7 @@ namespace MBS.Framework.UserInterface
 		protected virtual Process LaunchApplicationInternal(string path)
 		{
 			Process p = new Process();
+			p.StartInfo.UseShellExecute = true;
 			p.StartInfo.FileName = path;
 			p.Start();
 

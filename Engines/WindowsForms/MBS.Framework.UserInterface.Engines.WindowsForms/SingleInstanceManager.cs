@@ -71,7 +71,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			{
 				eventWaitHandle = EventWaitHandle.OpenExisting(name2);
 			}
-			catch
+			catch (System.Threading.WaitHandleCannotBeOpenedException ex)
 			{
 				SingleInstanceManager.InstanceProxy.IsFirstInstance = true;
 			}

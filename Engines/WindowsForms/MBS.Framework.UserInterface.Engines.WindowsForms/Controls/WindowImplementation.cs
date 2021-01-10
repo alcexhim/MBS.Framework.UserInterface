@@ -92,7 +92,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
 			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 
-			mb = new System.Windows.Forms.MenuStrip();
+			mb = new Internal.CommandBars.HiDpi.MenuStrip();
 			// mb.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
 			mb.Stretch = true;
 
@@ -137,6 +137,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			sb.Visible = window.StatusBar.Visible;
 
 			Container container = new Container();
+			container.Layout = window.Layout;
 			for (int i = 0; i < window.Controls.Count; i++)
 			{
 				container.Controls.Add(window.Controls[i]);

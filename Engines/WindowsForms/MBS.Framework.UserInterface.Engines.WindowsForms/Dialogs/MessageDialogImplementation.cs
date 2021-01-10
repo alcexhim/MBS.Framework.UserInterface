@@ -68,66 +68,66 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 			switch (dlg.Icon)
 			{
 				case MessageDialogIcon.Error:
-				{
-					messageType = System.Windows.Forms.MessageBoxIcon.Error;
-					break;
-				}
+					{
+						messageType = System.Windows.Forms.MessageBoxIcon.Error;
+						break;
+					}
 				case MessageDialogIcon.Information:
-				{
-					messageType = System.Windows.Forms.MessageBoxIcon.Information;
-					break;
-				}
+					{
+						messageType = System.Windows.Forms.MessageBoxIcon.Information;
+						break;
+					}
 				case MessageDialogIcon.Warning:
-				{
-					messageType = System.Windows.Forms.MessageBoxIcon.Warning;
-					break;
-				}
+					{
+						messageType = System.Windows.Forms.MessageBoxIcon.Warning;
+						break;
+					}
 				case MessageDialogIcon.Question:
-				{
-					messageType = System.Windows.Forms.MessageBoxIcon.Question;
-					break;
-				}
+					{
+						messageType = System.Windows.Forms.MessageBoxIcon.Question;
+						break;
+					}
 			}
 
 			System.Windows.Forms.MessageBoxButtons buttonsType = System.Windows.Forms.MessageBoxButtons.OK;
 			switch (dlg.Buttons)
 			{
 				case MessageDialogButtons.AbortRetryIgnore:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.AbortRetryIgnore;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.AbortRetryIgnore;
+						break;
+					}
 				case MessageDialogButtons.CancelTryContinue:
-				{
-					// TODO: call out to Win32 to show this one
-					buttonsType = System.Windows.Forms.MessageBoxButtons.AbortRetryIgnore;
-					break;
-				}
+					{
+						// TODO: call out to Win32 to show this one
+						buttonsType = System.Windows.Forms.MessageBoxButtons.AbortRetryIgnore;
+						break;
+					}
 				case MessageDialogButtons.RetryCancel:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.RetryCancel;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.RetryCancel;
+						break;
+					}
 				case MessageDialogButtons.YesNoCancel:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.YesNoCancel;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.YesNoCancel;
+						break;
+					}
 				case MessageDialogButtons.OK:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.OK;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.OK;
+						break;
+					}
 				case MessageDialogButtons.OKCancel:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.OKCancel;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.OKCancel;
+						break;
+					}
 				case MessageDialogButtons.YesNo:
-				{
-					buttonsType = System.Windows.Forms.MessageBoxButtons.YesNo;
-					break;
-				}
+					{
+						buttonsType = System.Windows.Forms.MessageBoxButtons.YesNo;
+						break;
+					}
 			}
 
 			if (parentHandle != null && dlg.Parent != null)
@@ -146,6 +146,73 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 				{
 
 				}
+			}
+
+			if (dlg.AutoUpgradeEnabled && System.Environment.OSVersion.Platform == PlatformID.Win32NT && System.Environment.OSVersion.Version.Major >= 6)
+			{
+				TaskDialog dlg2 = new TaskDialog();
+				switch (dlg.Icon)
+				{
+					case MessageDialogIcon.Error:
+					{
+						dlg2.Icon = TaskDialogIcon.Error;
+						break;
+					}
+					case MessageDialogIcon.Information:
+					{
+						dlg2.Icon = TaskDialogIcon.Information;
+						break;
+					}
+					case MessageDialogIcon.Question:
+					{
+						dlg2.Icon = TaskDialogIcon.Question;
+						break;
+					}
+					case MessageDialogIcon.Warning:
+					{
+						dlg2.Icon = TaskDialogIcon.Warning;
+						break;
+					}
+				}
+				dlg2.Content = dlg.Content;
+				dlg2.Text = dlg.Text;
+				switch (buttonsType)
+				{
+					case MessageBoxButtons.OK:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.OK;
+						break;
+					}
+					case MessageBoxButtons.YesNo:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.Yes | TaskDialogButtons.No;
+						break;
+					}
+					case MessageBoxButtons.OKCancel:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.OK | TaskDialogButtons.Cancel;
+						break;
+					}
+					case MessageBoxButtons.YesNoCancel:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.Yes | TaskDialogButtons.No | TaskDialogButtons.Cancel;
+						break;
+					}
+					case MessageBoxButtons.AbortRetryIgnore:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.Custom;
+						dlg2.Buttons.Add(new UserInterface.Controls.Button("Abort", DialogResult.Abort));
+						dlg2.Buttons.Add(new UserInterface.Controls.Button("Retry", DialogResult.Abort));
+						dlg2.Buttons.Add(new UserInterface.Controls.Button("Ignore", DialogResult.Abort));
+						break;
+					}
+					case MessageBoxButtons.RetryCancel:
+					{
+						dlg2.ButtonsPreset = TaskDialogButtons.Retry | TaskDialogButtons.Cancel;
+						break;
+					}
+				}
+				return dlg2.ShowDialog();
 			}
 
 			System.Windows.Forms.DialogResult nativeResult = System.Windows.Forms.MessageBox.Show(dlg.Content, dlg.Text, buttonsType, messageType);

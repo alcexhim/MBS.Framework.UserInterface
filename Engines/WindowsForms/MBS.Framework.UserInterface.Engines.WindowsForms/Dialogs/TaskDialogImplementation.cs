@@ -132,6 +132,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 					flags |= WindowsForms.Internal.Windows.Constants.TaskDialogFlags.EnableHyperlinks;
 				}
 
+				tdc.hMainIcon = new IntPtr((int)dlg.Icon);
 				tdc.dwFlags = flags;
 				tdc.hInstance = IntPtr.Zero;
                 tdc.hwndParent = IntPtr.Zero;
@@ -149,16 +150,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 				}
                 tdc.hInstance = WindowsForms.Internal.Windows.Methods.GetWindowLongPtr(tdc.hwndParent, WindowsForms.Internal.Windows.Constants.WindowLong.HInstance);
 
-				// tdc.hMainIcon = new IntPtr((int)dlg.Icon);
-				// tdc.pszMainInstruction = Marshal.StringToHGlobalAuto(dlg.Prompt);
-				// tdc.pszWindowTitle = Marshal.StringToHGlobalAuto(dlg.Text);
-				// tdc.pszContent = Marshal.StringToHGlobalAuto(dlg.Content);
-				// tdc.pszVerificationText = Marshal.StringToHGlobalAuto(dlg.VerificationText);
-                tdc.pszMainInstruction = dlg.Prompt;
-                tdc.pszWindowTitle = dlg.Text;
-                tdc.pszContent = dlg.Content;
-                tdc.pszVerificationText = dlg.VerificationText;
-				tdc.pszFooter = dlg.Footer;
+				tdc.hMainIcon = new IntPtr((int)dlg.Icon);
+				tdc.pszMainInstruction = Marshal.StringToHGlobalAuto(dlg.Prompt);
+				tdc.pszWindowTitle = Marshal.StringToHGlobalAuto(dlg.Text);
+				tdc.pszContent = Marshal.StringToHGlobalAuto(dlg.Content);
+				tdc.pszVerificationText = Marshal.StringToHGlobalAuto(dlg.VerificationText);
+                // tdc.pszMainInstruction = dlg.Prompt;
+                // tdc.pszWindowTitle = dlg.Text;
+                // tdc.pszContent = dlg.Content;
+                // tdc.pszVerificationText = dlg.VerificationText;
+				// tdc.pszFooter = dlg.Footer;
 
                 tdc.cbSize = (uint)Marshal.SizeOf(tdc);
 

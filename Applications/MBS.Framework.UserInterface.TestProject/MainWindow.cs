@@ -13,6 +13,8 @@ namespace MBS.Framework.UserInterface.TestProject
 	{
 		public MainWindow()
 		{
+			this.Layout = new BoxLayout(Orientation.Vertical);
+
 			InitializeComponent();
 		}
 		private ListViewControl tv = null;
@@ -153,11 +155,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			tbsTabs.TabPages.Add(tabCustom);
 
 			tbsTabs.TabPages.Add(CreateTabPageForStockIcons());
-			this.Controls.Add (tbsTabs);
-
-			BoxLayout layout = new BoxLayout(Orientation.Vertical);
-			layout.SetControlConstraints (tbsTabs, new BoxLayout.Constraints (true, true));
-			this.Layout = layout;
+			this.Controls.Add(tbsTabs, new BoxLayout.Constraints(true, true));
 
 			for (int i = 0; i < tbsTabs.TabPages.Count; i++)
 			{
@@ -285,7 +283,9 @@ namespace MBS.Framework.UserInterface.TestProject
                     new CommandMenuItem("Show me a _notification", null, delegate (object sender, EventArgs e)
                     {
                         NotificationPopup.Show("ALYX has found new information", "Scraping a Wikipedia article I have added a new word to my dictionary!");
-                    }),
+						
+						// Application.Launch(@"ms-people:viewcontact?PhoneNumber=8675309"); // shell:appsFolder\Microsoft.People_8wekyb3d8bbwe!App");
+					}),
                     new SeparatorMenuItem(),
                     new CommandMenuItem("_Refresh")
                 }),

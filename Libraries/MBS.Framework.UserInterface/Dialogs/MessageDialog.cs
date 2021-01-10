@@ -87,6 +87,15 @@ namespace MBS.Framework.UserInterface.Dialogs
 	}
 	public class MessageDialog : CommonDialog
 	{
+		/// <summary>
+		/// When <c>true</c>, on Windows <see cref="MessageDialog" /> will automatically use <see cref="TaskDialog" /> to display simple message boxes.
+		/// </summary>
+		public static bool AutoUpgradeEnabledDefault { get; set; } = true;
+		/// <summary>
+		/// When <c>true</c>, on Windows <see cref="MessageDialog" /> will automatically use <see cref="TaskDialog" /> to display simple message boxes.
+		/// </summary>
+		public bool AutoUpgradeEnabled { get; set; } = AutoUpgradeEnabledDefault;
+
 		private string mvarContent = String.Empty;
 		public string Content { get { return mvarContent; } set { mvarContent = value; } }
 

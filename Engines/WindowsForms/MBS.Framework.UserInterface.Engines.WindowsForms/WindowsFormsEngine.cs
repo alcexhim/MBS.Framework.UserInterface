@@ -840,7 +840,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 		protected override void ShowNotificationPopupInternal(NotificationPopup popup)
 		{
-			throw new NotImplementedException();
+			// Internal.Windows.UWP.Methods.RoGetActivationFactory(Internal.Windows.UWP.Constants.RuntimeClass_Windows_UI_Notifications_ToastNotificationManager, 0, ptr);
 		}
 
 		protected override void SetControlEnabledInternal(Control control, bool value)
@@ -960,6 +960,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version >= new Version(6, 1))
+			{
+				Internal.Windows.Methods.SetCurrentProcessExplicitAppUserModelID(String.Format("net.alcetech.framework.apps.{0}", Application.ID.ToString("N")));
+			}
 
 			System.Windows.Forms.ToolStripManager.Renderer = new CBRenderer();
 			return true;

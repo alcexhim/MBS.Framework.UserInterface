@@ -17,7 +17,8 @@ namespace MBS.Framework.UserInterface.TestProject
 		[STAThread]
 		static void Main()
 		{
-			Application.Initialize ();
+			Application.DpiAwareness = DpiAwareness.SystemAware;
+			Application.Initialize();
 
 			Application.Engine.SetProperty("Windowless", true);
 

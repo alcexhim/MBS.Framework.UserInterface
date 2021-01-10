@@ -51,8 +51,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
             /// Pointer that references the string to be used for the task dialog title. This parameter can be either a null-terminated string or an integer resource
             /// identifier passed to the MAKEINTRESOURCE macro. If this parameter is NULL, the filename of the executable program is used.
             /// </summary>
-            [MarshalAs(UnmanagedType.LPWStr)]
-            public string /*PCWSTR*/ pszWindowTitle;
+            // [MarshalAs(UnmanagedType.LPWStr)]
+            public IntPtr /*PCWSTR*/ pszWindowTitle;
 			/// <summary>
 			/// A handle to an Icon that is to be displayed in the task dialog. This member is ignored unless the TDF_USE_HICON_MAIN flag is specified. If this member is
 			/// NULL and the TDF_USE_HICON_MAIN is specified, no icon will be displayed.
@@ -66,16 +66,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
             /// Pointer that references the string to be used for the main instruction. This parameter can be either a null-terminated string or an integer resource
             /// identifier passed to the MAKEINTRESOURCE macro.
             /// </summary>
-            [MarshalAs(UnmanagedType.LPWStr)]
-            public string /*PCWSTR*/ pszMainInstruction;
+            // [MarshalAs(UnmanagedType.LPWStr)]
+            public IntPtr /*PCWSTR*/ pszMainInstruction;
             /// <summary>
             /// Pointer that references the string to be used for the dialog's primary content. This parameter can be either a null-terminated string or an integer
             /// resource identifier passed to the MAKEINTRESOURCE macro. If the ENABLE_HYPERLINKS flag is specified for the dwFlags member, then this string may contain
             /// hyperlinks in the form: &lt;A HREF="executablestring"&gt;Hyperlink Text&lt;/A&gt;. WARNING: Enabling hyperlinks when using content from an unsafe source may cause
             /// security vulnerabilities.
             /// </summary>
-            [MarshalAs(UnmanagedType.LPWStr)]
-            public string /*PCWSTR*/ pszContent;
+            // [MarshalAs(UnmanagedType.LPWStr)]
+            public IntPtr /*PCWSTR*/ pszContent;
             /// <summary>
             /// The number of entries in the pButtons array that is used to create buttons or command links in the task dialog. If this member is zero and no common
             /// buttons have been specified using the dwCommonButtons member, then the task dialog will have a single OK button displayed.
@@ -111,8 +111,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
             /// resource identifier passed to the MAKEINTRESOURCE macro. If this parameter is NULL, the verification checkbox is not displayed in the task dialog. If the
             /// pfVerificationFlagChecked parameter of TaskDialogIndirect is NULL, the checkbox is not enabled.
             /// </summary>
-            [MarshalAs(UnmanagedType.LPWStr)]
-            public string /*PCWSTR*/ pszVerificationText;
+            // [MarshalAs(UnmanagedType.LPWStr)]
+            public IntPtr /*PCWSTR*/ pszVerificationText;
             /// <summary>
             /// Pointer that references the string to be used for displaying additional information. This parameter can be either a null-terminated string or an integer
             /// resource identifier passed to the MAKEINTRESOURCE macro. The additional information is displayed either immediately below the content or below the footer

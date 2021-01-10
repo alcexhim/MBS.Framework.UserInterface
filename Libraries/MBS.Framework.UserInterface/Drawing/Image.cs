@@ -56,9 +56,13 @@ namespace MBS.Framework.UserInterface.Drawing
 		{
 			if (type == null)
 			{
-				type = System.IO.Path.GetExtension(filename).ToLower().Substring(1);
-				if (type == "jpg")
-					type = "jpeg";
+				string ext = System.IO.Path.GetExtension(filename);
+				if (!String.IsNullOrEmpty(ext) && ext.Length > 1)
+				{
+					type = ext.ToLower().Substring(1);
+					if (type == "jpg")
+						type = "jpeg";
+				}
 			}
 			Image image = ((UIApplication)Application.Instance).Engine.LoadImage(filename, type);
 			return image;

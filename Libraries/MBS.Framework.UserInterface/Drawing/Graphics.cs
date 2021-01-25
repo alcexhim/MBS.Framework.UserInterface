@@ -64,6 +64,22 @@ namespace MBS.Framework.UserInterface.Drawing
 			}
 		}
 
+		protected abstract void DrawFocusInternal(double x, double y, double width, double height, Control styleReference);
+		/// <summary>
+		/// Renders a focus indicator on the rectangle determined by <paramref name="x" />, <paramref name="y" />,
+		/// <paramref name="width" />, <paramref name="height" />.
+		/// </summary>
+		/// <param name="x">X origin of the rectangle.</param>
+		/// <param name="y">Y origin of the rectangle.</param>
+		/// <param name="width">Rectangle width.</param>
+		/// <param name="height">Rectangle height.</param>
+		/// <param name="styleReference">The control used as a reference for the focus rectangle style. For example,
+		/// one could pass a TextBox to get a text box style focus rectangle, which looks different on certain themes.</param>
+		public void DrawFocus(double x, double y, double width, double height, Control styleReference = null)
+		{
+			DrawFocusInternal(x, y, width, height, styleReference);
+		}
+
 		protected abstract void DrawRectangleInternal(Pen pen, double x, double y, double width, double height);
 		public void DrawRectangle(Pen pen, double x, double y, double width, double height)
 		{

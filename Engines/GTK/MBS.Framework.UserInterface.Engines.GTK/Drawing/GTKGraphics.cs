@@ -263,5 +263,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
 			CheckStatus();
 		}
+
+		private static IntPtr _hStyleContext = IntPtr.Zero;
+		protected override void DrawFocusInternal(double x, double y, double width, double height, Control styleReference)
+		{
+			IntPtr hStyleContext = _hStyleContext;
+			if (_hStyleContext == IntPtr.Zero)
+			{
+				IntPtr hTextBox = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new();
+				_hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hTextBox);
+				hStyleContext = _hStyleContext;
+			}
+
+			if (styleReference != null)
+			{
+				if (!styleReference.IsCreated)
+				{
+					((Application.Instance as UIApplication).Engine as GTKEngine).CreateControl(styleReference);
+				}
+				GTKNativeControl handle = ((Application.Instance as UIApplication).Engine as GTKEngine).GetHandleForControl(styleReference) as GTKNativeControl;
+				if (handle != null)
+				{
+					hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle.Handle);
+				}
+			}
+			Internal.GTK.Methods.Gtk.gtk_render_focus(hStyleContext, mvarCairoContext, x, y, width, height);
+		}
 	}
 }

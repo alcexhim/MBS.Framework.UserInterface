@@ -55,6 +55,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool gtk_enumerate_printers(Func<IntPtr, IntPtr, bool> func, IntPtr data, Action<IntPtr> destroyNotify, bool wait);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gtk_render_focus(IntPtr /*GtkStyleContext*/ context, IntPtr /*cairo_t*/ cr, double x, double y, double width, double height);
+
 	}
 }
 

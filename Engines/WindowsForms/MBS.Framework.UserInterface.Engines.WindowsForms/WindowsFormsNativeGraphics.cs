@@ -152,5 +152,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			pt.X -= 2;
 			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), pt, format);
 		}
+
+		protected override void DrawFocusInternal(double x, double y, double width, double height, Control styleReference)
+		{
+			// FIXME: this does not apply to certain controls (e.g. text boxes) which draw their focus differently than buttons, etc.
+			System.Windows.Forms.ControlPaint.DrawFocusRectangle(Handle, new System.Drawing.Rectangle((int)x, (int)y, (int)width, (int)height));
+		}
 	}
 }

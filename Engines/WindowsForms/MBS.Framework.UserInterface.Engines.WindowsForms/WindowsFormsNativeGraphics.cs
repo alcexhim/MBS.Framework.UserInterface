@@ -129,28 +129,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return ptf;
 		}
 
-		protected override void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
-		{
-			System.Drawing.StringFormat format = new System.Drawing.StringFormat();
-			format.Alignment = AlignmentToStringAlignment(horizontalAlignment);
-			format.LineAlignment = AlignmentToStringAlignment(verticalAlignment);
-
-			System.Windows.Forms.TextRenderer.DrawText(Handle, value, FontToNativeFont(font), new System.Drawing.Point((int)location.X, (int)location.Y), (BrushToNativeBrush(brush) as System.Drawing.SolidBrush).Color, System.Windows.Forms.TextFormatFlags.Default);
-			// Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), Vector2DToNativePointF(location), format);
-		}
-
-		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		protected override void DrawTextInternal(string value, Font font, Vector2D location, Dimension2D size, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
 			System.Drawing.StringFormat format = new System.Drawing.StringFormat();
 			format.Alignment = AlignmentToStringAlignment(horizontalAlignment);
 			format.LineAlignment = AlignmentToStringAlignment(verticalAlignment);
 			// Console.WriteLine("coordinate rect : {0}", rectangle);
 
-			System.Drawing.RectangleF rect = new System.Drawing.RectangleF((float)rectangle.X, (float)rectangle.Y, (float)rectangle.Width, (float)rectangle.Height);
-			System.Drawing.PointF pt = new System.Drawing.PointF((float)rectangle.X, (float)rectangle.Y);
-			pt.Y -= 12; // I don't even know
-			pt.X -= 2;
-			Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), pt, format);
+			if (size != null)
+			{
+				System.Drawing.RectangleF rect = new System.Drawing.RectangleF((float)location.X, (float)location.Y, (float)size.Width, (float)size.Height);
+				System.Drawing.PointF pt = new System.Drawing.PointF((float)location.X, (float)location.Y);
+				pt.Y -= 12; // I don't even know
+				pt.X -= 2;
+				Handle.DrawString(value, FontToNativeFont(font), BrushToNativeBrush(brush), pt, format);
+			}
+			else
+			{
+				System.Windows.Forms.TextRenderer.DrawText(Handle, value, FontToNativeFont(font), new System.Drawing.Point((int)location.X, (int)location.Y), (BrushToNativeBrush(brush) as System.Drawing.SolidBrush).Color, System.Windows.Forms.TextFormatFlags.Default);
+			}
 		}
 
 		protected override void DrawFocusInternal(double x, double y, double width, double height, Control styleReference)

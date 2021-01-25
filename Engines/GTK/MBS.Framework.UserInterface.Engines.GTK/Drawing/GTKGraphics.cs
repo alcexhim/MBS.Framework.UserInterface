@@ -82,7 +82,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 			CheckStatus();
 		}
 
-		protected override void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		protected override void DrawTextInternal(string value, Font font, Vector2D location, Dimension2D size, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
 			SelectBrush(brush);
 
@@ -130,31 +130,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 				Internal.Cairo.Methods.cairo_set_font_size(mvarCairoContext, fsz);
 			}
 			CheckStatus();
-		}
-
-		protected override void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
-		{
-			SelectBrush(brush);
-
-			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, rectangle.X, rectangle.Y);
-			CheckStatus();
-
-			SelectFont(font);
-
-			// this is for RENDERING text - textually
-			Internal.Cairo.Methods.cairo_show_text(mvarCairoContext, value);
-			CheckStatus();
-
-			/*
-			 // this is for DRAWING text - graphically
-			Internal.Cairo.Methods.cairo_text_path(mvarCairoContext, value);
-			CheckStatus();
-
-			Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
-			CheckStatus();
-			*/
-
-			// there IS a difference - textually-rendered text is selectable when rendering PDFs; graphically-drawn text is not
 		}
 
 		[DebuggerNonUserCode()]

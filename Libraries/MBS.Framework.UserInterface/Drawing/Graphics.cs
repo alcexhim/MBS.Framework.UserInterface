@@ -304,17 +304,16 @@ namespace MBS.Framework.UserInterface.Drawing
 			}
 		}
 
-		protected abstract void DrawTextInternal(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
+		protected abstract void DrawTextInternal(string value, Font font, Vector2D location, Dimension2D size, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
 		public void DrawText(string value, Font font, Vector2D location, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
 			location = DpiScale(location);
-			DrawTextInternal(value, font, location, brush, horizontalAlignment, verticalAlignment);
+			DrawTextInternal(value, font, location, null, brush, horizontalAlignment, verticalAlignment);
 		}
-		protected abstract void DrawTextInternal(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment);
 		public void DrawText(string value, Font font, Rectangle rectangle, Brush brush, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left, VerticalAlignment verticalAlignment = VerticalAlignment.Top)
 		{
 			rectangle = DpiScale(rectangle);
-			DrawTextInternal(value, font, rectangle, brush, horizontalAlignment, verticalAlignment);
+			DrawTextInternal(value, font, rectangle.Location, rectangle.Size, brush, horizontalAlignment, verticalAlignment);
 		}
 
 		private Pen PenFromOutline(Outline outline)

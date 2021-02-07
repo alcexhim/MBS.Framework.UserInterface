@@ -963,7 +963,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version >= new Version(6, 1))
 			{
-				Internal.Windows.Methods.SetCurrentProcessExplicitAppUserModelID(String.Format("net.alcetech.framework.apps.{0}", Application.ID.ToString("N")));
+				Internal.Windows.Methods.SetCurrentProcessExplicitAppUserModelID(String.Format("net.alcetech.framework.apps.{0}", Application.Instance.ID.ToString("N")));
 			}
 
 			System.Windows.Forms.ToolStripManager.Renderer = new CBRenderer();

@@ -285,7 +285,15 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				HexEditorHitTestInfo index = HitTest(e.X, e.Y);
 				if (index.ByteIndex > -1)
 				{
-					SelectionLength = new HexEditorPosition(index.ByteIndex - mvarSelectionStart + 1, index.NybbleIndex);
+					if (index.ByteIndex >= Data.Length)
+					{
+						SelectionLength = Data.Length - SelectionStart;
+						SelectionLength = new HexEditorPosition(SelectionLength.ByteIndex, 1);
+					}
+					else
+					{
+						SelectionLength = new HexEditorPosition(index.ByteIndex - mvarSelectionStart + 1, index.NybbleIndex);
+					}
 				}
 			}
 
@@ -344,71 +352,89 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 				}
 				case KeyboardKey.Back:
 				{
-					if (!Editable || ((SelectionStart.ByteIndex == 0 && SelectionStart.NybbleIndex == 0) || SelectionStart < 0))
+					if (!Editable || SelectionStart < 0)
 					{
 						return;
 					}
 
-					if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte || SelectedSection == HexEditorHitTestSection.ASCII)
+					if (SelectionLength > 1)
 					{
-						// ASCII section ALWAYS erases a whole byte
-						if (SelectionStart > 0)
+						if (ShouldBackspaceDelete(e.ModifierKeys))
 						{
-							if (ShouldBackspaceDelete(e.ModifierKeys))
-							{
-								if (mvarSelectionLength == 0)
-								{
-									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1, mvarSelectionLength + 1);
-									mvarSelectionStart--;
-								}
-								else
-								{
-									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, SelectionStart.ByteIndex, SelectionLength);
-									if (SelectionLength < 0)
-									{
-										SelectionStart += SelectionLength;
-									}
-								}
-							}
-							else // if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
-							{
-								Data[SelectionStart - 1] = 0x0;
-							}
+							byte[] old = Data;
+							byte[] _new = new byte[old.Length - SelectionLength];
+							Array.Copy(old, 0, _new, 0, SelectionStart);
+							Array.Copy(old, SelectionStart + SelectionLength, _new, SelectionStart, old.Length - SelectionStart - SelectionLength);
+							Data = _new;
+
 							SelectionLength = 0;
+							Refresh();
 							e.Cancel = true;
 						}
 					}
-					else if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseNybble)
+					else
 					{
-						if (SelectionStart.NybbleIndex == 0)
+						if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte || SelectedSection == HexEditorHitTestSection.ASCII)
 						{
-							string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');
-							Data[mvarSelectionStart - 1] = Byte.Parse(curhex.Substring(0, 1) + '0', System.Globalization.NumberStyles.HexNumber);
-
-							if (ShouldBackspaceDelete(e.ModifierKeys))
+							// ASCII section ALWAYS erases a whole byte
+							if (SelectionStart > 0)
 							{
-								ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
-								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 0);
+								if (ShouldBackspaceDelete(e.ModifierKeys))
+								{
+									if (mvarSelectionLength == 0)
+									{
+										ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1, mvarSelectionLength + 1);
+										mvarSelectionStart--;
+									}
+									else
+									{
+										ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, SelectionStart.ByteIndex, SelectionLength);
+										if (SelectionLength < 0)
+										{
+											SelectionStart += SelectionLength;
+										}
+									}
+								}
+								else // if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseByte)
+								{
+									Data[SelectionStart - 1] = 0x0;
+								}
+								SelectionLength = 0;
+								e.Cancel = true;
 							}
-							else
-							{
-								SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 1);
-							}
-
-							SelectionStart--;
 						}
-						else if (SelectionStart.NybbleIndex == 1)
+						else if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseNybble)
 						{
-							if (SelectionStart < Data.Length)
+							if (SelectionStart.NybbleIndex == 0)
 							{
-								string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
-								Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
-							}
-							selectedNybble = 0;
-						}
-						SelectionLength = 0;
+								string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');
+								Data[mvarSelectionStart - 1] = Byte.Parse(curhex.Substring(0, 1) + '0', System.Globalization.NumberStyles.HexNumber);
 
-						e.Cancel = true;
+								if (ShouldBackspaceDelete(e.ModifierKeys))
+								{
+									ArrayExtensions.Array_RemoveAt<byte>(ref mvarData, mvarSelectionStart - 1);
+									SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 0);
+								}
+								else
+								{
+									SelectionStart = new HexEditorPosition(SelectionStart.ByteIndex, 1);
+								}
+
+								SelectionStart--;
+							}
+							else if (SelectionStart.NybbleIndex == 1)
+							{
+								if (SelectionStart < Data.Length)
+								{
+									string curhex = Data[mvarSelectionStart].ToString("X").PadLeft(2, '0');
+									Data[mvarSelectionStart] = Byte.Parse('0' + curhex.Substring(1, 1), System.Globalization.NumberStyles.HexNumber);
+								}
+								selectedNybble = 0;
+							}
+							SelectionLength = 0;
+
+							e.Cancel = true;
+						}
 					}
 					return;
 				}

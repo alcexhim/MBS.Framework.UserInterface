@@ -168,8 +168,23 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		private Vector2D mvarLocation = new Vector2D(0, 0);
-		public Vector2D Location { get { return mvarLocation; } set { mvarLocation = value; } }
+		private Vector2D _Location = new Vector2D(0, 0);
+		public Vector2D Location
+		{
+			get
+			{
+				if (IsCreated && ControlImplementation != null)
+				{
+					return ControlImplementation.GetLocation();
+				}
+				return _Location;
+			}
+			set
+			{
+				ControlImplementation?.SetLocation(value);
+				_Location = value;
+			}
+		}
 
 		/// <summary>
 		/// Translates the given <see cref="Vector2D" /> from client coordinates into screen coordinates.

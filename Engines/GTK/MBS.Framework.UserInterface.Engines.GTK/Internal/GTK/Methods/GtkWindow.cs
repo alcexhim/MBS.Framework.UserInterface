@@ -61,6 +61,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_window_get_default_size(IntPtr /*GtkWindow*/ window, out int width, out int height);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_get_size(IntPtr /*GtkWindow*/ window, ref int width, ref int height);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_resize(IntPtr /*GtkWindow*/ window, int width, int height);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]

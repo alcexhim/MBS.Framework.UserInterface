@@ -930,5 +930,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
+		protected override Vector2D GetLocationInternal()
+		{
+			return new Vector2D(0, 0);
+		}
+		protected override void SetLocationInternal(Vector2D location)
+		{
+			// FIXME: not implemented
+			if (Control is Window)
+			{
+				// HACK: fix this when we figure out why our ControlImplementation is a ContainerImplementation instead of a WindowImplementation
+				Internal.GTK.Methods.GtkWindow.gtk_window_move((Handle as GTKNativeControl).Handle, (int)location.X, (int)location.Y);
+			}
+		}
+
 	}
 }

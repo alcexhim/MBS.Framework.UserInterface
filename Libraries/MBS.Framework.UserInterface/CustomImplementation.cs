@@ -30,6 +30,15 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
+		protected override Vector2D GetLocationInternal()
+		{
+			return (Handle as CustomNativeControl).Handle.Location;
+		}
+		protected override void SetLocationInternal(Vector2D location)
+		{
+			(Handle as CustomNativeControl).Handle.Location = location;
+		}
+
 		protected override Dimension2D GetScrollBoundsInternal()
 		{
 			return Dimension2D.Empty;

@@ -147,6 +147,18 @@ namespace MBS.Framework.UserInterface
 
 		private Dictionary<Control, string> _controlText = new Dictionary<Control, string> ();
 
+		protected abstract Vector2D GetLocationInternal();
+		public Vector2D GetLocation()
+		{
+			return GetLocationInternal();
+		}
+
+		protected abstract void SetLocationInternal(Vector2D location);
+		public void SetLocation(Vector2D location)
+		{
+			SetLocationInternal(location);
+		}
+
 		public Rectangle GetControlBounds()
 		{
 			return GetControlBoundsInternal();

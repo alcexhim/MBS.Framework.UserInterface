@@ -463,10 +463,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			});
 		}
 
+		protected override Dimension2D GetControlSizeInternal()
+		{
+			if (_Size != null)
+			{
+				// size has been set by code and window has not yet been resized
+				return _Size;
+			}
+			int w = 0, h = 0;
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWindow.gtk_window_get_size(handle, ref w, ref h);
+			return new Dimension2D(w, h);
+		}
+
+		private Dimension2D _Size = null;
 		protected override void SetControlSizeInternal(Dimension2D value)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWindow.gtk_window_resize(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+			Internal.GTK.Methods.GtkWindow.gtk_window_resize(handle, (int)value.Width, (int)value.Height);
+			_Size = value;
 		}
 
 		protected override void OnCreated(EventArgs e)
@@ -475,6 +490,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+		}
+
+		protected override void OnResized(ResizedEventArgs e)
+		{
+			base.OnResized(e);
+			_Size = null;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -544,6 +565,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkWindow.gtk_window_unfullscreen((Handle as GTKNativeControl).Handle);
 			}
 			_FullScreen = value;
+		}
+
+		protected override Vector2D GetLocationInternal()
+		{
+			return base.GetLocationInternal();
+		}
+		protected override void SetLocationInternal(Vector2D location)
+		{
+			base.SetLocationInternal(location);
 		}
 	}
 }

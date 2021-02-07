@@ -60,6 +60,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			if (ContainsText)
 			{
 				string text = GetText();
+				if (text == null)
+					return false;
+
 				return text.StartsWith("x-special/nautilus-clipboard\n");
 			}
 			return false;

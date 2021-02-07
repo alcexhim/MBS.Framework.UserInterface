@@ -157,8 +157,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override bool IsControlEnabledInternal(Control control)
 		{
-			IntPtr handle = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			return Internal.GTK.Methods.GtkWidget.gtk_widget_is_sensitive(handle);
+			GTKNativeControl hnc = (GetHandleForControl(control) as GTKNativeControl);
+			if (hnc != null)
+			{
+				IntPtr handle = hnc.Handle;
+				return Internal.GTK.Methods.GtkWidget.gtk_widget_is_sensitive(handle);
+			}
+			return true;
 		}
 		protected override void SetControlEnabledInternal(Control control, bool value)
 		{
@@ -407,6 +412,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
 
+			Console.WriteLine("uwt-gtk: creating GtkApplication with unique name '{0}'", Application.Instance.UniqueName);
 			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.Instance.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
 
 			return check;

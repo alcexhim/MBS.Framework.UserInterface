@@ -145,6 +145,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				DockingWindow dw = (item as DockingWindow);
 				IntPtr childHandle = CreateDockingItem(dw);
 
+				IntPtr hMaster = Internal.GDL.Methods.gdl_dock_object_get_master(hDock);
+				Internal.GLib.Structures.Value valSwitcherStyle = new Internal.GLib.Structures.Value(Internal.GDL.Constants.GdlSwitcherStyle.Tabs);
+				Internal.GObject.Methods.g_object_set_property(hMaster, "switcher-style", ref valSwitcherStyle);
+
 				// TODO: fix this!
 				if (!Engine.IsControlCreated(dw.ChildControl))
 					Engine.CreateControl(dw.ChildControl);
@@ -172,6 +176,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				DockingContainer dcParent = (item as DockingContainer);
 
 				IntPtr hDockParent = Internal.GDL.Methods.gdl_dock_item_new(item.Name, item.Title, UwtDockItemBehaviorToGtkDockItemBehavior(item.Behavior));
+				IntPtr hMaster = Internal.GDL.Methods.gdl_dock_object_get_master(hDockParent);
+				Internal.GLib.Structures.Value valSwitcherStyle = new Internal.GLib.Structures.Value(Internal.GDL.Constants.GdlSwitcherStyle.Tabs);
+				Internal.GObject.Methods.g_object_set_property(hMaster, "switcher-style", ref valSwitcherStyle);
+
 				for (int i = 0; i < dcParent.Items.Count; i++)
 				{
 					InsertDockingItemRecursive(hDockParent, dcParent.Items[i], dcParent.Items.Count - 1);
@@ -188,6 +196,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			// IntPtr hBox = Internal.GTK.Methods.GtkBox.gtk_box_new (Internal.GTK.Constants.GtkOrientation.Horizontal, false, 0);
 
 			IntPtr handle = Internal.GDL.Methods.gdl_dock_new();
+			IntPtr hMaster = Internal.GDL.Methods.gdl_dock_object_get_master(handle);
+
+			Internal.GLib.Structures.Value valSwitcherStyle = new Internal.GLib.Structures.Value(Internal.GDL.Constants.GdlSwitcherStyle.Tabs);
+			Internal.GObject.Methods.g_object_set_property(hMaster, "switcher-style", ref valSwitcherStyle);
 
 			foreach (DockingItem item in dock.Items)
 			{

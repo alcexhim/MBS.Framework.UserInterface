@@ -53,5 +53,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_object_dock(IntPtr /*GdlDockObject*/ hobject, IntPtr /*GdlDockObject*/ requestor, Constants.GdlDockPlacement position, IntPtr other_data);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdlDockMaster*/ gdl_dock_object_get_master(IntPtr /*GdlDockObject*/ hobject);
 	}
 }

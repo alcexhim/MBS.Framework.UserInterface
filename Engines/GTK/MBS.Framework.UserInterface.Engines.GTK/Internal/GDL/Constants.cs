@@ -90,5 +90,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 			/// </summary>
 			GDL_DOCK_FLOATING = 6
 		}
+
+		public enum GdlSwitcherStyle
+		{
+			/// <summary>
+			/// Tabs display only text labels.
+			/// </summary>
+			Text,
+			/// <summary>
+			/// Tabs display only icons.
+			/// </summary>
+			Icon,
+			/// <summary>
+			/// Tabs display text and icons.
+			/// </summary>
+			Both,
+			/// <summary>
+			/// Same as <see cref="Both" />.
+			/// </summary>
+			Toolbar,
+			/// <summary>
+			/// Tabs display like notebook tabs.
+			/// </summary>
+			Tabs,
+			/// <summary>
+			/// Do not display tabs.
+			/// </summary>
+			None
+		}
 	}
 }

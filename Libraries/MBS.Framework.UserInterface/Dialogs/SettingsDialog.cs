@@ -8,6 +8,7 @@ using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
 using System.Collections.Generic;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Dialogs
 {

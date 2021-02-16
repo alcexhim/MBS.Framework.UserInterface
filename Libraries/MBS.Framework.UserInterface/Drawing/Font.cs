@@ -25,6 +25,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		public static Font FromFamily(string familyName, double size, double? weight = null)
 		{
 			Font font = new Font();
+			font.FaceName = familyName;
 			font.FamilyName = familyName;
 			font.Size = size;
 			font.Weight = weight;
@@ -33,6 +34,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		public static Font FromFont(Font font, double size, double? weight = null)
 		{
 			Font font2 = new Font();
+			font2.FaceName = font.FaceName;
 			font2.FamilyName = font.FamilyName;
 			font2.Size = size;
 			font2.Weight = weight;
@@ -49,6 +51,46 @@ namespace MBS.Framework.UserInterface.Drawing
 			sb.Append (' ');
 			sb.Append (mvarFaceName);
 			return sb.ToString ();
+		}
+
+		public static Font Parse(string value)
+		{
+			string[] pieces = value.Split(new char[] { ' ' });
+			string name = null, style = null;
+			int size = 10;
+
+			if (pieces.Length >= 3)
+			{
+				name = pieces[0];
+				style = pieces[1];
+				size = Int32.Parse(pieces[2]);
+			}
+			else if (pieces.Length == 2)
+			{
+				name = pieces[0];
+				size = Int32.Parse(pieces[1]);
+			}
+			return Font.FromFamily(name, size, FontWeightFromStyle(style));
+		}
+
+		private static double? FontWeightFromStyle(string style)
+		{
+			switch (style)
+			{
+				case "Thin": return FontWeights.Thin;
+				case "Ultra-Light": return FontWeights.UltraLight;
+				case "Light": return FontWeights.Light;
+				case "Semi-Light": return FontWeights.SemiLight;
+				case "Book": return FontWeights.Book;
+				case "Medium": return FontWeights.Medium;
+				case "Semi-Bold": return FontWeights.SemiBold;
+				case "Bold": return FontWeights.Bold;
+				case "Ultra-Bold": return FontWeights.UltraBold;
+				case "Heavy": return FontWeights.Heavy;
+				case "Ultra-Heavy": return FontWeights.UltraHeavy;
+				case null: return FontWeights.Normal;
+			}
+			return null;
 		}
 	}
 }

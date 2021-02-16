@@ -464,6 +464,10 @@ namespace MBS.Framework.UserInterface
 					{
 						ctl.Text = UnescapeHTMLIf(item.Properties["label"].Value, ctl.UseMarkup);
 					}
+					if (item.Attributes["font-desc"] != null)
+					{
+						ctl.Font = Font.Parse(item.Attributes["font-desc"].Value);
+					}
 					if (item.Attributes["scale"] != null)
 					{
 						ctl.Attributes.Add("scale", Double.Parse(item.Attributes["scale"].Value));

@@ -78,11 +78,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 				if (control.Font.Size != null)
 				{
-					Internal.Pango.Methods.pango_font_description_set_size(hDesc, (int)Control.Font.Size);
+					Internal.Pango.Methods.pango_font_description_set_size(hDesc, (int)(Control.Font.Size * Internal.Pango.Constants.PangoScale));
 				}
 
 				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
-				Internal.Pango.Methods.pango_font_description_set_weight(hDesc, (int)Control.Font.Weight);
+				if (Control.Font.Weight != null)
+				{
+					Internal.Pango.Methods.pango_font_description_set_weight(hDesc, (int)Control.Font.Weight);
+				}
 				Internal.Pango.Methods.pango_context_set_font_description(hCtx, hDesc);
 
 				IntPtr hAttr = Internal.Pango.Methods.pango_attr_font_desc_new(hDesc);

@@ -432,5 +432,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			(Handle as WindowsFormsNativeControl).Handle.Margin = new System.Windows.Forms.Padding(value.Left, value.Top, value.Right, value.Bottom);
 		}
 
+		protected override Vector2D GetLocationInternal()
+		{
+			return new Vector2D((Handle as WindowsFormsNativeControl).Handle.Location.X, (Handle as WindowsFormsNativeControl).Handle.Location.Y);
+		}
+		protected override void SetLocationInternal(Vector2D location)
+		{
+			(Handle as WindowsFormsNativeControl).Handle.Location = new System.Drawing.Point((int)location.X, (int)location.Y);
+		}
+
 	}
 }

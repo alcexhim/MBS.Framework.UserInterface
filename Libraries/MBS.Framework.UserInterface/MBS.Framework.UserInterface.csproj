@@ -180,9 +180,6 @@
     <Compile Include="Controls\Ribbon\RibbonCommandItem.cs" />
     <Compile Include="Controls\StackSidebar.cs" />
     <Compile Include="Dialogs\SettingsDialog.cs" />
-    <Compile Include="SettingsProvider.cs" />
-    <Compile Include="SettingsGroup.cs" />
-    <Compile Include="Setting.cs" />
     <Compile Include="ApplicationSettingsProvider.cs" />
     <Compile Include="Controls\StackSidebarPanel.cs" />
     <Compile Include="Controls\FileBrowser\FileBrowserControl.cs" />
@@ -267,8 +264,6 @@
     <Compile Include="Controls\WebBrowser\WebBrowserDialogEvent.cs" />
     <Compile Include="Controls\WebBrowser\WebBrowserDialogType.cs" />
     <Compile Include="Controls\FileChooserButton.cs" />
-    <Compile Include="SettingsProfile.cs" />
-    <Compile Include="SettingsValue.cs" />
     <Compile Include="Dialogs\SettingsProfileDialog.cs" />
     <Compile Include="FontWeights.cs" />
     <Compile Include="LinkClickedEventArgs.cs" />

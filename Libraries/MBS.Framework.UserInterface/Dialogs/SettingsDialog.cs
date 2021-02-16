@@ -1,4 +1,7 @@
 ﻿using System;
+
+using MBS.Framework.Settings;
+
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Layouts;
@@ -187,6 +190,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			txtProfile = new TextBox();
 			txtProfile.Margin = new Padding(0, 0, 16, 16);
 			txtProfile.Enabled = false;
+			txtProfile.Editable = false;
 			txtProfile.Text = "(none)";
 			ctProfile.Controls.Add(txtProfile, new BoxLayout.Constraints(true, true));
 

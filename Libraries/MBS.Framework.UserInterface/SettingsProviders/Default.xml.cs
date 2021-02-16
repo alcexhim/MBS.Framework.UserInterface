@@ -21,6 +21,8 @@
 using System;
 using System.Collections.Generic;
 
+using MBS.Framework.Settings;
+
 namespace MBS.Framework.UserInterface.SettingsProviders
 {
 	public class DefaultSettingsProvider : SettingsProvider

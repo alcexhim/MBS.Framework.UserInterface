@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using MBS.Framework.UserInterface;
+
+using MBS.Framework.Settings;
 using MBS.Framework.UserInterface.Dialogs;
+
 using UniversalEditor;
 using UniversalEditor.Accessors;
 using UniversalEditor.DataFormats.Markup.XML;

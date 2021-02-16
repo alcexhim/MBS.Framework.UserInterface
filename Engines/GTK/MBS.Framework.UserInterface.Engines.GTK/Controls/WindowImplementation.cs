@@ -158,90 +158,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private void InitMenuItem(MenuItem menuItem, IntPtr hMenuShell, string accelPath = null)
 		{
-			if (menuItem is CommandMenuItem)
-			{
-				CommandMenuItem cmi = (menuItem as CommandMenuItem);
-				if (accelPath != null)
-				{
-
-					string cmiName = cmi.Name;
-					if (String.IsNullOrEmpty(cmiName))
-					{
-						cmiName = cmi.Text;
-					}
-
-					// clear out the possible mnemonic definitions
-					cmiName = cmiName.Replace("_", String.Empty);
-
-					accelPath += "/" + cmiName;
-					if (cmi.Shortcut != null)
-					{
-						Internal.GTK.Methods.GtkAccelMap.gtk_accel_map_add_entry(accelPath, GTKEngine.GetAccelKeyForKeyboardKey(cmi.Shortcut.Key), GTKEngine.KeyboardModifierKeyToGdkModifierType(cmi.Shortcut.ModifierKeys));
-					}
-				}
-
-				IntPtr hMenuFile = Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_new();
-				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(hMenuFile, cmi.Text);
-				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
-				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
-
-				/*
-				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
-				{
-					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_right_justified(hMenuFile, true);
-				}
-				*/
-
-				if (cmi.Items.Count > 0)
-				{
-					IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
-
-					try
-					{
-						IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new ();
-						Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append (hMenuFileMenu, hMenuTearoff);
-					}
-					catch (EntryPointNotFoundException ex) {
-						Console.WriteLine ("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
-
-						// this functionality is deprecated, so just in case it finally gets removed...
-						// however, some people like it, so UWT will support it indefinitely ;)
-						// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
-					}
-
-					if (accelPath != null)
-					{
-						if (hDefaultAccelGroup == IntPtr.Zero)
-						{
-							hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
-						}
-						Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
-					}
-
-					foreach (MenuItem menuItem1 in cmi.Items)
-					{
-						InitMenuItem(menuItem1, hMenuFileMenu, accelPath);
-					}
-
-					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_submenu(hMenuFile, hMenuFileMenu);
-				}
-
-				menuItemsByHandle[hMenuFile] = cmi;
-				Internal.GObject.Methods.g_signal_connect(hMenuFile, "activate", gc_MenuItem_Activated, IntPtr.Zero);
-
-				if (accelPath != null)
-				{
-					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
-				}
-
+			IntPtr hMenuFile = (Engine as GTKEngine).InitMenuItem(menuItem, accelPath);
+			if (hMenuFile != IntPtr.Zero)
 				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
-			}
-			else if (menuItem is SeparatorMenuItem)
-			{
-				// IntPtr hMenuFile = Internal.GTK.Methods.Methods.gtk_separator_new (Internal.GTK.Constants.GtkOrientation.Horizontal);
-				IntPtr hMenuFile = Internal.GTK.Methods.GtkSeparatorMenuItem.gtk_separator_menu_item_new();
-				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuShell, hMenuFile);
-			}
 		}
 
 		protected override string GetControlTextInternal(Control control)

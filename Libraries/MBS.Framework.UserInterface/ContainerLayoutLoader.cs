@@ -391,11 +391,11 @@ namespace MBS.Framework.UserInterface
 					ctl = new Button();
 					if (item.StyleClasses.Contains("suggested-action"))
 					{
-						(ctl as Button).StylePreset = ButtonStylePresets.Suggested;
+						(ctl as Button).StylePreset = CommandStylePreset.Suggested;
 					}
 					else if (item.StyleClasses.Contains("destructive-action"))
 					{
-						(ctl as Button).StylePreset = ButtonStylePresets.Destructive;
+						(ctl as Button).StylePreset = CommandStylePreset.Destructive;
 					}
 					if (item.Properties["label"] != null)
 					{

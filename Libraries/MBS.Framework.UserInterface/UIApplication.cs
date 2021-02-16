@@ -487,7 +487,7 @@ namespace MBS.Framework.UserInterface
 					s = new CommandSetting(attSettingName?.Value, attSettingTitle?.Value, attCommandID?.Value);
 					if (attStylePreset != null)
 					{
-						((CommandSetting)s).StylePreset = (ButtonStylePresets)Enum.Parse(typeof(ButtonStylePresets), attStylePreset.Value);
+						((CommandSetting)s).StylePreset = (CommandStylePreset)Enum.Parse(typeof(CommandStylePreset), attStylePreset.Value);
 					}
 					break;
 				}

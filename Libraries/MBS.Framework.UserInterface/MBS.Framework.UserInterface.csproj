@@ -270,7 +270,6 @@
     <Compile Include="SettingsProfile.cs" />
     <Compile Include="SettingsValue.cs" />
     <Compile Include="Dialogs\SettingsProfileDialog.cs" />
-    <Compile Include="ButtonStylePresets.cs" />
     <Compile Include="FontWeights.cs" />
     <Compile Include="LinkClickedEventArgs.cs" />
     <Compile Include="SettingsProviders\Default.xml.cs" />

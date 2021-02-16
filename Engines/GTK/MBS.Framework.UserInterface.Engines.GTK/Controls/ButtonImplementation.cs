@@ -74,12 +74,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 
-			if (ctl.StylePreset == ButtonStylePresets.Destructive)
+			if (ctl.StylePreset == CommandStylePreset.Destructive)
 			{
 				IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
 				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "destructive-action");
 			}
-			else if (ctl.StylePreset == ButtonStylePresets.Suggested)
+			else if (ctl.StylePreset == CommandStylePreset.Suggested)
 			{
 				IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
 				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "suggested-action");

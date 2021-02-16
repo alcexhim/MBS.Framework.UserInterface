@@ -135,6 +135,6 @@ namespace MBS.Framework.UserInterface.Controls
 		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Default;
 		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
 
-		public ButtonStylePresets StylePreset { get; set; } = ButtonStylePresets.None;
+		public CommandStylePreset StylePreset { get; set; } = CommandStylePreset.None;
 	}
 }

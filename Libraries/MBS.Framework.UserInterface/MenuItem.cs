@@ -93,6 +93,8 @@ namespace MBS.Framework.UserInterface
 				if (cmd != null)
 				{
 					CommandMenuItem mi = new CommandMenuItem(cmd.Title);
+
+					(Application.Instance as UIApplication).AssociateCommandWithNativeObject(cmd, mi);
 					mi.Name = cmd.ID;
 					mi.Enabled = cmd.Enabled;
 					if (cmd is UICommand)

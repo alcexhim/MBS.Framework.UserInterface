@@ -29,6 +29,27 @@ namespace MBS.Framework.UserInterface
 
 		public SettingsProfile.SettingsProfileCollection SettingsProfiles { get; } = new SettingsProfile.SettingsProfileCollection();
 
+		protected override void EnableDisableCommandInternal(Command command, bool enable)
+		{
+			base.EnableDisableCommandInternal(command, enable);
+
+			if (_ToolbarItemsForCommand.ContainsKey(command))
+			{
+				foreach (Controls.ToolbarItem ti in _ToolbarItemsForCommand[command])
+				{
+					ti.Enabled = enable;
+				}
+			}
+			if (_MenuItemsForCommand.ContainsKey(command))
+			{
+				foreach (MenuItem mi in _MenuItemsForCommand[command])
+				{
+					if (mi is CommandMenuItem)
+						(mi as CommandMenuItem).Enabled = enable;
+				}
+			}
+		}
+
 		public DpiAwareness DpiAwareness { get; set; } = DpiAwareness.Default;
 		internal bool ShouldDpiScale
 		{
@@ -95,6 +116,34 @@ namespace MBS.Framework.UserInterface
 				})
 			};
 		}
+
+		private Dictionary<Command, List<MenuItem>> _MenuItemsForCommand = new Dictionary<Command, List<MenuItem>>();
+		private Dictionary<Command, List<Controls.ToolbarItem>> _ToolbarItemsForCommand = new Dictionary<Command, List<Controls.ToolbarItem>>();
+		internal void AssociateCommandWithNativeObject(Command cmd, CommandMenuItem item)
+		{
+			if (!_MenuItemsForCommand.ContainsKey(cmd))
+			{
+				_MenuItemsForCommand.Add(cmd, new List<MenuItem>());
+			}
+
+			if (_MenuItemsForCommand[cmd].Contains(item))
+				return;
+
+			_MenuItemsForCommand[cmd].Add(item);
+		}
+		internal void AssociateCommandWithNativeObject(Command cmd, Controls.ToolbarItemButton item)
+		{
+			if (!_ToolbarItemsForCommand.ContainsKey(cmd))
+			{
+				_ToolbarItemsForCommand.Add(cmd, new List<Controls.ToolbarItem>());
+			}
+
+			if (_ToolbarItemsForCommand[cmd].Contains(item))
+				return;
+
+			_ToolbarItemsForCommand[cmd].Add(item);
+		}
+
 		public Accessor[] EnumerateDataFiles(string filter)
 		{
 			List<Accessor> xmlFilesList = new List<Accessor>();

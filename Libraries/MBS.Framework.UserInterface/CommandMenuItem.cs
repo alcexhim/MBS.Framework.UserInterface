@@ -19,7 +19,9 @@ namespace MBS.Framework.UserInterface
 		private Shortcut mvarShortcut = null;
 		public Shortcut Shortcut { get { return mvarShortcut; } set { mvarShortcut = value; } }
 
-		public bool Enabled { get; set; } = true;
+		private bool _Enabled = true;
+		public bool Enabled { get { return _Enabled; } set { _Enabled = value; (Application.Instance as UIApplication).Engine.SetMenuItemEnabled(this, value); } }
+
 		public StockType StockType { get; set; } = StockType.None;
 		public string IconName { get; set; } = null;
 

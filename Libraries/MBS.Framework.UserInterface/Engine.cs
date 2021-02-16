@@ -97,6 +97,13 @@ namespace MBS.Framework.UserInterface
 				return;
 			SetMenuItemVisibilityInternal(item, visible);
 		}
+		protected abstract void SetMenuItemEnabledInternal(MenuItem item, bool enabled);
+		internal void SetMenuItemEnabled(MenuItem item, bool enabled)
+		{
+			if (!IsMenuItemCreated(item))
+				return;
+			SetMenuItemEnabledInternal(item, enabled);
+		}
 
 		public bool IsMenuItemCreated(MenuItem item)
 		{

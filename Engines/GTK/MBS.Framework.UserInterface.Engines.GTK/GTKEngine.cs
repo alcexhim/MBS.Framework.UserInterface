@@ -467,6 +467,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMenuItem);
 			}
 		}
+		protected override void SetMenuItemEnabledInternal(MenuItem item, bool enabled)
+		{
+			IntPtr hMenuItem = (GetHandleForMenuItem(item) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuItem, enabled);
+		}
 
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;

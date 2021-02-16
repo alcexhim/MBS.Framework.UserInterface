@@ -39,6 +39,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
 
+		protected override void SetMenuItemEnabledInternal(MenuItem item, bool enabled)
+		{
+			WindowsFormsNativeControl wfnc = GetHandleForMenuItem(item) as WindowsFormsNativeControl;
+			if (wfnc == null) return;
+			if (wfnc.Handle == null) return;
+
+			wfnc.Handle.Enabled = enabled;
+		}
+
 		public static System.Windows.Forms.DialogResult DialogResultToSWFDialogResult(DialogResult dialogResult)
 		{
 			switch (dialogResult)

@@ -29,8 +29,6 @@ namespace MBS.Framework.UserInterface
 		public PropertyListObjectModel Configuration { get; set; } = new PropertyListObjectModel();
 		public Context Context { get; protected set; }
 
-
-
 		private static UserInterfacePlugin[] _plugins = null;
 		public static UserInterfacePlugin[] Get(bool resetCache = false)
 		{
@@ -114,6 +112,14 @@ namespace MBS.Framework.UserInterface
 					return plugins[i];
 			}
 			return null;
+		}
+
+		protected virtual void UpdateMenuItemsInternal()
+		{
+		}
+		public void UpdateMenuItems()
+		{
+			UpdateMenuItemsInternal();
 		}
 	}
 }

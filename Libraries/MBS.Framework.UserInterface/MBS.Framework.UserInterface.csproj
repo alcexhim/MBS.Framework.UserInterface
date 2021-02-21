@@ -291,6 +291,7 @@
     <Compile Include="ITabPageContainer.cs" />
     <Compile Include="Printing\PrintPreviewEvent.cs" />
     <Compile Include="SystemSound.cs" />
+    <Compile Include="WindowState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

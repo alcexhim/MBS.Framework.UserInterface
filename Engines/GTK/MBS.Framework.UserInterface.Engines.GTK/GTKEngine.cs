@@ -808,8 +808,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				case 1: buttons = MouseButtons.Primary; break;
 				case 2: buttons = MouseButtons.Wheel; break;
 				case 3: buttons = MouseButtons.Secondary; break;
-				case 4: buttons = MouseButtons.XButton1; break;
-				case 5: buttons = MouseButtons.XButton2; break;
+				case 8: buttons = MouseButtons.XButton1; break;
+				case 9: buttons = MouseButtons.XButton2; break;
 			}
 			KeyboardModifierKey modifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
 			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons, modifierKeys);

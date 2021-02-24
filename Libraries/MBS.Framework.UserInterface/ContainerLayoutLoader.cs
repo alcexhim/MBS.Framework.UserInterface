@@ -534,8 +534,8 @@ namespace MBS.Framework.UserInterface
 				}
 				case "GtkImage":
 				{
-					ctl = new Controls.PictureFrame();
-					(ctl as Controls.PictureFrame).Image = ImageFromGtkImage(item);
+					ctl = new Controls.ImageView();
+					(ctl as Controls.ImageView).Image = ImageFromGtkImage(item);
 					break;
 				}
 				case "GtkPaned":
@@ -763,44 +763,50 @@ namespace MBS.Framework.UserInterface
 
 			if (ctl != null)
 			{
-				if (item.ID != null)
-					ctl.Name = item.ID;
+				if (item.ClassName == "GtkScrolledWindow")
+				{
+				}
+				else
+				{
+					if (item.ID != null)
+						ctl.Name = item.ID;
 
-				if (item.Properties["sensitive"] != null)
-				{
-					ctl.Enabled = (item.Properties["sensitive"].Value != "False");
-				}
-				if (item.Properties["visible"] != null)
-				{
-					ctl.Visible = (item.Properties["visible"].Value == "True");
-				}
+					if (item.Properties["sensitive"] != null)
+					{
+						ctl.Enabled = (item.Properties["sensitive"].Value != "False");
+					}
+					if (item.Properties["visible"] != null)
+					{
+						ctl.Visible = (item.Properties["visible"].Value == "True");
+					}
 
-				int width_request = -1, height_request = -1;
-				if (item.Properties["width_request"] != null)
-				{
-					width_request = Int32.Parse(item.Properties["width_request"].Value);
-				}
-				if (item.Properties["height_request"] != null)
-				{
-					height_request = Int32.Parse(item.Properties["height_request"].Value);
-				}
-				ctl.MinimumSize = new Dimension2D(width_request, height_request);
+					int width_request = -1, height_request = -1;
+					if (item.Properties["width_request"] != null)
+					{
+						width_request = Int32.Parse(item.Properties["width_request"].Value);
+					}
+					if (item.Properties["height_request"] != null)
+					{
+						height_request = Int32.Parse(item.Properties["height_request"].Value);
+					}
+					ctl.MinimumSize = new Dimension2D(width_request, height_request);
 
-				int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
-				margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
-				margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");
-				margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
-				margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
-				ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
-				
-				if (item.Properties["valign"] != null)
-				{
-					ctl.VerticalAlignment = ParseVerticalAlignment(item.Properties["valign"].Value);
-				}
+					int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
+					margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
+					margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");
+					margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
+					margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
+					ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
 
-				for (int i = 0; i < item.StyleClasses.Count; i++)
-				{
-					ctl.Style.Classes.Add(item.StyleClasses[i]);
+					if (item.Properties["valign"] != null)
+					{
+						ctl.VerticalAlignment = ParseVerticalAlignment(item.Properties["valign"].Value);
+					}
+
+					for (int i = 0; i < item.StyleClasses.Count; i++)
+					{
+						ctl.Style.Classes.Add(item.StyleClasses[i]);
+					}
 				}
 			}
 			else

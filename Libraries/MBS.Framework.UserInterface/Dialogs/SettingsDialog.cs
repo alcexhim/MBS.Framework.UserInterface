@@ -722,6 +722,15 @@ namespace MBS.Framework.UserInterface.Dialogs
 				btn.SetExtraData<CommandSetting>("setting", opt as CommandSetting);
 				control = btn;
 			}
+			else if (opt is CustomSetting)
+			{
+				Control ctl = Reflection.CreateType<Control>((opt as CustomSetting).ControlTypeName);
+				if (ctl != null)
+				{
+					ctl.SetExtraData<CustomSetting>("setting", opt as CustomSetting);
+					control = ctl;
+				}
+			}
 		}
 
 		private void btn_Click(object sender, EventArgs e)

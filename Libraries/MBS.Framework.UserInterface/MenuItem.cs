@@ -97,9 +97,14 @@ namespace MBS.Framework.UserInterface
 					(Application.Instance as UIApplication).AssociateCommandWithNativeObject(cmd, mi);
 					mi.Name = cmd.ID;
 					mi.Enabled = cmd.Enabled;
-					if (cmd is UICommand)
+
+					foreach (CommandBinding binding in (Application.Instance as UIApplication).CommandBindings[cmd.ID])
 					{
-						mi.Shortcut = ((UICommand)cmd).Shortcut;
+						if (binding.Key != Input.Keyboard.KeyboardKey.None)
+						{
+							mi.Shortcut = new Shortcut(binding.Key, binding.ModifierKeys);
+							break;
+						}
 					}
 					mi.StockType = cmd.StockType;
 					mi.IconName = cmd.ImageFileName;

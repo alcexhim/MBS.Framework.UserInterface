@@ -292,6 +292,9 @@
     <Compile Include="Printing\PrintPreviewEvent.cs" />
     <Compile Include="SystemSound.cs" />
     <Compile Include="WindowState.cs" />
+    <Compile Include="CommandBinding.cs" />
+    <Compile Include="Internal\Controls\KeyboardSettings\KeyboardSettingsControl.cs" />
+    <Compile Include="Internal\Controls\KeyboardSettings\KeyboardSettingsChangeBindingDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -335,9 +338,14 @@
     <Folder Include="Controls\ListView\" />
     <Folder Include="Controls\WebBrowser\" />
     <Folder Include="Dragging\" />
+    <Folder Include="Internal\" />
+    <Folder Include="Internal\Controls\" />
+    <Folder Include="Internal\Controls\KeyboardSettings\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />
     <EmbeddedResource Include="SettingsProviders\Default.xml" />
+    <EmbeddedResource Include="Internal\Controls\KeyboardSettings\KeyboardSettingsControl.glade" />
+    <EmbeddedResource Include="Internal\Controls\KeyboardSettings\KeyboardSettingsChangeBindingDialog.glade" />
   </ItemGroup>
 </Project>

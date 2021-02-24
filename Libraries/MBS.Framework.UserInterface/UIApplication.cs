@@ -7,7 +7,8 @@ using System.Text;
 
 using MBS.Framework.Settings;
 using MBS.Framework.UserInterface.Dialogs;
-
+using MBS.Framework.UserInterface.Input.Keyboard;
+using MBS.Framework.UserInterface.Input.Mouse;
 using UniversalEditor;
 using UniversalEditor.Accessors;
 using UniversalEditor.DataFormats.Markup.XML;
@@ -17,7 +18,9 @@ using UniversalEditor.ObjectModels.PropertyList;
 namespace MBS.Framework.UserInterface
 {
     public class UIApplication : Application
-    {
+	{
+		public CommandBinding.CommandBindingCollection CommandBindings { get; } = new CommandBinding.CommandBindingCollection();
+
 		private Engine mvarEngine = null;
 		public Engine Engine { get { return mvarEngine; } }
 
@@ -432,6 +435,35 @@ namespace MBS.Framework.UserInterface
 			// ConfigurationManager.Load();
 			#endregion
 
+			UpdateSplashScreenStatus("Loading command bindings");
+			MarkupTagElement tagCommandBindings = (mvarRawMarkup.FindElement("ApplicationFramework", "CommandBindings") as MarkupTagElement);
+			if (tagCommandBindings != null)
+			{
+				foreach (MarkupElement elCommandBinding in tagCommandBindings.Elements)
+				{
+					MarkupTagElement tagCommandBinding = (elCommandBinding as MarkupTagElement);
+					if (tagCommandBinding == null) continue;
+					if (tagCommandBinding.FullName != "CommandBinding") continue;
+
+					CommandBinding cb = CommandBinding.FromXML(tagCommandBinding);
+					if (cb.CommandID == String.Empty)
+					{
+						if (cb.Key != KeyboardKey.None)
+						{
+							CommandBindings.Remove(cb.Key, cb.ModifierKeys, cb.ContextID);
+						}
+						else if (cb.MouseButtons != MouseButtons.None)
+						{
+							CommandBindings.Remove(cb.MouseButtons, cb.ModifierKeys, cb.ContextID);
+						}
+					}
+					else
+					{
+						CommandBindings.Add(cb);
+					}
+				}
+			}
+
 			Title = DefaultLanguage?.GetStringTableEntry("Application.Title", ((UIApplication)Application.Instance).Title);
 
 
@@ -515,6 +547,12 @@ namespace MBS.Framework.UserInterface
 					s = new BooleanSetting(attSettingName?.Value, attSettingTitle?.Value);
 					if (attDefaultValue != null)
 						s.DefaultValue = bool.Parse(attDefaultValue.Value);
+					break;
+				}
+				case "CustomSetting":
+				{
+					MarkupAttribute attSettingTypeName = tag.Attributes["TypeName"];
+					s = new CustomSetting(attSettingName?.Value, attSettingTitle?.Value, attSettingTypeName?.Value);
 					break;
 				}
 				case "TextSetting":

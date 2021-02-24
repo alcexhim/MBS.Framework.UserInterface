@@ -24,6 +24,7 @@
 					<Part>Keyboard</Part>
 				</Path>
 				<Settings>
+					<CustomSetting ID="{cd1a8bc3-dcb8-41a8-af81-bd6134ce8c2e}" TypeName="MBS.Framework.UserInterface.Internal.Controls.KeyboardSettings.KeyboardSettingsControl" Name="CommandBindings" Title="Command Bindings" />
 				</Settings>
 			</SettingsGroup>
 			<SettingsGroup ID="{CF896D04-3AC8-4060-ABF0-959B81796494}">

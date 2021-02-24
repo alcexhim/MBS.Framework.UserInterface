@@ -534,6 +534,20 @@ namespace MBS.Framework.UserInterface
 		public event MouseEventHandler MouseDown;
 		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
+			// look at this editor's configuration to see if we have any registered keybindings
+			foreach (CommandBinding binding in (Application.Instance as UIApplication).CommandBindings)
+			{
+				if (binding.Match(e))
+				{
+					if (binding.ContextID == null || Application.Instance.Contexts.Contains(binding.ContextID.Value))
+					{
+						Application.Instance.ExecuteCommand(binding.CommandID);
+						e.Cancel = true;
+						break;
+					}
+				}
+			}
+
 			MouseDown?.Invoke(this, e);
 		}
 		public event MouseEventHandler MouseMove;
@@ -562,6 +576,20 @@ namespace MBS.Framework.UserInterface
 		public event KeyEventHandler KeyDown;
 		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
+			// look at this editor's configuration to see if we have any registered keybindings
+			foreach (CommandBinding binding in (Application.Instance as UIApplication).CommandBindings)
+			{
+				if (binding.Match(e))
+				{
+					if (binding.ContextID == null || Application.Instance.Contexts.Contains(binding.ContextID.Value))
+					{
+						Application.Instance.ExecuteCommand(binding.CommandID);
+						e.Cancel = true;
+						break;
+					}
+				}
+			}
+
 			KeyDown?.Invoke(this, e);
 		}
 		public event KeyEventHandler KeyPress;

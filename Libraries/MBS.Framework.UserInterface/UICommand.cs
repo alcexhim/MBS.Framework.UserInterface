@@ -24,6 +24,5 @@ namespace MBS.Framework.UserInterface
 	public class UICommand : Command
 	{
 		public bool EnableTearoff { get; set; } = false;
-		public Shortcut Shortcut { get; set; } = null;
 	}
 }

@@ -119,8 +119,10 @@ namespace MBS.Framework.UserInterface
 					{
 						Console.WriteLine("ue: ui: unable to parse keyboard key '{0}'", attKey.Value);
 					}
-
-					cmd.Shortcut = new Shortcut(value, modifiers);
+					else
+					{
+						(Application.Instance as UIApplication).CommandBindings.Add(cmd.ID, value, modifiers, new Guid("{1b8fa744-9b02-47df-a273-9631bc739119}"));
+					}
 				}
 			}
 

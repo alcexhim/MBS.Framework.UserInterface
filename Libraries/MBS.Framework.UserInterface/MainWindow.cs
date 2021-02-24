@@ -93,6 +93,8 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		private static Context ctxMainWindowContext = new Context(new Guid("{1b8fa744-9b02-47df-a273-9631bc739119}"), "Main Window Context");
+
 		protected internal override void OnCreated(EventArgs e)
 		{
 			base.OnCreated(e);
@@ -104,6 +106,20 @@ namespace MBS.Framework.UserInterface
 		{
 			base.OnGotFocus(e);
 			((UIApplication)Application.Instance).Engine.LastWindow = this;
+
+			if (!((UIApplication)Application.Instance).Contexts.Contains(ctxMainWindowContext))
+			{
+				((UIApplication)Application.Instance).Contexts.Add(ctxMainWindowContext);
+			}
+		}
+		protected internal override void OnLostFocus(EventArgs e)
+		{
+			base.OnLostFocus(e);
+
+			if (((UIApplication)Application.Instance).Contexts.Contains(ctxMainWindowContext))
+			{
+				((UIApplication)Application.Instance).Contexts.Remove(ctxMainWindowContext);
+			}
 		}
 		protected override void OnClosed(EventArgs e)
 		{

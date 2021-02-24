@@ -19,12 +19,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Drawing;
+
 namespace MBS.Framework.UserInterface.Drawing
 {
 	public abstract class Image
 	{
 		public int Width { get; protected set; } = 0;
 		public int Height { get; protected set; } = 0;
+
+		public Dimension2D Size { get { return new Dimension2D(Width, Height); } }
 
 		public static Image FromStock(StockType stockType, int size)
 		{

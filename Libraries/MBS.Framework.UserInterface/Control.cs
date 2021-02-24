@@ -197,7 +197,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
-		public Dimension2D Size
+		public virtual Dimension2D Size
 		{
 			get
 			{

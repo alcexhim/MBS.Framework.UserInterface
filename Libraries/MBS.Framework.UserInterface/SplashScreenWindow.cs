@@ -39,7 +39,7 @@ namespace MBS.Framework.UserInterface
 			this.MenuBar.Visible = false;
 			this.StatusBar.Visible = false;
 			
-			PictureFrame image = new PictureFrame();
+			ImageView image = new ImageView();
 			string imageFileName = MBS.Framework.IO.File.Find("splash.bmp");
 			if (imageFileName != null)
 			{

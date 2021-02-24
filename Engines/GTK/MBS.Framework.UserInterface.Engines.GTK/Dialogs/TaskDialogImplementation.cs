@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			Container ctIconAndPrompt = new Container();
 			ctIconAndPrompt.Layout = new BoxLayout(Orientation.Horizontal);
 
-			PictureFrame picIcon = new PictureFrame();
+			ImageView picIcon = new ImageView();
 			picIcon.VerticalAlignment = VerticalAlignment.Top;
 			picIcon.Image = UserInterface.Drawing.Image.FromStock(StockType.DialogQuestion, 48);
 			ctIconAndPrompt.Controls.Add(picIcon, new BoxLayout.Constraints(false, false, 16));

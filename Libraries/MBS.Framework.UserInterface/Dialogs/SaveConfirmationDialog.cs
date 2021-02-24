@@ -57,7 +57,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			Container ct1 = new Container();
 			ct1.Layout = new BoxLayout(Orientation.Horizontal);
 
-			PictureFrame picIcon = new PictureFrame();
+			ImageView picIcon = new ImageView();
 			picIcon.VerticalAlignment = VerticalAlignment.Top;
 			picIcon.Image = Drawing.Image.FromStock(StockType.DialogWarning, 64);
 			ct1.Controls.Add(picIcon, new BoxLayout.Constraints(false, false, 24));

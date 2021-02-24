@@ -85,15 +85,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "suggested-action");
 			}
 
-			PictureFrame image = null;
+			ImageView image = null;
 			if (ctl.StockType != StockType.None)
 			{
-				image = new PictureFrame();
+				image = new ImageView();
 				image.Image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString(ctl.StockType), (int)ctl.ImageSize.Width);
 			}
 			else if (ctl.Image != null)
 			{
-				image = new PictureFrame();
+				image = new ImageView();
 				image.Image = ctl.Image;
 			}
 			if (image != null)

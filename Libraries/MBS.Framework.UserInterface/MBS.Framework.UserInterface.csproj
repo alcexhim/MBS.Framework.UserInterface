@@ -150,7 +150,7 @@
     <Compile Include="ObjectModels\Layout\LayoutObjectModel.cs" />
     <Compile Include="ObjectModels\Layout\LayoutItem.cs" />
     <Compile Include="ObjectModels\Layout\LayoutItemProperty.cs" />
-    <Compile Include="Controls\PictureFrame.cs" />
+    <Compile Include="Controls\ImageView.cs" />
     <Compile Include="Controls\OpenGLCanvas.cs" />
     <Compile Include="WordWrapMode.cs" />
     <Compile Include="WindowBorderStyle.cs" />

@@ -61,7 +61,6 @@
     <Compile Include="Controls\LabelImplementation.cs" />
     <Compile Include="Controls\ListViewImplementation.cs" />
     <Compile Include="Controls\OpenGLCanvasImplementation.cs" />
-    <Compile Include="Controls\PictureFrameImplementation.cs" />
     <Compile Include="Controls\PopupWindowImplementation.cs" />
     <Compile Include="Controls\RibbonControlImplementation.cs" />
     <Compile Include="Controls\SplitContainerImplementation.cs" />

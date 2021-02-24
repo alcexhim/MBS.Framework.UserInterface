@@ -405,6 +405,10 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 						}
 						else if (BackspaceBehavior == HexEditorBackspaceBehavior.EraseNybble)
 						{
+							if (SelectionStart.ByteIndex == 0 && SelectionStart.NybbleIndex == 0)
+							{
+								return;
+							}
 							if (SelectionStart.NybbleIndex == 0)
 							{
 								string curhex = Data[mvarSelectionStart - 1].ToString("X").PadLeft(2, '0');

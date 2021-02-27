@@ -726,7 +726,7 @@ namespace MBS.Framework.UserInterface
 
 		private void ReloadContextMenu()
 		{
-			Command cmd = ((UIApplication)Application.Instance).Commands[_ContextMenuCommandID];
+			Command cmd = ((UIApplication)Application.Instance).FindCommand(_ContextMenuCommandID);
 			if (cmd == null)
 			{
 				_ContextMenu = null;

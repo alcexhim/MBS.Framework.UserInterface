@@ -139,30 +139,34 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 			if (tv == null) return;
 
-			if (e.Buttons == MouseButtons.Primary && e.ModifierKeys == KeyboardModifierKey.None)
+			TreeModelRow row = HitTestInternal(handle, e.X, e.Y).Row;
+			if (row == null)
 			{
-				// still slightly buggy, but works well enough
-				if (tv.SelectedRows.Count <= 1) return;
-				
+				// added 2021-02-26 15:27:08 by beckermj - nautilus clears the selections when you click in the tree area but not on an item
+				tv.SelectedRows.Clear();
+				InvokeMethod(tv, "OnSelectionChanged", new object[] { EventArgs.Empty });
+			}
+			else
+			{
 				// stop the selection
 				// we need to check if the row we're mouse-downing on is in
 				// the selection list or not
-				// if it is, we should cancel the selection because we might
-				// be dragging
-				// if it isn't, we're safe to allow the selection
-				TreeModelRow row = HitTestInternal(handle, e.X, e.Y).Row;
 				if (tv.SelectedRows.Contains(row))
 				{
+					// if it is, we should cancel the selection because we might
+					// be dragging
 					BlockSelection();
 					prevSelectedRow = row;
 				}
 				else
 				{
+					// if it isn't, we're safe to allow the selection
 					UnblockSelection();
 					prevSelectedRow = null;
 				}
 			}
-			else if (e.Buttons == MouseButtons.Secondary)
+
+			if (e.Buttons == MouseButtons.Secondary)
 			{
 				// hack to set the selected item before the BeforeContextMenu event fires
 				if (tv.SelectedRows.Count == 0)

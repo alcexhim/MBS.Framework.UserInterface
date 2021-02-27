@@ -25,6 +25,7 @@ using System.Drawing.Printing;
 using System.Windows.Forms;
 
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.WindowsForms.Printing;
 using MBS.Framework.UserInterface.Input.Keyboard;
@@ -46,6 +47,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			if (wfnc.Handle == null) return;
 
 			wfnc.Handle.Enabled = enabled;
+		}
+
+		protected override void SetToolbarItemEnabledInternal(ToolbarItem item, bool enabled)
+		{
+			WindowsFormsNativeToolStripItem nc = (GetHandleForToolbarItem(item) as WindowsFormsNativeToolStripItem);
+			nc.Handle.Enabled = enabled;
+		}
+		protected override void SetToolbarItemVisibilityInternal(ToolbarItem item, bool visible)
+		{
+			WindowsFormsNativeToolStripItem nc = (GetHandleForToolbarItem(item) as WindowsFormsNativeToolStripItem);
+			nc.Handle.Visible = visible;
 		}
 
 		public static System.Windows.Forms.DialogResult DialogResultToSWFDialogResult(DialogResult dialogResult)

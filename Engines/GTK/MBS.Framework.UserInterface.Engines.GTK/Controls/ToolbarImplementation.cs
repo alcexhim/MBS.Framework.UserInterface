@@ -165,6 +165,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 				if (hItem != IntPtr.Zero)
 				{
+					((UIApplication)Application.Instance).Engine.RegisterToolbarItemHandle(item, new GTKNativeControl(hItem));
+
 					int index = ctl.Items.IndexOf(item);
 					Internal.GTK.Methods.GtkToolbar.gtk_toolbar_insert(handle, hItem, index);
 				}

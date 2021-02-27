@@ -33,25 +33,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 		}
 
-		private Dictionary<System.Windows.Forms.ToolStripItem, ToolbarItem> _itemsByHandle = new Dictionary<System.Windows.Forms.ToolStripItem, ToolbarItem>();
-		private Dictionary<ToolbarItem, System.Windows.Forms.ToolStripItem> _handlesByItem = new Dictionary<ToolbarItem, System.Windows.Forms.ToolStripItem>();
-		protected void RegisterToolbarItemHandle(ToolbarItem item, System.Windows.Forms.ToolStripItem handle)
-		{
-			_itemsByHandle[handle] = item;
-			_handlesByItem[item] = handle;
-		}
-
-		protected System.Windows.Forms.ToolStripItem GetHandleForItem(ToolbarItem item)
-		{
-			if (!_handlesByItem.ContainsKey(item)) return null;
-			return _handlesByItem[item];
-		}
-		protected ToolbarItem GetItemByHandle(System.Windows.Forms.ToolStripItem handle)
-		{
-			if (!_itemsByHandle.ContainsKey(handle)) return null;
-			return _itemsByHandle[handle];
-		}
-
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Toolbar ctl = (control as Toolbar);
@@ -135,6 +116,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					if (title != null) {
 						title = title.Replace ("_", String.Empty);
 					}
+					hItem.Tag = item;
 					hItem.Text = title;
 					hItem.Click += hItem_Click;
 				}
@@ -144,7 +126,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 				if (hItem != null)
 				{
-					RegisterToolbarItemHandle(item, hItem);
+					((UIApplication)Application.Instance).Engine.RegisterToolbarItemHandle(item, new WindowsFormsNativeToolStripItem(hItem));
 
 					int index = ctl.Items.IndexOf(item);
 					handle.Items.Insert(index, hItem);
@@ -155,7 +137,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 		void hItem_Click(object sender, EventArgs e)
 		{
-			ToolbarItemButton tsb = (GetItemByHandle(sender as System.Windows.Forms.ToolStripButton) as ToolbarItemButton);
+			ToolbarItemButton tsb = (sender as System.Windows.Forms.ToolStripButton).Tag as ToolbarItemButton;
 			if (tsb != null) InvokeMethod(tsb, "OnClick", EventArgs.Empty);
 		}
 

@@ -105,6 +105,18 @@ namespace MBS.Framework.UserInterface
 			SetMenuItemEnabledInternal(item, enabled);
 		}
 
+		protected abstract void SetToolbarItemVisibilityInternal(ToolbarItem item, bool visible);
+		internal void SetToolbarItemVisibility(ToolbarItem item, bool visible)
+		{
+			SetToolbarItemVisibilityInternal(item, visible);
+		}
+
+		protected abstract void SetToolbarItemEnabledInternal(ToolbarItem item, bool enabled);
+		internal void SetToolbarItemEnabled(ToolbarItem item, bool enabled)
+		{
+			SetToolbarItemEnabledInternal(item, enabled);
+		}
+
 		public bool IsMenuItemCreated(MenuItem item)
 		{
 			return handlesByMenuItem.ContainsKey(item);
@@ -120,6 +132,18 @@ namespace MBS.Framework.UserInterface
 		public void RegisterMenuItemHandle(MenuItem item, NativeControl handle)
 		{
 			handlesByMenuItem[item] = handle;
+		}
+
+		private Dictionary<ToolbarItem, NativeControl> handlesByToolbarItem = new Dictionary<ToolbarItem, NativeControl>();
+		public NativeControl GetHandleForToolbarItem(ToolbarItem item)
+		{
+			if (item == null)
+				return null;
+			return handlesByToolbarItem[item];
+		}
+		public void RegisterToolbarItemHandle(ToolbarItem item, NativeControl handle)
+		{
+			handlesByToolbarItem[item] = handle;
 		}
 
 

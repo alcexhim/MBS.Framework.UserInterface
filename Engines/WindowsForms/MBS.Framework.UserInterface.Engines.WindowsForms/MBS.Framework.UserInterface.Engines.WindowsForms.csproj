@@ -251,6 +251,7 @@
     <Compile Include="Controls\Internal\FileChooserButton\FileChooserButtonControl.cs" />
     <Compile Include="Controls\FileChooserButtonImplementation.cs" />
     <Compile Include="WindowsFormsNativeControlContainer.cs" />
+    <Compile Include="WindowsFormsNativeToolStripItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

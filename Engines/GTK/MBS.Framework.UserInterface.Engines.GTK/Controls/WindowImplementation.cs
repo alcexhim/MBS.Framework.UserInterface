@@ -360,7 +360,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					break;
 				}
 			}
-
+			/*
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
 				foreach (CommandBar cb in ((UIApplication)Application.Instance).CommandBars)
@@ -368,7 +368,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					window.Controls.Add(window.LoadCommandBar(cb));
 				}
 			}
-
+			*/
 			// HACK: required for Universal Editor splash screen to work
 			// Internal.GTK.Methods.GtkWidget.gtk_widget_show_now(handle);
 			// Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);

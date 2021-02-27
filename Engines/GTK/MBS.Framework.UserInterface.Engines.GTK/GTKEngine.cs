@@ -473,6 +473,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuItem, enabled);
 		}
 
+		protected override void SetToolbarItemVisibilityInternal(ToolbarItem item, bool visible)
+		{
+			IntPtr hToolbarItem = (GetHandleForToolbarItem(item) as GTKNativeControl).Handle;
+			if (visible)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hToolbarItem);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hToolbarItem);
+			}
+		}
+		protected override void SetToolbarItemEnabledInternal(ToolbarItem item, bool enabled)
+		{
+			IntPtr hToolbarItem = (GetHandleForToolbarItem(item) as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hToolbarItem, enabled);
+		}
+
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;

@@ -82,6 +82,27 @@ namespace MBS.Framework.UserInterface
 			throw new NotImplementedException(String.Format("type of CommandItem '{0}' not implemented", ci.GetType()));
 		}
 
+		private static Dictionary<CommandBar, List<Toolbar>> _ToolbarsForCommandBar = new Dictionary<CommandBar, List<Toolbar>>();
+		private static bool RegisterCommandBar(CommandBar cb, Toolbar tb)
+		{
+			if (!_ToolbarsForCommandBar.ContainsKey(cb))
+			{
+				_ToolbarsForCommandBar[cb] = new List<Toolbar>();
+			}
+			if (_ToolbarsForCommandBar[cb].Contains(tb))
+				return false;
+
+			_ToolbarsForCommandBar[cb].Add(tb);
+			return true;
+		}
+
+		private static Toolbar[] ToolbarsForCommandBar(CommandBar cb)
+		{
+			if (!_ToolbarsForCommandBar.ContainsKey(cb))
+				return null;
+			return _ToolbarsForCommandBar[cb].ToArray();
+		}
+
 		public Toolbar LoadCommandBar(CommandBar cb)
 		{
 			Toolbar tb = new Toolbar();
@@ -91,9 +112,16 @@ namespace MBS.Framework.UserInterface
 				if (items != null && items.Length > 0)
 				{
 					for (int j = 0; j < items.Length; j++)
+					{
 						tb.Items.Add(items[j]);
+						if (cb.Items[i] is CommandReferenceCommandItem && tb.Items[j] is ToolbarItemButton)
+						{
+							((UIApplication)Application.Instance).AssociateCommandWithNativeObject(Application.Instance.FindCommand((cb.Items[i] as CommandReferenceCommandItem).CommandID), items[j] as ToolbarItemButton);
+						}
+					}
 				}
 			}
+			RegisterCommandBar(cb, tb);
 			return tb;
 		}
 

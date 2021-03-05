@@ -234,7 +234,7 @@ namespace MBS.Framework.UserInterface
 			else
 			{
 				_ObjectRectangle = Rectangle.Empty;
-				_control.Cursor = Cursors.Default;
+				_control.Cursor = DefaultCursor;
 			}
 
 			if (Enabled)
@@ -242,6 +242,8 @@ namespace MBS.Framework.UserInterface
 				_control.Refresh();
 			}
 		}
+
+		public Cursor DefaultCursor { get; set; } = Cursors.Default;
 
 		private void control_MouseUp(object sender, Input.Mouse.MouseEventArgs e)
 		{

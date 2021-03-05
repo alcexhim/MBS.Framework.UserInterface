@@ -89,7 +89,7 @@ namespace MBS.Framework.UserInterface
 			{
 				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
 
-				Command cmd = Application.Instance.Commands[crci.CommandID];
+				Command cmd = Application.Instance.FindCommand(crci.CommandID);
 				if (cmd != null)
 				{
 					CommandMenuItem mi = new CommandMenuItem(cmd.Title);

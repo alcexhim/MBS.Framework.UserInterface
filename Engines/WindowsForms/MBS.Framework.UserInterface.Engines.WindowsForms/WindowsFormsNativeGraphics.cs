@@ -33,6 +33,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			Handle = g;
 		}
+		public WindowsFormsNativeGraphics(System.Drawing.Graphics g, Rectangle clipRectangle) : base(clipRectangle)
+		{
+			Handle = g;
+		}
 
 		private System.Drawing.Image ImageToNativeImage(Image image)
 		{

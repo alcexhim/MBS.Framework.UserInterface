@@ -81,7 +81,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Contract.Assert(ctl != null);
 
-			GTKGraphics graphics = new GTKGraphics(cr);
+			GTKGraphics graphics = new GTKGraphics(cr, new Rectangle(new Vector2D(0, 0), Control.Size));
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			IntPtr hLayout = (Handle as GTKNativeControl).GetNamedHandle("Layout");

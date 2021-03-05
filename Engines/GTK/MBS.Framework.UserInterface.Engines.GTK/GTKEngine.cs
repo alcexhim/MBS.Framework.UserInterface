@@ -43,7 +43,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hCairoSurface = ci.Handle;
 			IntPtr cr = Internal.Cairo.Methods.cairo_create(hCairoSurface);
 
-			GTKGraphics graphics = new GTKGraphics(cr);
+			GTKGraphics graphics = new GTKGraphics(cr, new Rectangle(new Vector2D(0, 0), image.Size));
 			return graphics;
 		}
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is

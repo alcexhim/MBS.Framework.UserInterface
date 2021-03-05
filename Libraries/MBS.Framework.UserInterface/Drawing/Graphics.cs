@@ -11,6 +11,16 @@ namespace MBS.Framework.UserInterface.Drawing
 {
 	public abstract class Graphics
 	{
+		public Rectangle ClipRectangle { get; private set; }
+
+		public Graphics()
+		{
+		}
+		public Graphics(Rectangle clipRectangle)
+		{
+			ClipRectangle = clipRectangle;
+		}
+
 		public static Graphics FromImage(Image image)
 		{
 			return ((UIApplication)Application.Instance).Engine.CreateGraphics(image);
@@ -139,7 +149,10 @@ namespace MBS.Framework.UserInterface.Drawing
 
 		public void Clear(Color color)
 		{
-
+			if (ClipRectangle != null)
+			{
+				FillRectangle(new SolidBrush(color), new Rectangle(0, 0, ClipRectangle.Width, ClipRectangle.Height));
+			}
 		}
 
 		/// <summary>

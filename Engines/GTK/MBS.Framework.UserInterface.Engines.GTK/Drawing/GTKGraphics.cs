@@ -14,6 +14,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Drawing
 		{
 			mvarCairoContext = cairoContext;
 		}
+		public GTKGraphics(IntPtr cairoContext, Rectangle clipRectangle) : base(clipRectangle)
+		{
+			mvarCairoContext = cairoContext;
+		}
 
 		private void SelectPath(Vector2D[] points)
 		{

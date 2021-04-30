@@ -85,23 +85,39 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, "suggested-action");
 			}
 
-			ImageView image = null;
+			UserInterface.Drawing.Image image = null;
+			// ImageView imageView = null;
 			if (ctl.StockType != StockType.None)
 			{
-				image = new ImageView();
-				image.Image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString(ctl.StockType), (int)ctl.ImageSize.Width);
+				// imageView = new ImageView();
+				image = UserInterface.Drawing.Image.FromName(Engine.StockTypeToString(ctl.StockType), (int)ctl.ImageSize.Width);
 			}
 			else if (ctl.Image != null)
 			{
-				image = new ImageView();
-				image.Image = ctl.Image;
+				// imageView = new ImageView();
+				image = ctl.Image;
 			}
 			if (image != null)
 			{
-				if (Engine.CreateControl(image))
+				IntPtr hImageView = IntPtr.Zero;
+				// if (Engine.CreateControl(imageView))
+				// {
+				//     hImageView = (Engine.GetHandleForControl(image) as GTKNativeControl).Handle;
+				// }
+
+				if (image is GDKPixbufImage)
 				{
-					IntPtr hImage = (Engine.GetHandleForControl(image) as GTKNativeControl).Handle;
-					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImage);
+					IntPtr hImage = (image as GDKPixbufImage).Handle;
+					hImageView = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hImage);
+				}
+				else if (image is CairoImage)
+				{
+
+				}
+
+				if (hImageView != IntPtr.Zero)
+				{
+					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImageView);
 				}
 			}
 

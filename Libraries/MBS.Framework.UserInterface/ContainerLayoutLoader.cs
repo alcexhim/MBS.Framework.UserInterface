@@ -807,6 +807,10 @@ namespace MBS.Framework.UserInterface
 					margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
 					ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
 
+					if (item.Properties["halign"] != null)
+					{
+						ctl.HorizontalAlignment = ParseHorizontalAlignment(item.Properties["halign"].Value);
+					}
 					if (item.Properties["valign"] != null)
 					{
 						ctl.VerticalAlignment = ParseVerticalAlignment(item.Properties["valign"].Value);
@@ -860,11 +864,25 @@ namespace MBS.Framework.UserInterface
 			switch (value.ToLower())
 			{
 				case "start": return VerticalAlignment.Top;
+				case "center": return VerticalAlignment.Middle;
+				case "baseline": return VerticalAlignment.Baseline;
 				case "end": return VerticalAlignment.Bottom;
 			}
 			return VerticalAlignment.Default;
 		}
+		private HorizontalAlignment ParseHorizontalAlignment(string value)
+		{
+			switch (value.ToLower())
+			{
+				case "start": return HorizontalAlignment.Left;
+				case "center": return HorizontalAlignment.Center;
+				case "fill": return HorizontalAlignment.Justify;
+				case "end": return HorizontalAlignment.Right;
+			}
+			return HorizontalAlignment.Default;
+		}
 
+		
 		private string UnescapeHTML(string value)
 		{
 			StringBuilder sb = new StringBuilder();

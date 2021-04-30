@@ -323,8 +323,16 @@ namespace MBS.Framework.UserInterface
 					MarkupAttribute attID = tagCommand.Attributes["ID"];
 					if (attID == null) continue;
 
-					Command cmd = CommandLoader.FromMarkup(tagCommand);
-					((UIApplication)Application.Instance).Commands.Add(cmd);
+					Command cmd = Application.Instance.FindCommand(attID.Value);
+					if (cmd == null)
+					{
+						cmd = CommandLoader.FromMarkup(tagCommand);
+						((UIApplication)Application.Instance).Commands.Add(cmd);
+					}
+					else
+					{
+						CommandLoader.Append(cmd, tagCommand);
+					}
 				}
 			}
 			#endregion

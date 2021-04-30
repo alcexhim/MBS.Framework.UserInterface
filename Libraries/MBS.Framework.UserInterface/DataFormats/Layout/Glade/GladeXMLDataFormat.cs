@@ -147,6 +147,24 @@ namespace MBS.Framework.UserInterface.DataFormats.Layout.Glade
 						}
 						break;
 					}
+					case "action-widgets":
+					{
+						for (int i = 0; i < tag1.Elements.Count; i++)
+						{
+							MarkupTagElement tagActionWidget = tag1.Elements[i] as MarkupTagElement;
+							if (tagActionWidget == null) continue;
+							if (tagActionWidget.FullName != "action-widget") continue;
+
+							MarkupAttribute attResponse = tagActionWidget.Attributes["response"];
+							if (attResponse == null) continue;
+
+							LayoutItemProperty actionWidget = new LayoutItemProperty();
+							actionWidget.Name = tagActionWidget.Value;
+							actionWidget.Value = attResponse.Value;
+							item.ActionWidgets.Add(actionWidget);
+						}
+						break;
+					}
 				}
 			}
 

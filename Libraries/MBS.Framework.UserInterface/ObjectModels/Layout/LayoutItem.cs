@@ -67,6 +67,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Layout
 		public LayoutItemProperty.LayoutItemPropertyCollection PackingProperties { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
 		public System.Collections.Specialized.StringCollection StyleClasses { get; } = new System.Collections.Specialized.StringCollection();
 		public string Value { get; set; }
+		public LayoutItemProperty.LayoutItemPropertyCollection ActionWidgets { get; } = new LayoutItemProperty.LayoutItemPropertyCollection();
 
 		public object Clone()
 		{

@@ -192,6 +192,15 @@ namespace MBS.Framework.UserInterface
 				{
 					container.Size.Height = Int32.Parse(pDefaultHeight.Value);
 				}
+
+				foreach (LayoutItemProperty actionWidget in item.ActionWidgets)
+				{
+					Button ctlActionWidget = container.GetControlByID(actionWidget.Name) as Button;
+					if (ctlActionWidget != null)
+					{
+						ctlActionWidget.ResponseValue = Int32.Parse(actionWidget.Value);
+					}
+				}
 			}
 		}
 

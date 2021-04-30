@@ -565,6 +565,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					return (ctl as IVirtualControlContainer);
 				return null;
 			}
+			else
+			{
+				IntPtr hTestParent = hParent;
+				while (hTestParent != IntPtr.Zero)
+				{
+					hTestParent = Internal.GTK.Methods.GtkWidget.gtk_widget_get_parent(hTestParent);
+					ctl = (Engine as GTKEngine).GetControlByHandle(hTestParent);
+					if (ctl is IVirtualControlContainer)
+						return (ctl as IVirtualControlContainer);
+				}
+			}
 			return new GTKNativeControlContainer(hParent);
 		}
 
@@ -859,7 +870,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override void SetHorizontalAlignmentInternal(HorizontalAlignment value)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			switch (Control.HorizontalAlignment)
+			switch (value)
 			{
 				case HorizontalAlignment.Center:
 				{

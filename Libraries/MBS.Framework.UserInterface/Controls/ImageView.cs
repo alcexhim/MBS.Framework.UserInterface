@@ -58,6 +58,12 @@ namespace MBS.Framework.UserInterface.Controls
 				e.Graphics.FillRectangle(BackgroundBrush, new MBS.Framework.Drawing.Rectangle(0, 0, Size.Width, Size.Height));
 			}
 
+			if (AutoSize)
+			{
+				Size = Image.Size;
+				ScrollBounds = Size;
+			}
+
 			if (Image == null)
 				return;
 

@@ -38,6 +38,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tree_view_set_headers_clickable(IntPtr /*GtkTreeView*/ tree_view, bool setting);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_set_activate_on_single_click(IntPtr /*GtkTreeView*/ tree_view, bool value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_get_activate_on_single_click(IntPtr /*GtkTreeView*/ tree_view);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkTreeSelection*/ gtk_tree_view_get_selection(IntPtr /*GtkTreeView*/ tree_view);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]

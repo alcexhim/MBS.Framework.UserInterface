@@ -923,5 +923,36 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 		}
+
+		public bool GetSingleClickActivation()
+		{
+			switch (ImplementedAs(Control as ListViewControl))
+			{
+				case ImplementedAsType.IconView:
+				{
+					break;
+				}
+				case ImplementedAsType.TreeView:
+				{
+					return Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_activate_on_single_click((Handle as GTKNativeControl).Handle);
+				}
+			}
+			throw new NotImplementedException();
+		}
+		public void SetSingleClickActivation(bool value)
+		{
+			switch (ImplementedAs(Control as ListViewControl))
+			{
+				case ImplementedAsType.IconView:
+				{
+					break;
+				}
+				case ImplementedAsType.TreeView:
+				{
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_activate_on_single_click((Handle as GTKNativeControl).GetNamedHandle("TreeView"), value);
+					break;
+				}
+			}
+		}
 	}
 }

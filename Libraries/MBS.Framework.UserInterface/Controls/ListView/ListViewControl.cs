@@ -27,6 +27,9 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 
 			void AddColumnValidValues(ListViewColumnText column, IList items);
 			void RemoveColumnValidValues(ListViewColumnText column, IList items);
+
+			bool GetSingleClickActivation();
+			void SetSingleClickActivation(bool value);
 		}
 	}
 
@@ -151,6 +154,20 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		/// </summary>
 		/// <value><c>true</c> if container rows should be sorted first; otherwise, <c>false</c>.</value>
 		public bool SortContainerRowsFirst { get; set; } = false;
+
+		private bool _SingleClickActivation = false;
+		public bool SingleClickActivation
+		{
+			get
+			{
+				if (IsCreated && ControlImplementation is Native.IListViewNativeImplementation)
+				{
+					return (ControlImplementation as Native.IListViewNativeImplementation).GetSingleClickActivation();
+				}
+				return _SingleClickActivation;
+			}
+			set { _SingleClickActivation = value; (ControlImplementation as Native.IListViewNativeImplementation).SetSingleClickActivation(value); }
+		}
 
 		/// <summary>
 		/// Hits the test.

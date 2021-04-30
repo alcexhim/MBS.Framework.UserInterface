@@ -41,6 +41,9 @@ namespace MBS.Framework.UserInterface.Dragging
 
 		public Rectangle ObjectRectangle { get; set; } = Rectangle.Empty;
 
+		public double ObjectX { get { return ObjectRectangle.X + DeltaX; } }
+		public double ObjectY { get { return ObjectRectangle.Y + DeltaY; } }
+
 		public Color BorderColor { get; set; } = Color.Empty;
 		public Color FillColor { get; set; } = Color.Empty;
 

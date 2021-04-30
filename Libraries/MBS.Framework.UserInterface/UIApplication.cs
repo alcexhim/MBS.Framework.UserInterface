@@ -215,6 +215,7 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public CommandBar.CommandBarCollection CommandBars { get { return mvarCommandBars; } }
 
+		public MainWindow CurrentWindow { get { return ((UIApplication)Application.Instance).Engine.LastWindow; } }
 
 		private void InitializeCommandBar(MarkupTagElement tag)
 		{
@@ -785,7 +786,8 @@ namespace MBS.Framework.UserInterface
 				System.Threading.Thread t = new System.Threading.Thread(t_threadStart);
 				t.Start();
 
-				while (splasher != null)
+				// FIXME: calling DoEvents is required for splash screen to display properly, but... displaying a message dialog during this time causes a crash
+				while (t.IsAlive)
 				{
 					((UIApplication)Application.Instance).DoEvents();
 					System.Threading.Thread.Sleep(25); // don't remove this

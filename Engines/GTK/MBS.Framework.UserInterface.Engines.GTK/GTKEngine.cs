@@ -559,6 +559,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			GtkPrintJob_status_changed_handler = new Internal.GObject.Delegates.GCallbackV1I(GtkPrintJob_status_changed);
 			_destroy_fn_d = new Action<byte[], IntPtr>(_destroy_fn);
+
+			_notifyActionCallback_d = new Action<IntPtr, string, IntPtr>(_notifyActionCallback);
 		}
 
 		private void InitializeStockIDs()
@@ -1040,6 +1042,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 						{
 							GTKDialogImplementation di = (types[i].Assembly.CreateInstance(types[i].FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, dialog }, System.Globalization.CultureInfo.CurrentCulture, null) as GTKDialogImplementation);
 							GTKNativeControl nc = (di.CreateControl(dialog) as GTKNativeControl);
+
+							// hack: 
+							// InvokeMethod(dialog, "OnCreated", new object[] { EventArgs.Empty });
+
 							DialogResult result1 = di.Run(parentHandle);
 							return result1;
 						}
@@ -1498,7 +1504,53 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			IntPtr hError = IntPtr.Zero;
 			IntPtr hNotification = Internal.Notify.Methods.notify_notification_new(popup.Summary, popup.Content, popup.IconName);
+			if (popup.Actions.Count > 0)
+			{
+				if (!_notify_action_items.ContainsKey(hNotification))
+				{
+					_notify_action_items[hNotification] = new Dictionary<string, CommandItem>();
+				}
+				foreach (CommandItem item in popup.Actions)
+				{
+					if (item is CommandReferenceCommandItem)
+					{
+						Command cmd = Application.Instance.FindCommand((item as CommandReferenceCommandItem).CommandID);
+						if (cmd != null)
+						{
+							Internal.Notify.Methods.notify_notification_add_action(hNotification, cmd.ID, cmd.Title, _notifyActionCallback_d, IntPtr.Zero, IntPtr.Zero);
+							_notify_action_items[hNotification][cmd.ID] = item;
+						}
+					}
+					else if (item is ActionCommandItem)
+					{
+						ActionCommandItem aci = (item as ActionCommandItem);
+						Internal.Notify.Methods.notify_notification_add_action(hNotification, aci.ID, aci.Title, _notifyActionCallback_d, IntPtr.Zero, IntPtr.Zero);
+						_notify_action_items[hNotification][aci.ID] = aci;
+					}
+				}
+			}
 			Internal.Notify.Methods.notify_notification_show(hNotification, hError);
+		}
+
+		private Dictionary<IntPtr, Dictionary<string, CommandItem>> _notify_action_items = new Dictionary<IntPtr, Dictionary<string, CommandItem>>();
+
+		private Action<IntPtr, string, IntPtr> _notifyActionCallback_d;
+		private void _notifyActionCallback(IntPtr notification, string action, IntPtr user_data)
+		{
+			if (!_notify_action_items.ContainsKey(notification))
+				return;
+
+			if (!_notify_action_items[notification].ContainsKey(action))
+				return;
+
+			if (_notify_action_items[notification][action] is CommandReferenceCommandItem)
+			{
+				Application.Instance.ExecuteCommand((_notify_action_items[notification][action] as CommandReferenceCommandItem).CommandID);
+			}
+			else if (_notify_action_items[notification][action] is ActionCommandItem)
+			{
+				(_notify_action_items[notification][action] as ActionCommandItem).Execute();
+			}
 		}
 
 		protected override void RepaintCustomControl(CustomControl control, int x, int y, int width, int height)

@@ -13,6 +13,8 @@ namespace MBS.Framework.UserInterface
 		private string mvarIconName = String.Empty;
 		public string IconName { get { return mvarIconName; } set { mvarIconName = value; } }
 
+		public CommandItem.CommandItemCollection Actions { get; } = new CommandItem.CommandItemCollection();
+
 		public void Show()
 		{
 			((UIApplication)Application.Instance).Engine.ShowNotificationPopup (this);

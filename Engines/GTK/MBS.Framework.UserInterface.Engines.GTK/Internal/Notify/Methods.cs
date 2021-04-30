@@ -15,6 +15,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Notify
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool notify_notification_show(IntPtr notification, IntPtr error);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void notify_notification_add_action(IntPtr notification, string action, string label, Action<IntPtr, string, IntPtr> callback, IntPtr user_data, IntPtr free_func);
 	}
 }
 

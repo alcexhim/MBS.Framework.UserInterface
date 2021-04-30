@@ -51,6 +51,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			IntPtr hDialogContent = Internal.GTK.Methods.GtkDialog.gtk_dialog_get_content_area(handle);
 
 			NativeControl hContainer = (new Controls.ContainerImplementation(Engine, dialog)).CreateControl(dialog);
+
+			// HACK: this is required to make SetControlText work properly, but crashes dialogs when they are run
+			// only seems to affect AboutDialog in UE, and I think it has something to do with the GtkTreeView
+			// System.Reflection.PropertyInfo piControlImplementation = dialog.GetType().GetProperty("ControlImplementation", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			// piControlImplementation.SetValue(dialog, this, null);
+
 			// NativeControl hContainer = CreateContainer (dlg);
 
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hDialogContent, (hContainer as GTKNativeControl).Handle, true, true, 0);

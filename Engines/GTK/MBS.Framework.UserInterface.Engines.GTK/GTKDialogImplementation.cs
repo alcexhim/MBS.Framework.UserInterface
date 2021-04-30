@@ -39,7 +39,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		{
 			return AcceptInternal();
 		}
-		
+
+		protected override string GetControlTextInternal(Control control)
+		{
+			IntPtr hTitle = Internal.GTK.Methods.GtkWindow.gtk_window_get_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle);
+			return System.Runtime.InteropServices.Marshal.PtrToStringAuto(hTitle);
+		}
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			IntPtr hTitle = System.Runtime.InteropServices.Marshal.StringToHGlobalAuto(text);
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle, hTitle);
+		}
+
 		private IntPtr Dialog_AddButton(Dialog dialog, IntPtr handle, Button button)
 		{
 			/*
@@ -209,6 +220,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GLib.Structures.Value val = new MBS.Framework.UserInterface.Engines.GTK.Internal.GLib.Structures.Value(1);
 			// }
 
+			// hack: moved to GTKEngine::ShowDialogInternal
 			InvokeMethod(dialog, "OnCreated", EventArgs.Empty);
 
 			if (dialog.DefaultButton != null)

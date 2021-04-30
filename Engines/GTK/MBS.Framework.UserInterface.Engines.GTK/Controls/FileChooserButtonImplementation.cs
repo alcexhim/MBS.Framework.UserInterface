@@ -129,6 +129,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			bool changed = (_OldFallbackTextBoxText != (sender as TextBox).Text);
 			if (changed)
 			{
+				FileChooserButton fcb = (Control as FileChooserButton);
+
+				_OldFallbackTextBoxText = (sender as TextBox).Text;
+
+				_InhibitFileNamesChanged = true;
+				fcb.SelectedFileName = _OldFallbackTextBoxText;
+				_InhibitFileNamesChanged = false;
+
 				InvokeMethod((Control as FileChooserButton), "OnChanged", new object[] { EventArgs.Empty });
 			}
 		}
@@ -180,7 +188,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			fallbackTextBox.Text = fcb.SelectedFileName;
 		}
 
-		private bool _RequireExistingFile = true;
+		private bool _RequireExistingFile = false;
 		public bool GetRequireExistingFile()
 		{
 			return _RequireExistingFile;
@@ -195,12 +203,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (_RequireExistingFile)
 			{
 				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hFallback);
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hFCB);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hFCB);
 			}
 			else
 			{
 				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hFCB);
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hFallback);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hFallback);
 			}
 		}
 	}

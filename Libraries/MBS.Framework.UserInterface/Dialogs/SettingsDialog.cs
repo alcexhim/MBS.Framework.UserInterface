@@ -31,6 +31,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 	/// </summary>
 	public class SettingsDialog : Dialog
 	{
+		private Button cmdOK;
 		private DefaultTreeModel tmOptionGroups = null;
 		private ListViewControl tv = null;
 		private SplitContainer vpaned = null;
@@ -45,12 +46,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.Layout = new BoxLayout(Orientation.Vertical);
 
-			this.Buttons.Add(new Button(StockType.OK, DialogResult.OK));
+			cmdOK = new Button(StockType.OK, DialogResult.None);
+			cmdOK.Click += cmdOK_Click;
+			this.Buttons.Add(cmdOK);
+
 			this.Buttons.Add(new Button(StockType.Cancel, DialogResult.Cancel));
 
-			this.Buttons[0].Click += cmdOK_Click;
-
-			this.DefaultButton = this.Buttons[0];
+			this.DefaultButton = cmdOK;
 
 			this.Text = "Options";
 			this.Size = new Dimension2D(800, 500);
@@ -89,6 +91,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			}
 		}
 
+		[EventHandler(nameof(cmdOK), nameof(Button.Click))]
 		private void cmdOK_Click (object sender, EventArgs e)
 		{
 			if (sidebar == null) {
@@ -108,6 +111,14 @@ namespace MBS.Framework.UserInterface.Dialogs
 					}
 				}
 			}
+
+			foreach (SettingsProvider provider in SettingsProviders)
+			{
+				provider.SaveSettings();
+			}
+
+			this.DialogResult = DialogResult.OK;
+			this.Close();
 		}
 
 		private void SaveSettingForControl(Control ctl)
@@ -115,14 +126,34 @@ namespace MBS.Framework.UserInterface.Dialogs
 			if (ctl is Label)
 				return;
 
+			if (ctl is Container)
+			{
+				foreach (Control ctl2 in ((Container)ctl).Controls)
+				{
+					SaveSettingForControl(ctl2);
+				}
+				return;
+			}
+
 			Setting setting = ctl.GetExtraData<Setting> ("setting");
 			if (setting == null)
 				return;
 
-			if (ctl is CheckBox) {
-				setting.SetValue ((ctl as CheckBox).Checked);
-			} else if (ctl is TextBox) {
-				setting.SetValue ((ctl as TextBox).Text);
+			if (ctl is CheckBox)
+			{
+				// FIXME: these two lines do completely different things for completely different purposes
+				setting.SetValue((ctl as CheckBox).Checked); // for custom SettingsDialog used as a prompt dialog
+				((UIApplication)Application.Instance).SetSetting<bool>(setting.ID, (ctl as CheckBox).Checked); // for application SettingsDialog
+			}
+			else if (ctl is TextBox)
+			{
+				// FIXME: these two lines do completely different things for completely different purposes
+				setting.SetValue((ctl as TextBox).Text); // for custom SettingsDialog used as a prompt dialog
+				((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
+			}
+			else
+			{
+
 			}
 		}
 
@@ -172,11 +203,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private ComboBox cboProfile;
 		private TextBox txtProfile;
 		Container ctDefault = new Container ();
+		Container ctProfile = null;
+
 		internal protected override void OnCreating(EventArgs e)
 		{
 			base.OnCreating(e);
 
-			Container ctProfile = new Container(new BoxLayout(Orientation.Horizontal));
+			ctProfile = new Container(new BoxLayout(Orientation.Horizontal));
 			ctProfile.Controls.Add(new Label("_Profile "), new BoxLayout.Constraints(false, false));
 
 			/*
@@ -332,6 +365,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 		protected internal override void OnCreated(EventArgs e)
 		{
 			base.OnCreated(e);
+
+			ctProfile.Visible = EnableProfiles;
 
 			if (SelectedPath != null)
 			{
@@ -613,6 +648,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 				if (opt is FileSetting)
 				{
 					FileChooserButton txt = new FileChooserButton();
+					switch (((FileSetting)opt).Mode)
+					{
+						case FileSettingMode.CreateFolder: txt.DialogMode = FileDialogMode.CreateFolder; break;
+						case FileSettingMode.Open: txt.DialogMode = FileDialogMode.Open; break;
+						case FileSettingMode.Save: txt.DialogMode = FileDialogMode.Save; break;
+						case FileSettingMode.SelectFolder: txt.DialogMode = FileDialogMode.SelectFolder; break;
+					}
 					txt.SelectedFileName = o.GetValue<string>();
 					txt.SetExtraData<Setting>("setting", o);
 					txt.RequireExistingFile = (opt as FileSetting).RequireExistingFile;

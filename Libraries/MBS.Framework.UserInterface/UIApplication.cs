@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
+using MBS.Framework;
 using MBS.Framework.Settings;
 using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
+
 using UniversalEditor;
 using UniversalEditor.Accessors;
 using UniversalEditor.DataFormats.Markup.XML;
@@ -943,12 +945,21 @@ namespace MBS.Framework.UserInterface
 
 		public event EventHandler ApplicationExited;
 
-		private void OnApplicationExited(EventArgs e)
+		private void SaveSettingsInternal()
 		{
 			foreach (SettingsProvider provider in ((UIApplication)Application.Instance).SettingsProviders)
 			{
-				provider.SaveSettings ();
+				provider.SaveSettings();
 			}
+		}
+		public void SaveSettings()
+		{
+			SaveSettingsInternal();
+		}
+
+		private void OnApplicationExited(EventArgs e)
+		{
+			SaveSettings();
 
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
@@ -1155,9 +1166,15 @@ namespace MBS.Framework.UserInterface
 		private Dictionary<Guid, object> _settings = new Dictionary<Guid, object>();
 		public T GetSetting<T>(Guid id, T defaultValue = default(T))
 		{
-			object value = GetSetting(id, defaultValue);
+			object value = GetSetting(id, (object)defaultValue);
 			if (value is T)
+			{
 				return (T)value;
+			}
+			else if (value is string && ((string)value).TryParse(typeof(T), out object val))
+			{
+				return (T)val;
+			}
 
 			return defaultValue;
 		}

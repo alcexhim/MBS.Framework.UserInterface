@@ -100,7 +100,11 @@ namespace MBS.Framework.UserInterface
 				if (attValue != null)
 					value = attValue.Value;
 
-				((UIApplication)Application.Instance).SetSetting(new Guid(attID.Value), value);
+				Guid groupID = new Guid(tagGroup.Attributes["id"].Value);
+				Guid settingID = new Guid(attID.Value);
+
+				SettingsGroups[groupID].Settings[settingID].SetValue(value);
+				((UIApplication)Application.Instance).SetSetting(settingID, value);
 			}
 		}
 

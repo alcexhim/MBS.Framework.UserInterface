@@ -1,4 +1,4 @@
-﻿//
+//
 //  IFileBrowserControl.cs
 //
 //  Author:

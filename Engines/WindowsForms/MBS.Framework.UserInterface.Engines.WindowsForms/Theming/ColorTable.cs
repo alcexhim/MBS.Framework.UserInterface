@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -1886,7 +1886,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			get { return mvarRibbonControlBorderDisabled; }
 			set { mvarRibbonControlBorderDisabled = value; }
 		}
-		
+
 		private Color mvarRibbonControlBackgroundHoverBegin;
 		public Color RibbonControlBackgroundHoverBegin
 		{

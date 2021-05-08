@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkFileFilter.cs
 //
 //  Author:
@@ -47,4 +47,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_file_filter_filter(IntPtr /*GtkFileFilter*/ filter, ref Structures.GtkFileFilterInfo filter_info);
 	}
 }
-

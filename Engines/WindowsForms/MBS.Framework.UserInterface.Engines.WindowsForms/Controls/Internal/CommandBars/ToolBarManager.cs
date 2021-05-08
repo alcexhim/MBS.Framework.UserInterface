@@ -10,7 +10,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 	{
 		// Added by mav
 		ScrollableControl _dockStation = null;
-		public ScrollableControl DockStation 
+		public ScrollableControl DockStation
 		{
 			get { return _dockStation; }
 			set { _dockStation = value; }
@@ -20,10 +20,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		public System.Windows.Forms.Form MainForm
 		{
 			get {  return _mainForm; }
-			set { _mainForm = value; }    
+			set { _mainForm = value; }
 		}
 
-		ToolBarDockArea _left; 
+		ToolBarDockArea _left;
 		public ToolBarDockArea Left { get { return _left; } }
 		ToolBarDockArea _right;
 		public ToolBarDockArea Right { get { return _right; } }
@@ -47,14 +47,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 		protected ToolBarDockArea GetClosestArea(Point ptScreen, ToolBarDockArea preferred)
 		{
-			if(preferred != null) 
+			if(preferred != null)
 			{
 				Rectangle p = preferred.RectangleToScreen(preferred.ClientRectangle);
 				p.Inflate(8,8);
 				if(p.Contains(ptScreen)) return preferred;
 			}
 
-			Rectangle l = _left.RectangleToScreen(_left.ClientRectangle); 
+			Rectangle l = _left.RectangleToScreen(_left.ClientRectangle);
 			l.Inflate(8,8);
 			Rectangle r = _right.RectangleToScreen(_right.ClientRectangle);
 			r.Inflate(8,8);
@@ -75,15 +75,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 		// Added by mav
 		public ToolBarDockHolder GetHolder(System.Windows.Forms.Control c)
-		{		
-			foreach(ToolBarDockHolder holder in _holders) 
+		{
+			foreach(ToolBarDockHolder holder in _holders)
 				if(holder.Control == c)
 					return holder;
 			return null;
 		}
 		public ToolBarDockHolder GetHolder(string title)
-		{		
-			foreach(ToolBarDockHolder holder in _holders) 
+		{
+			foreach(ToolBarDockHolder holder in _holders)
 				if(holder.ToolbarTitle == title)
 					return holder;
 			return null;
@@ -91,8 +91,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 		public ArrayList GetControls()
 		{
-			ArrayList list = new ArrayList();			
-			foreach(ToolBarDockHolder holder in _holders) 
+			ArrayList list = new ArrayList();
+			foreach(ToolBarDockHolder holder in _holders)
 				list.Add(holder.Control);
 			return list;
 		}
@@ -102,12 +102,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			return GetControls().Contains(c);
 		}
 
-		public void ShowControl(System.Windows.Forms.Control c, bool show) 
+		public void ShowControl(System.Windows.Forms.Control c, bool show)
 		{
 			ToolBarDockHolder holder = GetHolder(c);
-			if(holder != null) 
+			if(holder != null)
 			{
-				if(holder.Visible != show) 
+				if(holder.Visible != show)
 				{
 					if(IsDocked(holder))
 					{
@@ -132,33 +132,33 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			return AddControl(c, DockStyle.Top, null, DockStyle.Right);
 		}
 
-		public ToolBarDockHolder AddControl(System.Windows.Forms.Control c, DockStyle site, System.Windows.Forms.Control refControl, DockStyle refSite) 
+		public ToolBarDockHolder AddControl(System.Windows.Forms.Control c, DockStyle site, System.Windows.Forms.Control refControl, DockStyle refSite)
 		{
-			if(site == DockStyle.Fill) 
+			if(site == DockStyle.Fill)
 				site = DockStyle.Top;
 
 			ToolBarDockHolder holder = new ToolBarDockHolder(this, c, site);
 			Console.WriteLine("setting holder.ToolbarTitle to {0}", c.Text);
 			holder.ToolbarTitle = c.Text;
 
-			if(refControl != null) 
+			if(refControl != null)
 			{
 				ToolBarDockHolder refHolder = GetHolder(refControl);
-				if(refHolder != null) 
+				if(refHolder != null)
 				{
 					Point p = refHolder.PreferredDockedLocation;
-					if(refSite == DockStyle.Left) 
+					if(refSite == DockStyle.Left)
 					{
 						p.X -= 1;
-					} 
-					else if(refSite == DockStyle.Right) 
+					}
+					else if(refSite == DockStyle.Right)
 					{
 						p.X += refHolder.Width+1;
 					}
-					else if(refSite == DockStyle.Bottom) 
+					else if(refSite == DockStyle.Bottom)
 					{
 						p.Y += refHolder.Height+1;
-					} 
+					}
 					else
 					{
 						p.Y -= 1;
@@ -169,12 +169,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 
 			_holders.Add(holder);
-			if(site != DockStyle.None) 
+			if(site != DockStyle.None)
 			{
 				holder.DockStyle = site;
 				holder.Parent = holder.PreferredDockedArea;
-			} 
-			else 
+			}
+			else
 			{
 				holder.Parent = holder.FloatForm;
 				holder.Location = new Point(0,0);
@@ -191,7 +191,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			return holder;
 		}
 
-		public void RemoveControl(System.Windows.Forms.Control c) 
+		public void RemoveControl(System.Windows.Forms.Control c)
 		{
 			ToolBarDockHolder holder = GetHolder(c);
 			if(holder != null)
@@ -200,11 +200,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 				holder.DoubleClick -= new EventHandler(this.ToolBarDoubleClick);
 				holder.MouseMove -= new MouseEventHandler(this.ToolBarMouseMove);
 				holder.MouseDown -= new MouseEventHandler(this.ToolBarMouseDown);
-				
+
 				_holders.Remove(holder);
 				holder.Parent = null;
 				holder.FloatForm.Close();
-			}			
+			}
 		}
 
 		ToolBarDockHolder _dragged;
@@ -215,8 +215,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		{
 			ToolBarDockHolder holder = (ToolBarDockHolder)sender;
 
-			if(_dragged==null 
-				&& e.Button.Equals(MouseButtons.Left) 
+			if(_dragged==null
+				&& e.Button.Equals(MouseButtons.Left)
 				&& e.Clicks == 1
 				&& holder.CanDrag(new Point(e.X, e.Y)) )
 			{
@@ -265,7 +265,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 				if(docked != null)
 				{
-					if(closest == null) 
+					if(closest == null)
 					{
 						docked.SuspendLayout();
 						_dragged.Parent = _dragged.FloatForm;
@@ -276,8 +276,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 						_dragged.FloatForm.Size = _dragged.Size;
 						docked.ResumeLayout();
 						docked.PerformLayout();
-					} 
-					else if(closest != docked) 
+					}
+					else if(closest != docked)
 					{
 						closest.SuspendLayout();
 						newLoc = closest.PointToClient(System.Windows.Forms.Control.MousePosition);
@@ -288,8 +288,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 						_dragged.PreferredDockedArea = closest;
 						closest.ResumeLayout();
 						closest.PerformLayout();
-					} 
-					else 
+					}
+					else
 					{
 						closest.SuspendLayout();
 						newLoc = closest.PointToClient(System.Windows.Forms.Control.MousePosition);
@@ -304,7 +304,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 				}
 				else
 				{
-					if(closest == null) 
+					if(closest == null)
 					{
 						_dragged.FloatForm.Location = newLoc;
 					}
@@ -360,24 +360,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 				holder.PreferredDockedLocation = newLoc;
 				holder.FloatForm.Visible = false;
 				holder.PreferredDockedArea = area;
-				area.ResumeLayout();				
+				area.ResumeLayout();
 				area.PerformLayout();
 			}
 		}
 
 
 		const int WM_KEYDOWN = 0x100;
-		const int WM_KEYUP = 0x101; 
+		const int WM_KEYUP = 0x101;
 		bool _ctrlDown = false;
 
-		public bool PreFilterMessage(ref Message m) 
+		public bool PreFilterMessage(ref Message m)
 		{
-			if(m.Msg == WM_KEYDOWN) 
+			if(m.Msg == WM_KEYDOWN)
 			{
 				Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
-				if(keyCode == Keys.ControlKey) 
+				if(keyCode == Keys.ControlKey)
 				{
-					if(!_ctrlDown && _dragged!=null && IsDocked(_dragged)) 
+					if(!_ctrlDown && _dragged!=null && IsDocked(_dragged))
 					{
 						ToolBarDockArea docked = GetDockedArea(_dragged);
 						docked.SuspendLayout();
@@ -392,16 +392,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 					}
 					_ctrlDown = true;
 				}
-			} 
-			else if(m.Msg == WM_KEYUP) 
+			}
+			else if(m.Msg == WM_KEYUP)
 			{
 				Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
-				if(keyCode == Keys.ControlKey) 
+				if(keyCode == Keys.ControlKey)
 				{
-					if(_ctrlDown && _dragged!=null && !IsDocked(_dragged)) 
+					if(_ctrlDown && _dragged!=null && !IsDocked(_dragged))
 					{
 						ToolBarDockArea closest = GetClosestArea(System.Windows.Forms.Control.MousePosition, _dragged.PreferredDockedArea);
-						if(closest != null)  
+						if(closest != null)
 						{
 							closest.SuspendLayout();
 							Point newLoc = closest.PointToClient(System.Windows.Forms.Control.MousePosition);
@@ -426,7 +426,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 		// Added by mav
-		public virtual void ShowContextMenu(Point ptScreen) 
+		public virtual void ShowContextMenu(Point ptScreen)
 		{
 			System.Windows.Forms.ContextMenuStrip cm = new System.Windows.Forms.ContextMenuStrip();
 			ArrayList al = new ArrayList();
@@ -434,8 +434,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			al.Sort(new HolderSorter());
 
 			MyMenuItem [] items = new MyMenuItem[al.Count];
-			for(int i=0; i<al.Count; i++) 
-			{	
+			for(int i=0; i<al.Count; i++)
+			{
 				ToolBarDockHolder holder = al[i] as ToolBarDockHolder;
 				System.Windows.Forms.Control c = holder.Control;
 				items[i] = new MyMenuItem();
@@ -448,7 +448,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			cm.Show(DockStation, DockStation.PointToClient(ptScreen));
 		}
 
-		protected void MenuClickEventHandler(object sender, EventArgs e) 
+		protected void MenuClickEventHandler(object sender, EventArgs e)
 		{
 			MyMenuItem item = (MyMenuItem)sender;
 			ShowControl(item.Control, !item.Control.Visible);

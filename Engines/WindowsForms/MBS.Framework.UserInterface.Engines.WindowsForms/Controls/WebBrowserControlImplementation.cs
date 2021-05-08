@@ -1,4 +1,4 @@
-﻿//
+//
 //  WebBrowserControlImplementation.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsPrinter.cs
 //
 //  Author:

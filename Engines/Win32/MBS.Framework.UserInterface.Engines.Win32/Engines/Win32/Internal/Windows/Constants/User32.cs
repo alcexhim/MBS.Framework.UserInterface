@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1161,14 +1161,14 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// <summary>
 			/// The color used to highlight menu items when the menu appears as a flat menu (see SystemParametersInfo). The highlighted menu item is outlined with
 			/// <see cref="Highlight" />.
-			/// 
+			///
 			/// Windows 2000:  This value is not supported.
 			/// </summary>
 			MenuHighlight = 29,
 			/// <summary>
 			/// The background color for the menu bar when menus appear as flat menus (see SystemParametersInfo). However, <see cref="Menu" /> continues to specify the background
 			/// color of the menu popup.
-			/// 
+			///
 			/// Windows 2000:  This value is not supported.
 			/// </summary>
 			MenuBar = 30,
@@ -1317,7 +1317,7 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			IconInformation = 0x00000040,
 			/// <summary>
 			/// The first button is the default button.
-			/// 
+			///
 			/// MB_DEFBUTTON1 is the default unless MB_DEFBUTTON2, MB_DEFBUTTON3, or MB_DEFBUTTON4 is specified.
 			/// </summary>
 			DefaultButton1 = 0x00000000,
@@ -1336,10 +1336,10 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// <summary>
 			/// The user must respond to the message box before continuing work in the window identified by the hWnd parameter. However, the user can move to the windows of other
 			/// threads and work in those windows.
-			/// 
+			///
 			/// Depending on the hierarchy of windows in the application, the user may be able to move to other windows within the thread. All child windows of the parent of the
 			/// message box are automatically disabled, but pop-up windows are not.
-			/// 
+			///
 			/// MB_APPLMODAL is the default if neither MB_SYSTEMMODAL nor MB_TASKMODAL is specified.
 			/// </summary>
 			ApplicationModal = 0x00000000,
@@ -1359,14 +1359,14 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// Adds a Help button to the message box. When the user clicks the Help button or presses F1, the system sends a WM_HELP message to the owner.
 			/// </summary>
 			Help = 0x00004000,
-			
+
 			/// <summary>
 			/// The message box becomes the foreground window. Internally, the system calls the SetForegroundWindow function for the message box.
 			/// </summary>
 			SetForeground = 0x00010000,
 			/// <summary>
 			///  Same as desktop of the interactive window station. For more information, see Window Stations.
-			///  
+			///
 			///  If the current input desktop is not the default desktop, MessageBox does not return until the user switches to the default desktop.
 			/// </summary>
 			DefaultDesktopOnly = 0x00020000,
@@ -1385,11 +1385,11 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// <summary>
 			/// The caller is a service notifying the user of an event. The function displays a message box on the current active desktop, even if there is no user logged on to
 			/// the computer.
-			/// 
+			///
 			/// Terminal Services: If the calling thread has an impersonation token, the function directs the message box to the session specified in the impersonation token.
-			/// 
+			///
 			/// If this flag is set, the hWnd parameter must be NULL. This is so that the message box can appear on a desktop other than the desktop corresponding to the hWnd.
-			/// 
+			///
 			/// For information on security considerations in regard to using this flag, see Interactive Services. In particular, be aware that this flag can produce interactive
 			/// content on a locked desktop and should therefore be used for only a very limited set of scenarios, such as resource exhaustion.
 			/// </summary>

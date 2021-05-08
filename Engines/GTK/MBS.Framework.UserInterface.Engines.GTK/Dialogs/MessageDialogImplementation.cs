@@ -1,4 +1,4 @@
-﻿//
+//
 //  MessageDialogImplementation.cs
 //
 //  Author:
@@ -101,7 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				parentHandle = ((Engine as GTKEngine).GetHandleForControl(dlg.Parent) as GTKNativeControl).Handle;
 			}
 
-			
+
 			switch (dlg.Buttons)
 			{
 				case MessageDialogButtons.AbortRetryIgnore:

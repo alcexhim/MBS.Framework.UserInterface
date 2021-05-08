@@ -1,4 +1,4 @@
-﻿//
+//
 //  CommandDisplayMode.cs
 //
 //  Author:
@@ -30,4 +30,3 @@ namespace MBS.Framework.UserInterface
 		Both
 	}
 }
-

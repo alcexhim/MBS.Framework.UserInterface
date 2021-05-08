@@ -1,4 +1,4 @@
-﻿//
+//
 //  SyntaxTextBoxImplementation.cs
 //
 //  Author:
@@ -65,7 +65,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
 			}
 		}
-	
+
 		private Action<IntPtr /*GtkTextView*/, IntPtr /*GtkWidget*/, IntPtr> populate_popup_d;
 		private void populate_popup(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkWidget*/ popup, IntPtr user_data)
 		{
@@ -164,4 +164,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 	}
 }
-

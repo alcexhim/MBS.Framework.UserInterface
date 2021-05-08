@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,7 +28,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Gtk; 
+using Gtk;
 
 using System;
 using MonoDevelop.Ide.Gui;
@@ -82,7 +82,7 @@ namespace MonoDevelop.Components.Docking
 				box.QueueDraw ();
 			}
 		}
-		
+
 		public void AddTab (DockItemTitleTab tab)
 		{
 			if (tab.Parent != null)
@@ -96,7 +96,7 @@ namespace MonoDevelop.Components.Docking
 				tab.Active = false;
 				tab.Page.Hide ();
 			}
-			
+
 			tab.TabPressed += OnTabPress;
 			tab.UpdateRole (true, this);
 
@@ -138,7 +138,7 @@ namespace MonoDevelop.Components.Docking
 
 			Accessible.SetTabs (tabs);
 		}
-		
+
 		public void UpdateStyle (DockItem item)
 		{
 			QueueResize ();
@@ -147,7 +147,7 @@ namespace MonoDevelop.Components.Docking
 		public int TabCount {
 			get { return box.Children.Length; }
 		}
-		
+
 		public int CurrentTab {
 			get { return currentTab; }
 			set {
@@ -197,14 +197,14 @@ namespace MonoDevelop.Components.Docking
 				CurrentTab = -1;
 			}
 		}
-		
+
 		public void Clear ()
 		{
 			currentTab = -1;
 			foreach (DockItemTitleTab w in box.Children)
 				box.Remove (w);
 		}
-		
+
 		void OnTabPress (object s, EventArgs args)
 		{
 			CurrentTab = Array.IndexOf (box.Children, s);
@@ -229,7 +229,7 @@ namespace MonoDevelop.Components.Docking
 
 			requisition.Width = minWidth;
 		}
-		
+
 		void UpdateEllipsize (Gdk.Rectangle allocation)
 		{
 			int tabsSize = 0;
@@ -248,7 +248,7 @@ namespace MonoDevelop.Components.Docking
 			double ratio = (double) allocation.Width / (double) tabsSize;
 
 			if (ratio > 1 && visualStyle.ExpandedTabs.Value) {
-				// The tabs have to fill all the available space. To get started, assume that all tabs with have the same size 
+				// The tabs have to fill all the available space. To get started, assume that all tabs with have the same size
 				var tsize = totalWidth / children.Length;
 				// Maybe the assigned size is too small for some tabs. If it happens the extra space it requires has to be taken
 				// from tabs which have surplus of space. To calculate it, first get the difference beteen the assigned space
@@ -326,13 +326,11 @@ namespace MonoDevelop.Components.Docking
 					using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
 						ctx.DrawImage (this, tabbarBackImage.WithSize (Allocation.Width, Allocation.Height), 0, 0);
 					}
-				}	
+				}
 				return base.OnExposeEvent (evnt);
 			}
 		}
-		
+
 	}
-	
+
 }
-
-

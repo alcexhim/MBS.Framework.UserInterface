@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSwitch.cs
 //
 //  Author:

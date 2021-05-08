@@ -1,4 +1,4 @@
-﻿//
+//
 //  Gtk.cs
 //
 //  Author:
@@ -61,4 +61,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 	}
 }
-

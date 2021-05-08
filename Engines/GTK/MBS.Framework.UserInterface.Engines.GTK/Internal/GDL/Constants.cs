@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 {
 	public static class Constants

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkIconView.cs
 //
 //  Author:
@@ -55,4 +55,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_icon_view_enable_model_drag_dest(IntPtr /*GtkWidget*/ widget, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 	}
 }
-

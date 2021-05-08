@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs.Native;
 using MBS.Framework.UserInterface.Printing;

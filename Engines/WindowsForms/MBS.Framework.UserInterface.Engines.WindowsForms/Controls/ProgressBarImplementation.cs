@@ -1,4 +1,4 @@
-﻿//
+//
 //  ProgressBarImplementation.cs
 //
 //  Author:

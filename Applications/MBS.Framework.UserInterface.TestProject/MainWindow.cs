@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
 using MBS.Framework.UserInterface.Drawing;
@@ -22,7 +22,7 @@ namespace MBS.Framework.UserInterface.TestProject
 		{
 			this.Padding = new Padding(13);
 
-			TabContainer tbsTabs = new TabContainer ();
+			TabContainer tbsTabs = new TabContainer();
 
 			Button cmdCloseTab = new Button();
 			cmdCloseTab.AlwaysShowImage = true;
@@ -36,7 +36,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			};
 			tbsTabs.TabTitleControls.Add(cmdCloseTab);
 
-			TabPage tabGeneral = new TabPage ();
+			TabPage tabGeneral = new TabPage();
 
 			tabGeneral.Text = "General";
 			tabGeneral.Layout = new BoxLayout(Orientation.Vertical);
@@ -62,15 +62,15 @@ namespace MBS.Framework.UserInterface.TestProject
 			};
 			tabGeneral.Controls.Add(btn1);
 
-			tbsTabs.TabPages.Add (tabGeneral);
-			
-			TabPage tabCodeEditor = new TabPage ();
-			tabCodeEditor.Layout = new BoxLayout (Orientation.Vertical);
+			tbsTabs.TabPages.Add(tabGeneral);
+
+			TabPage tabCodeEditor = new TabPage();
+			tabCodeEditor.Layout = new BoxLayout(Orientation.Vertical);
 			tabCodeEditor.Text = "Code Editor";
-			SyntaxTextBox txtCodeEditor = new SyntaxTextBox ();
+			SyntaxTextBox txtCodeEditor = new SyntaxTextBox();
 			// txtCodeEditor.Multiline = true;
-			tabCodeEditor.Controls.Add (txtCodeEditor, new BoxLayout.Constraints(true, true));
-			tbsTabs.TabPages.Add (tabCodeEditor);
+			tabCodeEditor.Controls.Add(txtCodeEditor, new BoxLayout.Constraints(true, true));
+			tbsTabs.TabPages.Add(tabCodeEditor);
 
 			TabPage tabTreeView = new TabPage();
 			tabTreeView.Layout = new BoxLayout(Orientation.Horizontal);
@@ -199,33 +199,33 @@ namespace MBS.Framework.UserInterface.TestProject
 			// layout.SetControlMinimumSize(button2, new Dimension2D(75, 23));
 
 			// layout.SetControlBounds(button, new Rectangle(24, 24, 96, 24));
-			
+
 			this.Bounds = new Rectangle(320, 240, 600, 400);
 			this.ClassName = "FlippingAwesomeFormClass";
 			// this.Layout = layout;
 			this.Text = "Test Application";
 
-            this.MenuBar.Items.AddRange(new MenuItem[]
-            {
-                new CommandMenuItem("_File", new MenuItem[]
-                {
-                    new CommandMenuItem("_New", new MenuItem[]
-                    {
-                        new CommandMenuItem("New _Document"),
-                        new CommandMenuItem("New _Project")
-                    }),
-                    new CommandMenuItem("_Open", new MenuItem[]
-                    {
-                        new CommandMenuItem("Open _Document", null, delegate(object sender, EventArgs e)
-                        {
-                            FileDialog dlg = new FileDialog();
-                            dlg.Mode = FileDialogMode.Open;
-                            dlg.MultiSelect = true;
-                            if (dlg.ShowDialog() == DialogResult.OK) {
+			this.MenuBar.Items.AddRange(new MenuItem[]
+			{
+				new CommandMenuItem("_File", new MenuItem[]
+				{
+					new CommandMenuItem("_New", new MenuItem[]
+					{
+						new CommandMenuItem("New _Document"),
+						new CommandMenuItem("New _Project")
+					}),
+					new CommandMenuItem("_Open", new MenuItem[]
+					{
+						new CommandMenuItem("Open _Document", null, delegate(object sender, EventArgs e)
+						{
+							FileDialog dlg = new FileDialog();
+							dlg.Mode = FileDialogMode.Open;
+							dlg.MultiSelect = true;
+							if (dlg.ShowDialog() == DialogResult.OK) {
 								MessageDialog.ShowDialog(String.Format("You selected '{0}'", dlg.SelectedFileName), "Good News");
 							}
-                        }),
-                        new CommandMenuItem("Open _Project"),
+						}),
+						new CommandMenuItem("Open _Project"),
 						new SeparatorMenuItem(),
 						new CommandMenuItem("Open _Folder", null, delegate(object sender, EventArgs e)
 						{
@@ -236,10 +236,10 @@ namespace MBS.Framework.UserInterface.TestProject
 								MessageDialog.ShowDialog(String.Format("You selected '{0}'", dlg.SelectedFileName), "Good News");
 							}
 						})
-                    }),
-                    new CommandMenuItem("_Save", new MenuItem[]
-                    {
-                        new CommandMenuItem("Save _Document", null, delegate(object sender, EventArgs e)
+					}),
+					new CommandMenuItem("_Save", new MenuItem[]
+					{
+						new CommandMenuItem("Save _Document", null, delegate(object sender, EventArgs e)
 						{
 							FileDialog dlg = new FileDialog();
 							dlg.Mode = FileDialogMode.Save;
@@ -248,91 +248,91 @@ namespace MBS.Framework.UserInterface.TestProject
 								MessageDialog.ShowDialog(String.Format("You selected '{0}'", dlg.SelectedFileName), "Good News");
 							}
 						}),
-                        new CommandMenuItem("Save _Project")
-                    }),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("_Print", null, delegate(object sender, EventArgs e)
-                    {
-                        PrintDialog dlg = new PrintDialog();
+						new CommandMenuItem("Save _Project")
+					}),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("_Print", null, delegate(object sender, EventArgs e)
+					{
+						PrintDialog dlg = new PrintDialog();
 						// dlg.AutoUpgradeEnabled = false;
-                        dlg.ShowDialog(this);
-                    }, new Shortcut(Input.Keyboard.KeyboardKey.P, Input.Keyboard.KeyboardModifierKey.Control)),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("E_xit", null, delegate(object sender, EventArgs e)
-                    {
-                        Application.Stop ();
-                    }, new Shortcut(Input.Keyboard.KeyboardKey.Q, Input.Keyboard.KeyboardModifierKey.Control))
-                }),
-                new CommandMenuItem("_Edit", new MenuItem[]
-                {
-                    new CommandMenuItem("_Undo"),
-                    new CommandMenuItem("_Redo"),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("Cu_t"),
-                    new CommandMenuItem("_Copy"),
-                    new CommandMenuItem("_Paste"),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("_Select All"),
-                    new CommandMenuItem("_Invert Selection")
-                }),
-                new CommandMenuItem("_View", new MenuItem[]
-                {
-                    new CommandMenuItem("_Toolbars"),
-                    new CommandMenuItem("Status _Bar"),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("Show me a _notification", null, delegate (object sender, EventArgs e)
-                    {
-                        NotificationPopup.Show("ALYX has found new information", "Scraping a Wikipedia article I have added a new word to my dictionary!");
-						
+						dlg.ShowDialog(this);
+					}, new Shortcut(Input.Keyboard.KeyboardKey.P, Input.Keyboard.KeyboardModifierKey.Control)),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("E_xit", null, delegate(object sender, EventArgs e)
+					{
+						Application.Stop ();
+					}, new Shortcut(Input.Keyboard.KeyboardKey.Q, Input.Keyboard.KeyboardModifierKey.Control))
+				}),
+				new CommandMenuItem("_Edit", new MenuItem[]
+				{
+					new CommandMenuItem("_Undo"),
+					new CommandMenuItem("_Redo"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("Cu_t"),
+					new CommandMenuItem("_Copy"),
+					new CommandMenuItem("_Paste"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("_Select All"),
+					new CommandMenuItem("_Invert Selection")
+				}),
+				new CommandMenuItem("_View", new MenuItem[]
+				{
+					new CommandMenuItem("_Toolbars"),
+					new CommandMenuItem("Status _Bar"),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("Show me a _notification", null, delegate (object sender, EventArgs e)
+					{
+						NotificationPopup.Show("ALYX has found new information", "Scraping a Wikipedia article I have added a new word to my dictionary!");
+
 						// Application.Launch(@"ms-people:viewcontact?PhoneNumber=8675309"); // shell:appsFolder\Microsoft.People_8wekyb3d8bbwe!App");
 					}),
-                    new SeparatorMenuItem(),
-                    new CommandMenuItem("_Refresh")
-                }),
-                new CommandMenuItem("_Tools", new MenuItem[]
-                {
-                    new CommandMenuItem("_Ask a Question", null, delegate (object sender, EventArgs e)
-                    {
-                        DialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
-                        switch (result)
-                        {
-                            case DialogResult.Yes:
-                            {
-                                MessageDialog.ShowDialog ("Widgitator frobnicated successfully.", "Good News", MessageDialogButtons.OK, MessageDialogIcon.Information, MessageDialogModality.ApplicationModal, false, this);
-                                break;
-                            }
-                            case DialogResult.No:
-                            {
-                                MessageDialog.ShowDialog ("Widgitator not frobnicated. Try again later.", "As you wish", MessageDialogButtons.OK, MessageDialogIcon.Warning, MessageDialogModality.ApplicationModal, false, this);
-                                break;
-                            }
-                        }
-                    }),
-                    new CommandMenuItem("Ask a _Question (using TaskDialog)", null, delegate (object sender, EventArgs e)
-                    {
-                        DialogResult result = TaskDialog.ShowDialog("Do you want to frob the widgitator?", "The widgitator will be frobnicated if you choose to do so.", "Frob the Widgitator", new Button[]
-                        {
-                            new Button("_Frob it now!\nYes, gimme more, gimme gimme more"),
-                            new Button("Maybe _later\nI want to, I'm just not ready, ya' know?"),
-                            new Button("_Never!\nFuck you, Widgitator.")
-                        }, TaskDialogIcon.Question);
-                        if (result == DialogResult.Yes)
-                        {
-                            TaskDialog.ShowDialog("Thank you!", "That felt good.", "Widgitator Frobnicated Successfully", TaskDialogButtons.OK, TaskDialogIcon.Information);
-                        }
-                        else
-                        {
-                            TaskDialog.ShowDialog("Aww. Maybe do it later?", "I'd like you to frob the widgitator one day.", "Widgitator Not Frobnicated", TaskDialogButtons.OK, TaskDialogIcon.Error);
-                        }
-                    }),
-                    new SeparatorMenuItem(),
+					new SeparatorMenuItem(),
+					new CommandMenuItem("_Refresh")
+				}),
+				new CommandMenuItem("_Tools", new MenuItem[]
+				{
+					new CommandMenuItem("_Ask a Question", null, delegate (object sender, EventArgs e)
+					{
+						DialogResult result = MessageDialog.ShowDialog("Do you want to frob the widgitator?", "Frob the Widgitator", MessageDialogButtons.YesNo, MessageDialogIcon.Question, MessageDialogModality.ApplicationModal, false, this);
+						switch (result)
+						{
+							case DialogResult.Yes:
+							{
+								MessageDialog.ShowDialog ("Widgitator frobnicated successfully.", "Good News", MessageDialogButtons.OK, MessageDialogIcon.Information, MessageDialogModality.ApplicationModal, false, this);
+								break;
+							}
+							case DialogResult.No:
+							{
+								MessageDialog.ShowDialog ("Widgitator not frobnicated. Try again later.", "As you wish", MessageDialogButtons.OK, MessageDialogIcon.Warning, MessageDialogModality.ApplicationModal, false, this);
+								break;
+							}
+						}
+					}),
+					new CommandMenuItem("Ask a _Question (using TaskDialog)", null, delegate (object sender, EventArgs e)
+					{
+						DialogResult result = TaskDialog.ShowDialog("Do you want to frob the widgitator?", "The widgitator will be frobnicated if you choose to do so.", "Frob the Widgitator", new Button[]
+						{
+							new Button("_Frob it now!\nYes, gimme more, gimme gimme more"),
+							new Button("Maybe _later\nI want to, I'm just not ready, ya' know?"),
+							new Button("_Never!\nFuck you, Widgitator.")
+						}, TaskDialogIcon.Question);
+						if (result == DialogResult.Yes)
+						{
+							TaskDialog.ShowDialog("Thank you!", "That felt good.", "Widgitator Frobnicated Successfully", TaskDialogButtons.OK, TaskDialogIcon.Information);
+						}
+						else
+						{
+							TaskDialog.ShowDialog("Aww. Maybe do it later?", "I'd like you to frob the widgitator one day.", "Widgitator Not Frobnicated", TaskDialogButtons.OK, TaskDialogIcon.Error);
+						}
+					}),
+					new SeparatorMenuItem(),
 					new CommandMenuItem("Select _Color", null, delegate (object sender, EventArgs e)
 					{
 						ColorDialog dlg = new ColorDialog();
 						if (dlg.ShowDialog() == DialogResult.OK)
 						{
 							Color color = dlg.SelectedColor;
-                            MessageDialog.ShowDialog("You selected color " + dlg.SelectedColor.ToString());
+							MessageDialog.ShowDialog("You selected color " + dlg.SelectedColor.ToString());
 						}
 					}),
 					new CommandMenuItem("Select _Font", null, delegate (object sender, EventArgs e)
@@ -421,11 +421,11 @@ namespace MBS.Framework.UserInterface.TestProject
 			tv.Columns[1].Resizable = false;
 		}
 
-		protected override void OnClosed (EventArgs e)
+		protected override void OnClosed(EventArgs e)
 		{
-			base.OnClosed (e);
+			base.OnClosed(e);
 
-			Application.Stop ();
+			Application.Stop();
 		}
 
 		private void tbsTabs_TabPageDetached(object sender, TabPageDetachedEventArgs e)

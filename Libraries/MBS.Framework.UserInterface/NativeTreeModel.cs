@@ -1,4 +1,4 @@
-﻿//
+//
 //  NativeTreeModel.cs
 //
 //  Author:

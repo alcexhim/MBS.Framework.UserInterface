@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsMonitor.cs
 //
 //  Author:

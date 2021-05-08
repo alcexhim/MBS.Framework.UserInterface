@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkAccelMap.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_accel_map_add_entry(string accel_path, uint accel_key, Internal.GDK.Constants.GdkModifierType accel_mods);
 	}
 }
-

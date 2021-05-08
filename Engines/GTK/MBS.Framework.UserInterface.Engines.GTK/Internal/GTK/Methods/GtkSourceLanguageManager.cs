@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSourceLanguageManager.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkSourceLanguage*/ gtk_source_language_manager_get_language(IntPtr /*GtkSourceLanguageManager*/ manager, string id);
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Fold
 			Internal.Structures.BROWSEINFO lpbi = new Internal.Structures.BROWSEINFO();
 			lpbi.lpszTitle = mvarDescription;
 			Internal.Constants.BrowseInfoFlags flags = Internal.Constants.BrowseInfoFlags.None;
-			
+
 			if (mvarAutoUpgradeEnabled) flags |= Internal.Constants.BrowseInfoFlags.UseNewUI;
 			if (!mvarShowNewFolderButton) flags |= Internal.Constants.BrowseInfoFlags.NoNewFolderButton;
 			if (!mvarTranslateShortcutTargets) flags |= Internal.Constants.BrowseInfoFlags.NoTranslateShortcutTargets;
@@ -55,7 +55,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Fold
 				throw new InvalidOperationException("Invalid PIDL");
 			}
 			sb.Append(Marshal.PtrToStringAuto(bufferAddress));
-			
+
 			mvarSelectedPath = sb.ToString();
 
 			// Caller is responsible for freeing this memory.

@@ -1,4 +1,4 @@
-﻿//
+//
 //  Screen.cs
 //
 //  Author:

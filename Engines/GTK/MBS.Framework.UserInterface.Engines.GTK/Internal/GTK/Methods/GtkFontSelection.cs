@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkFontSelection.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_font_selection_get_face(IntPtr /*GtkFontSelection*/ fsd);
 	}
 }
-

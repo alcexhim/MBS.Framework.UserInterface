@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkExpander.cs - declares P/Invoke methods for the GtkExpander control
 //
 //  Author:

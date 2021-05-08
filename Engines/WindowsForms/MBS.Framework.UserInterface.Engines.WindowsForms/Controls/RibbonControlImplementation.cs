@@ -1,4 +1,4 @@
-﻿//
+//
 //  RibbonControlImplementation.cs
 //
 //  Author:
@@ -105,7 +105,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 							if (cmd == null)
 								continue;
-							
+
 							Button btn = null;
 							if (cmd.StockType == StockType.None) {
 								btn = new Button (cmd.Title);
@@ -221,4 +221,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkPrinter.cs
 //
 //  Author:

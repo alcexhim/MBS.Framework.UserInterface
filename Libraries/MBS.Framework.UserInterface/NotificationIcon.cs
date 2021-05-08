@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace MBS.Framework.UserInterface
 {
@@ -57,4 +57,3 @@ namespace MBS.Framework.UserInterface
 
 	}
 }
-

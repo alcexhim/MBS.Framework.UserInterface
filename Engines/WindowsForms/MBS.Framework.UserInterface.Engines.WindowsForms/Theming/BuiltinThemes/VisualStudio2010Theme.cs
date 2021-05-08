@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -50,7 +50,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarControlBackgroundHoverGradientBegin = Color.FromArgb(255, 252, 242);
 			ColorTable.CommandBarControlBackgroundHoverGradientMiddle = Color.FromArgb(255, 243, 207);
 			ColorTable.CommandBarControlBackgroundHoverGradientEnd = Color.FromArgb(255, 236, 181);
-			
+
 			ColorTable.CommandBarControlBackgroundPressedGradientBegin = Color.FromArgb(255, 232, 166);
 			// ColorTable.CommandBarControlBackgroundPressedGradientMiddle = Color.FromArgb(255, 232, 166);
 			ColorTable.CommandBarControlBackgroundPressedGradientEnd = Color.FromArgb(255, 232, 166);
@@ -94,7 +94,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 			ColorTable.DocumentTabBackground = System.Drawing.Color.FromArgb(75, 94, 128);
 			ColorTable.DocumentTabBorder = System.Drawing.Color.FromArgb(54, 78, 111);
-			
+
 			ColorTable.DocumentTabBorderHover = System.Drawing.Color.FromArgb(155, 167, 183);
 			ColorTable.DocumentTabBackgroundHoverGradientBegin = System.Drawing.Color.FromArgb(111, 119, 118);
 			ColorTable.DocumentTabBackgroundHoverGradientEnd = System.Drawing.Color.FromArgb(76, 92, 116);
@@ -129,7 +129,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			base.DrawCheck(graphics, item, rect1);
 
 			Rectangle checkRect = new Rectangle(rect1.X + 4, rect1.Y + 4, 10, 11);
-			
+
 			DrawingTools.DrawCheckMark(graphics, Pens.Black, checkRect);
 			return;
 
@@ -247,9 +247,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			Rectangle r = new Rectangle(0, 0, item.Bounds.Width - 1, item.Bounds.Height - 1);
 
 			ToolStripSplitButton tssb = (item as ToolStripSplitButton);
-			
+
 			int w = tssb.DropDownButtonWidth;
-				
+
 			if (tssb.ButtonPressed)
 			{
 				Brush b1 = new LinearGradientBrush(r, ColorTable.CommandBarControlBackgroundHoverGradientBegin, ColorTable.CommandBarControlBackgroundHoverGradientMiddle, LinearGradientMode.Vertical);
@@ -262,9 +262,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 				graphics.DrawRectangle(new Pen(ColorTable.CommandBarControlBorderHover), r);
 				graphics.DrawLine(new Pen(ColorTable.CommandBarControlBorderHover), r.Right - w, r.Top, r.Right - w, r.Bottom);
-				
+
 				r.Width -= w;
-				
+
 				b1 = new SolidBrush(ColorTable.CommandBarControlBackgroundPressed);
 				graphics.FillRectangle(b1, r);
 
@@ -367,7 +367,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		{
 			Brush brushFill = new SolidBrush(ColorTable.DocumentTabBackground);
 			Pen penLine = new System.Drawing.Pen(ColorTable.DocumentTabBorder);
-			
+
 			if (selected)
 			{
 				if (!focused)
@@ -446,7 +446,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					break;
 				}
 			}
-			
+
 			g.DrawRoundedRectangle(new Pen(BorderColor), rect, 1);
 		}
 		#endregion
@@ -484,7 +484,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		{
 			Color border = ColorTable.ListViewRangeSelectionBorder;
 			Color fill = ColorTable.ListViewRangeSelectionBackground;
-			
+
 			g.FillRectangle(new SolidBrush(fill), rect);
 			g.DrawRectangle(new Pen(border), rect);
 

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkLabel.cs
 //
 //  Author:
@@ -62,4 +62,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_label_set_width_chars(IntPtr /*GtkLabel*/ handle, int n_chars);
 	}
 }
-

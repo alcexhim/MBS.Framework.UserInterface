@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using MBS.Framework.Settings;
 
@@ -105,7 +105,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 					Container ct = (panel.Control as Container);
 					if (ct == null)
 						continue;
-					
+
 					foreach (Control ctl in ct.Controls) {
 						SaveSettingForControl (ctl);
 					}
@@ -488,7 +488,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			// ctSettingsGroup.Controls.Add(ctTitleAndDscription, new BoxLayout.Constraints(false, false, 16));
 			Container ctTitleAndHeaderSettings = new Container(new BoxLayout(Orientation.Horizontal));
 			Container ctHeaderSettings = new Container(new BoxLayout(Orientation.Horizontal));
-			
+
 			for (int i = 0; i < o.HeaderSettings.Count; i++)
 			{
 				Control lbl = null, ctl = null;
@@ -840,7 +840,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 					list.Add(new TreeModelRowColumn(clv.ListView.Model.Columns[i], val));
 				}
 				clv.ListView.Model.Rows.Add(new TreeModelRow(list.ToArray()));
-				*/			
+				*/
 			}
 		}
 

@@ -1,4 +1,4 @@
-﻿//
+//
 //  FileBrowserMode.cs
 //
 //  Author:
@@ -30,4 +30,3 @@ namespace MBS.Framework.UserInterface.Controls.FileBrowser
 		SelectFolder
 	}
 }
-

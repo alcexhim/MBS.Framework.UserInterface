@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 {
 	internal static class Structures
@@ -39,9 +39,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 		public struct GtkTextIter
 		{
 			/* GtkTextIter is an opaque datatype; ignore all these fields.
- * Initialize the iter with gtk_text_buffer_get_iter_*
- * functions
- */
+			* Initialize the iter with gtk_text_buffer_get_iter_*
+			* functions
+			*/
 			/*< private >*/
 			IntPtr dummy1;
 			IntPtr dummy2;

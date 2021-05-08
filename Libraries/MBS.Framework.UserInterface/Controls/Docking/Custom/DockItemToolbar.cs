@@ -1,21 +1,21 @@
-// 
+//
 // DockItemToolbar.cs
-//  
+//
 // Author:
 //       Lluis Sanchez Gual <lluis@novell.com>
-// 
+//
 // Copyright (c) 2010 Novell, Inc (http://www.novell.com)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,7 +40,7 @@ namespace MonoDevelop.Components.Docking
 		DockPositionType position;
 		bool empty = true;
 		CustomFrame topFrame;
-		
+
 		internal DockItemToolbar (DockItem parentItem, DockPositionType position)
 		{
 			this.parentItem = parentItem;
@@ -50,20 +50,20 @@ namespace MonoDevelop.Components.Docking
 
 /*			switch (position) {
 				case PositionType.Top:
-					frame.SetMargins (0, 0, 1, 1); 
-					frame.SetPadding (0, 2, 2, 0); 
+					frame.SetMargins (0, 0, 1, 1);
+					frame.SetPadding (0, 2, 2, 0);
 					break;
 				case PositionType.Bottom:
 					frame.SetMargins (0, 1, 1, 1);
-					frame.SetPadding (2, 2, 2, 0); 
+					frame.SetPadding (2, 2, 2, 0);
 					break;
 				case PositionType.Left:
 					frame.SetMargins (0, 1, 1, 0);
-					frame.SetPadding (0, 0, 2, 2); 
+					frame.SetPadding (0, 0, 2, 2);
 					break;
 				case PositionType.Right:
 					frame.SetMargins (0, 1, 0, 1);
-					frame.SetPadding (0, 0, 2, 2); 
+					frame.SetPadding (0, 0, 2, 2);
 					break;
 			}*/
 
@@ -123,30 +123,30 @@ namespace MonoDevelop.Components.Docking
 		public DockItem DockItem {
 			get { return parentItem; }
 		}
-		
+
 		internal Widget Container {
 			get { return frame; }
 		}
-		
+
 		public DockPositionType Position {
 			get { return this.position; }
 		}
-		
+
 		public void Add (Control widget)
 		{
 			Add (widget, false);
 		}
-		
+
 		public void Add (Control widget, bool fill)
 		{
 			Add (widget, fill, -1);
 		}
-		
+
 		public void Add (Control widget, bool fill, int padding)
 		{
 			Add (widget, fill, padding, -1);
 		}
-		
+
 		void Add (Control control, bool fill, int padding, int index)
 		{
 			int defaultPadding = 3;
@@ -165,10 +165,10 @@ namespace MonoDevelop.Components.Docking
 			}
 			else if (widget is VSeparator)
 				((VSeparator)widget).HeightRequest = 10;
-			
+
 			if (padding == -1)
 				padding = defaultPadding;
-			
+
 			box.PackStart (widget, fill, fill, (uint)padding);
 			if (empty) {
 				empty = false;
@@ -179,17 +179,17 @@ namespace MonoDevelop.Components.Docking
 				bc.Position = index;
 			}
 		}
-		
+
 		public void Insert (Control w, int index)
 		{
 			Add (w, false, 0, index);
 		}
-		
+
 		public void Remove (Control widget)
 		{
 			box.Remove (widget);
 		}
-		
+
 		public bool Visible {
 			get {
 				return empty || frame.Visible;
@@ -198,22 +198,22 @@ namespace MonoDevelop.Components.Docking
 				frame.Visible = value;
 			}
 		}
-		
+
 		public bool Sensitive {
 			get { return frame.Sensitive; }
 			set { frame.Sensitive = value; }
 		}
-		
+
 		public void ShowAll ()
 		{
 			frame.ShowAll ();
 		}
-		
+
 		public Control[] Children {
 			get { return box.Children.Select (child => (Control)child).ToArray (); }
 		}
 	}
-	
+
 	public class DockToolButton : Control
 	{
 		public ImageView Image {
@@ -241,7 +241,7 @@ namespace MonoDevelop.Components.Docking
 		public DockToolButton (string stockId) : this (stockId, null)
 		{
 		}
-		
+
 		public DockToolButton (string stockId, string label)
 		{
 			button = new Button ();
@@ -290,4 +290,3 @@ namespace MonoDevelop.Components.Docking
 		}
 	}
 }
-

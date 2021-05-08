@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface

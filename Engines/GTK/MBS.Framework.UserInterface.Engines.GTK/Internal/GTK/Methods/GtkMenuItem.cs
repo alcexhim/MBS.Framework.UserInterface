@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkMenuItem.cs
 //
 //  Author:
@@ -54,4 +54,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_menu_item_set_accel_path(IntPtr menu_item, string accel_path);
 	}
 }
-

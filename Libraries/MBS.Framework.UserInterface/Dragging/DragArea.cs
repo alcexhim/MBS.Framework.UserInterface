@@ -1,4 +1,4 @@
-﻿//
+//
 //  DragArea.cs
 //
 //  Author:

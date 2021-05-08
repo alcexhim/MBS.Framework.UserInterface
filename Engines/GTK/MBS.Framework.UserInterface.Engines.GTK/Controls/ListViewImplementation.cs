@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				case ListViewMode.Thumbnail:
 				case ListViewMode.Tile:
 				{
-					return ImplementedAsType.IconView; 
+					return ImplementedAsType.IconView;
 				}
 				case ListViewMode.List:
 				case ListViewMode.Detail:
@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			throw new ArgumentException(String.Format("ListViewMode not supported {0}", tv.Mode));
 		}
-		
+
 		public ListViewImplementation(Engine engine, Control control) : base(engine, control)
 		{
 			block_selection_func_handler =  new Internal.GTK.Delegates.GtkTreeSelectionFunc(block_selection_func);
@@ -67,7 +67,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					break;
 				}
 			}
-			
+
 		}
 
 		private SelectionMode GetSelectionModeInternal(IntPtr handle, ListViewControl tv)
@@ -112,7 +112,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hPath = IntPtr.Zero;
 			IntPtr hColumn = IntPtr.Zero;
 			int cx = 0, cy = 0;
-			
+
 			TreeModelRow row = null;
 			TreeModelColumn column = null;
 			bool ret = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_path_at_pos(handle, (int)x, (int)y, ref hPath, ref hColumn, ref cx, ref cy);
@@ -128,7 +128,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			return new ListViewHitTestInfo(row, column);
 		}
-		
+
 		/// <summary>
 		/// We catch the GtkTreeView.OnMouseDown event to prevent selection from changing
 		/// if it is a multi-select view.
@@ -553,9 +553,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 			RegisterListViewHandle(tv, handle);
-			
+
 			SetSelectionModeInternal(handle, tv, tv.SelectionMode);
-			
+
 			GTKNativeControl native = new GTKNativeControl(hScrolledWindow,
 			new KeyValuePair<string, IntPtr>[]
 			{
@@ -580,7 +580,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				if (coll.Parent.Mode == ListViewMode.Detail)
 				{
 					hTreeModel = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_model(hTreeView);
-					
+
 					IntPtr hTreeSelection = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_selection(hTreeView);
 					count = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_count_selected_rows(hTreeSelection);
 					hListRows = Internal.GTK.Methods.GtkTreeSelection.gtk_tree_selection_get_selected_rows(hTreeSelection, ref hTreeModel);
@@ -589,7 +589,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					hTreeModel = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_model(hTreeView);
 					hListRows = Internal.GTK.Methods.GtkIconView.gtk_icon_view_get_selected_items(hTreeView);
-					
+
 					if (hListRows != IntPtr.Zero)
 						count = (int)Internal.GLib.Methods.g_list_length(hListRows);
 				}
@@ -600,7 +600,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					return;
 				}
 
-				
+
 				if (e.Index == -1 && e.Count == 1 && e.Item != null)
 				{
 					// we are adding a new row to the selected collection
@@ -756,7 +756,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				ctl.OnSelectionChanged(EventArgs.Empty);
 			}
 		}
-		
+
 		private static void gc_row_activated(IntPtr handle, IntPtr /*GtkTreePath*/ path, IntPtr /*GtkTreeViewColumn*/ column)
 		{
 			ListViewControl lv = (GetControlByHandle(handle) as ListViewControl);
@@ -811,14 +811,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			return ntm.Handle;
 		}
-		
+
 		/// <summary>
 		/// Registers the control with the given handle as a drag source. Overridden for GtkTreeView (which in UWT is always a child of a GtkScrolledWindow).
 		/// </summary>
 		/// <remarks>
 		/// We need to override this to handle GTK tree view DnD. Not mentioned in the docs at all. Took about a half hour to figure out... Also to properly identify
 		/// control handle since the GtkTreeView in UWT is always a child of a GtkScrolledWindow.
-		/// 
+		///
 		/// Even still, we need to figure out how to actually make use of the dragged row. How to pass data? Also why does it only work with the primary mouse button...
 		/// </remarks>
 		internal override void RegisterDragSourceGTK(IntPtr hScrolledWindow, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
@@ -850,8 +850,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Console.Error.WriteLine("UpdateTreeModel: _ControlsByHandle[" + hTreeView.ToString() + "] is null");
 				return;
 			}
-			
-			
+
+
 			IntPtr hTreeModel = IntPtr.Zero;
 			if (ctl.Mode == ListViewMode.Detail)
 			{

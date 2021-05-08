@@ -118,7 +118,7 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			base.OnKeyDown(e);
 			if (e.Cancel) return;
-			
+
 			this.IsChangedByUser = true;
 		}
 
@@ -180,4 +180,3 @@ namespace MBS.Framework.UserInterface.Controls
 		}
 	}
 }
-

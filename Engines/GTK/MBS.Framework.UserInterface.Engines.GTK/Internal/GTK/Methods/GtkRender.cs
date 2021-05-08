@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkRender.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  TimerImplementation.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // DockItemTitleTab.cs
 //
 // Author:
@@ -676,7 +676,7 @@ namespace MonoDevelop.Components.Docking
 				Gdk.Pointer.Ungrab (0);
 			}
 		}
-		
+
 		[GLib.ConnectBeforeAttribute]
 		void HeaderKeyRelease (object ob, Gtk.KeyReleaseEventArgs a)
 		{
@@ -691,7 +691,7 @@ namespace MonoDevelop.Components.Docking
 			base.OnRealized ();
 			UpdateVisualStyle ();
 		}
-		
+
 		protected override void OnSizeRequested (ref Gtk.Requisition req)
 		{
 			if (Child != null) {
@@ -703,14 +703,14 @@ namespace MonoDevelop.Components.Docking
 					req.Height += (int)(TabPadding.Top + TabPadding.Bottom);
 			}
 		}
-					
+
 		protected override void OnSizeAllocated (Gdk.Rectangle rect)
 		{
 			base.OnSizeAllocated (rect);
 
 			int leftPadding = (int)TabPadding.Left;
 			int rightPadding = (int)TabPadding.Right;
-			
+
 			rect.X += leftPadding;
 			rect.Width -= leftPadding + rightPadding;
 			if (rect.Width < 1) {

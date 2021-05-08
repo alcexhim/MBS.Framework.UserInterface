@@ -1,4 +1,4 @@
-﻿//
+//
 //  Cursors.cs
 //
 //  Author:

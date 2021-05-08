@@ -1,4 +1,4 @@
-﻿//
+//
 //  HexEditorControl.cs
 //
 //  Author:
@@ -893,7 +893,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 
 			Brush bOffsetColor = new SolidBrush(SystemColors.HighlightBackground);
 
-			
+
 			Pen pSelectionBorderFocused = new Pen(SystemColors.HighlightBackground);
 			Brush bSelectionBorderFocused = new SolidBrush(SystemColors.HighlightBackground);
 			Brush bSelectionBackgroundFocused = new SolidBrush(SystemColors.HighlightBackground);

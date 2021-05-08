@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -203,7 +203,7 @@ namespace MBS.Framework.UserInterface
 		public bool Resizable { get; set; } = true;
 
 		public bool HasFocus => ((UIApplication)Application.Instance).Engine.WindowHasFocus(this);
-		
+
 		public event EventHandler Activate;
 		protected virtual void OnActivate(EventArgs e)
 		{
@@ -230,7 +230,7 @@ namespace MBS.Framework.UserInterface
 
 		public static Window[] GetToplevelWindows()
 		{
-			return ((UIApplication)Application.Instance).Engine.GetToplevelWindows(); 
+			return ((UIApplication)Application.Instance).Engine.GetToplevelWindows();
 		}
 
 		private string _DocumentFileName = null;

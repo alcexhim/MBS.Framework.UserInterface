@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkNotebook.cs
 //
 //  Author:
@@ -68,4 +68,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_notebook_set_group_name(IntPtr hNotebook, string value);
 	}
 }
-

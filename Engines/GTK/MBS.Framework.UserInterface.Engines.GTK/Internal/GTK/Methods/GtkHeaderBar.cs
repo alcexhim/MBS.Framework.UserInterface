@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkHeaderBar.cs
 //
 //  Author:
@@ -49,4 +49,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_header_bar_pack_end(IntPtr /*GtkHeaderBar*/ bar, IntPtr /*GtkWidget*/ child);
 	}
 }
-

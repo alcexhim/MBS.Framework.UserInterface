@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSourceBuffer.cs
 //
 //  Author:
@@ -38,4 +38,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkSourceBuffer*/ gtk_source_buffer_set_language (IntPtr /*GtkSourceBuffer*/ buffer, IntPtr /*GtkSourceLanguage*/ language);
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿//
+//
 //  CommandItemExtensions.cs
 //
 //  Author:

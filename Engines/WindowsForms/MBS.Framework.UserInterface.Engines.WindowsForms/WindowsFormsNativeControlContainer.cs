@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeControlContainer.cs
 //
 //  Author:

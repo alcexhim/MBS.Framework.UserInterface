@@ -15,4 +15,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		public IntPtr hMenuItemTitle;
 	}
 }
-

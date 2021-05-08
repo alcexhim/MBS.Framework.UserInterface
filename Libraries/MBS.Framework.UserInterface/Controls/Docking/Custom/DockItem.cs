@@ -1,4 +1,4 @@
-﻿//
+//
 // DockItem.cs
 //
 // Author:
@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -73,14 +73,14 @@ namespace MonoDevelop.Components.Docking
 		public event EventHandler<VisibilityChangeEventArgs> VisibleChanged;
 		public event EventHandler ContentVisibleChanged;
 		public event EventHandler ContentRequired;
-		
+
 		internal DockItem (DockFrame frame, string id)
 		{
 			this.frame = frame;
 			this.id = id;
 			currentVisualStyle = regionStyle = frame.GetRegionStyleForItem (this);
 		}
-		
+
 		public string Id {
 			get { return id; }
 		}
@@ -94,7 +94,7 @@ namespace MonoDevelop.Components.Docking
 		public string Label {
 			get { return label ?? string.Empty; }
 			set {
-				label = value; 
+				label = value;
 				if (titleTab != null)
 					titleTab.SetLabel (widget, icon, label);
 				frame.UpdateTitle (this);
@@ -112,7 +112,7 @@ namespace MonoDevelop.Components.Docking
 
 		public bool Visible {
 			get {
-				return frame.GetVisible (this); 
+				return frame.GetVisible (this);
 			}
 			set {
 				stickyVisible = value;
@@ -120,12 +120,12 @@ namespace MonoDevelop.Components.Docking
 				UpdateVisibleStatus ();
 			}
 		}
-		
+
 		public bool VisibleInLayout (string layout)
 		{
-			return frame.GetVisible (this, layout); 
+			return frame.GetVisible (this, layout);
 		}
-		
+
 		internal DockItemTitleTab TitleTab {
 			get {
 				if (titleTab == null) {
@@ -144,13 +144,13 @@ namespace MonoDevelop.Components.Docking
 
 		public DockItemStatus Status {
 			get {
-				return frame.GetStatus (this); 
+				return frame.GetStatus (this);
 			}
 			set {
 				frame.SetStatus (this, value);
 			}
 		}
-		
+
 		internal DockItemContainer Widget {
 			get {
 				if (widget == null) {
@@ -190,11 +190,11 @@ namespace MonoDevelop.Components.Docking
 				frame.UpdateStyle (this);
 			}
 		}
-		
+
 		void SetupContent (object ob, EventArgs args)
 		{
 			widget.Shown -= SetupContent;
-			
+
 			if (ContentRequired != null) {
 				gettingContent = true;
 				try {
@@ -216,7 +216,7 @@ namespace MonoDevelop.Components.Docking
 			};
 			UpdateContentVisibleStatus ();
 		}
-		
+
 		public Control Content {
 			get {
 				return content;
@@ -228,7 +228,7 @@ namespace MonoDevelop.Components.Docking
 					widget.UpdateContent ();
 			}
 		}
-		
+
 		public DockItemToolbar GetToolbar (DockPositionType position)
 		{
 			switch (position) {
@@ -251,11 +251,11 @@ namespace MonoDevelop.Components.Docking
 				default: throw new ArgumentException ();
 			}
 		}
-		
+
 		internal bool HasWidget {
 			get { return widget != null; }
 		}
-		
+
 		public string DefaultLocation {
 			get { return defaultLocation; }
 			set { defaultLocation = value; }
@@ -329,7 +329,7 @@ namespace MonoDevelop.Components.Docking
 			set {
 			}
 		}
-		
+
 		public void Present (bool giveFocus)
 		{
 			if (dockBarItem != null)
@@ -350,7 +350,7 @@ namespace MonoDevelop.Components.Docking
 				return widget.Parent != null && widget.Visible;
 			}
 		}
-		
+
 		public void SetDockLocation (string location)
 		{
 			frame.SetDockLocation (this, location);
@@ -360,7 +360,7 @@ namespace MonoDevelop.Components.Docking
 			get {
 				if (gtkContent.HasFocus || widget.HasFocus)
 					return true;
-				
+
 				Gtk.Window win = gtkContent.Toplevel as Gtk.Window;
 				if (win != null) {
 					if (Status == DockItemStatus.AutoHide)
@@ -375,7 +375,7 @@ namespace MonoDevelop.Components.Docking
 		{
 			SetFocus (gtkContent);
 		}
-		
+
 		internal static void SetFocus (Gtk.Widget w)
 		{
 			w.ChildFocus (Gtk.DirectionType.Down);
@@ -391,7 +391,7 @@ namespace MonoDevelop.Components.Docking
 					win.Focus = c;
 			}
 		}
-		
+
 		internal void UpdateVisibleStatus ()
 		{
 			bool vis = frame.GetVisible (this);
@@ -402,7 +402,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			UpdateContentVisibleStatus ();
 		}
-		
+
 		internal void UpdateContentVisibleStatus ()
 		{
 			bool vis = ContentVisible;
@@ -412,7 +412,7 @@ namespace MonoDevelop.Components.Docking
 					ContentVisibleChanged (this, EventArgs.Empty);
 			}
 		}
-		
+
 		internal void ShowWidget ()
 		{
 			if (floatingWindow != null)
@@ -421,7 +421,7 @@ namespace MonoDevelop.Components.Docking
 				dockBarItem.Show ();
 			Widget.Show ();
 		}
-		
+
 		internal void HideWidget ()
 		{
 			if (floatingWindow != null)
@@ -431,7 +431,7 @@ namespace MonoDevelop.Components.Docking
 			else if (widget != null)
 				widget.Hide ();
 		}
-		
+
 		internal void SetFloatMode (Gdk.Rectangle rect)
 		{
 			if (floatingWindow == null) {
@@ -460,7 +460,7 @@ namespace MonoDevelop.Components.Docking
 				titleTab.UpdateBehavior ();
 			Widget.Show ();
 		}
-		
+
 		void ResetFloatMode ()
 		{
 			if (floatingWindow != null) {
@@ -471,7 +471,7 @@ namespace MonoDevelop.Components.Docking
 					titleTab.UpdateBehavior ();
 			}
 		}
-		
+
 		internal Gdk.Rectangle FloatingPosition {
 			get {
 				if (floatingWindow != null) {
@@ -484,7 +484,7 @@ namespace MonoDevelop.Components.Docking
 					return Gdk.Rectangle.Zero;
 			}
 		}
-		
+
 		internal void ResetMode ()
 		{
 			if (Widget.Parent != null)
@@ -495,7 +495,7 @@ namespace MonoDevelop.Components.Docking
 			ResetFloatMode ();
 			ResetBarUndockMode ();
 		}
-		
+
 		internal void SetAutoHideMode (Gtk.PositionType pos, int size)
 		{
 			ResetMode ();
@@ -511,7 +511,7 @@ namespace MonoDevelop.Components.Docking
 
 			SetRegionStyle (frame.GetRegionStyleForItem (this));
 		}
-		
+
 		void ResetBarUndockMode ()
 		{
 			if (dockBarItem != null) {
@@ -521,7 +521,7 @@ namespace MonoDevelop.Components.Docking
 					titleTab.UpdateBehavior ();
 			}
 		}
-		
+
 		internal int AutoHideSize {
 			get {
 				if (dockBarItem != null)
@@ -544,7 +544,7 @@ namespace MonoDevelop.Components.Docking
 				isPositionMarker = value;
 			}
 		}
-		
+
 		string GetWindowTitle ()
 		{
 			if (Label.IndexOf ('<') == -1)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Linux

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkFileChooserDialog.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_file_chooser_dialog_new(string title, IntPtr parentHandle, Constants.GtkFileChooserAction action, string first_button_text = null, string first_button_response = null);
 	}
 }
-

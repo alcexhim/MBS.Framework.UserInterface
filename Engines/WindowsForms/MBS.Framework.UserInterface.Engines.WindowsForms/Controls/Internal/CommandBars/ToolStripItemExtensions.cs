@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.CommandBars

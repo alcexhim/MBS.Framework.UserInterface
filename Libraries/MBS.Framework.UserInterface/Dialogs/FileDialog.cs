@@ -107,4 +107,3 @@ namespace MBS.Framework.UserInterface.Dialogs
 		}
 	}
 }
-

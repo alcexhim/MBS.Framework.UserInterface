@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			{
 				base.InsertItem(index, item);
 				item.Parent = mvarParent;
-				if (mvarParent != null) 
+				if (mvarParent != null)
 				{
 					mvarParent.ResetBounds();
 					mvarParent.Refresh();

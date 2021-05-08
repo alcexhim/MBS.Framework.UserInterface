@@ -1,12 +1,12 @@
-﻿using WeifenLuo.WinFormsUI.Docking;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace WeifenLuo.WinFormsUI.Theming
 {
-    internal class VS2012DockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
-    {
-        public DockPaneCaptionBase CreateDockPaneCaption(DockPane pane)
-        {
-            return new VS2012DockPaneCaption(pane);
-        }
-    }
+	internal class VS2012DockPaneCaptionFactory : DockPanelExtender.IDockPaneCaptionFactory
+	{
+		public DockPaneCaptionBase CreateDockPaneCaption(DockPane pane)
+		{
+			return new VS2012DockPaneCaption(pane);
+		}
+	}
 }

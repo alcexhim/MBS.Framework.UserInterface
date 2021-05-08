@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSeparator.cs
 //
 //  Author:
@@ -103,4 +103,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_window_unfullscreen(IntPtr /*GtkWindow*/ window);
 	}
 }
-

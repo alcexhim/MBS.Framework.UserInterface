@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface
@@ -89,4 +89,3 @@ namespace MBS.Framework.UserInterface
 		}
 	}
 }
-

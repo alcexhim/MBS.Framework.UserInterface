@@ -1,4 +1,4 @@
-﻿//
+//
 //  Constants.cs
 //
 //  Author:
@@ -82,7 +82,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			/// <summary>
 			/// Activates and displays a window. If the window is minimized or maximized, the system restores it to its
 			/// original size and position. An application should specify this flag when displaying the window for the
-			/// first time. 
+			/// first time.
 			/// </summary>
 			ShowNormal = 1
 		}
@@ -106,23 +106,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			EnableHyperlinks = 0x1,
 			/// <summary>
 			/// Indicates that the dialog should use the icon referenced by the handle in the hMainIcon member as the primary icon in the task dialog. If this flag is
-			/// specified, the pszMainIcon member is ignored. 
+			/// specified, the pszMainIcon member is ignored.
 			/// </summary>
 			UseHIconMain = 0x2,
 			/// <summary>
 			/// Indicates that the dialog should use the icon referenced by the handle in the hFooterIcon member as the footer icon in the task dialog. If this flag is
-			/// specified, the pszFooterIcon member is ignored. 
+			/// specified, the pszFooterIcon member is ignored.
 			/// </summary>
 			UseHIconFooter = 0x4,
 			/// <summary>
 			/// Indicates that the dialog should be able to be closed using Alt-F4, Escape, and the title bar's close button even if no cancel button is specified in either
-			/// the dwCommonButtons or pButtons members. 
+			/// the dwCommonButtons or pButtons members.
 			/// </summary>
 			AllowDialogCancellation = 0x8,
 			/// <summary>
 			/// Indicates that the buttons specified in the pButtons member are to be displayed as command links (using a standard task dialog glyph) instead of push
 			/// buttons. When using command links, all characters up to the first new line character in the pszButtonText member will be treated as the command link's
-			/// main text, and the remainder will be treated as the command link's note. This flag is ignored if the cButtons member is zero. 
+			/// main text, and the remainder will be treated as the command link's note. This flag is ignored if the cButtons member is zero.
 			/// </summary>
 			UseCommandLinks = 0x10,
 			/// <summary>
@@ -133,17 +133,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			UseCommandLinksNoIcon = 0x20,
 			/// <summary>
 			/// Indicates that the string specified by the pszExpandedInformation member is displayed at the bottom of the dialog's footer area instead of immediately
-			/// after the dialog's content. This flag is ignored if the pszExpandedInformation member is NULL. 
+			/// after the dialog's content. This flag is ignored if the pszExpandedInformation member is NULL.
 			/// </summary>
 			ExpandFooterArea = 0x40,
 			/// <summary>
 			/// Indicates that the string specified by the pszExpandedInformation member is displayed when the dialog is initially displayed. This flag is ignored if the
-			/// pszExpandedInformation member is NULL. 
+			/// pszExpandedInformation member is NULL.
 			/// </summary>
 			ExpandedByDefault = 0x80,
 			/// <summary>
 			/// Indicates that the verification checkbox in the dialog is checked when the dialog is initially displayed. This flag is ignored if the pszVerificationText
-			/// parameter is NULL. 
+			/// parameter is NULL.
 			/// </summary>
 			VerificationFlagChecked = 0x100,
 			/// <summary>
@@ -151,7 +151,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			/// </summary>
 			ShowProgressBar = 0x200,
 			/// <summary>
-			/// Indicates that an Marquee Progress Bar is to be displayed. 
+			/// Indicates that an Marquee Progress Bar is to be displayed.
 			/// </summary>
 			ShowMarqueeProgressBar = 0x400,
 			/// <summary>
@@ -210,16 +210,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Windows
 			Close = 0x20
 		}
 
-        public enum TaskDialogResult
-        {
-            OK = 1,
-            Cancel = 2,
-            Retry = 4,
-            Yes = 6,
-            No = 7 
-        }
+		public enum TaskDialogResult
+		{
+			OK = 1,
+			Cancel = 2,
+			Retry = 4,
+			Yes = 6,
+			No = 7
+		}
 
-        public enum WindowLong
+		public enum WindowLong
 		{
 			HInstance = -6,
 			ID = -12,

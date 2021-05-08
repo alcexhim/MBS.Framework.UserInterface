@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -24,7 +24,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		public override void DrawRibbonControlGroup(Graphics g, Rectangle rect, MBS.Framework.UserInterface.Controls.Ribbon.RibbonTabGroup group)
 		{
 			base.DrawRibbonControlGroup(g, rect, group);
-			
+
 			Pen p = new Pen(new LinearGradientBrush(rect, ColorTable.RibbonControlGroupBorderGradientBegin, ColorTable.RibbonControlGroupBorderGradientEnd, LinearGradientMode.Vertical));
 			g.DrawRoundedRectangle(p, rect.X, rect.Y, rect.Width, rect.Height);
 		}

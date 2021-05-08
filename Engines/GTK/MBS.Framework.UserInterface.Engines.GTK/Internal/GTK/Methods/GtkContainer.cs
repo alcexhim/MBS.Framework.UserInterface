@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkContainer.cs
 //
 //  Author:
@@ -41,4 +41,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_container_forall(IntPtr /*GtkContainer*/ container, Action<IntPtr /*GtkWidget*/, IntPtr> /*GtkCallback*/ callback, IntPtr callback_data);
 	}
 }
-

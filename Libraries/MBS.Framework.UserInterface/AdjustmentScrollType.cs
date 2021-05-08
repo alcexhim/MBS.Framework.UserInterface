@@ -1,4 +1,4 @@
-﻿//
+//
 //  AdjustmentScrollType.cs
 //
 //  Author:

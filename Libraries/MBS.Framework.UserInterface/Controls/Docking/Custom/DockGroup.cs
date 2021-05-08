@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -45,18 +45,18 @@ namespace MonoDevelop.Components.Docking
 		TabStrip boundTabStrip;
 		DockGroupItem tabFocus;
 		int currentTabPage;
-		
+
 		enum AllocStatus { NotSet, Invalid, RestorePending, NewSizeRequest, Valid };
-		
+
 		public DockGroup (DockFrame frame, DockGroupType type): base (frame)
 		{
 			this.type = type;
 		}
-		
+
 		internal DockGroup (DockFrame frame): base (frame)
 		{
 		}
-		
+
 		public DockGroupType Type {
 			get {
 				return type;
@@ -65,24 +65,24 @@ namespace MonoDevelop.Components.Docking
 				type = value;
 			}
 		}
-		
+
 		public List<DockObject> Objects {
 			get { return dockObjects; }
 		}
-		
+
 		void MarkForRelayout ()
 		{
 			if (allocStatus == AllocStatus.Valid)
 				allocStatus = AllocStatus.Invalid;
 		}
-		
+
 		public void AddObject (DockObject obj)
 		{
 			obj.ParentGroup = this;
 			dockObjects.Add (obj);
 			ResetVisibleGroups ();
 		}
-		
+
 		public DockGroupItem AddObject (DockItem obj, DockPosition pos, string relItemId)
 		{
 			int npos = -1;
@@ -93,16 +93,16 @@ namespace MonoDevelop.Components.Docking
 						npos = n;
 				}
 			}
-			
+
 			if (npos == -1) {
 				if (pos == DockPosition.Left || pos == DockPosition.Top)
 					npos = 0;
 				else
 					npos = dockObjects.Count - 1;
 			}
-			
+
 			DockGroupItem gitem = null;
-			
+
 			if (pos == DockPosition.Left || pos == DockPosition.Right) {
 				if (type != DockGroupType.Horizontal)
 					gitem = Split (DockGroupType.Horizontal, pos == DockPosition.Left, obj, npos);
@@ -129,12 +129,12 @@ namespace MonoDevelop.Components.Docking
 			ResetVisibleGroups ();
 			return gitem;
 		}
-		
+
 		DockGroupItem InsertObject (DockItem obj, int npos, DockPosition pos)
 		{
 			if (pos == DockPosition.Bottom || pos == DockPosition.Right)
 				npos++;
-				
+
 			DockGroupItem gitem = new DockGroupItem (Frame, obj);
 			dockObjects.Insert (npos, gitem);
 			gitem.ParentGroup = this;
@@ -197,7 +197,7 @@ namespace MonoDevelop.Components.Docking
 			else
 				return null;
 		}
-		
+
 		internal DockGroupItem FindDockGroupItem (string id)
 		{
 			foreach (DockObject ob in dockObjects) {
@@ -213,18 +213,18 @@ namespace MonoDevelop.Components.Docking
 			}
 			return null;
 		}
-		
+
 		DockGroup Copy ()
 		{
 			DockGroup grp = new DockGroup (Frame, type);
 			grp.dockObjects = new List<MonoDevelop.Components.Docking.DockObject> (dockObjects);
 			foreach (DockObject obj in grp.dockObjects)
 				obj.ParentGroup = grp;
-			
+
 			grp.CopySizeFrom (this);
 			return grp;
 		}
-		
+
 		public int GetObjectIndex (DockObject obj)
 		{
 			for (int n=0; n<dockObjects.Count; n++) {
@@ -233,7 +233,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return -1;
 		}
-		
+
 		public bool RemoveItemRec (DockItem item)
 		{
 			foreach (DockObject ob in dockObjects) {
@@ -250,21 +250,21 @@ namespace MonoDevelop.Components.Docking
 			}
 			return false;
 		}
-		
+
 		public void Remove (DockObject obj)
 		{
 			dockObjects.Remove (obj);
 			Reduce ();
 			obj.ParentGroup = null;
 			visibleObjects = null;
-			
+
 			if (VisibleObjects.Count > 0) {
 				CalcNewSizes ();
 				MarkForRelayout ();
 			} else
 				ParentGroup.UpdateVisible (this);
 		}
-		
+
 		public void Reduce ()
 		{
 			if (ParentGroup != null && dockObjects.Count == 1) {
@@ -278,7 +278,7 @@ namespace MonoDevelop.Components.Docking
 				ParentGroup.ResetVisibleGroups ();
 			}
 		}
-		
+
 		internal List<DockObject> VisibleObjects {
 			get {
 				if (visibleObjects == null) {
@@ -290,37 +290,37 @@ namespace MonoDevelop.Components.Docking
 				return visibleObjects;
 			}
 		}
-		
+
 		void ResetVisibleGroups ()
 		{
 			visibleObjects = null;
 			MarkForRelayout ();
 		}
-		
+
 		internal void UpdateVisible (DockObject child)
 		{
 			visibleObjects = null;
 			bool visChanged;
 			MarkForRelayout ();
-			
+
 			visChanged = child.Visible ? VisibleObjects.Count == 1 : VisibleObjects.Count == 0;
-			
+
 			if (visChanged && ParentGroup != null)
 				ParentGroup.UpdateVisible (this);
 		}
-		
+
 		internal override void RestoreAllocation ()
 		{
 			base.RestoreAllocation ();
 			allocStatus = Size >= 0 ? AllocStatus.RestorePending : AllocStatus.NotSet;
-			
+
 			// Make a copy because RestoreAllocation can fire events such as VisibleChanged,
 			// and subscribers may do changes in the list.
 			List<DockObject> copy = new List<DockObject> (dockObjects);
 			foreach (DockObject ob in copy)
 				ob.RestoreAllocation ();
 		}
-		
+
 		internal override void StoreAllocation ()
 		{
 			base.StoreAllocation ();
@@ -329,7 +329,7 @@ namespace MonoDevelop.Components.Docking
 			if (Type == DockGroupType.Tabbed && boundTabStrip != null)
 				currentTabPage = boundTabStrip.CurrentTab;
 		}
-		
+
 		public override bool Expand {
 			get {
 				foreach (DockObject ob in dockObjects)
@@ -338,12 +338,12 @@ namespace MonoDevelop.Components.Docking
 				return false;
 			}
 		}
-		
+
 		public override void SizeAllocate (Gdk.Rectangle newAlloc)
 		{
 			Gdk.Rectangle oldAlloc = Allocation;
 			base.SizeAllocate (newAlloc);
-			
+
 			if (type == DockGroupType.Tabbed) {
 				if (boundTabStrip != null) {
 					int tabsHeight = boundTabStrip.SizeRequest ().Height;
@@ -370,14 +370,14 @@ namespace MonoDevelop.Components.Docking
 				}
 				return;
 			}
-			
+
 			bool horiz = type == DockGroupType.Horizontal;
 			int pos = horiz ? Allocation.Left : Allocation.Top;
-			
+
 			if (allocStatus == AllocStatus.Valid && newAlloc == oldAlloc) {
 				// The layout of this group (as a whole) has not changed, but the layout
 				// of child items may have changed. Assign the new sizes.
-				
+
 				if (CheckMinSizes ())
 					allocStatus = AllocStatus.NewSizeRequest;
 				else {
@@ -394,11 +394,11 @@ namespace MonoDevelop.Components.Docking
 					return;
 				}
 			}
-			
+
 			// This is the space available for the child items (excluding size
 			// required for the resize handles)
 			int realSize = GetRealSize (VisibleObjects);
-			
+
 			if (allocStatus == AllocStatus.NotSet/* || allocStatus == AllocStatus.RestorePending*/) {
 				// It is the first size allocation. Calculate all sizes.
 				CalcNewSizes ();
@@ -427,7 +427,7 @@ namespace MonoDevelop.Components.Docking
 					tsize += ob.PrefSize;
 					rsize += ob.Size;
 				}
-				
+
 				foreach (DockObject ob in dockObjects) {
 					if (ob.Visible) {
 						// Proportionally spread the new available space among all visible objects
@@ -445,72 +445,72 @@ namespace MonoDevelop.Components.Docking
 
 			allocStatus = AllocStatus.Valid;
 
-			// Sizes for all items have been set. 
+			// Sizes for all items have been set.
 			// Sizes are real numbers to ensure that the values are not degradated when resizing
 			// pixel by pixel. Now those have to be converted to integers, that is, actual allocated sizes.
-			
+
 			int ts = 0;
 			for (int n=0; n<VisibleObjects.Count; n++) {
 				DockObject ob = VisibleObjects [n];
 
 				double obSize = double.IsNaN (ob.Size) ? 10.0 : ob.Size;
 				int ins = (int) Math.Truncate (obSize);
-				
+
 				if (n == VisibleObjects.Count - 1)
 					ins = realSize - ts;
-				
+
 				ts += ins;
-				
+
 				if (ins < 0)
 					ins = 0;
-				
+
 				ob.AllocSize = ins;
-				
+
 				if (horiz)
 					ob.SizeAllocate (new Gdk.Rectangle (pos, Allocation.Y, ins, Allocation.Height));
 				else
 					ob.SizeAllocate (new Gdk.Rectangle (Allocation.X, pos, Allocation.Width, ins));
-				
+
 				pos += ins + Frame.TotalHandleSize;
 			}
 		}
-		
+
 		int GetRealSize (List<DockObject> objects)
 		{
 			// Returns the space available for the child items (excluding size
 			// required for the resize handles)
-			
+
 			int realSize;
 			if (type == DockGroupType.Horizontal)
 				realSize = Allocation.Width;
 			else
 				realSize = Allocation.Height;
-			
+
 			// Ignore space required for the handles
 			if (objects.Count > 1)
 				realSize -= (Frame.TotalHandleSize * (objects.Count - 1));
-			
+
 			return realSize;
 		}
-		
+
 		internal void CalcNewSizes ()
 		{
 			// Calculates the size assigned by default to each child item.
 			// Size is proportionally assigned to each item, taking into account
 			// the available space, and the default size of each item.
-			
+
 			// If there are items with the Expand flag set, those will proportionally
 			// take the space left after allocating the other (not exandable) items.
-			
+
 			// This is the space available for the child items (excluding size
 			// required for the resize handles)
 			double realSize = (double) GetRealSize (VisibleObjects);
-			
+
 			bool hasExpandItems = false;
 			double noexpandSize = 0;
 			double minExpandSize = 0;
 			double defaultExpandSize = 0;
-			
+
 			for (int n=0; n<VisibleObjects.Count; n++) {
 				DockObject ob = VisibleObjects [n];
 				if (ob.Expand) {
@@ -535,17 +535,17 @@ namespace MonoDevelop.Components.Docking
 
 			CheckMinSizes ();
 		}
-		
+
 		bool CheckMinSizes ()
 		{
 			// Checks if any of the items has a size smaller than permitted.
 			// In this case it tries to regain size by reducing other items.
-			
+
 			// First of all calculate the size to be regained, and the size available
 			// from other items
-			
+
 			bool sizesChanged = false;
-			
+
 			double avSize = 0;
 			double regSize = 0;
 			foreach (DockObject ob in VisibleObjects) {
@@ -557,15 +557,15 @@ namespace MonoDevelop.Components.Docking
 					avSize += ob.Size - ob.MinSize;
 				}
 			}
-			
+
 			if (!sizesChanged)
 				return false;
-			
-			// Now spread the required size among the resizable items 
-			
+
+			// Now spread the required size among the resizable items
+
 			if (regSize > avSize)
 				regSize = avSize;
-			
+
 			double ratio = (avSize - regSize) / avSize;
 			foreach (DockObject ob in VisibleObjects) {
 				if (ob.Size <= ob.MinSize)
@@ -575,7 +575,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return sizesChanged;
 		}
-		
+
 		internal override Gtk.Requisition SizeRequest ()
 		{
 			bool getMaxW = true, getMaxH = true;
@@ -583,7 +583,7 @@ namespace MonoDevelop.Components.Docking
 				getMaxW = false;
 			else if (type == DockGroupType.Vertical)
 				getMaxH = false;
-			
+
 			Requisition ret = new Requisition ();
 			ret.Height = VisibleObjects.Count * Frame.TotalHandleSize;
 			foreach (DockObject ob in VisibleObjects) {
@@ -593,7 +593,7 @@ namespace MonoDevelop.Components.Docking
 						ret.Height = req.Height;
 				} else
 					ret.Height += req.Height;
-				
+
 				if (getMaxW) {
 					if (req.Width > ret.Width)
 						ret.Width = req.Width;
@@ -613,7 +613,7 @@ namespace MonoDevelop.Components.Docking
 		{
 			Gtk.Widget oldpage = null;
 			int oldtab = -1;
-			
+
 			if (tabFocus != null) {
 				oldpage = tabFocus.Item.Widget;
 				tabFocus = null;
@@ -621,9 +621,9 @@ namespace MonoDevelop.Components.Docking
 				oldpage = boundTabStrip.CurrentPage;
 				oldtab = boundTabStrip.CurrentTab;
 			}
-			
+
 			ts.Clear ();
-			
+
 			// Add missing pages
 			foreach (DockObject ob in VisibleObjects) {
 				DockGroupItem it = ob as DockGroupItem;
@@ -631,7 +631,7 @@ namespace MonoDevelop.Components.Docking
 			}
 
 			boundTabStrip = ts;
-			
+
 			if (oldpage != null) {
 				boundTabStrip.CurrentPage = oldpage;
 			}
@@ -656,7 +656,7 @@ namespace MonoDevelop.Components.Docking
 			else
 				boundTabStrip.BottomPadding = 0;
 		}
-		
+
 		internal void Present (DockItem it, bool giveFocus)
 		{
 			if (type == DockGroupType.Tabbed) {
@@ -681,29 +681,29 @@ namespace MonoDevelop.Components.Docking
 			DockGroupItem dit = VisibleObjects[boundTabStrip.CurrentTab] as DockGroupItem;
 			return dit.Item == it;
 		}
-		
+
 		internal void UpdateTitle (DockItem it)
 		{
 			if (it.Visible && type == DockGroupType.Tabbed && boundTabStrip != null)
 				boundTabStrip.SetTabLabel (it.Widget, it.Icon, it.Label);
 		}
-				
+
 		internal void UpdateStyle (DockItem it)
 		{
 			if (it.Visible && type == DockGroupType.Tabbed && boundTabStrip != null)
 				boundTabStrip.UpdateStyle (it);
 		}
-		
+
 		internal void FocusItem (DockGroupItem it)
 		{
 			tabFocus = it;
 		}
-		
+
 		internal void ResetNotebook ()
 		{
 			boundTabStrip = null;
 		}
-		
+
 		public void LayoutWidgets ()
 		{
 			Frame.UpdateRegionStyle (this);
@@ -720,7 +720,7 @@ namespace MonoDevelop.Components.Docking
 					((DockGroup)ob).LayoutWidgets ();
 			}
 		}
-	
+
 		public void AddRemoveWidgets ()
 		{
 			foreach (DockObject ob in Objects) {
@@ -799,7 +799,7 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		internal override void GetMinSize (out int width, out int height)
 		{
 			if (type == DockGroupType.Tabbed) {
@@ -842,7 +842,7 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		public void Draw (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex)
 		{
 			if (type != DockGroupType.Tabbed) {
@@ -854,19 +854,19 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		public void DrawSeparators (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex, DrawSeparatorOperation oper, List<Gdk.Rectangle> areasList)
 		{
 			DrawSeparators (exposedArea, currentHandleGrp, currentHandleIndex, oper, true, areasList);
 		}
-		
+
 		void DrawSeparators (Gdk.Rectangle exposedArea, DockGroup currentHandleGrp, int currentHandleIndex, DrawSeparatorOperation oper, bool drawChildrenSep, List<Gdk.Rectangle> areasList)
 		{
 			if (type == DockGroupType.Tabbed || VisibleObjects.Count == 0)
 				return;
-			
+
 			DockObject last = VisibleObjects [VisibleObjects.Count - 1];
-			
+
 			bool horiz = type == DockGroupType.Horizontal;
 			int x = Allocation.X;
 			int y = Allocation.Y;
@@ -906,7 +906,7 @@ namespace MonoDevelop.Components.Docking
 						Frame.Container.AllocateSplitter (this, n, new Gdk.Rectangle (x, y, hw, hh));
 						break;
 					}
-					
+
 					if (horiz)
 						x += Frame.HandleSize + Frame.HandlePadding;
 					else
@@ -916,44 +916,44 @@ namespace MonoDevelop.Components.Docking
 			if (hgc != null)
 				hgc.Dispose ();
 		}
-		
+
 		public void ResizeItem (int index, int newSize)
 		{
 			DockObject o1 = VisibleObjects [index];
 			DockObject o2 = VisibleObjects [index+1];
-			
+
 			int dsize;
-			
+
 			dsize = newSize - o1.AllocSize;
 			if (dsize < 0 && o1.AllocSize + dsize < o1.MinSize)
 				dsize = o1.MinSize - o1.AllocSize;
 			else if (dsize > 0 && o2.AllocSize - dsize < o2.MinSize)
 				dsize = o2.AllocSize - o2.MinSize;
-			
+
 			// Assign the new sizes, applying the current ratio
 			double sizeDif = (double)dsize;
-			
+
 			o1.AllocSize += dsize;
 			o2.AllocSize -= dsize;
-			
+
 			o1.DefaultSize += (o1.DefaultSize * sizeDif) / o1.Size;
 			o1.Size = o1.AllocSize;
 			o1.PrefSize = o1.Size;
-			
+
 			o2.DefaultSize -= (o2.DefaultSize * sizeDif) / o2.Size;
 			o2.Size = o2.AllocSize;
 			o2.PrefSize = o2.Size;
-			
+
 			o1.QueueResize ();
 			o2.QueueResize ();
 		}
-		
+
 		internal override void QueueResize ()
 		{
 			foreach (DockObject obj in VisibleObjects)
 				obj.QueueResize ();
 		}
-		
+
 		internal double GetObjectsSize ()
 		{
 			double total = 0;
@@ -961,7 +961,7 @@ namespace MonoDevelop.Components.Docking
 				total += obj.Size;
 			return total;
 		}
-		
+
 		void DockTarget (DockItem item, int n)
 		{
 			DockGroupItem gitem = new DockGroupItem (Frame, item);
@@ -971,7 +971,7 @@ namespace MonoDevelop.Components.Docking
 			ResetVisibleGroups ();
 			CalcNewSizes ();
 		}
-		
+
 		internal override bool GetDockTarget (DockItem item, int px, int py, out DockDelegate dockDelegate, out Gdk.Rectangle rect)
 		{
 			dockDelegate = null;
@@ -1083,7 +1083,7 @@ namespace MonoDevelop.Components.Docking
 			rect = Gdk.Rectangle.Zero;
 			return false;
 		}
-		
+
 		public void ReplaceItem (DockObject ob1, DockObject ob2)
 		{
 			int i = dockObjects.IndexOf (ob1);
@@ -1095,7 +1095,7 @@ namespace MonoDevelop.Components.Docking
 			ob2.AllocSize = ob1.AllocSize;
 			ResetVisibleGroups ();
 		}
-		
+
 		public override void CopyFrom (DockObject other)
 		{
 			base.CopyFrom (other);
@@ -1111,7 +1111,7 @@ namespace MonoDevelop.Components.Docking
 			boundTabStrip = null;
 			tabFocus = null;
 		}
-		
+
 		internal override bool Visible {
 			get {
 				foreach (DockObject ob in dockObjects)
@@ -1120,12 +1120,12 @@ namespace MonoDevelop.Components.Docking
 				return false;
 			}
 		}
-		
+
 		internal void Dump ()
 		{
 			Dump (0);
 		}
-		
+
 		internal override void Dump (int ind)
 		{
 			Console.WriteLine (new string (' ', ind) + "Group (" + type + ") size:" + Size + " DefaultSize:" + DefaultSize + " alloc:" + Allocation);
@@ -1133,14 +1133,14 @@ namespace MonoDevelop.Components.Docking
 				ob.Dump (ind + 2);
 			}
 		}
-		
+
 		internal override void Write (XmlWriter writer)
 		{
 			base.Write (writer);
 			writer.WriteAttributeString ("type", type.ToString ());
 			if (type == DockGroupType.Tabbed && currentTabPage != -1)
 				writer.WriteAttributeString ("currentTabPage", currentTabPage.ToString ());
-			
+
 			foreach (DockObject ob in dockObjects) {
 				if (ob is DockGroupItem)
 					writer.WriteStartElement ("item");
@@ -1150,7 +1150,7 @@ namespace MonoDevelop.Components.Docking
 				writer.WriteEndElement ();
 			}
 		}
-		
+
 		internal override void Read (XmlReader reader)
 		{
 			base.Read (reader);
@@ -1160,13 +1160,13 @@ namespace MonoDevelop.Components.Docking
 				if (s != null)
 					currentTabPage = int.Parse (s);
 			}
-			
+
 			reader.MoveToElement ();
 			if (reader.IsEmptyElement) {
 				reader.Skip ();
 				return;
 			}
-			
+
 			reader.ReadStartElement ();
 			reader.MoveToContent ();
 			while (reader.NodeType != XmlNodeType.EndElement) {
@@ -1181,7 +1181,7 @@ namespace MonoDevelop.Components.Docking
 						DockGroupItem gitem = new DockGroupItem (Frame, it);
 						gitem.Read (reader);
 						AddObject (gitem);
-						
+
 						reader.MoveToElement ();
 						reader.Skip ();
 					}
@@ -1222,11 +1222,11 @@ namespace MonoDevelop.Components.Docking
 			}
 			return false;
 		}
-		
+
 		internal TabStrip TabStrip {
 			get { return boundTabStrip; }
 		}
-		
+
 		public override string ToString ()
 		{
 			return "[DockGroup " + type + "]";

@@ -32,7 +32,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr g_slist_nth_data (IntPtr /*GSList*/ list, uint n);
-		
+
 		/// <summary>
 		/// Save some memory by interning strings to GQuarks
 		/// </summary>
@@ -60,4 +60,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 		public static extern void g_free(IntPtr mem);
 	}
 }
-

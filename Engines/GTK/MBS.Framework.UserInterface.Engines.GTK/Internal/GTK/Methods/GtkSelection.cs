@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSelection.cs
 //
 //  Author:
@@ -59,4 +59,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_selection_data_set_uris(IntPtr /*GtkSelectionData*/ selection_data, string[] uris);
 	}
 }
-

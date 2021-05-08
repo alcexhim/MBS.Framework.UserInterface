@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkApplication.cs
 //
 //  Author:
@@ -55,4 +55,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_application_set_app_menu(IntPtr /*GtkApplication*/ application, IntPtr /*GMenuModel*/ menu);
 	}
 }
-

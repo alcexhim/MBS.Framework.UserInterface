@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.Contracts;
 
 using MBS.Framework.UserInterface;
@@ -58,17 +58,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			switch (ctl.BorderStyle)
 			{
 				case ButtonBorderStyle.None:
-				{ 
+				{
 					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
 					break;
 				}
 				case ButtonBorderStyle.Half:
-				{ 
+				{
 					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
 					break;
 				}
 				case ButtonBorderStyle.Normal:
-				{ 
+				{
 					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
 					break;
 				}

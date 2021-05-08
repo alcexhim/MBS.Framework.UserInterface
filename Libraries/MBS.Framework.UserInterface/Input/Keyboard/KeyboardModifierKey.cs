@@ -15,4 +15,3 @@ namespace MBS.Framework.UserInterface.Input.Keyboard
 		Top = 64
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).GetNamedHandle("Control");
 			IntPtr hLabelText = Internal.GTK.Methods.GtkLabel.gtk_label_get_label(handle);
-			
+
 			string value = System.Runtime.InteropServices.Marshal.PtrToStringAuto(hLabelText);
 			return value;
 		}
@@ -42,7 +42,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			// GTK fucks this up by passing a pointer directly to the guts of the GtkLabel
 			// so, we cannot simply implicitly pass strings to and from GTK
-			// 
+			//
 			// we need to go through this rigamarole to ensure that *we* own the pointer to the label text
 			// unfortunately, this means we are also responsible for free()ing it...
 			if (_ctlTextHandles.ContainsKey(control))
@@ -50,7 +50,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				System.Runtime.InteropServices.Marshal.FreeHGlobal(_ctlTextHandles[control]);
 			}
 			_ctlTextHandles[control] = System.Runtime.InteropServices.Marshal.StringToHGlobalAuto(text);
-			
+
 			Internal.GTK.Methods.GtkLabel.gtk_label_set_label(handle, _ctlTextHandles[control]);
 		}
 		protected override NativeControl CreateControlInternal(Control control)

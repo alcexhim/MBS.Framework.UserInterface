@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -76,7 +76,7 @@ namespace UniversalWidgetToolkit.Engines.Win32.Internal.Windows.Constants
 			/// </summary>
 			Link = 0x00008000,
 			/// <summary>
-			/// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes. 
+			/// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
 			/// </summary>
 			Win95 = 0x000000FF,
 

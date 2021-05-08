@@ -1,4 +1,4 @@
-﻿//
+//
 //  IControlContainerImplementation.cs
 //
 //  Author:

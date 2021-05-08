@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -121,7 +121,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			gc_Window_Closing = new Func<IntPtr, IntPtr, bool>(Window_Closing);
 			gc_Window_Closed = new MBS.Framework.UserInterface.Engines.GTK.Internal.GObject.Delegates.GCallback(Window_Closed);
 		}
-		
+
 		private void Window_Activate(IntPtr handle, IntPtr data)
 		{
 			Window window = (((UIApplication)Application.Instance).Engine as GTKEngine).GetControlByHandle(handle) as Window;

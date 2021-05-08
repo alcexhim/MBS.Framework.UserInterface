@@ -1,4 +1,4 @@
-﻿//
+//
 //  SyntaxTextBox.cs
 //
 //  Author:
@@ -125,4 +125,3 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 
 	}
 }
-

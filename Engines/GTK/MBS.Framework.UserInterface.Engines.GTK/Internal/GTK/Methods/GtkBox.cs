@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkBox.cs
 //
 //  Author:
@@ -74,4 +74,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_box_set_child_packing(IntPtr /*GtkBox*/ box, IntPtr /*GtkWidget*/ child, bool expand, bool fill, int padding, Constants.GtkPackType pack_type);
 	}
 }
-

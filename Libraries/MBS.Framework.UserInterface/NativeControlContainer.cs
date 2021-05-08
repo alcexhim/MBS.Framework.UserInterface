@@ -1,4 +1,4 @@
-﻿//
+//
 //  NativeControlContainer.cs
 //
 //  Author:

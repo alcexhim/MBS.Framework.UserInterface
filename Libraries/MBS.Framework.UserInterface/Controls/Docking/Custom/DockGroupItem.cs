@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -42,7 +42,7 @@ namespace MonoDevelop.Components.Docking
 		Gdk.Rectangle floatRect;
 		Gtk.PositionType barDocPosition;
 		int autoHideSize = -1;
-		
+
 		public DockItem Item {
 			get {
 				return item;
@@ -51,30 +51,30 @@ namespace MonoDevelop.Components.Docking
 				item = value;
 			}
 		}
-		
+
 		public string Id {
 			get { return item.Id; }
 		}
-		
+
 		public DockGroupItem (DockFrame frame, DockItem item): base (frame)
 		{
 			this.item = item;
 			visibleFlag = item.Visible;
 		}
-		
+
 		internal override void GetDefaultSize (out int width, out int height)
 		{
 			width = item.DefaultWidth;
 			height = item.DefaultHeight;
 		}
-		
+
 		internal override void GetMinSize (out int width, out int height)
 		{
 			Requisition req = SizeRequest ();
 			width = req.Width;
 			height = req.Height;
 		}
-		
+
 		internal override Requisition SizeRequest ()
 		{
 			var req = item.Widget.SizeRequest ();
@@ -104,26 +104,26 @@ namespace MonoDevelop.Components.Docking
 
 			base.SizeAllocate (newAlloc);
 		}
-		
+
 		public override bool Expand {
 			get { return item.Expand; }
 		}
-		
+
 		internal override void QueueResize ()
 		{
 			item.Widget.QueueResize ();
 		}
-		
+
 		internal override bool GetDockTarget (DockItem item, int px, int py, out DockDelegate dockDelegate, out Gdk.Rectangle rect)
 		{
 			return GetDockTarget (item, px, py, Allocation, out dockDelegate, out rect);
 		}
-		
+
 		public bool GetDockTarget (DockItem item, int px, int py, Gdk.Rectangle rect, out DockDelegate dockDelegate, out Gdk.Rectangle outrect)
 		{
 			outrect = Gdk.Rectangle.Zero;
 			dockDelegate = null;
-			
+
 			if (item != this.item && this.item.Visible && rect.Contains (px, py)) {
 
 				// Check if the item is allowed to be docked here
@@ -132,11 +132,11 @@ namespace MonoDevelop.Components.Docking
 				int xdockMargin = (int) ((double)rect.Width * (1.0 - DockFrame.ItemDockCenterArea)) / 2;
 				int ydockMargin = (int) ((double)rect.Height * (1.0 - DockFrame.ItemDockCenterArea)) / 2;
 				DockPosition pos;
-				
+
 /*				if (ParentGroup.Type == DockGroupType.Tabbed) {
 					rect = new Gdk.Rectangle (rect.X + xdockMargin, rect.Y + ydockMargin, rect.Width - xdockMargin*2, rect.Height - ydockMargin*2);
 					pos = DockPosition.CenterAfter;
-				}*/				
+				}*/
 				if (px <= rect.X + xdockMargin && ParentGroup.Type != DockGroupType.Horizontal) {
 					if (s.SingleColumnMode.Value)
 						return false;
@@ -165,7 +165,7 @@ namespace MonoDevelop.Components.Docking
 					outrect = new Gdk.Rectangle (rect.X + xdockMargin, rect.Y + ydockMargin, rect.Width - xdockMargin*2, rect.Height - ydockMargin*2);
 					pos = DockPosition.Center;
 				}
-				
+
 				dockDelegate = delegate (DockItem dit) {
 					DockGroupItem it = ParentGroup.AddObject (dit, pos, Id);
 					it.SetVisible (true);
@@ -175,25 +175,25 @@ namespace MonoDevelop.Components.Docking
 			}
 			return false;
 		}
-		
+
 		internal override void Dump (int ind)
 		{
 			Console.WriteLine (new string (' ', ind) + item.Id + " size:" + Size + " alloc:" + Allocation);
 		}
-		
+
 		internal override void Write (XmlWriter writer)
 		{
 			base.Write (writer);
 			writer.WriteAttributeString ("id", item.Id);
 			writer.WriteAttributeString ("visible", visibleFlag.ToString ());
 			writer.WriteAttributeString ("status", status.ToString ());
-			
+
 			if (status == DockItemStatus.AutoHide)
 				writer.WriteAttributeString ("autoHidePosition", barDocPosition.ToString ());
-			
+
 			if (autoHideSize != -1)
 				writer.WriteAttributeString ("autoHideSize", autoHideSize.ToString ());
-			
+
 			if (!floatRect.Equals (Gdk.Rectangle.Zero)) {
 				writer.WriteAttributeString ("floatX", floatRect.X.ToString ());
 				writer.WriteAttributeString ("floatY", floatRect.Y.ToString ());
@@ -201,7 +201,7 @@ namespace MonoDevelop.Components.Docking
 				writer.WriteAttributeString ("floatHeight", floatRect.Height.ToString ());
 			}
 		}
-		
+
 		internal override void Read (XmlReader reader)
 		{
 			base.Read (reader);
@@ -228,7 +228,7 @@ namespace MonoDevelop.Components.Docking
 				autoHideSize = int.Parse (s);
 			floatRect = new Gdk.Rectangle (fx, fy, fw, fh);
 		}
-		
+
 		public override void CopyFrom (DockObject ob)
 		{
 			base.CopyFrom (ob);
@@ -237,7 +237,7 @@ namespace MonoDevelop.Components.Docking
 			visibleFlag = it.visibleFlag;
 			floatRect = it.floatRect;
 		}
-		
+
 		internal override bool Visible {
 			get { return visibleFlag && status == DockItemStatus.Dockable; }
 		}
@@ -253,10 +253,10 @@ namespace MonoDevelop.Components.Docking
 			set {
 				if (status == value)
 					return;
-					
+
 				DockItemStatus oldValue = status;
 				status = value;
-				
+
 				if (status == DockItemStatus.Floating) {
 					if (floatRect.Equals (Gdk.Rectangle.Zero)) {
 						int x, y;
@@ -276,7 +276,7 @@ namespace MonoDevelop.Components.Docking
 				}
 				else
 					item.ResetMode ();
-				
+
 				if (oldValue == DockItemStatus.Dockable || status == DockItemStatus.Dockable) {
 					// Update visibility if changing from/to dockable mode
 					if (ParentGroup != null)
@@ -284,11 +284,11 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		void SetBarDocPosition ()
 		{
 			// Determine the best position for docking the item
-			
+
 			if (Allocation.IsEmpty) {
 				int uniqueTrue = -1;
 				int uniqueFalse = -1;
@@ -306,7 +306,7 @@ namespace MonoDevelop.Components.Docking
 							uniqueFalse = -2;
 					}
 				}
-				
+
 				if (uniqueTrue >= 0) {
 					barDocPosition = (PositionType) uniqueTrue;
 					autoHideSize = 200;
@@ -322,7 +322,7 @@ namespace MonoDevelop.Components.Docking
 					autoHideSize = 200;
 					return;
 				}
-				
+
 				// If the item is in a group, use the dock location of other items
 				DockObject current = this;
 				do {
@@ -330,7 +330,7 @@ namespace MonoDevelop.Components.Docking
 						return;
 					current = current.ParentGroup;
 				} while (current.ParentGroup != null);
-				
+
 				// Can't find a good location. Just guess.
 				barDocPosition = PositionType.Bottom;
 				autoHideSize = 200;
@@ -338,7 +338,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			barDocPosition = CalcBarDocPosition ();
 		}
-		
+
 		bool EstimateBarDocPosition (DockGroup grp, DockObject ignoreChild, out PositionType pos, out int size)
 		{
 			foreach (DockObject ob in grp.Objects) {
@@ -365,7 +365,7 @@ namespace MonoDevelop.Components.Docking
 			size = 0;
 			return false;
 		}
-		
+
 		PositionType CalcBarDocPosition ()
 		{
 			if (Allocation.Width < Allocation.Height) {
@@ -395,7 +395,7 @@ namespace MonoDevelop.Components.Docking
 					ParentGroup.UpdateVisible (this);
 			}
 		}
-		
+
 		internal override void StoreAllocation ()
 		{
 			base.StoreAllocation ();
@@ -409,18 +409,18 @@ namespace MonoDevelop.Components.Docking
 		{
 			base.RestoreAllocation ();
 			item.UpdateVisibleStatus ();
-			
+
 			if (Status == DockItemStatus.Floating)
 				item.SetFloatMode (floatRect);
 			else if (Status == DockItemStatus.AutoHide)
 				item.SetAutoHideMode (barDocPosition, GetAutoHideSize (barDocPosition));
 			else
 				item.ResetMode ();
-			
+
 			if (!visibleFlag)
 				item.HideWidget ();
 		}
-		
+
 		int GetAutoHideSize (Gtk.PositionType pos)
 		{
 			if (autoHideSize != -1)
@@ -440,7 +440,7 @@ namespace MonoDevelop.Components.Docking
 				floatRect = value;
 			}
 		}
-		
+
 		public override string ToString ()
 		{
 			return "[DockItem " + Item.Id + "]";

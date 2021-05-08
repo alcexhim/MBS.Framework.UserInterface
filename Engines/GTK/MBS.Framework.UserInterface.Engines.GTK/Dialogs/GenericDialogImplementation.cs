@@ -1,4 +1,4 @@
-﻿//
+//
 //  GenericDialogImplementation.cs
 //
 //  Author:

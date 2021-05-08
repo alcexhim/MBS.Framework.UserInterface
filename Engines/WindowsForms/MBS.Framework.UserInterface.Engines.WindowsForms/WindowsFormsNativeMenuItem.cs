@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeMenuItem.cs
 //
 //  Author:

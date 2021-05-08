@@ -1,4 +1,4 @@
-﻿using MBS.Framework.Drawing;
+using MBS.Framework.Drawing;
 namespace MBS.Framework.UserInterface.Drawing
 {
 	public static class Brushes

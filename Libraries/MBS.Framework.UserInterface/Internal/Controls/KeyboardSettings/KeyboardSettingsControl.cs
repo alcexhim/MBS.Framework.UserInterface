@@ -1,4 +1,4 @@
-﻿//
+//
 //  KeyboardSettingsControl.cs
 //
 //  Author:

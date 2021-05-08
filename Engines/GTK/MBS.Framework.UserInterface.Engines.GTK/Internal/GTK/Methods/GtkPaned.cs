@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkPaned.cs
 //
 //  Author:
@@ -73,4 +73,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern int gtk_paned_set_wide_handle(IntPtr /*GtkPaned*/ handle, bool value);
 	}
 }
-

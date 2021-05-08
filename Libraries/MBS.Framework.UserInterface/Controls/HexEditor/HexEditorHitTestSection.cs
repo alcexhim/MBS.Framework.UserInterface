@@ -1,4 +1,4 @@
-﻿//
+//
 //  HexEditorHitTestPanel.cs - enum to indicate which section (hex or ascii) is selected
 //
 //  Author:

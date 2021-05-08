@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
@@ -22,7 +22,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		public static extern void cairo_move_to(IntPtr /*cairo_t*/ cr, double x, double y);
 
 		/// <summary>
-		/// Decreases the reference count on cr by one. If the result is zero, then cr and all associated resources are freed. See <see cref="cairo_reference"/>. 
+		/// Decreases the reference count on cr by one. If the result is zero, then cr and all associated resources are freed. See <see cref="cairo_reference"/>.
 		/// </summary>
 		/// <param name="cr">Cr.</param>
 		[DllImport(LIBRARY_FILENAME)]
@@ -75,7 +75,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		/// Sets the current line width within the cairo context. The line width value specifies the diameter of a pen that is circular in user space, (though device-space pen may be an ellipse in general due to scaling/shear/rotation of the CTM).
 		/// Note: When the description above refers to user space and CTM it refers to the user space and CTM in effect at the time of the stroking operation, not the user space and CTM in effect at the time of the call to cairo_set_line_width(). The simplest usage makes both of these spaces identical.That is, if there is no change to the CTM between a call to cairo_set_line_width() and the stroking operation, then one can just pass user-space values to cairo_set_line_width() and ignore this note.
 		/// As with the other stroke parameters, the current line width is examined by cairo_stroke(), cairo_stroke_extents(), and cairo_stroke_to_path(), but does not have any effect during path construction.
-		/// The default line width value is 2.0. 
+		/// The default line width value is 2.0.
 		/// </summary>
 		/// <param name="cr">Cr.</param>
 		/// <param name="width">Width.</param>
@@ -150,7 +150,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 		#region Surface
 		/// <summary>
 		/// This function finishes the surface and drops all references to external resources. For example, for the Xlib backend it means that cairo will no longer access the drawable, which can be freed. After calling <see cref="cairo_surface_finish" /> the only valid operations on a surface are getting and setting user, referencing and destroying, and flushing and finishing it. Further drawing to the surface will not affect the surface but will instead trigger a CAIRO_STATUS_SURFACE_FINISHED error.
-		/// When the last call to <see cref="cairo_surface_destroy" /> decreases the reference count to zero, cairo will call <see cref="cairo_surface_finish" /> if it hasn't been called already, before freeing the resources associated with the surface. 
+		/// When the last call to <see cref="cairo_surface_destroy" /> decreases the reference count to zero, cairo will call <see cref="cairo_surface_finish" /> if it hasn't been called already, before freeing the resources associated with the surface.
 		/// </summary>
 		/// <param name="surface">Surface.</param>
 		[DllImport(LIBRARY_FILENAME)]

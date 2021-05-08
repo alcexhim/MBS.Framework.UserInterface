@@ -1,4 +1,4 @@
-﻿//
+//
 //  RibbonTab.cs
 //
 //  Author:
@@ -32,4 +32,3 @@ namespace MBS.Framework.UserInterface.Controls.Ribbon
 		public string Title { get; set; } = String.Empty;
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿//
+//
 //  PrintEvent.cs
 //
 //  Author:

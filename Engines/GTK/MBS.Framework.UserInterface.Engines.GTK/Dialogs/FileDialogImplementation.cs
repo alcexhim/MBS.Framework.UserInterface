@@ -1,4 +1,4 @@
-﻿//
+//
 //  FileDialogImplementation.cs
 //
 //  Author:
@@ -32,7 +32,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 		public FileDialogImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
-		
+
 		#region File Dialog
 		private static Dictionary<FileDialogFileNameFilter, IntPtr> _FileNameFilterHandles = new Dictionary<FileDialogFileNameFilter, IntPtr>();
 		private static Dictionary<IntPtr, FileDialogFileNameFilter> _HandleFileNameFilters = new Dictionary<IntPtr, FileDialogFileNameFilter>();

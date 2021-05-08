@@ -1,4 +1,4 @@
-﻿//
+//
 //  FontDialogImplementation.cs
 //
 //  Author:

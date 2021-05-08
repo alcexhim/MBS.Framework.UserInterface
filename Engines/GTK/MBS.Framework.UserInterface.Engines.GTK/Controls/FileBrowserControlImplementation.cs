@@ -1,4 +1,4 @@
-﻿//
+//
 //  FileBrowserControlImplementation.cs
 //
 //  Author:
@@ -98,4 +98,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 	}
 }
-

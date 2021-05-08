@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkMenu.cs
 //
 //  Author:
@@ -44,4 +44,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_menu_popup_at_pointer(IntPtr /*GtkMenu*/ menu, IntPtr /*GdkEvent*/ trigger_event);
 	}
 }
-

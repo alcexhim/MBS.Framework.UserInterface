@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Layouts;
 

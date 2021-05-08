@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkImage.cs
 //
 //  Author:
@@ -41,4 +41,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_image_set_from_pixbuf(IntPtr /*GtkImage*/ image, IntPtr /*GdkPixbuf*/ pixbuf);
 	}
 }
-

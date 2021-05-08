@@ -1,4 +1,4 @@
-﻿//
+//
 //  GDKScreen.cs
 //
 //  Author:

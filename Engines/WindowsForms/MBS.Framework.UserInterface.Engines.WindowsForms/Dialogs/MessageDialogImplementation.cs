@@ -1,4 +1,4 @@
-﻿//
+//
 //  MessageDialogImplementation.cs
 //
 //  Author:

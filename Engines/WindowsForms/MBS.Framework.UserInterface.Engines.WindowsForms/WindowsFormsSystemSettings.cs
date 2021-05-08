@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsSystemSettings.cs
 //
 //  Author:

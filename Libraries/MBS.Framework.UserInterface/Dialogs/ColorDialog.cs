@@ -19,4 +19,3 @@ namespace MBS.Framework.UserInterface.Dialogs
 		public Color SelectedColor { get { return mvarSelectedColor; } set { mvarSelectedColor = value; } }
 	}
 }
-

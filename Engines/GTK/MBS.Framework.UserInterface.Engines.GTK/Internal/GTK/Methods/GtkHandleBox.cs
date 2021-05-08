@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkHandleBox.cs
 //
 //  Author:

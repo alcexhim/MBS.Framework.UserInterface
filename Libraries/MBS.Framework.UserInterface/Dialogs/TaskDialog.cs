@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace MBS.Framework.UserInterface.Dialogs
 {
 	public class TaskDialogHyperlinkClickedEventArgs
@@ -16,7 +16,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 		Warning = (int)(UInt16.MaxValue),
 		Error = (int)(UInt16.MaxValue - 1),
 		Information = (int)(UInt16.MaxValue - 2),
-        Question = 0,
+		Question = 0,
 
 		Security = (int)(UInt16.MaxValue - 3),
 		SecurityTrusted = (int)(UInt16.MaxValue - 4),
@@ -26,7 +26,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 		SecurityUntrusted = (int)(UInt16.MaxValue - 8)
 	}
 
-    [Flags()]
+	[Flags()]
 	public enum TaskDialogButtons
 	{
 		Custom = -1,
@@ -75,29 +75,29 @@ namespace MBS.Framework.UserInterface.Dialogs
 		}
 
 		public static DialogResult ShowDialog(string instruction, string content, string title, Controls.Button[] buttons, TaskDialogIcon icon)
-        {
-            TaskDialog td = new TaskDialog();
-            td.Prompt = instruction;
-            td.Content = content;
-            td.Text = title;
-            td.ButtonsPreset = TaskDialogButtons.Custom;
-            td.ButtonStyle = TaskDialogButtonStyle.Commands;
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                td.Buttons.Add(buttons[i]);
-            }
-            td.Icon = icon;
-            return td.ShowDialog();
-        }
-        public static DialogResult ShowDialog(string instruction, string content, string title, TaskDialogButtons buttons, TaskDialogIcon icon)
-        {
-            TaskDialog td = new TaskDialog();
-            td.Prompt = instruction;
-            td.Content = content;
-            td.Text = title;
-            td.ButtonsPreset = buttons;
-            td.Icon = icon;
-            return td.ShowDialog();
-        }
-    }
+		{
+			TaskDialog td = new TaskDialog();
+			td.Prompt = instruction;
+			td.Content = content;
+			td.Text = title;
+			td.ButtonsPreset = TaskDialogButtons.Custom;
+			td.ButtonStyle = TaskDialogButtonStyle.Commands;
+			for (int i = 0; i < buttons.Length; i++)
+			{
+				td.Buttons.Add(buttons[i]);
+			}
+			td.Icon = icon;
+			return td.ShowDialog();
+		}
+		public static DialogResult ShowDialog(string instruction, string content, string title, TaskDialogButtons buttons, TaskDialogIcon icon)
+		{
+			TaskDialog td = new TaskDialog();
+			td.Prompt = instruction;
+			td.Content = content;
+			td.Text = title;
+			td.ButtonsPreset = buttons;
+			td.Icon = icon;
+			return td.ShowDialog();
+		}
+	}
 }

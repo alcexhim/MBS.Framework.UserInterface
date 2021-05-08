@@ -1,4 +1,4 @@
-﻿//
+//
 //  Adjustment.cs
 //
 //  Author:

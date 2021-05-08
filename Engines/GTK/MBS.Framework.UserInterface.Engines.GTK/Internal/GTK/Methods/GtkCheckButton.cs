@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkCheckButton.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_check_button_new_with_mnemonic(string text);
 	}
 }
-

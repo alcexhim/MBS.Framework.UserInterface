@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;

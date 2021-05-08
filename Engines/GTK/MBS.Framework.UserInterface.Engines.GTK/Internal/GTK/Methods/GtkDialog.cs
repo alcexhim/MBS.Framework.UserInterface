@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkDialog.cs
 //
 //  Author:
@@ -60,4 +60,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_dialog_set_default_response(IntPtr /*GtkDialog*/ dialog, Constants.GtkResponseType value);
 	}
 }
-

@@ -3,54 +3,54 @@ using System.Collections.Generic;
 
 namespace WeifenLuo.WinFormsUI.Docking
 {
-    public class DockPaneCollection : ReadOnlyCollection<DockPane>
-    {
-        internal DockPaneCollection()
-            : base(new List<DockPane>())
-        {
-        }
+	public class DockPaneCollection : ReadOnlyCollection<DockPane>
+	{
+		internal DockPaneCollection()
+			: base(new List<DockPane>())
+		{
+		}
 
-        internal int Add(DockPane pane)
-        {
-            if (Items.Contains(pane))
-                return Items.IndexOf(pane);
+		internal int Add(DockPane pane)
+		{
+			if (Items.Contains(pane))
+				return Items.IndexOf(pane);
 
-            Items.Add(pane);
-            return Count - 1;
-        }
+			Items.Add(pane);
+			return Count - 1;
+		}
 
-        internal void AddAt(DockPane pane, int index)
-        {
-            if (index < 0 || index > Items.Count - 1)
-                return;
-            
-            if (Contains(pane))
-                return;
+		internal void AddAt(DockPane pane, int index)
+		{
+			if (index < 0 || index > Items.Count - 1)
+				return;
 
-            Items.Insert(index, pane);
-        }
+			if (Contains(pane))
+				return;
 
-        internal void Dispose()
-        {
-            if (PatchController.EnableNestedDisposalFix == true)
-            {
-                List<DockPane> collection = new List<DockPane>(Items);
-                foreach (var dockPane in collection)
-                {
-                    dockPane.Close();
-                }
+			Items.Insert(index, pane);
+		}
 
-                collection.Clear();
-                return;
-            }
+		internal void Dispose()
+		{
+			if (PatchController.EnableNestedDisposalFix == true)
+			{
+				List<DockPane> collection = new List<DockPane>(Items);
+				foreach (var dockPane in collection)
+				{
+					dockPane.Close();
+				}
 
-            for (int i=Count - 1; i>=0; i--)
-                this[i].Close();
-        }
+				collection.Clear();
+				return;
+			}
 
-        internal void Remove(DockPane pane)
-        {
-            Items.Remove(pane);
-        }
-    }
+			for (int i = Count - 1; i >= 0; i--)
+				this[i].Close();
+		}
+
+		internal void Remove(DockPane pane)
+		{
+			Items.Remove(pane);
+		}
+	}
 }

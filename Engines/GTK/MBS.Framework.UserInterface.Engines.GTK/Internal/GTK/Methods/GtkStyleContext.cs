@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkStyleContext.cs
 //
 //  Author:
@@ -47,4 +47,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_style_context_lookup_color(IntPtr /*GtkStyleContext*/ context, string name, ref GDK.Structures.GdkRGBA rgba);
 	}
 }
-

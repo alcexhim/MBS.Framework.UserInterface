@@ -1,4 +1,4 @@
-﻿//
+//
 //  Clipboard.cs
 //
 //  Author:

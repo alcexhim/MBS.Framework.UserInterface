@@ -1,4 +1,4 @@
-﻿//
+//
 //  CustomImplementation.cs
 //
 //  Author:
@@ -112,4 +112,3 @@ namespace MBS.Framework.UserInterface
 		}
 	}
 }
-

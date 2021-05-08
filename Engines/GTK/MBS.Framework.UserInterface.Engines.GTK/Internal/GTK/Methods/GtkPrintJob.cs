@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkPrintJob.cs
 //
 //  Author:
@@ -29,7 +29,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkPrintJob*/ gtk_print_job_new(string title, IntPtr /*GtkPrinter*/ printer, IntPtr /*GtkPrintSettings*/ settings, IntPtr /*GtkPageSetup*/ page_setup);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
- 		public static extern void gtk_print_job_send(IntPtr /*GtkPrintJob*/ job, Delegates.GtkPrintJobCompleteFunc callback, IntPtr user_data, GObject.Delegates.GDestroyNotify dnotify);
+		public static extern void gtk_print_job_send(IntPtr /*GtkPrintJob*/ job, Delegates.GtkPrintJobCompleteFunc callback, IntPtr user_data, GObject.Delegates.GDestroyNotify dnotify);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern Constants.GtkPrintStatus gtk_print_job_get_status(IntPtr /*GtkPrintJob*/ job);

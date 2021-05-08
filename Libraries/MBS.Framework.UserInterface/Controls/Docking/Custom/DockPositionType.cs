@@ -1,4 +1,4 @@
-﻿//
+//
 // DockPositionType.cs
 //
 // Author:
@@ -36,4 +36,3 @@ namespace MonoDevelop.Components.Docking
 		Bottom
 	}
 }
-

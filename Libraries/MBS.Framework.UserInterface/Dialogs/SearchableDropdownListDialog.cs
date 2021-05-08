@@ -1,4 +1,4 @@
-﻿//
+//
 //  SearchableDropdownListDialog.cs
 //
 //  Author:

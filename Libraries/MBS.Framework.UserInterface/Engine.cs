@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using MBS.Framework.UserInterface.Controls;
@@ -659,7 +659,7 @@ namespace MBS.Framework.UserInterface
 
 			if (IsTreeModelCreated(model))
 			{
-				// TODO: unregister handle 
+				// TODO: unregister handle
 				_HandleForTreeModel.Remove(model);
 				// return _HandleForTreeModel[model]; // this fks up additional columns tweaking
 			}

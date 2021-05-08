@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeImage.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  DisclosureImplementation.cs
 //
 //  Author:

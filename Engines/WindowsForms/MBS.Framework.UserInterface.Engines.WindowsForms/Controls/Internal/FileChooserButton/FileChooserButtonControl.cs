@@ -1,4 +1,4 @@
-﻿//
+//
 //  FileChooserButton.cs
 //
 //  Author:

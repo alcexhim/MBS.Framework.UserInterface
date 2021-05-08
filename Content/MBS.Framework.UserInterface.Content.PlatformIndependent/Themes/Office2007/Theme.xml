@@ -472,33 +472,33 @@
 					<Color Name="CommandBarRaftingContainerBackground" Value="#BFDBFF" />
 					<Color Name="CommandBarMenuBackground" Value="@CommandBarRaftingContainerBackground" />
 					<Color Name="ContentAreaBackground" Value="@CommandBarRaftingContainerBackground" />
-					
+
 					<Color Name="CommandBarBackgroundTop" Value="#E3EFFF" />
 					<Color Name="CommandBarBackgroundBottom" Value="#B1D3FF" />
 					<Color Name="CommandBarBorderBottom" Value="#6F9DD9" />
-					
+
 					<Color Name="CommandBarPopupBackground" Value="#F6F6F6" />
 					<Color Name="CommandBarPopupBorder" Value="#6593CF" />
-					
+
 					<Color Name="CommandBarItemHoverBorder" Value="#FFBD69" />
 					<Color Name="CommandBarItemHoverBackgroundTop" Value="#FFF5CC" />
 					<Color Name="CommandBarItemHoverBackgroundBottom" Value="#FFDC7A" />
-					
+
 					<Color Name="CommandBarItemPressedBorder" Value="#FB8C3C" />
 					<Color Name="CommandBarItemPressedBackgroundTop" Value="#FC973D" />
 					<Color Name="CommandBarItemPressedBackgroundBottom" Value="#FFB85E" />
-					
+
 					<Color Name="CommandBarTopLevelItemPressedBackgroundTop" Value="#E3EFFE" />
 					<Color Name="CommandBarTopLevelItemPressedBackgroundBottom" Value="#90B9EE" />
-					
+
 					<Color Name="CommandBarMenuItemHoverBorder" Value="#FFBD69" />
 					<Color Name="CommandBarMenuItemHoverBackground" Value="#FFE7A2" />
 					<Color Name="CommandBarMenuItemPressedBorder" Value="@CommandBarMenuItemHoverBorder" />
 					<Color Name="CommandBarMenuItemPressedBackground" Value="@CommandBarMenuItemHoverBackground" />
-					
+
 					<Color Name="ListViewBackground" Value="#FFFFFF" />
 					<Color Name="ListViewBorder" Value="#828790" />
-					
+
 					<Color Name="SeparatorDark" Value="#9AC6FF" />
 					<Color Name="SeparatorLight" Value="#FFFFFF" />
 				</Colors>

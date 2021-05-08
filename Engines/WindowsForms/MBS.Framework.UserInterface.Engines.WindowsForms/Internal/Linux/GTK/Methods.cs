@@ -1,4 +1,4 @@
-﻿//
+//
 //  Methods.cs
 //
 //  Author:

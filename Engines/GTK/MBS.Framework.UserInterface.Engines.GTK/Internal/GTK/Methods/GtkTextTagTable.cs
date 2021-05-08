@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTextTagTable.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_text_tag_table_new();
 	}
 }
-

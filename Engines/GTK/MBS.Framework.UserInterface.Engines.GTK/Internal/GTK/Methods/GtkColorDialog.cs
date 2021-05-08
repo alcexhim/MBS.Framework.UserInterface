@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkColorChooserDialog.cs
 //
 //  Author:
@@ -63,7 +63,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		private static extern void gtk_color_selection_set_current_color(IntPtr /*GtkColorSelection*/ colorsel, Internal.GDK.Structures.GdkColor color);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_color_chooser_set_use_alpha(IntPtr /*GtkColorChooser*/ chooser, bool use_alpha); 
+		public static extern void gtk_color_chooser_set_use_alpha(IntPtr /*GtkColorChooser*/ chooser, bool use_alpha);
 
 		public static IntPtr gtk_color_chooser_get_rgba(IntPtr /*GtkColorChooser*/ chooser, out Internal.GDK.Structures.GdkRGBA color)
 		{
@@ -112,4 +112,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		}
 	}
 }
-

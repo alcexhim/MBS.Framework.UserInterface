@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsEngine.cs - provides a Universal Widget Toolkit Engine powered by the Windows Forms toolkit
 //
 //  Author:

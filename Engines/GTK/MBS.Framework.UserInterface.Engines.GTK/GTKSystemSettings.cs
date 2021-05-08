@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKSystemSettings.cs
 //
 //  Author:

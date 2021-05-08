@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkDrawingArea.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_drawing_area_new();
 	}
 }
-

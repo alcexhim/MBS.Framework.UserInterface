@@ -1,4 +1,4 @@
-﻿//
+//
 //  PrintSettings.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTable.cs
 //
 //  Author:
@@ -37,4 +37,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_table_set_col_spacings(IntPtr /*GtkTable*/ table, uint spacing);
 	}
 }
-

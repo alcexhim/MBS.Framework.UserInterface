@@ -1,4 +1,4 @@
-﻿//
+//
 //  Win32NativeControl.cs
 //
 //  Author:

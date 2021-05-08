@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKNativeTreeModel.cs
 //
 //  Author:

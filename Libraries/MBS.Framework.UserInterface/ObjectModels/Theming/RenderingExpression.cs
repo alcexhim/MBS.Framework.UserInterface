@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 		{
 			return (value >= '0' && value <= '9');
 		}
-		
+
 		public static RenderingExpression Parse(string value)
 		{
 			RenderingExpression expr = new RenderingExpression();

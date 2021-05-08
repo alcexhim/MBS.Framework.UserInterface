@@ -1,4 +1,4 @@
-﻿//
+//
 //  AppIndicatorStatus.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  CommandBinding.cs
 //
 //  Author:

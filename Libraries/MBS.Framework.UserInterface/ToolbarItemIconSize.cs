@@ -1,4 +1,4 @@
-﻿//
+//
 //  ToolbarItemIconSize.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface
 		Small
 	}
 }
-

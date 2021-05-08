@@ -1,4 +1,4 @@
-﻿//
+//
 //  TreeModelRowCompareEvent.cs
 //
 //  Author:
@@ -29,7 +29,7 @@ namespace MBS.Framework.UserInterface
 
 		public int Value { get; set; } = 0;
 		public bool Handled { get; set; } = false;
-		
+
 		public TreeModelRowCompareEventArgs(TreeModelRow left, TreeModelRow right, int columnIndex)
 		{
 			Left = left;

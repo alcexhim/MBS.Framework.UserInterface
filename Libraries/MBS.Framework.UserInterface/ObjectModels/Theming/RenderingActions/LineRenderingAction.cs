@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +15,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming.RenderingActions
 		public RenderingExpression Y1 { get { return mvarY1; } set { mvarY1 = value; } }
 		private RenderingExpression mvarY2 = null;
 		public RenderingExpression Y2 { get { return mvarY2; } set { mvarY2 = value; } }
-		
+
 		private Outline mvarOutline = null;
 		public Outline Outline { get { return mvarOutline; } set { mvarOutline = value; } }
 

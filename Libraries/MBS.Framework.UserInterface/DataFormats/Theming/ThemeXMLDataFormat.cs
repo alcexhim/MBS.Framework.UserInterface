@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -317,7 +317,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Theming
 												TextRenderingAction item = new TextRenderingAction();
 												item.X = RenderingExpression.Parse(attX.Value);
 												item.Y = RenderingExpression.Parse(attY.Value);
-												
+
 												if (attWidth != null) item.Width = RenderingExpression.Parse(attWidth.Value);
 												if (attWidth != null) item.Height = RenderingExpression.Parse(attHeight.Value);
 
@@ -493,7 +493,7 @@ namespace MBS.Framework.UserInterface.DataFormats.Theming
 		private Fill FillFromTag(MarkupTagElement tag)
 		{
 			if (tag == null) return null;
-			
+
 			MarkupAttribute attFillType = tag.Attributes["Type"];
 			if (attFillType != null)
 			{

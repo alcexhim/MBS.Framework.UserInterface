@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using MBS.Framework.Rendering;
@@ -21,7 +21,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			OpenGLCanvas ctl = (Application.Engine.GetControlByHandle(handle) as OpenGLCanvas);
 			if (ctl == null)
 				return;
-			
+
 			// We need to make the context current if we want to call GL API
 			Internal.GTK.Methods.GtkGlArea.gtk_gl_area_make_current(handle);
 
@@ -49,7 +49,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override void OnRealize(EventArgs e)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			
+
 			// We need to make the context current if we want to call GL API
 			Internal.GTK.Methods.GtkGlArea.gtk_gl_area_make_current(handle);
 
@@ -59,11 +59,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				Console.Error.WriteLine("OpenGLCanvasImplementation: gtk_gl_area_get_area returned {0}", hGErr);
 			}
-			
+
 			// Tell NativeImplementation to fire the OnRealize event on our universal control
 			base.OnRealize(e);
 		}
-		
+
 
 		[System.Diagnostics.DebuggerNonUserCode()]
 		protected override NativeControl CreateControlInternal(Control control)

@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeTreeModel.cs
 //
 //  Author:

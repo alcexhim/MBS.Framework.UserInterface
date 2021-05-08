@@ -1,4 +1,4 @@
-﻿//
+//
 //  VirtualFileWin32.cs
 //
 //  Author:

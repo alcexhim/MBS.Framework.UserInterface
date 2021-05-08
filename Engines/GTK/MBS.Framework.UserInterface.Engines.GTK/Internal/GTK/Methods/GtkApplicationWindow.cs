@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkApplicationWindow.cs
 //
 //  Author:

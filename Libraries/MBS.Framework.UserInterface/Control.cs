@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +16,13 @@ namespace MBS.Framework.UserInterface
 	/*
 	* Realize means to create the GDK resources for a widget. i.e. to instantiate the widget on the
 	* display. This is more useful once we have multiple display support in GTK.
-	*  
+	*
 	* Map means to actually pop the widget’s window onscreen. It requires the widget to be realized,
 	* since the window is created in realize.
-	*  
+	*
 	* Show means the widget should be mapped when its toplevel is mapped, or in the case of a toplevel,
 	* should be mapped immediately.
-	*  
+	*
 	* Mapping is asynchronous though; that is, gtk_widget_map() and the map signal are emitted when the
 	* map is requested. When the map actually occurs you get a map_event (distinct from plain map). But
 	* you are not allowed to draw on widgets until you get the first expose, map_event is insufficient.
@@ -516,7 +516,7 @@ namespace MBS.Framework.UserInterface
 		{
 			DragDataDelete?.Invoke(this, e);
 		}
-		
+
 		public void RegisterDragSource(DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons = MouseButtons.Primary | MouseButtons.Secondary, KeyboardModifierKey modifierKeys = KeyboardModifierKey.None)
 		{
 			ControlImplementation.RegisterDragSource(this, targets, actions, buttons, modifierKeys);
@@ -778,7 +778,7 @@ namespace MBS.Framework.UserInterface
 			// convenience method
 			Invalidate();
 		}
-		
+
 		private bool mvarIsDisposed = false;
 		public bool IsDisposed
 		{
@@ -789,25 +789,25 @@ namespace MBS.Framework.UserInterface
 				return mvarIsDisposed;
 			}
 		}
-		
+
 		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
-		
+
 		protected virtual void DisposeManagedInternal()
 		{
 		}
 		protected virtual void DisposeUnmanagedInternal()
 		{
 		}
-		
+
 		protected void Dispose(bool disposing)
 		{
 			if (mvarIsDisposed)
 				return;
-			
+
 			if (disposing) {
 				// free any managed objects here
 				DisposeManagedInternal();
@@ -815,7 +815,7 @@ namespace MBS.Framework.UserInterface
 
 			// free any unmanaged objects here
 			DisposeUnmanagedInternal();
-			
+
 			mvarIsDisposed = true;
 		}
 
@@ -823,7 +823,7 @@ namespace MBS.Framework.UserInterface
 		{
 			mvarStyle = new ControlStyle(this);
 		}
-		
+
 		~Control()
 		{
 			Dispose(false);

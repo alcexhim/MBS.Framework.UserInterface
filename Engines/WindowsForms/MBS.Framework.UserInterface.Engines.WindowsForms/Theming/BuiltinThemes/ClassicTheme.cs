@@ -20,7 +20,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarBackground = Color.FromKnownColor(KnownColor.Control);
 			ColorTable.CommandBarPanelGradientBegin = Color.FromKnownColor(KnownColor.Control);
 			ColorTable.CommandBarPanelGradientEnd = Color.FromKnownColor(KnownColor.Control);
-			
+
 			switch (System.Environment.OSVersion.Platform)
 			{
 				case PlatformID.MacOSX:
@@ -35,11 +35,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					ColorTable.CommandBarControlBackgroundHover = Color.FromKnownColor (KnownColor.Highlight);
 					break;
 			}
-			
-			
+
+
 			ColorTable.CommandBarMenuBorder = Color.FromKnownColor (KnownColor.ControlDark);
 			ColorTable.CommandBarMenuBorderLight = Color.FromKnownColor (KnownColor.ControlLightLight);
-			
+
 			ColorTable.CommandBarMenuBackground = Color.FromKnownColor (KnownColor.Menu);
 			ColorTable.CommandBarMenuControlText = ColorTable.CommandBarControlText;
 			ColorTable.CommandBarMenuControlTextHighlight = ColorTable.CommandBarControlTextHover;
@@ -223,4 +223,3 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		#endregion
 	}
 }
-

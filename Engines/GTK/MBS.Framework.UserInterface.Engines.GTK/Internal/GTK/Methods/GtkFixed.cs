@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkFixed.cs
 //
 //  Author:
@@ -33,4 +33,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_fixed_move(IntPtr /*GtkFixed*/ _fixed, IntPtr /*GtkWidget*/ widget, int x, int y);
 	}
 }
-

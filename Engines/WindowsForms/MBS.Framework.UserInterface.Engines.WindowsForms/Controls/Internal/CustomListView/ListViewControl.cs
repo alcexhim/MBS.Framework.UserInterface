@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
-using MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.CommandBars;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.CustomListView
 {
@@ -32,7 +30,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		public event EventHandler ItemActivate;
 		protected virtual void OnItemActivate(EventArgs e)
 		{
-			if (ItemActivate != null) ItemActivate(this, e);
+			ItemActivate?.Invoke(this, e);
 		}
 
 		public event ListViewItemDragEventHandler ItemDrag;
@@ -40,7 +38,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 		public ListViewControl()
 		{
-			mvarItems = new ListViewItem.ListViewItemCollection(this);
+			Items = new ListViewItem.ListViewItemCollection(this);
 
 			InitializeComponent();
 
@@ -49,33 +47,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			base.DoubleBuffered = true;
 		}
-
-		private bool mvarAllowColumnResize = true;
 		/// <summary>
 		/// Indicates whether the user can resize columns in Details view.
 		/// </summary>
 		[Description("Indicates whether the user can resize columns in Details view."), DefaultValue(true)]
-		public bool AllowColumnResize { get { return mvarAllowColumnResize; } set { mvarAllowColumnResize = value; } }
-
-		private bool mvarAllowDrag = false;
+		public bool AllowColumnResize { get; set; } = true;
 		/// <summary>
 		/// Indicates whether items can be dragged outside this control's boundaries.
 		/// </summary>
 		[Description("Indicates whether items can be dragged outside this control's boundaries."), DefaultValue(false)]
-		public bool AllowDrag { get { return mvarAllowDrag; } set { mvarAllowDrag = value; } }
-
-		private bool mvarAllowColumnReorder = true;
+		public bool AllowDrag { get; set; } = false;
 		/// <summary>
 		/// Indicates whether the user can reorder columns in Details view.
 		/// </summary>
 		[Description("Indicates whether the user can reorder columns in Details view."), DefaultValue(true)]
-		public bool AllowColumnReorder { get { return mvarAllowColumnReorder; } set { mvarAllowColumnReorder = value; } }
-
-		private bool mvarEnableAutomaticInlineRenaming = true;
+		public bool AllowColumnReorder { get; set; } = true;
 		/// <summary>
 		/// Determines if the F2 key is automatically handled for inline renaming.
 		/// </summary>
-		public bool EnableAutomaticInlineRenaming { get { return mvarEnableAutomaticInlineRenaming; } set { mvarEnableAutomaticInlineRenaming = value; } }
+		public bool EnableAutomaticInlineRenaming { get; set; } = true;
 
 		public override void ResetBackColor()
 		{
@@ -85,16 +75,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		{
 			ForeColor = Color.FromKnownColor(KnownColor.WindowText);
 		}
-
-		private ListViewItem.ListViewItemCollection mvarItems = null;
-		public ListViewItem.ListViewItemCollection Items { get { return mvarItems; } }
+		public ListViewItem.ListViewItemCollection Items { get; } = null;
 
 		public ListViewItem.ListViewItemCollection SelectedItems
 		{
 			get
 			{
 				ListViewItem.ListViewItemCollection lvic = new ListViewItem.ListViewItemCollection(this);
-				foreach (ListViewItem lvi in mvarItems)
+				foreach (ListViewItem lvi in Items)
 				{
 					if (lvi.Selected)
 					{
@@ -105,59 +93,43 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			}
 		}
 
-		private ImageList mvarLargeImageList = null;
-		public ImageList LargeImageList { get { return mvarLargeImageList; } set { mvarLargeImageList = value; } }
-		private ImageList mvarSmallImageList = null;
-		public ImageList SmallImageList { get { return mvarSmallImageList; } set { mvarSmallImageList = value; } }
-
-		private bool mvarShowGridLines = true;
+		public ImageList LargeImageList { get; set; } = null;
+		public ImageList SmallImageList { get; set; } = null;
 		/// <summary>
 		/// Determines if grid lines are drawn on the control in Details view.
 		/// </summary>
 		[Description("Determines if grid lines are drawn on the control in Details view."), DefaultValue(true), Category("Appearance")]
-		public bool ShowGridLines { get { return mvarShowGridLines; } set { mvarShowGridLines = value; } }
-
-		private int mvarColumnHeaderHeight = 24;
+		public bool ShowGridLines { get; set; } = true;
 		/// <summary>
 		/// Determines the height of the column headers.
 		/// </summary>
 		[Description("Determines the height of the column headers."), DefaultValue(24), Category("Appearance")]
-		public int ColumnHeaderHeight { get { return mvarColumnHeaderHeight; } set { mvarColumnHeaderHeight = value; } }
-
-		private int mvarRowHeaderWidth = 24;
+		public int ColumnHeaderHeight { get; set; } = 24;
 		/// <summary>
 		/// Determines the width of the row headers.
 		/// </summary>
 		[Description("Determines the width of the row headers."), DefaultValue(24), Category("Appearance")]
-		public int RowHeaderWidth { get { return mvarRowHeaderWidth; } set { mvarRowHeaderWidth = value; } }
-
-		private bool mvarHideSelection = true;
+		public int RowHeaderWidth { get; set; } = 24;
 		/// <summary>
 		/// Removes highlighting from the selected item when the control does not have focus.
 		/// </summary>
 		[Description("Removes highlighting from the selected item when the control does not have focus."), DefaultValue(true), Category("Appearance")]
-		public bool HideSelection { get { return mvarHideSelection; } set { mvarHideSelection = value; } }
-
-		private bool mvarFullRowSelect = false;
+		public bool HideSelection { get; set; } = true;
 		/// <summary>
 		/// Indicates whether all Details are highlighted along with the <see cref="ListViewItem" /> when selected.
 		/// </summary>
 		[Description("Indicates whether all Details are highlighted along with the ListViewItem when selected."), DefaultValue(false), Category("Behavior")]
-		public bool FullRowSelect { get { return mvarFullRowSelect; } set { mvarFullRowSelect = value; } }
-
-		private bool mvarHotTracking = false;
+		public bool FullRowSelect { get; set; } = false;
 		/// <summary>
 		/// Allows items to appear as hyperlinks when the mouse hovers over them.
 		/// </summary>
 		[Description("Allows items to appear as hyperlinks when the mouse hovers over them."), DefaultValue(false), Category("Appearance")]
-		public bool HotTracking { get { return mvarHotTracking; } set { mvarHotTracking = value; } }
-
-		private bool mvarHoverSelection = false;
+		public bool HotTracking { get; set; } = false;
 		/// <summary>
 		/// Allows items to be selected by hovering over them with the mouse.
 		/// </summary>
 		[Description("Allows items to be selected by hovering over them with the mouse."), DefaultValue(false), Category("Behavior")]
-		public bool HoverSelection { get { return mvarHoverSelection; } set { mvarHoverSelection = value; } }
+		public bool HoverSelection { get; set; } = false;
 
 		private ListViewItem mvarHoverItem = null;
 
@@ -170,31 +142,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		}
 
 		#region Sorting
-		private bool mvarAllowSorting = true;
 		/// <summary>
 		/// When true, automatically sorts columns by their respective specified comparer (or the default comparer
 		/// if unspecified) when the user clicks on the column header.
 		/// </summary>
-		public bool AllowSorting { get { return mvarAllowSorting; } set { mvarAllowSorting = value; } }
-
-		private ListViewColumn mvarSortColumn = null;
-		public ListViewColumn SortColumn { get { return mvarSortColumn; } set { mvarSortColumn = value; } }
+		public bool AllowSorting { get; set; } = true;
+		public ListViewColumn SortColumn { get; set; } = null;
 		#endregion
 
-		private bool mvarMultiSelect = false;
 		/// <summary>
 		/// Determines whether multiple items in the list can be selected at once.  This automatically enables
 		/// Ctrl+ and Shift+clicking functionality, as well as click-and-drag selection.
 		/// </summary>
 		[Description("Determines whether multiple items in the list can be selected at once.  This automatically enables Ctrl+ and Shift+clicking functionality, as well as click-and-drag selection."), DefaultValue(false), Category("Behavior")]
-		public bool MultiSelect { get { return mvarMultiSelect; } set { mvarMultiSelect = value; } }
-
-		private bool mvarEnableFilter = false;
+		public bool MultiSelect { get; set; } = false;
 		/// <summary>
 		/// When true, places a text box below each column by which to filter the items in the <see cref="ListViewControl" />.
 		/// </summary>
 		[Description("When true, places a text box below each column by which to filter the items in the ListViewControl."), DefaultValue(false), Category("Behavior")]
-		public bool EnableFilter { get { return mvarEnableFilter; } set { mvarEnableFilter = value; } }
+		public bool EnableFilter { get; set; } = false;
 
 		private ListViewColumnBehavior mvarColumnBehavior = ListViewColumnBehavior.DetailOnly;
 		/// <summary>
@@ -302,7 +268,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 						AutoResizeColumn(lvc);
 					}
 				}
-				
+
 				if (lvi != null)
 				{
 					OnItemActivate(EventArgs.Empty);
@@ -319,7 +285,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			if ((System.Windows.Forms.Control.ModifierKeys & Keys.Control) == Keys.Control) wasControlKeyPressed = true;
 			ListViewItem lvi = HitTest(e.Location)?.Item;
-			
+
 			bool selectionChanged = true;
 
 			if (lvi != null)
@@ -333,25 +299,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				else
 				{
 					OnSelectionChanging(new ListViewItemSelectionChangingEventArgs(lvi));
-					if (!mvarMultiSelect || ((((((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && SelectedItems.Count <= 1)
-						|| (mvarMultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && !SelectedItems.Contains(lvi)))
-						&& ((mvarMultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Shift) != Keys.Shift) && !SelectedItems.Contains(lvi))))))
+					if (!MultiSelect || ((((((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && SelectedItems.Count <= 1)
+						|| (MultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && !SelectedItems.Contains(lvi)))
+						&& ((MultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Shift) != Keys.Shift) && !SelectedItems.Contains(lvi))))))
 					{
-						foreach (ListViewItem lvi1 in mvarItems)
+						foreach (ListViewItem lvi1 in Items)
 						{
 							RecursiveSetSelected(lvi1, false);
 						}
 					}
-					if (mvarMultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Shift) == Keys.Shift) && SelectedItems.Count > 0)
+					if (MultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Shift) == Keys.Shift) && SelectedItems.Count > 0)
 					{
-						int index1 = mvarItems.IndexOf(SelectedItems[SelectedItems.Count - 1]);
-						int index2 = mvarItems.IndexOf(lvi);
+						int index1 = Items.IndexOf(SelectedItems[SelectedItems.Count - 1]);
+						int index2 = Items.IndexOf(lvi);
 
 						int start = Math.Min(index1, index2);
 						int end = Math.Max(index1, index2);
 						for (int i = start; i <= end; i++)
 						{
-							mvarItems[i].Selected = true;
+							Items[i].Selected = true;
 						}
 					}
 
@@ -364,9 +330,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 						if (lvi.Selected)
 						{
 							// start the timeout
-							if (mvarEnableAutomaticInlineRenaming)
+							if (EnableAutomaticInlineRenaming)
 							{
-								_labelEditTimer = Timer.SetTimeout(1000, delegate(object[] paramz)
+								_labelEditTimer = Timer.SetTimeout(1000, delegate (object[] paramz)
 								{
 									BeginLabelEdit(paramz[0] as ListViewItem);
 								}, lvi);
@@ -385,28 +351,28 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 						OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					}
 
-					if (mvarAllowDrag) m_DraggingItem = true;
+					if (AllowDrag) m_DraggingItem = true;
 				}
 			}
 			else
 			{
 				if (SelectedItems.Count == 0) selectionChanged = false;
 
-				if (ShouldShowColumns() && e.Y < mvarColumnHeaderHeight)
+				if (ShouldShowColumns() && e.Y < ColumnHeaderHeight)
 				{
 					int x = 0;
 					if (e.Button == System.Windows.Forms.MouseButtons.Left)
 					{
 						foreach (ListViewColumn lvc in mvarColumns)
 						{
-							if ((e.X >= (x + lvc.Width - 4) && e.X <= (x + lvc.Width + 2)) && mvarAllowColumnResize)
+							if ((e.X >= (x + lvc.Width - 4) && e.X <= (x + lvc.Width + 2)) && AllowColumnResize)
 							{
 								m_ResizeColumn = lvc;
 								m_ResizeColumnOldWidth = m_ResizeColumn.Width;
 								m_ResizeColumnOriginX = e.X;
 								break;
 							}
-							else if ((e.X >= x && e.X <= x + lvc.Width) && (mvarAllowSorting || mvarAllowColumnReorder))
+							else if ((e.X >= x && e.X <= x + lvc.Width) && (AllowSorting || AllowColumnReorder))
 							{
 								m_PressedColumn = lvc;
 								m_PressedColumnOriginalX = x;
@@ -421,14 +387,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				}
 				else
 				{
-					if (!mvarMultiSelect || (((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && SelectedItems.Count <= 1) || (mvarMultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && !SelectedItems.Contains(lvi)))
+					if (!MultiSelect || (((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && SelectedItems.Count <= 1) || (MultiSelect && ((System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.Control) && !SelectedItems.Contains(lvi)))
 					{
-						foreach (ListViewItem lvi1 in mvarItems)
+						foreach (ListViewItem lvi1 in Items)
 						{
 							RecursiveSetSelected(lvi1, false);
 						}
 					}
-					if (mvarMultiSelect)
+					if (MultiSelect)
 					{
 						m_RectangleSelect = true;
 						m_RectangleSelectPosStart = e.Location;
@@ -465,9 +431,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				Refresh();
 			}
 
-			if (ShouldShowColumns() && (e.Y < mvarColumnHeaderHeight))
+			if (ShouldShowColumns() && (e.Y < ColumnHeaderHeight))
 			{
-				m_RectangleSelectPosEnd = new Point(e.X, mvarColumnHeaderHeight);
+				m_RectangleSelectPosEnd = new Point(e.X, ColumnHeaderHeight);
 				Refresh();
 
 				#region VSplit cursor
@@ -512,9 +478,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 				int width = (int)((double)this.Width / (double)GetItemBounds().Width);
 				int start = -ScrollOffsetY * width;
-				
+
 				ListViewItem[] lvis = itemBounds.GetIntersectedItems(rect, wasControlKeyPressed, start);
-				foreach (ListViewItem lvi in mvarItems)
+				foreach (ListViewItem lvi in Items)
 				{
 					if (Array.IndexOf<ListViewItem>(lvis, lvi) > -1)
 					{
@@ -530,7 +496,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			{
 				if (e.Button == System.Windows.Forms.MouseButtons.Left && lvi1 != null)
 				{
-					if (mvarAllowDrag && m_DraggingItem)
+					if (AllowDrag && m_DraggingItem)
 					{
 						ListViewItemDragEventArgs ea = new ListViewItemDragEventArgs();
 						OnItemDrag(ea);
@@ -544,7 +510,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			}
 
 			if (lvi2 == mvarHoverItem) return;
-			if (!mvarItems.Contains(lvi2)) lvi2 = null;
+			if (!Items.Contains(lvi2)) lvi2 = null;
 
 			if (lvi2 != null)
 			{
@@ -559,12 +525,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			m_DraggingItem = false;
 			if (e.Button == System.Windows.Forms.MouseButtons.Left && m_DraggingColumn == null)
 			{
-				if (ShouldShowColumns() && (e.Y < mvarColumnHeaderHeight))
+				if (ShouldShowColumns() && (e.Y < ColumnHeaderHeight))
 				{
 					ListViewColumn lvc = ColumnHitTest(e.Location);
 					if (lvc == null) return;
 
-					if (mvarSortColumn == lvc)
+					if (SortColumn == lvc)
 					{
 						if (mvarSortDirection == ListSortDirection.Ascending)
 						{
@@ -577,13 +543,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 					else
 					{
-						mvarSortColumn = lvc;
+						SortColumn = lvc;
 						mvarSortDirection = ListSortDirection.Ascending;
 					}
 					Refresh();
 				}
 			}
-				
+
 			m_ResizeColumn = null;
 			m_PressedColumn = null;
 			m_DraggingColumn = null;
@@ -593,7 +559,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
-				if (ShouldShowColumns() && (e.Y < mvarColumnHeaderHeight))
+				if (ShouldShowColumns() && (e.Y < ColumnHeaderHeight))
 				{
 					mnuColumnContext.Show(this, e.Location);
 				}
@@ -606,9 +572,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			int itemsPerRow = (int)(Math.Ceiling((double)this.Width / sz.Width)) - 1;
 			int itemsPerColumn = (int)(Math.Ceiling((double)this.Height / sz.Height)) - 1;
 			int itemsPerPage = itemsPerRow * itemsPerColumn;
-			int pages = (int)(Math.Ceiling((double)mvarItems.Count / itemsPerPage));
+			int pages = (int)(Math.Ceiling((double)Items.Count / itemsPerPage));
 
-			return (int)((mvarItems.Count / itemsPerRow) - itemsPerColumn);
+			return (int)((Items.Count / itemsPerRow) - itemsPerColumn);
 			// return (int)(Math.Ceiling((double)itemsPerRow - itemsPerPage));
 			// return (itemsPerPage * pages);
 		}
@@ -637,30 +603,30 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			Refresh();
 		}
 		#endregion
-		
+
 		#region Keyboard
 		protected override bool ProcessDialogKey(Keys keyData)
 		{
 			switch (keyData)
 			{
-				case Keys.Up:
+			case Keys.Up:
 				{
 					if (SelectedItems.Count == 0) break;
 
 					Rectangle rect = GetItemBounds();
 					int width = (int)((double)this.Width / (double)rect.Width);
-					
-					int index = mvarItems.IndexOf(SelectedItems[0]);
+
+					int index = Items.IndexOf(SelectedItems[0]);
 					index -= width;
 					if (index < 0) index = 0;
 
 					SelectedItems[0].Selected = false;
-					mvarItems[index].Selected = true;
+					Items[index].Selected = true;
 
-					Rectangle rect1 = GetItemBounds(mvarItems[index]);
+					Rectangle rect1 = GetItemBounds(Items[index]);
 					if (rect1.Y < 0)
 					{
-						ScrollOffsetY ++;
+						ScrollOffsetY++;
 						ResetBounds();
 					}
 
@@ -668,21 +634,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					return true;
 				}
-				case Keys.Down:
+			case Keys.Down:
 				{
 					if (SelectedItems.Count == 0) break;
 
 					Rectangle rect = GetItemBounds();
 					int width = (int)((double)this.Width / (double)rect.Width);
 
-					int index = mvarItems.IndexOf(SelectedItems[0]);
+					int index = Items.IndexOf(SelectedItems[0]);
 					index += width;
-					if (index >= mvarItems.Count) index = mvarItems.Count - 1;
+					if (index >= Items.Count) index = Items.Count - 1;
 
 					SelectedItems[0].Selected = false;
-					mvarItems[index].Selected = true;
+					Items[index].Selected = true;
 
-					Rectangle rect1 = GetItemBounds(mvarItems[index]);
+					Rectangle rect1 = GetItemBounds(Items[index]);
 					if (rect1.Bottom > base.Height)
 					{
 						ScrollOffsetY--;
@@ -693,7 +659,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					return true;
 				}
-				case Keys.Left:
+			case Keys.Left:
 				{
 					if (SelectedItems.Count == 0) break;
 
@@ -705,18 +671,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 						return true;
 					}
 
-					int index = mvarItems.IndexOf(SelectedItems[0]);
+					int index = Items.IndexOf(SelectedItems[0]);
 					index--;
 					if (index < 0) index = 0;
 
 					SelectedItems[0].Selected = false;
-					mvarItems[index].Selected = true;
+					Items[index].Selected = true;
 
 					Refresh();
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					return true;
 				}
-				case Keys.Right:
+			case Keys.Right:
 				{
 					if (SelectedItems.Count == 0) break;
 
@@ -728,12 +694,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 						return true;
 					}
 
-					int index = mvarItems.IndexOf(SelectedItems[0]);
+					int index = Items.IndexOf(SelectedItems[0]);
 					index++;
-					if (index >= mvarItems.Count) index = mvarItems.Count - 1;
+					if (index >= Items.Count) index = Items.Count - 1;
 
 					SelectedItems[0].Selected = false;
-					mvarItems[index].Selected = true;
+					Items[index].Selected = true;
 
 					Refresh();
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
@@ -748,9 +714,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			switch (e.KeyCode)
 			{
-				case Keys.F2:
+			case Keys.F2:
 				{
-					if (mvarEnableAutomaticInlineRenaming)
+					if (EnableAutomaticInlineRenaming)
 					{
 						if (SelectedItems.Count == 1)
 						{
@@ -762,15 +728,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 					break;
 				}
-				case Keys.Home:
+			case Keys.Home:
 				{
-					if (mvarItems.Count == 0) return;
+					if (Items.Count == 0) return;
 
-					foreach (ListViewItem lvi in mvarItems)
+					foreach (ListViewItem lvi in Items)
 					{
 						lvi.Selected = false;
 					}
-					mvarItems[0].Selected = true;
+					Items[0].Selected = true;
 					ScrollOffsetY = 0;
 					ResetBounds();
 
@@ -778,34 +744,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					break;
 				}
-				case Keys.End:
+			case Keys.End:
 				{
-					if (mvarItems.Count == 0) return;
+					if (Items.Count == 0) return;
 
-					foreach (ListViewItem lvi in mvarItems)
+					foreach (ListViewItem lvi in Items)
 					{
 						lvi.Selected = false;
 					}
-					mvarItems[mvarItems.Count - 1].Selected = true;
+					Items[Items.Count - 1].Selected = true;
 					Refresh();
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					break;
 				}
-				case Keys.PageDown:
+			case Keys.PageDown:
 				{
 					Rectangle rect = GetItemBounds();
 					int times = (int)((double)this.Height / (double)rect.Height);
 					int width = (int)((double)this.Width / (double)rect.Width);
 
 					ScrollOffsetY -= times;
-					foreach (ListViewItem lvi in mvarItems)
+					foreach (ListViewItem lvi in Items)
 					{
 						RecursiveSetSelected(lvi, false);
 					}
 
 					int index = -ScrollOffsetY * width;
-					if (index >= mvarItems.Count) index = mvarItems.Count - 1;
-					mvarItems[index].Selected = true;
+					if (index >= Items.Count) index = Items.Count - 1;
+					Items[index].Selected = true;
 
 					if (ScrollOffsetY > 0) ScrollOffsetY = 0;
 					ResetBounds();
@@ -813,14 +779,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					break;
 				}
-				case Keys.PageUp:
+			case Keys.PageUp:
 				{
 					Rectangle rect = GetItemBounds();
 					int times = (int)((double)this.Height / (double)rect.Height);
 					int width = (int)((double)this.Width / (double)rect.Width);
 
 					ScrollOffsetY += times;
-					foreach (ListViewItem item in mvarItems)
+					foreach (ListViewItem item in Items)
 					{
 						item.Selected = false;
 					}
@@ -828,19 +794,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					if (ScrollOffsetY > 0) ScrollOffsetY = 0;
 
 					int index = -ScrollOffsetY * width;
-					if (index > mvarItems.Count - 1)
+					if (index > Items.Count - 1)
 					{
-						index = mvarItems.Count - 1;
+						index = Items.Count - 1;
 						ScrollOffsetY = (index / width) * -1;
 					}
-					mvarItems[index].Selected = true;
+					Items[index].Selected = true;
 
 					ResetBounds();
 					Refresh();
 					OnSelectionChanged(new ListViewItemSelectionChangedEventArgs(null));
 					break;
 				}
-				case Keys.Enter:
+			case Keys.Enter:
 				{
 					if (SelectedItems.Count > 0)
 					{
@@ -848,11 +814,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 					break;
 				}
-				default:
+			default:
 				{
 					if ((e.KeyValue >= (int)'a' && e.KeyValue <= (int)'z') || (e.KeyValue >= (int)'A' && e.KeyValue <= (int)'Z') || (e.KeyValue >= (int)'0' && e.KeyValue <= (int)'9'))
 					{
-						foreach (ListViewItem lvi in mvarItems)
+						foreach (ListViewItem lvi in Items)
 						{
 							if (String.IsNullOrEmpty(lvi.Text)) continue;
 
@@ -976,7 +942,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 		private ListViewColumn ColumnHitTest(Point pt)
 		{
-			if (pt.Y > mvarColumnHeaderHeight) return null;
+			if (pt.Y > ColumnHeaderHeight) return null;
 
 			int x = 0;
 			foreach (ListViewColumn lvc in mvarColumns)
@@ -1012,16 +978,16 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			if (ShouldShowColumns())
 			{
-				Rectangle daaaRect = new Rectangle(0, 0, base.Width, mvarColumnHeaderHeight);
+				Rectangle daaaRect = new Rectangle(0, 0, base.Width, ColumnHeaderHeight);
 				Theming.Theme.CurrentTheme.DrawListColumnBackground(e.Graphics, daaaRect, UserInterface.Theming.ControlState.Normal, false);
 
-				Rectangle columnRect = new Rectangle(0, 0, 0, mvarColumnHeaderHeight);
+				Rectangle columnRect = new Rectangle(0, 0, 0, ColumnHeaderHeight);
 				int x = 0;
 				foreach (ListViewColumn col in mvarColumns)
 				{
 					RenderColumn(e.Graphics, col, ref columnRect);
 
-					if (mvarShowGridLines && mvarMode == ListViewMode.Details)
+					if (ShowGridLines && mvarMode == ListViewMode.Details)
 					{
 						// draw grid lines for the column
 						e.Graphics.DrawLine(DrawingTools.Pens.ControlPen, x, 0, x, base.Height);
@@ -1031,8 +997,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				if (m_DraggingColumn != null) RenderColumn(e.Graphics, m_DraggingColumn, ref columnRect);
 			}
 
-			List<ListViewItem> items = mvarItems.ToList<ListViewItem>();
-			if (mvarSortColumn != null)
+			List<ListViewItem> items = Items.ToList<ListViewItem>();
+			if (SortColumn != null)
 			{
 				items.Sort(new Comparison<ListViewItem>(listViewItemSorter_Sort));
 				ResetBounds();
@@ -1060,7 +1026,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				RenderItem(e.Graphics, lvi, 0, ref lastItemRectBottom);
 			}
 
-			if (mvarShowGridLines && mvarMode == ListViewMode.Details)
+			if (ShowGridLines && mvarMode == ListViewMode.Details)
 			{
 				// draw grid lines for other items
 				for (int i = lastItemRectBottom; i < base.Height; i += mvarDefaultItemHeight)
@@ -1099,10 +1065,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			switch (mvarMode)
 			{
-				case ListViewMode.ExtraLargeIcons:
-				case ListViewMode.LargeIcons:
-				case ListViewMode.MediumIcons:
-				case ListViewMode.SmallIcons:
+			case ListViewMode.ExtraLargeIcons:
+			case ListViewMode.LargeIcons:
+			case ListViewMode.MediumIcons:
+			case ListViewMode.SmallIcons:
 				{
 					if (sz.Width > itemRect.Width)
 					{
@@ -1131,14 +1097,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			switch (mvarMode)
 			{
-				case ListViewMode.SmallIcons:
-				case ListViewMode.Details:
-				case ListViewMode.List:
+			case ListViewMode.SmallIcons:
+			case ListViewMode.Details:
+			case ListViewMode.List:
 				{
-					if (mvarSmallImageList != null)
+					if (SmallImageList != null)
 					{
-						iconRect.Width = mvarSmallImageList.ImageSize.Width;
-						iconRect.Height = mvarSmallImageList.ImageSize.Height;
+						iconRect.Width = SmallImageList.ImageSize.Width;
+						iconRect.Height = SmallImageList.ImageSize.Height;
 					}
 					else
 					{
@@ -1147,7 +1113,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 
 					textRect = new Rectangle(itemRect.X + 6, itemRect.Y + 4, itemRect.Width - 6, itemRect.Height - 6);
-					if ((item.ImageIndex > -1 || item.ImageKey != null) && mvarSmallImageList != null)
+					if ((item.ImageIndex > -1 || item.ImageKey != null) && SmallImageList != null)
 					{
 						if (mvarMode == ListViewMode.SmallIcons)
 						{
@@ -1158,9 +1124,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter;
 					break;
 				}
-				case ListViewMode.ExtraLargeIcons:
-				case ListViewMode.LargeIcons:
-				case ListViewMode.MediumIcons:
+			case ListViewMode.ExtraLargeIcons:
+			case ListViewMode.LargeIcons:
+			case ListViewMode.MediumIcons:
 				{
 					if (sz.Width > itemRect.Width)
 					{
@@ -1178,7 +1144,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 					break;
 				}
-				case ListViewMode.Tiles:
+			case ListViewMode.Tiles:
 				{
 					iconRect = new Rectangle(itemRect.X + 2, itemRect.Y + 2, 48, 48);
 					textRect = new Rectangle(itemRect.X + 54, itemRect.Y + 2, itemRect.Width - 57, 15);
@@ -1313,7 +1279,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				#endregion
 			}
 
-			if (mvarShowGridLines && mvarMode == ListViewMode.Details)
+			if (ShowGridLines && mvarMode == ListViewMode.Details)
 			{
 				// draw the grid line below this item
 				g.DrawLine(new Pen(Color.FromKnownColor(KnownColor.Control)), 0, itemRect.Bottom + 1, base.Width - 1, itemRect.Bottom + 1);
@@ -1335,21 +1301,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			{
 				switch (mvarMode)
 				{
-					case ListViewMode.Details:
-					case ListViewMode.List:
-					case ListViewMode.SmallIcons:
+				case ListViewMode.Details:
+				case ListViewMode.List:
+				case ListViewMode.SmallIcons:
 					{
-						primaryImageList = mvarSmallImageList;
-						secondaryImageList = mvarLargeImageList;
+						primaryImageList = SmallImageList;
+						secondaryImageList = LargeImageList;
 						break;
 					}
-					case ListViewMode.ExtraLargeIcons:
-					case ListViewMode.LargeIcons:
-					case ListViewMode.MediumIcons:
-					case ListViewMode.Tiles:
+				case ListViewMode.ExtraLargeIcons:
+				case ListViewMode.LargeIcons:
+				case ListViewMode.MediumIcons:
+				case ListViewMode.Tiles:
 					{
-						primaryImageList = mvarLargeImageList;
-						secondaryImageList = mvarSmallImageList;
+						primaryImageList = LargeImageList;
+						secondaryImageList = SmallImageList;
 						break;
 					}
 				}
@@ -1374,7 +1340,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 				state = UserInterface.Theming.ControlState.Hover;
 			}
 
-			Theming.Theme.CurrentTheme.DrawListColumnBackground(g, rect, state, col == mvarSortColumn);
+			Theming.Theme.CurrentTheme.DrawListColumnBackground(g, rect, state, col == SortColumn);
 			Font font = base.Font;
 			Color foreColor = ForeColor;
 
@@ -1383,22 +1349,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			textRect.X += 2;
 
 			Size sz = TextRenderer.MeasureText(col.Text, font);
-			sz.Height = mvarColumnHeaderHeight;
+			sz.Height = ColumnHeaderHeight;
 			textRect.Size = sz;
 
 			switch (state)
 			{
-				case UserInterface.Theming.ControlState.Normal:
+			case UserInterface.Theming.ControlState.Normal:
 				{
 					foreColor = Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderForegroundNormal;
 					break;
 				}
-				case UserInterface.Theming.ControlState.Hover:
+			case UserInterface.Theming.ControlState.Hover:
 				{
 					foreColor = Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderForegroundHover;
 					break;
 				}
-				case UserInterface.Theming.ControlState.Pressed:
+			case UserInterface.Theming.ControlState.Pressed:
 				{
 					foreColor = Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderForegroundSelected;
 					break;
@@ -1407,18 +1373,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			TextRenderer.DrawText(g, col.Text, font, textRect, foreColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
 
-			if (col == mvarSortColumn)
+			if (col == SortColumn)
 			{
 				switch (mvarSortDirection)
 				{
-					case ListSortDirection.Ascending:
+				case ListSortDirection.Ascending:
 					{
-						DrawingTools.DrawArrow(g, Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderArrowNormal, DrawingTools.Direction.Up, textRect.Right + 4, (mvarColumnHeaderHeight / 2) - 2, 4);
+						DrawingTools.DrawArrow(g, Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderArrowNormal, DrawingTools.Direction.Up, textRect.Right + 4, (ColumnHeaderHeight / 2) - 2, 4);
 						break;
 					}
-					case ListSortDirection.Descending:
+				case ListSortDirection.Descending:
 					{
-						DrawingTools.DrawArrow(g, Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderArrowNormal, DrawingTools.Direction.Down, textRect.Right + 4, (mvarColumnHeaderHeight / 2) - 2, 4);
+						DrawingTools.DrawArrow(g, Theming.Theme.CurrentTheme.ColorTable.ListViewColumnHeaderArrowNormal, DrawingTools.Direction.Down, textRect.Right + 4, (ColumnHeaderHeight / 2) - 2, 4);
 						break;
 					}
 				}
@@ -1487,8 +1453,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			Point ptOffset = new Point(15, 6);
 			switch (mvarMode)
 			{
-				case ListViewMode.List:
-				case ListViewMode.Details:
+			case ListViewMode.List:
+			case ListViewMode.Details:
 				{
 					ptOffset = new Point(4, 2);
 					break;
@@ -1497,7 +1463,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			if (ShouldShowColumns())
 			{
-				ptOffset.Y += mvarColumnHeaderHeight;
+				ptOffset.Y += ColumnHeaderHeight;
 			}
 
 			Size szExtraLargeIcons = new Size(271, 276);
@@ -1509,44 +1475,44 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			Rectangle bounds = new Rectangle(ptOffset, szTiles);
 			switch (mvarMode)
 			{
-				case ListViewMode.ExtraLargeIcons:
+			case ListViewMode.ExtraLargeIcons:
 				{
 					bounds.Size = szExtraLargeIcons;
 					break;
 				}
-				case ListViewMode.LargeIcons:
+			case ListViewMode.LargeIcons:
 				{
 					bounds.Size = szLargeIcons;
 					break;
 				}
-				case ListViewMode.MediumIcons:
+			case ListViewMode.MediumIcons:
 				{
 					bounds.Size = szMediumIcons;
 					break;
 				}
-				case ListViewMode.SmallIcons:
+			case ListViewMode.SmallIcons:
 				{
 					bounds.Size = szSmallIcons;
 					break;
 				}
-				case ListViewMode.Tiles:
+			case ListViewMode.Tiles:
 				{
 					bounds.Size = szTiles;
 					break;
 				}
-				case ListViewMode.Details:
+			case ListViewMode.Details:
 				{
 					bounds.Height = szSmallIcons.Height;
-					if (mvarFullRowSelect)
+					if (FullRowSelect)
 					{
 						bounds.Width = base.Width - 8;
 					}
 					break;
 				}
-				case ListViewMode.List:
+			case ListViewMode.List:
 				{
 					bounds.Height = szSmallIcons.Height;
-					if (mvarFullRowSelect)
+					if (FullRowSelect)
 					{
 						bounds.Width = base.Width - 8;
 					}
@@ -1603,8 +1569,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 			itemBounds.Clear();
 			Rectangle bounds = GetItemBounds();
 
-			List<ListViewItem> items = mvarItems.ToList<ListViewItem>();
-			if (mvarSortColumn != null)
+			List<ListViewItem> items = Items.ToList<ListViewItem>();
+			if (SortColumn != null)
 			{
 				items.Sort(new Comparison<ListViewItem>(listViewItemSorter_Sort));
 			}
@@ -1637,11 +1603,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			switch (mvarMode)
 			{
-				case ListViewMode.ExtraLargeIcons:
-				case ListViewMode.LargeIcons:
-				case ListViewMode.MediumIcons:
-				case ListViewMode.SmallIcons:
-				case ListViewMode.Tiles:
+			case ListViewMode.ExtraLargeIcons:
+			case ListViewMode.LargeIcons:
+			case ListViewMode.MediumIcons:
+			case ListViewMode.SmallIcons:
+			case ListViewMode.Tiles:
 				{
 					if (lvi.Text != null)
 					{
@@ -1654,7 +1620,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 							}
 						}
 					}
-					
+
 					int offsetX = 0;
 					if (vsc.Visible) offsetX += vsc.Width;
 					int offsetY = 0;
@@ -1667,14 +1633,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 					}
 					break;
 				}
-				case ListViewMode.List:
+			case ListViewMode.List:
 				{
-					if (!mvarFullRowSelect)
+					if (!FullRowSelect)
 					{
 						bounds.Width = sz.Width + 6;
-						if ((lvi.ImageIndex > -1 || lvi.ImageKey != null) && mvarSmallImageList != null)
+						if ((lvi.ImageIndex > -1 || lvi.ImageKey != null) && SmallImageList != null)
 						{
-							bounds.Width += mvarSmallImageList.ImageSize.Width;
+							bounds.Width += SmallImageList.ImageSize.Width;
 						}
 					}
 					break;
@@ -1692,17 +1658,17 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 
 			switch (mvarMode)
 			{
-				case ListViewMode.ExtraLargeIcons:
-				case ListViewMode.LargeIcons:
-				case ListViewMode.MediumIcons:
-				case ListViewMode.SmallIcons:
-				case ListViewMode.Tiles:
+			case ListViewMode.ExtraLargeIcons:
+			case ListViewMode.LargeIcons:
+			case ListViewMode.MediumIcons:
+			case ListViewMode.SmallIcons:
+			case ListViewMode.Tiles:
 				{
 					bounds.X += bounds.Width + 2;
 					break;
 				}
-				case ListViewMode.Details:
-				case ListViewMode.List:
+			case ListViewMode.Details:
+			case ListViewMode.List:
 				{
 					bounds.Y += bounds.Height;
 					break;
@@ -1740,13 +1706,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		}
 
 		private Color mvarShadeColor = Color.FromKnownColor(KnownColor.WhiteSmoke);
-		
+
 		private int listViewItemSorter_Sort(ListViewItem lvi1, ListViewItem lvi2)
 		{
 			int cmp = 0;
-			if (mvarSortColumn != null)
+			if (SortColumn != null)
 			{
-				int index = mvarColumns.IndexOf(mvarSortColumn) - 1;
+				int index = mvarColumns.IndexOf(SortColumn) - 1;
 				if (index > -1)
 				{
 					if (index < lvi1.Details.Count && index < lvi2.Details.Count)
@@ -1808,7 +1774,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		public void Clear()
 		{
 			mvarColumns.Clear();
-			mvarItems.Clear();
+			Items.Clear();
 		}
 
 
@@ -1816,7 +1782,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Cus
 		{
 			int index = mvarColumns.IndexOf(lvc) - 1;
 			int width = 4;
-			foreach (ListViewItem lvi1 in mvarItems)
+			foreach (ListViewItem lvi1 in Items)
 			{
 				Font font = lvi1.Font;
 				if (font == null) font = Font;

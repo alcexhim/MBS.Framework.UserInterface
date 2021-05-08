@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,10 +21,10 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 					return null;
 				}
 			}
-            public bool Contains(string name)
-            {
-                return (this[name] != null);
-            }
+			public bool Contains(string name)
+			{
+				return (this[name] != null);
+			}
 		}
 
 		private Guid mvarID = Guid.Empty;
@@ -32,7 +32,7 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 
 		private string mvarName = String.Empty;
 		public string Name { get { return mvarName; } set { mvarName = value; } }
-		
+
 		private String mvarValue = String.Empty;
 		public string Value { get { return mvarValue; } set { mvarValue = value; } }
 

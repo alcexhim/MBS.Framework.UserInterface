@@ -1,4 +1,4 @@
-﻿//
+//
 //  ComboBoxImplementation.cs
 //
 //  Author:
@@ -68,7 +68,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					return cbo.SelectedItem.RowColumns[0].Value?.ToString();
 				}
 			}
-			else 
+			else
 			*/
 			if (!cbo.ReadOnly)
 			{
@@ -186,4 +186,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 	}
 }
-

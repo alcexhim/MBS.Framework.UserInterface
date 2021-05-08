@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -40,7 +40,7 @@ namespace MonoDevelop.Components.Docking
 		uint anim;
 		int rx, ry, rw, rh;
 		bool allowDocking;
-		
+
 		public bool AllowDocking {
 			get {
 				return allowDocking;
@@ -49,16 +49,16 @@ namespace MonoDevelop.Components.Docking
 				allowDocking = value;
 			}
 		}
-		
+
 		public PlaceholderWindow (DockFrame frame): base (Gtk.WindowType.Popup)
 		{
 			SkipTaskbarHint = true;
 			Decorated = false;
 			TransientFor = (Gtk.Window) frame.Toplevel;
 			TypeHint = WindowTypeHint.Utility;
-			
+
 			// Create the mask for the arrow
-			
+
 			Realize ();
 			redgc = new Gdk.GC (GdkWindow);
 	   		redgc.RgbFgColor = frame.Style.Background (StateType.Selected);
@@ -78,7 +78,7 @@ namespace MonoDevelop.Components.Docking
 			base.OnRealized ();
 			GdkWindow.Opacity = 0.6;
 		}
-		
+
 		void CreateShape (int width, int height)
 		{
 			Gdk.Color black, white;
@@ -100,14 +100,14 @@ namespace MonoDevelop.Components.Docking
 				this.ShapeCombineMask (pm, 0, 0);
 			}
 		}
-		
+
 		protected override void OnSizeAllocated (Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
 			CreateShape (allocation.Width, allocation.Height);
 		}
 
-		
+
 		protected override bool OnExposeEvent (Gdk.EventExpose args)
 		{
 			//base.OnExposeEvent (args);
@@ -117,7 +117,7 @@ namespace MonoDevelop.Components.Docking
 			this.GdkWindow.DrawRectangle (redgc, false, 1, 1, w-3, h-3);
 	  		return true;
 		}
-		
+
 		public void Relocate (int x, int y, int w, int h, bool animate)
 		{
 			Gdk.Rectangle geometry = GtkWorkarounds.GetUsableMonitorGeometry (Screen, Screen.GetMonitorAtPoint (x, y));
@@ -135,7 +135,7 @@ namespace MonoDevelop.Components.Docking
 				Move (x, y);
 
 				rx = x; ry = y; rw = w; rh = h;
-				
+
 				if (anim != 0) {
 					GLib.Source.Remove (anim);
 					anim = 0;
@@ -148,13 +148,13 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		bool RunAnimation ()
 		{
 			int cx, cy, ch, cw;
 			GetSize (out cw, out ch);
 			GetPosition	(out cx, out cy);
-			
+
 			if (cx != rx) {
 				cx++; cy++;
 				ch-=2; cw-=2;

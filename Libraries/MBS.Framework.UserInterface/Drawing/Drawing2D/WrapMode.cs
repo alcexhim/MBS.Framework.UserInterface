@@ -1,4 +1,4 @@
-﻿//
+//
 //  WrapMode.cs
 //
 //  Author:

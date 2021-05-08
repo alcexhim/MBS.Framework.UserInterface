@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkStatusBar.cs
 //
 //  Author:

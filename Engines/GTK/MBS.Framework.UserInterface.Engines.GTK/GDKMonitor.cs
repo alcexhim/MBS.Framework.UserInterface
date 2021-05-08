@@ -1,4 +1,4 @@
-﻿//
+//
 //  GDKMonitor.cs
 //
 //  Author:

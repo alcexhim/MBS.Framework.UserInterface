@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkEditable.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_editable_set_editable(IntPtr /*GtkEntry*/ entry, bool value);
 	}
 }
-

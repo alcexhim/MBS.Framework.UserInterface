@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTreeStore.cs
 //
 //  Author:
@@ -46,4 +46,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tree_store_set_value(IntPtr hTreeStore, ref Structures.GtkTreeIter hIter, int columnIndex, ref GLib.Structures.Value val);
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace MBS.Framework.UserInterface.Controls
 {
 	namespace Native
@@ -31,7 +31,7 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			Changed?.Invoke(this, e);
 		}
-		
+
 		private double _Minimum = 0.0;
 		public double Minimum
 		{

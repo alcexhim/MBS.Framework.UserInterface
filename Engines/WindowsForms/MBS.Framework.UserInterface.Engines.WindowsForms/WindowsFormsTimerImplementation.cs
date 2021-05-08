@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsTimerImplementation.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkStackSidebar.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_stack_sidebar_set_stack(IntPtr /*GtkStackSidebar*/ sidebar, IntPtr /*GtkStack*/ stack);
 	}
 }
-

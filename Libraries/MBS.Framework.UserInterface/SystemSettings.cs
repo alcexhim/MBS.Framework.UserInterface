@@ -1,4 +1,4 @@
-﻿//
+//
 //  SystemSettings.cs
 //
 //  Author:

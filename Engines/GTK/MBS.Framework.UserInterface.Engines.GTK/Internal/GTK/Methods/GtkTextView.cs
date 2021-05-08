@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTextView.cs
 //
 //  Author:
@@ -45,4 +45,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_text_view_get_iter_location(IntPtr handle, ref Structures.GtkTextIter iter, ref GDK.Structures.GdkRectangle rect);
 	}
 }
-

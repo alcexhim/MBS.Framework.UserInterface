@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkCellRendererCombo.cs
 //
 //  Author:

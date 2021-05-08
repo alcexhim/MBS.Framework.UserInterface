@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTreeViewColumn.cs
 //
 //  Author:

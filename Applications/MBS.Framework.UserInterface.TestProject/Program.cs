@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace MBS.Framework.UserInterface.TestProject
 
 			Theming.ThemeManager.CurrentTheme = Theming.ThemeManager.GetByID(new Guid("{4D86F538-E277-4E6F-9CAC-60F82D49A19D}"));
 
-            Application.ConfigurationFileNameFilter = "*.uwtxml";
+			Application.ConfigurationFileNameFilter = "*.uwtxml";
 			Application.Activated += Application_Activated;
 			int nExitCode = Application.Start();
 		}

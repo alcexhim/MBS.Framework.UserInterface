@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsCommandLine.cs
 //
 //  Author:

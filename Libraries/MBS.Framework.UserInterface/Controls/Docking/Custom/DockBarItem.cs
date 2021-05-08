@@ -1,4 +1,4 @@
-﻿//
+//
 // DockBarItem.cs
 //
 // Author:
@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -41,7 +41,7 @@ using MonoDevelop.Ide.Fonts;
 using MonoDevelop.Ide;
 
 namespace MonoDevelop.Components.Docking
-{	
+{
 	class CrossfadeIcon: UniversalWidgetToolkit.Drawing.Image, IAnimatable
 	{
 		// This class should be subclassed from Gtk.Misc, but there is no reasonable way to do that due to there being no bindings to gtk_widget_set_has_window
@@ -155,7 +155,7 @@ namespace MonoDevelop.Components.Docking
 
 				if (crossfade == null)
 					return;
-	
+
 				AnimateHover (tracker.Hovered);
 				if (tracker.Hovered)
 					crossfade.ShowSecondary ();
@@ -180,7 +180,7 @@ namespace MonoDevelop.Components.Docking
 			              hovered ? 1.0f : 0.0f,
 			              length: 100);
 		}
-		
+
 		void HandleBarFrameSizeAllocated (object o, SizeAllocatedArgs args)
 		{
 			if (!lastFrameSize.Equals (args.Allocation.Size)) {
@@ -192,7 +192,7 @@ namespace MonoDevelop.Components.Docking
 				AutoHide (false);
 			}
 		}
-		
+
 		protected override void OnDestroyed ()
 		{
 			this.AbortAnimation ("Hover");
@@ -200,8 +200,8 @@ namespace MonoDevelop.Components.Docking
 			bar.Frame.SizeAllocated -= HandleBarFrameSizeAllocated;
 			Ide.Gui.Styles.Changed -= UpdateStyle;
 		}
-		
-		
+
+
 		public void Close ()
 		{
 			UnscheduleAutoShow ();
@@ -215,7 +215,7 @@ namespace MonoDevelop.Components.Docking
 			get { return size; }
 			set { size = value; }
 		}
-		
+
 		public void UpdateTab ()
 		{
 			if (Child != null) {
@@ -223,7 +223,7 @@ namespace MonoDevelop.Components.Docking
 				Remove (w);
 				w.Destroy ();
 			}
-			
+
 			mainBox = new Alignment (0,0,1,1);
 			mainBox.Accessible.SetShouldIgnore (true);
 			if (bar.Orientation == Gtk.Orientation.Horizontal) {
@@ -249,7 +249,7 @@ namespace MonoDevelop.Components.Docking
 				box.PackStart (crossfade, false, false, 0);
 				desat.Dispose ();
 			}
-				
+
 			if (!string.IsNullOrEmpty (it.Label)) {
 				label = new Label (it.Label);
 				label.Accessible.SetShouldIgnore (true);
@@ -283,7 +283,7 @@ namespace MonoDevelop.Components.Docking
 			mainBox.Add (box);
 			mainBox.ShowAll ();
 			Add (mainBox);
-			UpdateStyle (this, null); 
+			UpdateStyle (this, null);
 			QueueDraw ();
 		}
 
@@ -292,7 +292,7 @@ namespace MonoDevelop.Components.Docking
 			if (label != null)
 				label.ModifyFg (StateType.Normal, Styles.DockBarLabelColor.ToGdkColor ());
 		}
-		
+
 		public MonoDevelop.Components.Docking.DockItem DockItem {
 			get {
 				return it;
@@ -344,7 +344,7 @@ namespace MonoDevelop.Components.Docking
 				QueueDraw ();
 			}
 		}
-		
+
 		void AutoHide (bool animate)
 		{
 			UnscheduleAutoShow ();
@@ -362,7 +362,7 @@ namespace MonoDevelop.Components.Docking
 				QueueDraw ();
 			}
 		}
-		
+
 		void ScheduleAutoShow ()
 		{
 			UnscheduleAutoHide ();
@@ -374,12 +374,12 @@ namespace MonoDevelop.Components.Docking
 				});
 			}
 		}
-		
+
 		void ScheduleAutoHide (bool cancelAutoShow)
 		{
 			ScheduleAutoHide (cancelAutoShow, false);
 		}
-		
+
 		void ScheduleAutoHide (bool cancelAutoShow, bool force)
 		{
 			if (cancelAutoShow)
@@ -411,7 +411,7 @@ namespace MonoDevelop.Components.Docking
 				});
 			}
 		}
-		
+
 		void UnscheduleAutoShow ()
 		{
 			if (autoShowTimeout != uint.MaxValue) {
@@ -419,7 +419,7 @@ namespace MonoDevelop.Components.Docking
 				autoShowTimeout = uint.MaxValue;
 			}
 		}
-		
+
 		void UnscheduleAutoHide ()
 		{
 			if (autoHideTimeout != uint.MaxValue) {
@@ -427,7 +427,7 @@ namespace MonoDevelop.Components.Docking
 				autoHideTimeout = uint.MaxValue;
 			}
 		}
-		
+
 		protected override bool OnEnterNotifyEvent (Gdk.EventCrossing evnt)
 		{
 			if (bar.HoverActivationEnabled && autoShowFrame == null) {
@@ -445,7 +445,7 @@ namespace MonoDevelop.Components.Docking
 				AutoHide (false);
 			}
 		}
-		
+
 		protected override bool OnLeaveNotifyEvent (Gdk.EventCrossing evnt)
 		{
 			ScheduleAutoHide (true);
@@ -454,7 +454,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return base.OnLeaveNotifyEvent (evnt);
 		}
-		
+
 		void OnFrameEnter (object s, Gtk.EnterNotifyEventArgs args)
 		{
 			AutoShow ();
@@ -465,7 +465,7 @@ namespace MonoDevelop.Components.Docking
 			if (args.Event.Key == Gdk.Key.Escape)
 				ScheduleAutoHide (true, true);
 		}
-		
+
 		void OnFrameLeave (object s, Gtk.LeaveNotifyEventArgs args)
 		{
 			if (args.Event.Detail != Gdk.NotifyType.Inferior)

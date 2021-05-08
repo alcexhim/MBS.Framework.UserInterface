@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,7 +56,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		public TextureBrush(Image image, RectangleF dstRect, ImageAttributes imageAttr)
 		{
 		}
-			
+
 		public override object Clone()
 		{
 			throw null;

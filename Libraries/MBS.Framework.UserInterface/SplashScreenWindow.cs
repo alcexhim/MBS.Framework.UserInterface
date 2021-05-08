@@ -1,10 +1,10 @@
-﻿//
+//
 //  SplashScreenWindow.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace MBS.Framework.UserInterface
 			this.CommandDisplayMode = CommandDisplayMode.None;
 			this.MenuBar.Visible = false;
 			this.StatusBar.Visible = false;
-			
+
 			ImageView image = new ImageView();
 			string imageFileName = MBS.Framework.IO.File.Find("splash.bmp");
 			if (imageFileName != null)
@@ -50,10 +50,10 @@ namespace MBS.Framework.UserInterface
 				image.Image = Image.FromName("universal-editor", 300);
 				this.Size = new Dimension2D(300, 300);
 			}
-			
+
 			Label lbl = new Label("Universal Editor");
 			lbl.Attributes.Add("scale", 1.4);
-			
+
 			this.Controls.Add(image, new BoxLayout.Constraints(true, true));
 			// this.Controls.Add(lbl, new BoxLayout.Constraints(true, true));
 
@@ -90,7 +90,7 @@ created = true;
 			pb.Text = message;
 		}
 
-		
+
 	}
 	public class SplashScreenSettings
 	{

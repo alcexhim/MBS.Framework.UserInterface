@@ -1,4 +1,4 @@
-﻿//
+//
 //  Delegates.cs
 //
 //  Author:
@@ -27,4 +27,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		public delegate void GdlMoveFocusChildCallback(IntPtr hDockItem, Internal.GTK.Constants.GtkDirectionType dir, IntPtr user_data);
 	}
 }
-

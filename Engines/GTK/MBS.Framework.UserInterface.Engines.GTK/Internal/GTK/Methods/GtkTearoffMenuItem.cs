@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTearoffMenuItem.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkTearoffMenuItem*/ gtk_tearoff_menu_item_new();
 	}
 }
-

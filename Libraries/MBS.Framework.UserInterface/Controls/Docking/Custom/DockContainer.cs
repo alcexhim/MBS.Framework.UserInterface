@@ -14,10 +14,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -44,7 +44,7 @@ namespace MonoDevelop.Components.Docking
 	{
 		DockLayout layout;
 		DockFrame frame;
-		
+
 		List<TabStrip> notebooks = new List<TabStrip> ();
 		List<DockItem> items = new List<DockItem> ();
 
@@ -54,13 +54,13 @@ namespace MonoDevelop.Components.Docking
 
 		volatile PlaceholderWindow placeholderWindow;
 		volatile PadTitleWindow padTitleWindow;
-		
+
 		public DockContainer (DockFrame frame)
 		{
 			GtkWorkarounds.FixContainerLeak (this);
 
 			Accessible.SetRole (AtkCocoa.Roles.AXSplitGroup);
-			
+
 			this.Events = EventMask.ButtonPressMask | EventMask.ButtonReleaseMask | EventMask.PointerMotionMask | EventMask.LeaveNotifyMask;
 			this.frame = frame;
 		}
@@ -72,7 +72,7 @@ namespace MonoDevelop.Components.Docking
 			else
 				return layout.FindDockGroupItem (id);
 		}
-		
+
 		public List<DockItem> Items {
 			get { return items; }
 		}
@@ -109,7 +109,7 @@ namespace MonoDevelop.Components.Docking
 				layout.StoreAllocation ();
 			layout = dl;
 			layout.RestoreAllocation ();
-			
+
 			// Make sure items not present in this layout are hidden
 			foreach (DockItem it in items) {
 				if ((it.Behavior & DockItemBehavior.Sticky) != 0)
@@ -117,7 +117,7 @@ namespace MonoDevelop.Components.Docking
 				if (layout.FindDockGroupItem (it.Id) == null)
 					it.HideWidget ();
 			}
-			
+
 			RelayoutWidgets ();
 
 			foreach (DockItem it in sickyOnTop)
@@ -125,13 +125,13 @@ namespace MonoDevelop.Components.Docking
 
 			IsSwitchingLayout = false;
 		}
-		
+
 		public void StoreAllocation ()
 		{
 			if (layout != null)
 				layout.StoreAllocation ();
 		}
-		
+
 		protected override void OnSizeRequested (ref Requisition req)
 		{
 			if (layout != null) {
@@ -139,16 +139,16 @@ namespace MonoDevelop.Components.Docking
 				req = layout.SizeRequest ();
 			}
 		}
-		
+
 		protected override void OnSizeAllocated (Gdk.Rectangle rect)
 		{
 			base.OnSizeAllocated (rect);
 			if (layout == null)
 				return;
-			
+
 			if (this.GdkWindow != null)
 				this.GdkWindow.MoveResize (rect);
-			
+
 			// This container has its own window, so allocation of children
 			// is relative to 0,0
 			rect.X = rect.Y = 0;
@@ -176,7 +176,7 @@ namespace MonoDevelop.Components.Docking
 			s.SizeAllocate (a);
 			s.Init (grp, index);
 		}
-		
+
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)
 		{
 			foreach (Widget w in notebooks)
@@ -192,11 +192,11 @@ namespace MonoDevelop.Components.Docking
 				if (s.Parent != null)
 					callback (s);
 		}
-		
+
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			bool res = base.OnExposeEvent (evnt);
-			
+
 			if (layout != null) {
 				layout.Draw (evnt.Area, null, 0);
 			}
@@ -241,18 +241,18 @@ namespace MonoDevelop.Components.Docking
 				item.SetRegionStyle (frame.GetRegionStyleForItem (item));
 			RelayoutWidgets ();
 		}
-		
+
 		void LayoutWidgets ()
 		{
 			if (!needsRelayout)
 				return;
 			needsRelayout = false;
-			
+
 			// Create the needed notebooks and place the widgets in there
-			
+
 			List<DockGroup> tabbedGroups = new List<DockGroup> ();
 			GetTabbedGroups (layout, tabbedGroups);
-			
+
 			for (int n=0; n<tabbedGroups.Count; n++) {
 				DockGroup grp = tabbedGroups [n];
 				TabStrip ts;
@@ -271,7 +271,7 @@ namespace MonoDevelop.Components.Docking
 				ts.VisualStyle = grp.VisualStyle;
 				grp.UpdateNotebook (ts);
 			}
-			
+
 			// Remove spare tab strips
 			for (int n = notebooks.Count - 1; n >= tabbedGroups.Count; n--) {
 				TabStrip ts = notebooks [n];
@@ -297,7 +297,7 @@ namespace MonoDevelop.Components.Docking
 				splitters[n].Hide ();
 
 			// Add widgets to the container
-			
+
 			layout.LayoutWidgets ();
 
 			// Create and add the required splitters
@@ -348,11 +348,11 @@ namespace MonoDevelop.Components.Docking
 				return num;
 			}
 		}
-		
+
 		protected override void OnRealized ()
 		{
 			WidgetFlags |= WidgetFlags.Realized;
-			
+
 			Gdk.WindowAttr attributes = new Gdk.WindowAttr ();
 			attributes.X = Allocation.X;
 			attributes.Y = Allocation.Y;
@@ -367,7 +367,7 @@ namespace MonoDevelop.Components.Docking
 				Gdk.EventMask.Button1MotionMask |
 				Gdk.EventMask.ButtonPressMask |
 				Gdk.EventMask.ButtonReleaseMask);
-		
+
 			Gdk.WindowAttributesType attributes_mask =
 				Gdk.WindowAttributesType.X |
 				Gdk.WindowAttributesType.Y |
@@ -379,12 +379,12 @@ namespace MonoDevelop.Components.Docking
 			Style = Style.Attach (GdkWindow);
 			Style.SetBackground (GdkWindow, State);
 			this.WidgetFlags &= ~WidgetFlags.NoWindow;
-			
+
 			//GdkWindow.SetBackPixmap (null, true);
 
 			ModifyBase (StateType.Normal, Styles.DockFrameBackground.ToGdkColor ());
 		}
-		
+
 		protected override void OnUnrealized ()
 		{
 			if (this.GdkWindow != null) {
@@ -394,13 +394,13 @@ namespace MonoDevelop.Components.Docking
 			}
 			base.OnUnrealized ();
 		}
-		
+
 		internal void ShowPlaceholder (DockItem draggedItem)
 		{
 			padTitleWindow = new PadTitleWindow (frame, draggedItem);
 			placeholderWindow = new PlaceholderWindow (frame);
 		}
-		
+
 		internal bool UpdatePlaceholder (DockItem item, Gdk.Size size, bool allowDocking)
 		{
 			try {
@@ -452,12 +452,12 @@ namespace MonoDevelop.Components.Docking
 
 			return false;
 		}
-		
+
 		internal void DockInPlaceholder (DockItem item)
 		{
 			if (placeholderWindow == null || !placeholderWindow.Visible)
 				return;
-			
+
 			if (placeholderWindow.AllowDocking && placeholderWindow.DockDelegate != null) {
 				item.Status = DockItemStatus.Dockable;
 				DockGroupItem dummyItem = new DockGroupItem (frame, new DockItem (frame, "__dummy"));
@@ -477,7 +477,7 @@ namespace MonoDevelop.Components.Docking
 				item.Status = DockItemStatus.Floating;
 			}
 		}
-		
+
 		internal void HidePlaceholder ()
 		{
 			if (placeholderWindow != null) {
@@ -489,7 +489,7 @@ namespace MonoDevelop.Components.Docking
 				padTitleWindow = null;
 			}
 		}
-		
+
 		internal class SplitterWidget: EventBox
 		{
 			static Gdk.Cursor hresizeCursor = new Gdk.Cursor (CursorType.SbHDoubleArrow);
@@ -501,7 +501,7 @@ namespace MonoDevelop.Components.Docking
 
 			DockGroup dockGroup;
 			int dockIndex;
-	
+
 			public SplitterWidget ()
 			{
 				Accessible.SetRole (AtkCocoa.Roles.AXSplitter);
@@ -555,13 +555,13 @@ namespace MonoDevelop.Components.Docking
 				dragSize = (dockGroup.Type == DockGroupType.Horizontal) ? obj.Allocation.Width : obj.Allocation.Height;
 				return base.OnButtonPressEvent (ev);
 			}
-			
+
 			protected override bool OnButtonReleaseEvent (Gdk.EventButton e)
 			{
 				dragging = false;
 				return base.OnButtonReleaseEvent (e);
 			}
-			
+
 			protected override bool OnMotionNotifyEvent (Gdk.EventMotion e)
 			{
 				if (dragging) {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Controls.WebBrowser;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls.WebBrowser

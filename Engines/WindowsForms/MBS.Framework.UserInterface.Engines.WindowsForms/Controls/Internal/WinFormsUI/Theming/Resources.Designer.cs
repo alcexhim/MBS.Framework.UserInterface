@@ -1,4 +1,4 @@
-﻿using MBS.Framework;
+using MBS.Framework;
 using MBS.Framework.UserInterface;
 
 namespace WeifenLuo.WinFormsUI.Theming

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkToggleButton.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_toggle_button_get_active(IntPtr /*GtkToggleButton*/ button);
 	}
 }
-

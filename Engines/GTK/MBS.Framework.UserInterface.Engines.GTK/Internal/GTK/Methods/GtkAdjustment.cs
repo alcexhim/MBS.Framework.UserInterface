@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkAdjustment.cs
 //
 //  Author:
@@ -33,4 +33,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_adjustment_set_value(IntPtr /*GtkAdjustment*/ adjustment, double value);
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeToolStripItem.cs
 //
 //  Author:

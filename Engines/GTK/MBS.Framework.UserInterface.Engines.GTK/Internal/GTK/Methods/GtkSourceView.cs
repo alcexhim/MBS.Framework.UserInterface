@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSourceView.cs
 //
 //  Author:
@@ -44,4 +44,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkWidget*/ gtk_source_view_new_with_buffer(IntPtr /*GtkSourceBuffer*/ buffer);
 	}
 }
-

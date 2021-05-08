@@ -1,4 +1,4 @@
-﻿//
+//
 //  ColorDialog.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -1056,7 +1056,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 							GTKDialogImplementation di = (types[i].Assembly.CreateInstance(types[i].FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, dialog }, System.Globalization.CultureInfo.CurrentCulture, null) as GTKDialogImplementation);
 							GTKNativeControl nc = (di.CreateControl(dialog) as GTKNativeControl);
 
-							// hack: 
+							// hack:
 							// InvokeMethod(dialog, "OnCreated", new object[] { EventArgs.Empty });
 
 							DialogResult result1 = di.Run(parentHandle);
@@ -1697,7 +1697,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 					for (int i = 0; i < e.Rows.Count; i++)
 					{
 						TreeModelRow row = e.Rows[i];
-					
+
 						// as written we currently cannot do this...
 						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
 						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine as GTKEngine).IsTreeModelRowRegistered(e.ParentRow))
@@ -2112,4 +2112,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 	}
 }
-

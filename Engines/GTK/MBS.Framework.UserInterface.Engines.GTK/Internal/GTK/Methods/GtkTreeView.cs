@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTreeView.cs
 //
 //  Author:
@@ -80,4 +80,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern int gtk_tree_view_get_n_columns(IntPtr handle);
 	}
 }
-

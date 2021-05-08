@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MBS.Framework.UserInterface.Controls;
@@ -19,7 +19,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 		// taskdialog icons defined under Vista. All text
 		// on white dialog background
-		// 
+		//
 		/// <summary>
 		/// Exclamation point in a yellow triangle.
 		/// </summary>
@@ -68,34 +68,34 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 			try
 			{
-				WindowsForms.Internal.Windows.Structures.TASKDIALOGCONFIG tdc = new WindowsForms.Internal.Windows.Structures.TASKDIALOGCONFIG();
+				Structures.TASKDIALOGCONFIG tdc = new Structures.TASKDIALOGCONFIG();
 
-				List<WindowsForms.Internal.Windows.Structures.TASKDIALOG_BUTTON> tdb_array = new List<WindowsForms.Internal.Windows.Structures.TASKDIALOG_BUTTON>();
+				List<Structures.TASKDIALOG_BUTTON> tdb_array = new List<Structures.TASKDIALOG_BUTTON>();
 				for (int i = 0; i < dlg.Buttons.Count; i++)
 				{
-					tdb_array.Add(new WindowsForms.Internal.Windows.Structures.TASKDIALOG_BUTTON(dlg.Buttons[i].ResponseValue, dlg.Buttons[i].Text.Replace('_', '&')));
+					tdb_array.Add(new Structures.TASKDIALOG_BUTTON(dlg.Buttons[i].ResponseValue, dlg.Buttons[i].Text.Replace('_', '&')));
 				}
 
-				WindowsForms.Internal.Windows.Constants.TaskDialogFlags flags = WindowsForms.Internal.Windows.Constants.TaskDialogFlags.None;
+				Constants.TaskDialogFlags flags = Constants.TaskDialogFlags.None;
 
 				if (tdb_array.Count > 0)
 				{
 					tdc.cButtons = (uint)tdb_array.Count;
 
-					IntPtr initialPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(WindowsForms.Internal.Windows.Structures.TASKDIALOG_BUTTON)) * tdb_array.Count);
+					IntPtr initialPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Structures.TASKDIALOG_BUTTON)) * tdb_array.Count);
 					IntPtr currentPtr = initialPtr;
 					for (int i = 0; i < tdb_array.Count; i++)
 					{
 						Marshal.StructureToPtr(tdb_array[i], currentPtr, false);
-                        if (IntPtr.Size == 8)
-                        {
-                            currentPtr = (IntPtr)(currentPtr.ToInt64() + Marshal.SizeOf(tdb_array[i]));
-                        }
-                        else
-                        {
-                            currentPtr = (IntPtr)(currentPtr.ToInt32() + Marshal.SizeOf(tdb_array[i]));
-                        }
-                    }
+						if (IntPtr.Size == 8)
+						{
+							currentPtr = (IntPtr)(currentPtr.ToInt64() + Marshal.SizeOf(tdb_array[i]));
+						}
+						else
+						{
+							currentPtr = (IntPtr)(currentPtr.ToInt32() + Marshal.SizeOf(tdb_array[i]));
+						}
+					}
 
 					tdc.pButtons = initialPtr;
 
@@ -109,33 +109,33 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 						}
 						case TaskDialogButtonStyle.Commands:
 						{
-							flags |= WindowsForms.Internal.Windows.Constants.TaskDialogFlags.UseCommandLinks;
+							flags |= Constants.TaskDialogFlags.UseCommandLinks;
 							break;
 						}
 						case TaskDialogButtonStyle.CommandsNoIcon:
 						{
-							flags |= WindowsForms.Internal.Windows.Constants.TaskDialogFlags.UseCommandLinksNoIcon;
+							flags |= Constants.TaskDialogFlags.UseCommandLinksNoIcon;
 							break;
 						}
 					}
 				}
 				if ((int)dlg.ButtonsPreset > (int)TaskDialogButtons.None)
 				{
-					tdc.dwCommonButtons = (WindowsForms.Internal.Windows.Constants.TaskDialogCommonButtonFlags)((int)dlg.ButtonsPreset);
+					tdc.dwCommonButtons = (Constants.TaskDialogCommonButtonFlags)((int)dlg.ButtonsPreset);
 				}
 				else
 				{
-					tdc.dwCommonButtons = WindowsForms.Internal.Windows.Constants.TaskDialogCommonButtonFlags.OK;
+					tdc.dwCommonButtons = Constants.TaskDialogCommonButtonFlags.OK;
 				}
 				if (dlg.EnableHyperlinks)
 				{
-					flags |= WindowsForms.Internal.Windows.Constants.TaskDialogFlags.EnableHyperlinks;
+					flags |= Constants.TaskDialogFlags.EnableHyperlinks;
 				}
 
 				tdc.hMainIcon = new IntPtr((int)dlg.Icon);
 				tdc.dwFlags = flags;
 				tdc.hInstance = IntPtr.Zero;
-                tdc.hwndParent = IntPtr.Zero;
+				tdc.hwndParent = IntPtr.Zero;
 				tdc.pfCallback += Tdc_PfCallback;
 
 				if (parentHandle != null)
@@ -148,20 +148,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 					Console.WriteLine("parentHandle is NULL");
 					tdc.hwndParent = IntPtr.Zero;
 				}
-                tdc.hInstance = WindowsForms.Internal.Windows.Methods.GetWindowLongPtr(tdc.hwndParent, WindowsForms.Internal.Windows.Constants.WindowLong.HInstance);
+				tdc.hInstance = Methods.GetWindowLongPtr(tdc.hwndParent, Constants.WindowLong.HInstance);
 
 				tdc.hMainIcon = new IntPtr((int)dlg.Icon);
 				tdc.pszMainInstruction = Marshal.StringToHGlobalAuto(dlg.Prompt);
 				tdc.pszWindowTitle = Marshal.StringToHGlobalAuto(dlg.Text);
 				tdc.pszContent = Marshal.StringToHGlobalAuto(dlg.Content);
 				tdc.pszVerificationText = Marshal.StringToHGlobalAuto(dlg.VerificationText);
-                // tdc.pszMainInstruction = dlg.Prompt;
-                // tdc.pszWindowTitle = dlg.Text;
-                // tdc.pszContent = dlg.Content;
-                // tdc.pszVerificationText = dlg.VerificationText;
+				// tdc.pszMainInstruction = dlg.Prompt;
+				// tdc.pszWindowTitle = dlg.Text;
+				// tdc.pszContent = dlg.Content;
+				// tdc.pszVerificationText = dlg.VerificationText;
 				// tdc.pszFooter = dlg.Footer;
 
-                tdc.cbSize = (uint)Marshal.SizeOf(tdc);
+				tdc.cbSize = (uint)Marshal.SizeOf(tdc);
 
 				int num = rnd.Next();
 				tdc.lpCallbackData = new IntPtr(num);
@@ -169,21 +169,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 				// retval = Internal.Windows.Methods.TaskDialog((parentHandle?.Handle).GetValueOrDefault(IntPtr.Zero), IntPtr.Zero, dlg.Text, dlg.Prompt, dlg.Content, (int)dlg.ButtonsPreset, new IntPtr((int)dlg.Icon), out pnButton);
 
 				RegisterTaskDialogHandle(dlg, num);
-				uint ptr = WindowsForms.Internal.Windows.Methods.TaskDialogIndirect(ref tdc, out pnButton, out pnRadioButton, out pfVerificationFlagChecked);
+				uint ptr = Methods.TaskDialogIndirect(ref tdc, out pnButton, out pnRadioButton, out pfVerificationFlagChecked);
 				// if (ptr.ToInt64() == 0x80070057)
 				// 	throw new ArgumentException();
-                switch ((WindowsForms.Internal.Windows.Constants.TaskDialogResult)pnButton)
-                {
-                    case WindowsForms.Internal.Windows.Constants.TaskDialogResult.OK: return DialogResult.OK;
-                    case WindowsForms.Internal.Windows.Constants.TaskDialogResult.Cancel: return DialogResult.Cancel;
-                    case WindowsForms.Internal.Windows.Constants.TaskDialogResult.Retry: return DialogResult.Retry;
-                    case WindowsForms.Internal.Windows.Constants.TaskDialogResult.Yes: return DialogResult.Yes;
-                    case WindowsForms.Internal.Windows.Constants.TaskDialogResult.No: return DialogResult.No;
-                    // case 8: return DialogResult.Close;
-                }
+				switch ((Constants.TaskDialogResult)pnButton)
+				{
+					case Constants.TaskDialogResult.OK: return DialogResult.OK;
+					case Constants.TaskDialogResult.Cancel: return DialogResult.Cancel;
+					case Constants.TaskDialogResult.Retry: return DialogResult.Retry;
+					case Constants.TaskDialogResult.Yes: return DialogResult.Yes;
+					case Constants.TaskDialogResult.No: return DialogResult.No;
+					// case 8: return DialogResult.Close;
+				}
 
-                // Console.WriteLine("return value from TaskDialogIndirect: {0}", ptr);
-            }
+				// Console.WriteLine("return value from TaskDialogIndirect: {0}", ptr);
+			}
 			catch (Exception ex) when (ex is DllNotFoundException || ex is EntryPointNotFoundException)
 			{
 				// on pre-Vista systems this falls back nicely to a standard MessageBox

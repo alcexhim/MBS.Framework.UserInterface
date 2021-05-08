@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -19,7 +19,7 @@ using UniversalEditor.ObjectModels.PropertyList;
 
 namespace MBS.Framework.UserInterface
 {
-    public class UIApplication : Application
+	public class UIApplication : Application
 	{
 		public CommandBinding.CommandBindingCollection CommandBindings { get; } = new CommandBinding.CommandBindingCollection();
 
@@ -283,7 +283,7 @@ namespace MBS.Framework.UserInterface
 			OnBeforeConfigurationLoaded(EventArgs.Empty);
 
 			#region Load the XML files
-			string configurationFileNameFilter = ConfigurationFileNameFilter; 
+			string configurationFileNameFilter = ConfigurationFileNameFilter;
 			if (configurationFileNameFilter == null) configurationFileNameFilter = System.Configuration.ConfigurationManager.AppSettings["ApplicationFramework.Configuration.ConfigurationFileNameFilter"];
 			if (configurationFileNameFilter == null) configurationFileNameFilter = "*.xml";
 
@@ -1051,7 +1051,7 @@ namespace MBS.Framework.UserInterface
 			// after initialization, load option providers
 
 			List<SettingsProvider> listOptionProviders = new List<SettingsProvider>();
-			System.Collections.Specialized.StringCollection listOptionProviderTypeNames = new System.Collections.Specialized.StringCollection ();
+			System.Collections.Specialized.StringCollection listOptionProviderTypeNames = new System.Collections.Specialized.StringCollection();
 
 			// load the already-known list
 			foreach (SettingsProvider provider in ((UIApplication)Application.Instance).SettingsProviders)
@@ -1064,23 +1064,30 @@ namespace MBS.Framework.UserInterface
 
 			Type[] types = MBS.Framework.Reflection.GetAvailableTypes(new Type[] { typeof(SettingsProvider) });
 
-			foreach (Type type in types) {
+			foreach (Type type in types)
+			{
 				if (type == null)
 					continue;
 
-				if (type.IsSubclassOf (typeof(SettingsProvider)) && !type.IsAbstract) {
-					if (!listOptionProviderTypeNames.Contains (type.FullName)) {
-						try {
-							SettingsProvider provider = (type.Assembly.CreateInstance (type.FullName) as SettingsProvider);
-							if (provider == null) {
-								Console.Error.WriteLine ("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
+				if (type.IsSubclassOf(typeof(SettingsProvider)) && !type.IsAbstract)
+				{
+					if (!listOptionProviderTypeNames.Contains(type.FullName))
+					{
+						try
+						{
+							SettingsProvider provider = (type.Assembly.CreateInstance(type.FullName) as SettingsProvider);
+							if (provider == null)
+							{
+								Console.Error.WriteLine("ue: reflection: couldn't load OptionProvider '{0}'", type.FullName);
 								continue;
 							}
-							listOptionProviderTypeNames.Add (type.FullName);
-							listOptionProviders.Add (provider);
-							Console.WriteLine ("loaded option provider \"{0}\"", type.FullName);
-						} catch (System.Reflection.TargetInvocationException ex) {
-							Console.WriteLine ("binding error: " + ex.InnerException.Message);
+							listOptionProviderTypeNames.Add(type.FullName);
+							listOptionProviders.Add(provider);
+							Console.WriteLine("loaded option provider \"{0}\"", type.FullName);
+						}
+						catch (System.Reflection.TargetInvocationException ex)
+						{
+							Console.WriteLine("binding error: " + ex.InnerException.Message);
 							if (ex.InnerException.InnerException != null)
 							{
 								Console.WriteLine("^--- {0}", ex.InnerException.InnerException.Message);
@@ -1090,11 +1097,15 @@ namespace MBS.Framework.UserInterface
 								Console.WriteLine(" ******************* ");
 								Console.WriteLine();
 							}
-						} catch (Exception ex) {
-							Console.WriteLine ("error while loading SettingsProvider '" + type.FullName + "': " + ex.Message);
 						}
-					} else {
-						Console.WriteLine ("skipping already loaded SettingsProvider '{0}'", type.FullName);
+						catch (Exception ex)
+						{
+							Console.WriteLine("error while loading SettingsProvider '" + type.FullName + "': " + ex.Message);
+						}
+					}
+					else
+					{
+						Console.WriteLine("skipping already loaded SettingsProvider '{0}'", type.FullName);
 					}
 				}
 			}

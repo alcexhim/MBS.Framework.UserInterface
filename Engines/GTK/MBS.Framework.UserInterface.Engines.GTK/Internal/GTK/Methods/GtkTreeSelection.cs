@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTreeSelection.cs
 //
 //  Author:
@@ -48,4 +48,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tree_selection_select_iter(IntPtr /*GtkTreeSelection*/ selection, ref Structures.GtkTreeIter iter);
 	}
 }
-

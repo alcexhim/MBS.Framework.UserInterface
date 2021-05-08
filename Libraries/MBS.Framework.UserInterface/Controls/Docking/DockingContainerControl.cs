@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Controls.Docking
@@ -29,7 +29,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 				Native.IDockingContainerNativeImplementation impl = (ControlImplementation as Native.IDockingContainerNativeImplementation);
 				if (impl != null)
 					mvarCurrentItem = impl.GetCurrentItem ();
-				return mvarCurrentItem; 
+				return mvarCurrentItem;
 			}
 			set {
 				Native.IDockingContainerNativeImplementation impl = (ControlImplementation as Native.IDockingContainerNativeImplementation);

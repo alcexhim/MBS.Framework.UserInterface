@@ -17,5 +17,5 @@ namespace MBS.Framework.UserInterface
 		Help,
 		Apply
 	}
-	
+
 }

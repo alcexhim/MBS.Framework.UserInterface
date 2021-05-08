@@ -1,4 +1,4 @@
-﻿//
+//
 //  DragManager.cs
 //
 //  Author:

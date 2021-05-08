@@ -40,4 +40,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Pango
 		public static extern IntPtr /*PangoAttrFontDesc*/ pango_attr_size_new(int size);
 	}
 }
-

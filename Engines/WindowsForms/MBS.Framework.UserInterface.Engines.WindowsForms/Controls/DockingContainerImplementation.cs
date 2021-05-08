@@ -1,4 +1,4 @@
-﻿//
+//
 //  DockingContainerImplementation.cs
 //
 //  Author:

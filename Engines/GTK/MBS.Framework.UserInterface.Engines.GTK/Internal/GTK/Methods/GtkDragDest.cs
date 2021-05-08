@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkDragDest.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_drag_dest_set(IntPtr /*GtkWidget*/ widget, Constants.GtkDestDefaults flags, Structures.GtkTargetEntry[] targets, int n_targets, GDK.Constants.GdkDragAction actions);
 	}
 }
-

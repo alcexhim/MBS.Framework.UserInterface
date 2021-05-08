@@ -1,4 +1,4 @@
-﻿//
+//
 //  Structures.cs
 //
 //  Author:

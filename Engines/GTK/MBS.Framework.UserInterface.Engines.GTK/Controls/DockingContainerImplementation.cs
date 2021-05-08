@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Controls.Docking;
 using System.Collections.Generic;
 using MBS.Framework.UserInterface.Controls.Docking.Native;
@@ -72,7 +72,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			if (handle == IntPtr.Zero)
 				return null;
-			
+
 			return mvarCurrentItem;
 		}
 		public void SetCurrentItem(DockingItem item)
@@ -170,7 +170,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				mvarCurrentItem = item;
 
 				RegisterDockingItemHandle(item, childHandle);
-			}	
+			}
 			else if (item is DockingContainer)
 			{
 				DockingContainer dcParent = (item as DockingContainer);

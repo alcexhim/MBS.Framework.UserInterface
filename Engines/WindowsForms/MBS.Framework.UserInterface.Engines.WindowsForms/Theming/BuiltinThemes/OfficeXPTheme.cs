@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -99,7 +99,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 			ColorTable.CommandBarMenuBorder = Color.FromKnownColor(KnownColor.ControlDark);
 			ColorTable.CommandBarMenuBackground = Color.White;
-			
+
 			ColorTable.CommandBarImageMarginBackground = Color.FromKnownColor(KnownColor.Control);
 
 			ColorTable.DropDownBackgroundColorNormal = Color.FromKnownColor(KnownColor.Window);
@@ -171,7 +171,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				graphics.FillRectangle(new SolidBrush(ColorTable.CommandBarControlBackgroundHover), rect);
 
 				graphics.DrawLine(new Pen(ColorTable.CommandBarControlBorderHover), tssb.ButtonBounds.Width, 0, tssb.ButtonBounds.Width, tssb.ButtonBounds.Height);
-				
+
 				rect = new Rectangle(0, 0, item.Bounds.Width - 1, item.Bounds.Height - 1);
 				graphics.DrawRectangle(new Pen(ColorTable.CommandBarControlBorderHover), rect);
 			}
@@ -281,7 +281,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			{
 				graphics.FillRectangle(new SolidBrush(ColorTable.CommandBarMenuBackground), rect);
 				graphics.DrawRectangle(new Pen(ColorTable.CommandBarMenuBorder), rect);
-				
+
 				System.Windows.Forms.ToolStripItem ownerItem = (parent as System.Windows.Forms.ToolStripDropDown).OwnerItem;
 				if (ownerItem != null && !ownerItem.IsOnDropDown)
 				{
@@ -305,21 +305,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(new float[][]
 				{
 					new float[] { brt, brt, brt, 0.0f, 0.0f },
-					new float[] { brt, brt, brt, 0.0f, 0.0f }, 
-					new float[] { brt, brt, brt, 0.0f, 0.0f }, 
-					new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f }, 
+					new float[] { brt, brt, brt, 0.0f, 0.0f },
+					new float[] { brt, brt, brt, 0.0f, 0.0f },
+					new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f },
 					new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f }
 				});
 				attrs.SetColorMatrix(cm);
 
 				Rectangle rectShadow = new Rectangle(1, 1, imageRectangle.Width, imageRectangle.Height);
-				
+
 				Rectangle rectImage = new Rectangle(0, 0, imageRectangle.Width, imageRectangle.Height);
-				
+
 				g.DrawImage(image, rectShadow, 0, 0, imageRectangle.Width, imageRectangle.Height, GraphicsUnit.Pixel, attrs);
 				g.DrawImage(image, rectImage);
 				g.Flush();
-				
+
 				base.DrawImage(graphics, imageRectangle, bitmap, item);
 			}
 			else

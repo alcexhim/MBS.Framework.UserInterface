@@ -1,4 +1,4 @@
-﻿//
+//
 //  HexEditorPosition.cs
 //
 //  Author:

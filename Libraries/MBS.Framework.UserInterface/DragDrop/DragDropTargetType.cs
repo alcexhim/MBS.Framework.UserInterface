@@ -1,4 +1,4 @@
-﻿//
+//
 //  DragDropTargetType.cs
 //
 //  Author:

@@ -22,7 +22,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern int gdk_screen_get_n_monitors(IntPtr screen);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gdk_screen_get_primary_monitor(IntPtr screen);
-		
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gdk_screen_get_default();
 
@@ -84,4 +84,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern int gdk_pixbuf_get_height(IntPtr /*GdkPixbuf*/ pixbuf);
 	}
 }
-

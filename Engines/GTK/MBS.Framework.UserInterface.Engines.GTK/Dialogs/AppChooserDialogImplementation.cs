@@ -1,4 +1,4 @@
-﻿//
+//
 //  AppChooserDialogImplementation.cs
 //
 //  Author:

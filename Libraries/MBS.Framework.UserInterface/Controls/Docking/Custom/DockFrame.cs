@@ -1,4 +1,4 @@
-﻿//
+//
 // MonoDevelop.Components.Docking.cs
 //
 // Author:
@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -50,23 +50,23 @@ namespace MonoDevelop.Components.Docking
 
 		internal const double ItemDockCenterArea = 0.4;
 		internal const int GroupDockSeparatorSize = 40;
-		
+
 		internal bool ShadedSeparators = true;
-		
+
 		DockContainer container;
-		
+
 		int handleSize = 1;
 		int handlePadding = 0;
 		int defaultItemWidth = 300;
 		int defaultItemHeight = 250;
 		uint autoShowDelay = 400;
 		uint autoHideDelay = 500;
-		
+
 		SortedDictionary<string,DockLayout> layouts = new SortedDictionary<string,DockLayout> ();
 		List<DockFrameTopLevel> topLevels = new List<DockFrameTopLevel> ();
 		string currentLayout;
 		int compactGuiLevel = 3;
-		
+
 		DockBar dockBarTop, dockBarBottom, dockBarLeft, dockBarRight;
 		VBox mainBox;
 		DockVisualStyle defaultStyle;
@@ -123,7 +123,7 @@ namespace MonoDevelop.Components.Docking
 		internal bool UseWindowsForTopLevelFrames {
 			get { return Platform.IsMac; }
 		}
-		
+
 		/// <summary>
 		/// Compactness level of the gui, from 1 (not compact) to 5 (very compact).
 		/// </summary>
@@ -133,7 +133,7 @@ namespace MonoDevelop.Components.Docking
 				compactGuiLevel = value;
 /*				switch (compactGuiLevel) {
 					case 1: handleSize = 6; break;
-					case 2: 
+					case 2:
 					case 3: handleSize = IsWindows ? 4 : 6; break;
 					case 4:
 					case 5: handleSize = 3; break;
@@ -172,7 +172,7 @@ namespace MonoDevelop.Components.Docking
 			if (animate) {
 				currentOverlayPosition = Math.Max (0, Allocation.Y + Allocation.Height);
 				this.Animate (
-					"ShowOverlayWidget", 
+					"ShowOverlayWidget",
 					ShowOverlayWidgetAnimation,
 					finished: (a, b) => {
 						mainBox.Hide ();
@@ -199,7 +199,7 @@ namespace MonoDevelop.Components.Docking
 				if (animate) {
 					currentOverlayPosition = Allocation.Y;
 					this.Animate (
-						"HideOverlayWidget", 
+						"HideOverlayWidget",
 						HideOverlayWidgetAnimation,
 						finished: (a,b) => {
 							if (overlayWidget != null) {
@@ -456,7 +456,7 @@ namespace MonoDevelop.Components.Docking
 		{
 			return obj != null && (obj.ParentGroup == ancestorToFind || ObjectHasAncestor (obj.ParentGroup, ancestorToFind));
 		}
-		
+
 		public DockBar ExtractDockBar (PositionType pos)
 		{
 			DockBar db = new DockBar (this, pos);
@@ -468,7 +468,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return db;
 		}
-		
+
 		internal DockBar GetDockBar (PositionType pos)
 		{
 			switch (pos) {
@@ -479,7 +479,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return null;
 		}
-		
+
 		internal DockContainer Container {
 			get { return container; }
 		}
@@ -492,7 +492,7 @@ namespace MonoDevelop.Components.Docking
 				handleSize = value;
 			}
 		}
-		
+
 		public int HandlePadding {
 			get {
 				return handlePadding;
@@ -519,7 +519,7 @@ namespace MonoDevelop.Components.Docking
 				defaultItemHeight = value;
 			}
 		}
-		
+
 		internal int TotalHandleSize {
 			get { return handleSize + handlePadding*2; }
 		}
@@ -527,7 +527,7 @@ namespace MonoDevelop.Components.Docking
 		internal int TotalSensitiveHandleSize {
 			get { return 6; }
 		}
-		
+
 		public DockItem AddItem (string id)
 		{
 			foreach (DockItem dit in container.Items) {
@@ -539,12 +539,12 @@ namespace MonoDevelop.Components.Docking
 					throw new InvalidOperationException ("An item with id '" + id + "' already exists.");
 				}
 			}
-			
+
 			DockItem it = new DockItem (this, id);
 			container.Items.Add (it);
 			return it;
 		}
-		
+
 		public void RemoveItem (DockItem it)
 		{
 			if (container.Layout != null)
@@ -553,7 +553,7 @@ namespace MonoDevelop.Components.Docking
 				grp.RemoveItemRec (it);
 			container.Items.Remove (it);
 		}
-		
+
 		public DockItem GetItem (string id)
 		{
 			foreach (DockItem it in container.Items) {
@@ -566,12 +566,12 @@ namespace MonoDevelop.Components.Docking
 			}
 			return null;
 		}
-		
+
 		public IEnumerable<DockItem> GetItems ()
 		{
 			return container.Items;
 		}
-		
+
 		bool LoadLayout (string layoutName)
 		{
 			DockLayout dl;
@@ -606,12 +606,12 @@ namespace MonoDevelop.Components.Docking
 		{
 			CreateLayout (name, false);
 		}
-		
+
 		public void DeleteLayout (string name)
 		{
 			layouts.Remove (name);
 		}
-		
+
 		public void CreateLayout (string name, bool copyCurrent)
 		{
 			DockLayout dl;
@@ -624,7 +624,7 @@ namespace MonoDevelop.Components.Docking
 			dl.Name = name;
 			layouts [name] = dl;
 		}
-		
+
 		public string CurrentLayout {
 			get {
 				return currentLayout;
@@ -637,12 +637,12 @@ namespace MonoDevelop.Components.Docking
 				}
 			}
 		}
-		
+
 		public bool HasLayout (string id)
 		{
 			return layouts.ContainsKey (id);
 		}
-		
+
 		public string[] Layouts {
 			get {
 				if (layouts.Count == 0)
@@ -670,7 +670,7 @@ namespace MonoDevelop.Components.Docking
 				autoHideDelay = value;
 			}
 		}
-		
+
 		public void SaveLayouts (string file)
 		{
 			using (XmlTextWriter w = new XmlTextWriter (file, System.Text.Encoding.UTF8)) {
@@ -678,7 +678,7 @@ namespace MonoDevelop.Components.Docking
 				SaveLayouts (w);
 			}
 		}
-		
+
 		public void SaveLayouts (XmlWriter writer)
 		{
 			if (container.Layout != null)
@@ -688,20 +688,20 @@ namespace MonoDevelop.Components.Docking
 				la.Write (writer);
 			writer.WriteEndElement ();
 		}
-		
+
 		public void LoadLayouts (string file)
 		{
 			using (XmlReader r = new XmlTextReader (new System.IO.StreamReader (file))) {
 				LoadLayouts (r);
 			}
 		}
-		
+
 		public void LoadLayouts (XmlReader reader)
 		{
 			layouts.Clear ();
 			container.Clear ();
 			currentLayout = null;
-			
+
 			reader.MoveToContent ();
 			if (reader.IsEmptyElement) {
 				reader.Skip ();
@@ -733,14 +733,14 @@ namespace MonoDevelop.Components.Docking
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
 			if (gitem == null)
 				return;
-			
+
 			gitem.ParentGroup.UpdateTitle (item);
 			dockBarTop.UpdateTitle (item);
 			dockBarBottom.UpdateTitle (item);
 			dockBarLeft.UpdateTitle (item);
 			dockBarRight.UpdateTitle (item);
 		}
-		
+
 		internal void UpdateStyles ()
 		{
 			container.ReloadStyles ();
@@ -751,23 +751,23 @@ namespace MonoDevelop.Components.Docking
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
 			if (gitem == null)
 				return;
-			
+
 			gitem.ParentGroup.UpdateStyle (item);
 			dockBarTop.UpdateStyle (item);
 			dockBarBottom.UpdateStyle (item);
 			dockBarLeft.UpdateStyle (item);
 			dockBarRight.UpdateStyle (item);
 		}
-		
+
 		internal void Present (DockItem item, bool giveFocus)
 		{
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
 			if (gitem == null)
 				return;
-			
+
 			gitem.ParentGroup.Present (item, giveFocus);
 		}
-		
+
 		internal bool GetVisible (DockItem item)
 		{
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
@@ -775,31 +775,31 @@ namespace MonoDevelop.Components.Docking
 				return false;
 			return gitem.VisibleFlag;
 		}
-		
+
 		internal bool GetVisible (DockItem item, string layoutName)
 		{
 			DockLayout dl;
 			if (!layouts.TryGetValue (layoutName, out dl))
 				return false;
-			
+
 			DockGroupItem gitem = dl.FindDockGroupItem (item.Id);
 			if (gitem == null)
 				return false;
 			return gitem.VisibleFlag;
 		}
-		
+
 		internal void SetVisible (DockItem item, bool visible)
 		{
 			if (container.Layout == null)
 				return;
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
-			
+
 			if (gitem == null) {
 				if (visible) {
 					// The item is not present in the layout. Add it now.
 					if (!string.IsNullOrEmpty (item.DefaultLocation))
 						gitem = AddDefaultItem (container.Layout, item);
-						
+
 					if (gitem == null) {
 						// No default position
 						gitem = new DockGroupItem (this, item);
@@ -811,7 +811,7 @@ namespace MonoDevelop.Components.Docking
 			gitem.SetVisible (visible);
 			container.RelayoutWidgets ();
 		}
-		
+
 		internal DockItemStatus GetStatus (DockItem item)
 		{
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
@@ -819,7 +819,7 @@ namespace MonoDevelop.Components.Docking
 				return DockItemStatus.Dockable;
 			return gitem.Status;
 		}
-		
+
 		internal void SetStatus (DockItem item, DockItemStatus status)
 		{
 			DockGroupItem gitem = container.FindDockGroupItem (item.Id);
@@ -840,13 +840,13 @@ namespace MonoDevelop.Components.Docking
 			container.Layout.RemoveItemRec (item);
 			AddItemAtLocation (container.Layout, item, placement, vis, stat);
 		}
-		
+
 		DockLayout GetDefaultLayout ()
 		{
 			DockLayout group = new DockLayout (this);
-			
+
 			// Add items which don't have relative defaut positions
-			
+
 			List<DockItem> todock = new List<DockItem> ();
 			foreach (DockItem item in container.Items) {
 				if (string.IsNullOrEmpty (item.DefaultLocation)) {
@@ -857,7 +857,7 @@ namespace MonoDevelop.Components.Docking
 				else
 					todock.Add (item);
 			}
-			
+
 			// Add items with relative positions.
 			int lastCount = 0;
 			while (lastCount != todock.Count) {
@@ -870,7 +870,7 @@ namespace MonoDevelop.Components.Docking
 					}
 				}
 			}
-			
+
 			// Items which could not be docked because of an invalid default location
 			foreach (DockItem item in todock) {
 				DockGroupItem dgt = new DockGroupItem (this, item);
@@ -880,12 +880,12 @@ namespace MonoDevelop.Components.Docking
 //			group.Dump ();
 			return group;
 		}
-		
+
 		DockGroupItem AddDefaultItem (DockGroup grp, DockItem it)
 		{
 			return AddItemAtLocation (grp, it, it.DefaultLocation, it.DefaultVisible, it.DefaultStatus);
 		}
-		
+
 		DockGroupItem AddItemAtLocation (DockGroup grp, DockItem it, string location, bool visible, DockItemStatus status)
 		{
 			string[] positions = location.Split (';');
@@ -910,7 +910,7 @@ namespace MonoDevelop.Components.Docking
 			}
 			return null;
 		}
-		
+
 		internal void AddTopLevel (DockFrameTopLevel w, int x, int y, int width, int height)
 		{
 			w.X = x;
@@ -952,14 +952,14 @@ namespace MonoDevelop.Components.Docking
 				topLevels.Add (w);
 			}
 		}
-		
+
 		internal void RemoveTopLevel (DockFrameTopLevel w)
 		{
 			w.Unparent ();
 			topLevels.Remove (w);
 			QueueResize ();
 		}
-		
+
 		public Gdk.Rectangle GetCoordinates (Gtk.Widget w)
 		{
 			int px, py;
@@ -971,32 +971,32 @@ namespace MonoDevelop.Components.Docking
 			rect.Y = py - Allocation.Y;
 			return rect;
 		}
-		
+
 		internal void ShowPlaceholder (DockItem draggedItem)
 		{
 			container.ShowPlaceholder (draggedItem);
 		}
-		
+
 		internal void DockInPlaceholder (DockItem item)
 		{
 			container.DockInPlaceholder (item);
 		}
-		
+
 		internal void HidePlaceholder ()
 		{
 			container.HidePlaceholder ();
 		}
-		
+
 		internal void UpdatePlaceholder (DockItem item, Gdk.Size size, bool allowDocking)
 		{
 			container.UpdatePlaceholder (item, size, allowDocking);
 		}
-		
+
 		internal DockBarItem BarDock (Gtk.PositionType pos, DockItem item, int size)
 		{
 			return GetDockBar (pos).AddItem (item, size);
 		}
-		
+
 		internal AutoHideBox AutoShow (DockItem item, DockBar bar, int size)
 		{
 			AutoHideBox aframe = new AutoHideBox (this, item, bar.Position, size);
@@ -1029,14 +1029,14 @@ namespace MonoDevelop.Components.Docking
 
 			return aframe;
 		}
-		
+
 		internal void UpdateSize (DockBar bar, AutoHideBox aframe)
 		{
 			Gdk.Size sTop = GetBarFrameSize (dockBarTop);
 			Gdk.Size sBot = GetBarFrameSize (dockBarBottom);
 			Gdk.Size sLeft = GetBarFrameSize (dockBarLeft);
 			Gdk.Size sRgt = GetBarFrameSize (dockBarRight);
-			
+
 			if (bar == dockBarLeft || bar == dockBarRight) {
 				aframe.HeightRequest = Allocation.Height - sTop.Height - sBot.Height;
 				if (bar == dockBarRight)
@@ -1047,7 +1047,7 @@ namespace MonoDevelop.Components.Docking
 					aframe.Y = Allocation.Height - aframe.Allocation.Height - sBot.Height;
 			}
 		}
-		
+
 		Gdk.Size GetBarFrameSize (DockBar bar)
 		{
 			if (bar.OriginalBar != null)
@@ -1057,7 +1057,7 @@ namespace MonoDevelop.Components.Docking
 			Gtk.Requisition req = bar.SizeRequest ();
 			return new Gdk.Size (req.Width, req.Height);
 		}
-		
+
 		internal void AutoHide (DockItem item, AutoHideBox widget, bool animate)
 		{
 			if (animate) {
@@ -1104,11 +1104,11 @@ namespace MonoDevelop.Components.Docking
 				overlayWidget.SizeRequest ();
 			base.OnSizeRequested (ref requisition);
 		}
-		
+
 		protected override void OnSizeAllocated (Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			
+
 			foreach (DockFrameTopLevel tl in topLevels) {
 				Requisition r = tl.SizeRequest ();
 				tl.SizeAllocate (new Gdk.Rectangle (allocation.X + tl.X, allocation.Y + tl.Y, r.Width, r.Height));
@@ -1116,7 +1116,7 @@ namespace MonoDevelop.Components.Docking
 			if (overlayWidget != null)
 				overlayWidget.SizeAllocate (new Rectangle (Allocation.X, currentOverlayPosition, allocation.Width, allocation.Height));
 		}
-		
+
 		protected override void ForAll (bool include_internals, Callback callback)
 		{
 			base.ForAll (include_internals, callback);
@@ -1126,7 +1126,7 @@ namespace MonoDevelop.Components.Docking
 			if (overlayWidget != null)
 				callback (overlayWidget);
 		}
-		
+
 		protected override bool OnButtonPressEvent (EventButton evnt)
 		{
 			MinimizeAllAutohidden ();
@@ -1167,8 +1167,8 @@ namespace MonoDevelop.Components.Docking
 		public const string Default = "Default";
 		public const string Browser = "Browser";
 	}
-	
-	
+
+
 	internal delegate void DockDelegate (DockItem item);
-	
+
 }

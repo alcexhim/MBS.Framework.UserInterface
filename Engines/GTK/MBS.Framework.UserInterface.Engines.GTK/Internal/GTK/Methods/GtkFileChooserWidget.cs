@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkFileChooserWidget.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkFileChooserWidget*/ gtk_file_chooser_widget_new(Constants.GtkFileChooserAction action);
 	}
 }
-

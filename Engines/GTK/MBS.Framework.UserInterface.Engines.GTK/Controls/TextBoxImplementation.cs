@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -387,7 +387,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkEditable.gtk_editable_set_editable(handle, value);
 			}
 		}
-		
+
 		public HorizontalAlignment GetTextAlignment()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");

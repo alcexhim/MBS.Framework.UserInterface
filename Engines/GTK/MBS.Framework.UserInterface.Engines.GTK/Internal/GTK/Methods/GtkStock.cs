@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkStock.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_stock_lookup(string stock_id, ref Internal.GTK.Structures.GtkStockItem item);
 	}
 }
-

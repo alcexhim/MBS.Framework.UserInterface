@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkComboBox.cs
 //
 //  Author:
@@ -48,4 +48,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_combo_box_set_active_iter(IntPtr /*GtkComboBox*/ handle, ref Structures.GtkTreeIter iter);
 	}
 }
-

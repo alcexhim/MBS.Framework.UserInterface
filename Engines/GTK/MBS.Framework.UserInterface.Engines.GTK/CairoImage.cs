@@ -1,4 +1,4 @@
-﻿//
+//
 //  CairoImage.cs
 //
 //  Author:

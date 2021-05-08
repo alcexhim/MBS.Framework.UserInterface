@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkButton.cs
 //
 //  Author:
@@ -61,4 +61,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern Constants.GtkReliefStyle gtk_button_get_relief(IntPtr button);
 	}
 }
-

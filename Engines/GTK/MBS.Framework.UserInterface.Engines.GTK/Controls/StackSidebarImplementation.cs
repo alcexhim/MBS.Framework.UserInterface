@@ -1,4 +1,4 @@
-﻿//
+//
 //  StackSidebarImplementation.cs
 //
 //  Author:
@@ -49,7 +49,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Control child = panel.Control;
 				if (child == null)
 					continue;
-				
+
 				bool created = Engine.CreateControl (child);
 				if (created) {
 					IntPtr hChild = (Engine.GetHandleForControl (child) as GTKNativeControl).Handle;
@@ -79,7 +79,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			StackSidebar ctl = (Control as StackSidebar);
 			if (ctl == null)
 				return null;
-			
+
 			IntPtr hStack = (Handle as GTKNativeControl).GetNamedHandle ("Stack");
 			IntPtr hChild = Internal.GTK.Methods.GtkStack.gtk_stack_get_visible_child (hStack);
 
@@ -116,4 +116,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 	}
 }
-

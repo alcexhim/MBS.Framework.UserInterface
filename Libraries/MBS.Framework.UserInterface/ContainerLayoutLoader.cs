@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using MBS.Framework.Drawing;
@@ -882,7 +882,7 @@ namespace MBS.Framework.UserInterface
 			return HorizontalAlignment.Default;
 		}
 
-		
+
 		private string UnescapeHTML(string value)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -1122,6 +1122,6 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		
+
 	}
 }

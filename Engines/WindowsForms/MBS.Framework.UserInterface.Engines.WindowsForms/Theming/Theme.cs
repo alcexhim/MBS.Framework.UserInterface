@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -234,55 +234,55 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			{
 				switch (imageLayout)
 				{
-					case ImageLayout.None:
+				case ImageLayout.None:
+					{
+						result.Size = backgroundImage.Size;
+						break;
+					}
+				case ImageLayout.Center:
+					{
+						result.Size = backgroundImage.Size;
+						Size size = bounds.Size;
+						if (size.Width > result.Width)
 						{
-							result.Size = backgroundImage.Size;
-							break;
+							result.X = (size.Width - result.Width) / 2;
 						}
-					case ImageLayout.Center:
+						if (size.Height > result.Height)
 						{
-							result.Size = backgroundImage.Size;
-							Size size = bounds.Size;
-							if (size.Width > result.Width)
-							{
-								result.X = (size.Width - result.Width) / 2;
-							}
-							if (size.Height > result.Height)
-							{
-								result.Y = (size.Height - result.Height) / 2;
-							}
-							break;
+							result.Y = (size.Height - result.Height) / 2;
 						}
-					case ImageLayout.Stretch:
+						break;
+					}
+				case ImageLayout.Stretch:
+					{
+						result.Size = bounds.Size;
+						break;
+					}
+				case ImageLayout.Zoom:
+					{
+						Size size2 = backgroundImage.Size;
+						float num = (float)bounds.Width / (float)size2.Width;
+						float num2 = (float)bounds.Height / (float)size2.Height;
+						if (num < num2)
 						{
-							result.Size = bounds.Size;
-							break;
+							result.Width = bounds.Width;
+							result.Height = (int)((double)((float)size2.Height * num) + 0.5);
+							if (bounds.Y >= 0)
+							{
+								result.Y = (bounds.Height - result.Height) / 2;
+							}
 						}
-					case ImageLayout.Zoom:
+						else
 						{
-							Size size2 = backgroundImage.Size;
-							float num = (float)bounds.Width / (float)size2.Width;
-							float num2 = (float)bounds.Height / (float)size2.Height;
-							if (num < num2)
+							result.Height = bounds.Height;
+							result.Width = (int)((double)((float)size2.Width * num2) + 0.5);
+							if (bounds.X >= 0)
 							{
-								result.Width = bounds.Width;
-								result.Height = (int)((double)((float)size2.Height * num) + 0.5);
-								if (bounds.Y >= 0)
-								{
-									result.Y = (bounds.Height - result.Height) / 2;
-								}
+								result.X = (bounds.Width - result.Width) / 2;
 							}
-							else
-							{
-								result.Height = bounds.Height;
-								result.Width = (int)((double)((float)size2.Width * num2) + 0.5);
-								if (bounds.X >= 0)
-								{
-									result.X = (bounds.Width - result.Width) / 2;
-								}
-							}
-							break;
 						}
+						break;
+					}
 				}
 			}
 			return result;
@@ -371,48 +371,48 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		}
 		public virtual void DrawText(Graphics graphics, string text, Color color, Font font, Rectangle textRectangle, System.Windows.Forms.TextFormatFlags textFormat, System.Windows.Forms.ToolStripTextDirection textDirection, System.Windows.Forms.ToolStripItem item)
 		{
-            if (color == Color.Empty)
-            {
-                if (item is ToolStripMenuItem)
-                {
-                    if (item.IsOnDropDown)
-                    {
-                        if (item.Pressed)
-                        {
-                            color = ColorTable.CommandBarMenuControlTextPressed;
-                        }
-                        else if (item.Selected)
-                        {
-                            color = ColorTable.CommandBarMenuControlTextHighlight;
-                        }
-                        else
-                        {
-                            color = ColorTable.CommandBarMenuControlText;
-                        }
-                    }
-                    else
-                    {
-                        if (item.Pressed)
-                        {
-                            color = ColorTable.CommandBarControlTextPressed;
-                        }
-                        else if (item.Selected)
-                        {
-                            color = ColorTable.CommandBarControlTextHover;
-                        }
-                        else
-                        {
-                            color = ColorTable.CommandBarControlText;
-                        }
-                    }
-                }
-                else if (item is ToolStripStatusLabel)
-                {
-                    color = ColorTable.StatusBarText;
-                }
+			if (color == Color.Empty)
+			{
+				if (item is ToolStripMenuItem)
+				{
+					if (item.IsOnDropDown)
+					{
+						if (item.Pressed)
+						{
+							color = ColorTable.CommandBarMenuControlTextPressed;
+						}
+						else if (item.Selected)
+						{
+							color = ColorTable.CommandBarMenuControlTextHighlight;
+						}
+						else
+						{
+							color = ColorTable.CommandBarMenuControlText;
+						}
+					}
+					else
+					{
+						if (item.Pressed)
+						{
+							color = ColorTable.CommandBarControlTextPressed;
+						}
+						else if (item.Selected)
+						{
+							color = ColorTable.CommandBarControlTextHover;
+						}
+						else
+						{
+							color = ColorTable.CommandBarControlText;
+						}
+					}
+				}
+				else if (item is ToolStripStatusLabel)
+				{
+					color = ColorTable.StatusBarText;
+				}
 
-                color = (item.Enabled ? color : System.Drawing.SystemColors.GrayText);
-            }
+				color = (item.Enabled ? color : System.Drawing.SystemColors.GrayText);
+			}
 
 			if (textDirection != ToolStripTextDirection.Horizontal && textRectangle.Width > 0 && textRectangle.Height > 0)
 			{
@@ -467,7 +467,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		public virtual void DrawContentAreaBackground(Graphics graphics, Rectangle rectangle)
 		{
 		}
-		
+
 		public abstract void DrawDropDownBackground(Graphics graphics, Rectangle rectangle, ControlState state);
 		public abstract void DrawDropDownButton(Graphics graphics, Rectangle rectangle, ControlState dropdownState, ControlState buttonState);
 		public abstract void DrawDropDownMenuBackground(Graphics graphics, Rectangle rectangle);
@@ -536,66 +536,66 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		{
 			switch (state)
 			{
-				case ControlState.Normal:
-					{
-						int h = (bounds.Height / 2);
+			case ControlState.Normal:
+				{
+					int h = (bounds.Height / 2);
 
-						// Outer gradient (border)
-						LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, bounds.Width - 2, h), ColorTable.RibbonApplicationButtonGradientBorderTopBegin, ColorTable.RibbonApplicationButtonGradientBorderTopEnd, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 1, bounds.Top + 2, bounds.Width - 2, h + 2);
+					// Outer gradient (border)
+					LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, bounds.Width - 2, h), ColorTable.RibbonApplicationButtonGradientBorderTopBegin, ColorTable.RibbonApplicationButtonGradientBorderTopEnd, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 1, bounds.Top + 2, bounds.Width - 2, h + 2);
 
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBorderBottomBegin, ColorTable.RibbonApplicationButtonGradientBorderBottomEnd, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 1, h, bounds.Width - 2, h);
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBorderBottomBegin, ColorTable.RibbonApplicationButtonGradientBorderBottomEnd, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 1, h, bounds.Width - 2, h);
 
-						// Inner gradient (background)
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundTopBegin, ColorTable.RibbonApplicationButtonGradientBackgroundTopEnd, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 2, bounds.Top + 3, bounds.Width - 4, h - 1);
+					// Inner gradient (background)
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundTopBegin, ColorTable.RibbonApplicationButtonGradientBackgroundTopEnd, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 2, bounds.Top + 3, bounds.Width - 4, h - 1);
 
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundBottomBegin, ColorTable.RibbonApplicationButtonGradientBackgroundBottomEnd, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 2, h, bounds.Width - 4, h - 1);
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundBottomBegin, ColorTable.RibbonApplicationButtonGradientBackgroundBottomEnd, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 2, h, bounds.Width - 4, h - 1);
 
-						// Border
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTop), bounds.Left, bounds.Top, bounds.Right - 3, bounds.Top);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Top + 1, bounds.Right - 3, bounds.Top + 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Top + 1, bounds.Left, bounds.Bottom - 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Bottom - 1, bounds.Right - 1, bounds.Bottom - 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Right - 1, bounds.Top + 3, bounds.Right - 1, bounds.Bottom - 1);
+					// Border
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTop), bounds.Left, bounds.Top, bounds.Right - 3, bounds.Top);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Top + 1, bounds.Right - 3, bounds.Top + 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Top + 1, bounds.Left, bounds.Bottom - 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Left, bounds.Bottom - 1, bounds.Right - 1, bounds.Bottom - 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Right - 1, bounds.Top + 3, bounds.Right - 1, bounds.Bottom - 1);
 
-						// Connector
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Right - 3, bounds.Top + 1, bounds.Right - 1, bounds.Top + 3);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTop), bounds.Right - 3, bounds.Top, bounds.Right - 1, bounds.Top + 2);
-						break;
-					}
-				case ControlState.Hover:
-					{
-						int h = (bounds.Height / 2);
+					// Connector
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorder), bounds.Right - 3, bounds.Top + 1, bounds.Right - 1, bounds.Top + 3);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTop), bounds.Right - 3, bounds.Top, bounds.Right - 1, bounds.Top + 2);
+					break;
+				}
+			case ControlState.Hover:
+				{
+					int h = (bounds.Height / 2);
 
-						// Outer gradient (border)
-						LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, bounds.Width - 2, h), ColorTable.RibbonApplicationButtonGradientBorderTopBegin, ColorTable.RibbonApplicationButtonGradientBorderTopEndHover, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 1, bounds.Top + 2, bounds.Width - 2, h + 2);
+					// Outer gradient (border)
+					LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, bounds.Width - 2, h), ColorTable.RibbonApplicationButtonGradientBorderTopBegin, ColorTable.RibbonApplicationButtonGradientBorderTopEndHover, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 1, bounds.Top + 2, bounds.Width - 2, h + 2);
 
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBorderBottomBegin, ColorTable.RibbonApplicationButtonGradientBorderBottomEndHover, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 1, h, bounds.Width - 2, h);
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBorderBottomBegin, ColorTable.RibbonApplicationButtonGradientBorderBottomEndHover, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 1, h, bounds.Width - 2, h);
 
-						// Inner gradient (background)
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundTopBegin, ColorTable.RibbonApplicationButtonGradientBackgroundTopEndHover, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 2, bounds.Top + 3, bounds.Width - 4, h - 1);
+					// Inner gradient (background)
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundTopBegin, ColorTable.RibbonApplicationButtonGradientBackgroundTopEndHover, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 2, bounds.Top + 3, bounds.Width - 4, h - 1);
 
-						brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundBottomBegin, ColorTable.RibbonApplicationButtonGradientBackgroundBottomEndHover, LinearGradientMode.Vertical);
-						graphics.FillRectangle(brush, bounds.Left + 2, h, bounds.Width - 4, h - 1);
+					brush = new LinearGradientBrush(new Rectangle(0, -1, bounds.Width, h), ColorTable.RibbonApplicationButtonGradientBackgroundBottomBegin, ColorTable.RibbonApplicationButtonGradientBackgroundBottomEndHover, LinearGradientMode.Vertical);
+					graphics.FillRectangle(brush, bounds.Left + 2, h, bounds.Width - 4, h - 1);
 
-						// Border
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTopHover), bounds.Left, bounds.Top, bounds.Right - 3, bounds.Top);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Top + 1, bounds.Right - 3, bounds.Top + 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Top + 1, bounds.Left, bounds.Bottom - 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Bottom - 1, bounds.Right - 1, bounds.Bottom - 1);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Right - 1, bounds.Top + 3, bounds.Right - 1, bounds.Bottom - 1);
+					// Border
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTopHover), bounds.Left, bounds.Top, bounds.Right - 3, bounds.Top);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Top + 1, bounds.Right - 3, bounds.Top + 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Top + 1, bounds.Left, bounds.Bottom - 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Left, bounds.Bottom - 1, bounds.Right - 1, bounds.Bottom - 1);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Right - 1, bounds.Top + 3, bounds.Right - 1, bounds.Bottom - 1);
 
-						// Connector
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Right - 3, bounds.Top + 1, bounds.Right - 1, bounds.Top + 3);
-						graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTopHover), bounds.Right - 3, bounds.Top, bounds.Right - 1, bounds.Top + 2);
-						break;
-					}
+					// Connector
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderHover), bounds.Right - 3, bounds.Top + 1, bounds.Right - 1, bounds.Top + 3);
+					graphics.DrawLine(new Pen(ColorTable.RibbonApplicationButtonBorderTopHover), bounds.Right - 3, bounds.Top, bounds.Right - 1, bounds.Top + 2);
+					break;
+				}
 			}
 		}
 		public virtual void DrawRibbonApplicationButtonImage(Graphics graphics, Rectangle bounds, Image image)
@@ -800,20 +800,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 				TextRenderer.DrawText(g, ctl.Text, font, textRect, ColorTable.RibbonControlText, flags);
 			}
 			#endregion
-			*/		
+			*/
 		}
 		public void DrawRibbonControlGroupActionButton(Graphics g, Rectangle rect, ControlState state)
 		{
 			switch (state)
 			{
-				case ControlState.Hover:
-					{
-						break;
-					}
-				case ControlState.Pressed:
-					{
-						break;
-					}
+			case ControlState.Hover:
+				{
+					break;
+				}
+			case ControlState.Pressed:
+				{
+					break;
+				}
 			}
 
 			Pen pen = new Pen(ColorTable.RibbonControlGroupActionButton);
@@ -939,62 +939,62 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		{
 			switch (mvarRibbonColorScheme)
 			{
-				#region Black
-				case RibbonColorScheme.Black:
-					{
-						break;
-					}
-				#endregion
-				#region Blue
-				case RibbonColorScheme.Blue:
-					{
-						ColorTable.RibbonTabGradientBorderHoverStart = Color.FromArgb(212, 188, 141);
-						ColorTable.RibbonTabGradientBorderHoverEnd = Color.FromArgb(254, 209, 94);
-						ColorTable.RibbonTabGradientBackgroundHoverStart = Color.FromArgb(240, 246, 254);
-						ColorTable.RibbonTabGradientBackgroundHoverEnd = Color.FromArgb(226, 235, 247);
+			#region Black
+			case RibbonColorScheme.Black:
+				{
+					break;
+				}
+			#endregion
+			#region Blue
+			case RibbonColorScheme.Blue:
+				{
+					ColorTable.RibbonTabGradientBorderHoverStart = Color.FromArgb(212, 188, 141);
+					ColorTable.RibbonTabGradientBorderHoverEnd = Color.FromArgb(254, 209, 94);
+					ColorTable.RibbonTabGradientBackgroundHoverStart = Color.FromArgb(240, 246, 254);
+					ColorTable.RibbonTabGradientBackgroundHoverEnd = Color.FromArgb(226, 235, 247);
 
-						ColorTable.RibbonTabGradientBorderPressedStart = Color.FromArgb(151, 184, 229);
-						ColorTable.RibbonTabGradientBorderPressedEnd = Color.FromArgb(146, 185, 230);
-						ColorTable.RibbonTabGradientBackgroundPressedStart = Color.FromArgb(244, 249, 255);
-						ColorTable.RibbonTabGradientBackgroundPressedEnd = Color.FromArgb(225, 234, 246);
+					ColorTable.RibbonTabGradientBorderPressedStart = Color.FromArgb(151, 184, 229);
+					ColorTable.RibbonTabGradientBorderPressedEnd = Color.FromArgb(146, 185, 230);
+					ColorTable.RibbonTabGradientBackgroundPressedStart = Color.FromArgb(244, 249, 255);
+					ColorTable.RibbonTabGradientBackgroundPressedEnd = Color.FromArgb(225, 234, 246);
 
-						ColorTable.RibbonTabBarBackground = Color.FromArgb(191, 219, 255);
-						ColorTable.RibbonTabPageBackgroundGradientStart = Color.FromArgb(219, 230, 244);
-						ColorTable.RibbonTabPageBackgroundGradientMiddle = Color.FromArgb(201, 217, 237);
-						ColorTable.RibbonTabPageBackgroundGradientEnd = Color.FromArgb(227, 244, 255);
-						ColorTable.RibbonTabBarBorderBottom = Color.FromArgb(192, 249, 255);
+					ColorTable.RibbonTabBarBackground = Color.FromArgb(191, 219, 255);
+					ColorTable.RibbonTabPageBackgroundGradientStart = Color.FromArgb(219, 230, 244);
+					ColorTable.RibbonTabPageBackgroundGradientMiddle = Color.FromArgb(201, 217, 237);
+					ColorTable.RibbonTabPageBackgroundGradientEnd = Color.FromArgb(227, 244, 255);
+					ColorTable.RibbonTabBarBorderBottom = Color.FromArgb(192, 249, 255);
 
-						// ColorTable.RibbonControlBorderDisabled = 
+					// ColorTable.RibbonControlBorderDisabled =
 
 
-						ColorTable.RibbonControlBackgroundHoverBegin = Color.FromArgb(255, 255, 247);
-						ColorTable.RibbonControlBackgroundHoverMiddleTop = Color.FromArgb(255, 247, 215);
-						ColorTable.RibbonControlBackgroundHoverMiddleBottom = Color.FromArgb(255, 247, 215);
-						ColorTable.RibbonControlBackgroundHoverEnd = Color.FromArgb(255, 241, 191);
+					ColorTable.RibbonControlBackgroundHoverBegin = Color.FromArgb(255, 255, 247);
+					ColorTable.RibbonControlBackgroundHoverMiddleTop = Color.FromArgb(255, 247, 215);
+					ColorTable.RibbonControlBackgroundHoverMiddleBottom = Color.FromArgb(255, 247, 215);
+					ColorTable.RibbonControlBackgroundHoverEnd = Color.FromArgb(255, 241, 191);
 
-						ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientBegin = Color.FromArgb(255, 255, 247);
-						ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientMiddle = Color.FromArgb(255, 247, 215);
-						ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientEnd = Color.FromArgb(255, 241, 191);
+					ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientBegin = Color.FromArgb(255, 255, 247);
+					ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientMiddle = Color.FromArgb(255, 247, 215);
+					ColorTable.RibbonControlSplitButtonTopBackgroundHoverGradientEnd = Color.FromArgb(255, 241, 191);
 
-						ColorTable.RibbonControlSplitButtonBottomBackgroundHoverGradientBegin = Color.FromArgb(255, 212, 73);
-						ColorTable.RibbonControlSplitButtonBottomBackgroundHoverGradientEnd = Color.FromArgb(255, 231, 148);
+					ColorTable.RibbonControlSplitButtonBottomBackgroundHoverGradientBegin = Color.FromArgb(255, 212, 73);
+					ColorTable.RibbonControlSplitButtonBottomBackgroundHoverGradientEnd = Color.FromArgb(255, 231, 148);
 
-						ColorTable.RibbonControlText = Color.FromArgb(21, 66, 139);
-						ColorTable.RibbonControlDisabledText = Color.FromArgb(141, 141, 141);
+					ColorTable.RibbonControlText = Color.FromArgb(21, 66, 139);
+					ColorTable.RibbonControlDisabledText = Color.FromArgb(141, 141, 141);
 
-						ColorTable.RibbonControlGroupText = Color.FromArgb(62, 106, 170);
-						ColorTable.RibbonControlGroupActionButton = Color.FromArgb(102, 142, 175);
+					ColorTable.RibbonControlGroupText = Color.FromArgb(62, 106, 170);
+					ColorTable.RibbonControlGroupActionButton = Color.FromArgb(102, 142, 175);
 
-						ColorTable.RibbonControlGroupBorderGradientBegin = Color.FromArgb(194, 208, 222);
-						ColorTable.RibbonControlGroupBorderGradientEnd = Color.FromArgb(157, 191, 219);
-						break;
-					}
-				#endregion
-				#region Silver
-				case RibbonColorScheme.Silver:
-					{
-						break;
-					}
+					ColorTable.RibbonControlGroupBorderGradientBegin = Color.FromArgb(194, 208, 222);
+					ColorTable.RibbonControlGroupBorderGradientEnd = Color.FromArgb(157, 191, 219);
+					break;
+				}
+			#endregion
+			#region Silver
+			case RibbonColorScheme.Silver:
+				{
+					break;
+				}
 				#endregion
 			}
 		}
@@ -1069,66 +1069,66 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 		{
 			switch (state)
 			{
-				case ControlState.Hover:
+			case ControlState.Hover:
+				{
+					#region Outer Border
 					{
-						#region Outer Border
-						{
-							Rectangle outerBorderRectangle = new Rectangle(rect.X, rect.Y + 2, rect.Width, rect.Height - 2);
-							DrawingTools.FillWithFourColorGradient(g, outerBorderRectangle, Color.FromArgb(187, 201, 219), Color.FromArgb(177, 195, 216), Color.FromArgb(170, 188, 211), Color.FromArgb(174, 192, 215), LinearGradientMode.Vertical);
+						Rectangle outerBorderRectangle = new Rectangle(rect.X, rect.Y + 2, rect.Width, rect.Height - 2);
+						DrawingTools.FillWithFourColorGradient(g, outerBorderRectangle, Color.FromArgb(187, 201, 219), Color.FromArgb(177, 195, 216), Color.FromArgb(170, 188, 211), Color.FromArgb(174, 192, 215), LinearGradientMode.Vertical);
 
-						}
-						#endregion
-						#region Inner Border
-						{
-							Rectangle innerBorderRectangle = new Rectangle(rect.X + 1, rect.Y + 3, rect.Width - 2, rect.Height - 4);
-							DrawingTools.FillWithFourColorGradient(g, innerBorderRectangle, Color.FromArgb(253, 254, 255), Color.FromArgb(250, 252, 254), Color.FromArgb(245, 248, 252), Color.FromArgb(240, 245, 250), LinearGradientMode.Vertical);
-						}
-						#endregion
-						#region Background
-						{
-							Rectangle backgroundRectangle = new Rectangle(rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 3);
-							DrawingTools.FillWithFourColorGradient(g, backgroundRectangle, Color.FromArgb(248, 251, 254), Color.FromArgb(237, 242, 250), Color.FromArgb(215, 228, 244), Color.FromArgb(193, 210, 232), LinearGradientMode.Vertical);
-						}
-						#endregion
-						#region Outer Border Pixel Triads
-						{
-							// Outer top-left corner pixel triad
-							g.DrawPixel(Color.FromArgb(215, 225, 236), rect.X + 1, rect.Y);
-							g.DrawPixel(Color.FromArgb(212, 222, 235), rect.X, rect.Y + 1);
-							g.DrawPixel(Color.FromArgb(216, 224, 235), rect.X, rect.Y + 1);
-
-							// Outer bottom-left corner pixel triad
-							g.DrawPixel(Color.FromArgb(194, 208, 228), rect.X, rect.Bottom - 2);
-							g.DrawPixel(Color.FromArgb(200, 212, 229), rect.X + 1, rect.Bottom - 2);
-							g.DrawPixel(Color.FromArgb(192, 207, 228), rect.X, rect.Bottom - 1);
-
-							// Outer top-right corner pixel triad
-							g.DrawPixel(Color.FromArgb(213, 223, 235), rect.Right - 2, rect.Y);
-							g.DrawPixel(Color.FromArgb(216, 224, 235), rect.Right - 2, rect.Y + 1);
-							g.DrawPixel(Color.FromArgb(212, 222, 235), rect.Right - 1, rect.Y + 1);
-
-							// Outer bottom-right corner pixel triad
-							g.DrawPixel(Color.FromArgb(193, 208, 227), rect.Right - 1, rect.Bottom - 2);
-							g.DrawPixel(Color.FromArgb(200, 212, 229), rect.Right - 2, rect.Bottom - 2);
-							g.DrawPixel(Color.FromArgb(190, 205, 227), rect.Right - 2, rect.Bottom - 1);
-						}
-						#endregion
-
-						// Inner top-left corner pixel triad
-						g.DrawPixel(Color.FromArgb(249, 251, 253), rect.X + 2, rect.Y + 1);
-						g.DrawPixel(Color.FromArgb(250, 253, 255), rect.X + 2, rect.Y + 2);
-						g.DrawPixel(Color.FromArgb(251, 253, 254), rect.X + 1, rect.Y + 2);
-
-						// Top border
-						Pen topBorderPen = new Pen(Color.FromArgb(187, 202, 219));
-						g.DrawLine(topBorderPen, rect.X + 1, rect.Y, rect.Right - 3, rect.Y);
-						// Bottom border
-						Pen bottomBorderPen = new Pen(Color.FromArgb(187, 202, 219));
-						g.DrawLine(bottomBorderPen, rect.X + 1, rect.Bottom - 1, rect.Right - 3, rect.Bottom - 1);
-
-
-						break;
 					}
+					#endregion
+					#region Inner Border
+					{
+						Rectangle innerBorderRectangle = new Rectangle(rect.X + 1, rect.Y + 3, rect.Width - 2, rect.Height - 4);
+						DrawingTools.FillWithFourColorGradient(g, innerBorderRectangle, Color.FromArgb(253, 254, 255), Color.FromArgb(250, 252, 254), Color.FromArgb(245, 248, 252), Color.FromArgb(240, 245, 250), LinearGradientMode.Vertical);
+					}
+					#endregion
+					#region Background
+					{
+						Rectangle backgroundRectangle = new Rectangle(rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 3);
+						DrawingTools.FillWithFourColorGradient(g, backgroundRectangle, Color.FromArgb(248, 251, 254), Color.FromArgb(237, 242, 250), Color.FromArgb(215, 228, 244), Color.FromArgb(193, 210, 232), LinearGradientMode.Vertical);
+					}
+					#endregion
+					#region Outer Border Pixel Triads
+					{
+						// Outer top-left corner pixel triad
+						g.DrawPixel(Color.FromArgb(215, 225, 236), rect.X + 1, rect.Y);
+						g.DrawPixel(Color.FromArgb(212, 222, 235), rect.X, rect.Y + 1);
+						g.DrawPixel(Color.FromArgb(216, 224, 235), rect.X, rect.Y + 1);
+
+						// Outer bottom-left corner pixel triad
+						g.DrawPixel(Color.FromArgb(194, 208, 228), rect.X, rect.Bottom - 2);
+						g.DrawPixel(Color.FromArgb(200, 212, 229), rect.X + 1, rect.Bottom - 2);
+						g.DrawPixel(Color.FromArgb(192, 207, 228), rect.X, rect.Bottom - 1);
+
+						// Outer top-right corner pixel triad
+						g.DrawPixel(Color.FromArgb(213, 223, 235), rect.Right - 2, rect.Y);
+						g.DrawPixel(Color.FromArgb(216, 224, 235), rect.Right - 2, rect.Y + 1);
+						g.DrawPixel(Color.FromArgb(212, 222, 235), rect.Right - 1, rect.Y + 1);
+
+						// Outer bottom-right corner pixel triad
+						g.DrawPixel(Color.FromArgb(193, 208, 227), rect.Right - 1, rect.Bottom - 2);
+						g.DrawPixel(Color.FromArgb(200, 212, 229), rect.Right - 2, rect.Bottom - 2);
+						g.DrawPixel(Color.FromArgb(190, 205, 227), rect.Right - 2, rect.Bottom - 1);
+					}
+					#endregion
+
+					// Inner top-left corner pixel triad
+					g.DrawPixel(Color.FromArgb(249, 251, 253), rect.X + 2, rect.Y + 1);
+					g.DrawPixel(Color.FromArgb(250, 253, 255), rect.X + 2, rect.Y + 2);
+					g.DrawPixel(Color.FromArgb(251, 253, 254), rect.X + 1, rect.Y + 2);
+
+					// Top border
+					Pen topBorderPen = new Pen(Color.FromArgb(187, 202, 219));
+					g.DrawLine(topBorderPen, rect.X + 1, rect.Y, rect.Right - 3, rect.Y);
+					// Bottom border
+					Pen bottomBorderPen = new Pen(Color.FromArgb(187, 202, 219));
+					g.DrawLine(bottomBorderPen, rect.X + 1, rect.Bottom - 1, rect.Right - 3, rect.Bottom - 1);
+
+
+					break;
+				}
 			}
 		}
 

@@ -1,4 +1,4 @@
-﻿//
+//
 //  PopupWindow.cs
 //
 //  Author:
@@ -42,4 +42,3 @@ namespace MBS.Framework.UserInterface
 		}
 	}
 }
-

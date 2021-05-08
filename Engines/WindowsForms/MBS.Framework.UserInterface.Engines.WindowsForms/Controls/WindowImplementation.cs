@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
@@ -198,7 +198,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 			return WindowCloseReason.Unknown;
 		}
-		
+
 		private void form_Shown(object sender, EventArgs e)
 		{
 			OnShown(e);
@@ -306,7 +306,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		}
 		public void SetFullScreen(bool value)
 		{
-			
+
 		}
 	}
 }

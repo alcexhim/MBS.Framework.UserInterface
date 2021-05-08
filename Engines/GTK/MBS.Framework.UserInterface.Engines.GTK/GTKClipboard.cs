@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKClipboard.cs
 //
 //  Author:

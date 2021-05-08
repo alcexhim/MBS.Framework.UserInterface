@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +10,10 @@ namespace MBS.Framework.UserInterface.Dialogs
 		/// <summary>
 		/// The user must respond to the message box before continuing work in the window identified by the hWnd parameter. However, the user can move to the windows of other
 		/// threads and work in those windows.
-		/// 
+		///
 		/// Depending on the hierarchy of windows in the application, the user may be able to move to other windows within the thread. All child windows of the parent of the
 		/// message box are automatically disabled, but pop-up windows are not.
-		/// 
+		///
 		/// MB_APPLMODAL is the default if neither MB_SYSTEMMODAL nor MB_TASKMODAL is specified.
 		/// </summary>
 		ApplicationModal = 0x00000000,

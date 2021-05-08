@@ -19,4 +19,3 @@ namespace MBS.Framework.UserInterface
 		}
 	}
 }
-

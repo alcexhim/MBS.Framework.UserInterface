@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 using System.Drawing;
@@ -108,7 +108,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			public static implicit operator HSLColor(Color color)
 			{
 				HSLColor hslColor = new HSLColor();
-				hslColor.hue = color.GetHue() / 360.0; // we store hue as 0-1 as opposed to 0-360 
+				hslColor.hue = color.GetHue() / 360.0; // we store hue as 0-1 as opposed to 0-360
 				hslColor.luminosity = color.GetBrightness();
 				hslColor.saturation = color.GetSaturation();
 				return hslColor;

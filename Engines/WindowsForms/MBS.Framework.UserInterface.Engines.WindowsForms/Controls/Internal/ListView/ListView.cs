@@ -1,4 +1,4 @@
-﻿//
+//
 //  ListView.cs
 //
 //  Author:

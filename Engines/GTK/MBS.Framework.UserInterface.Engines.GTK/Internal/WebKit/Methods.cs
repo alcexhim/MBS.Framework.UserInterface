@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.WebKit

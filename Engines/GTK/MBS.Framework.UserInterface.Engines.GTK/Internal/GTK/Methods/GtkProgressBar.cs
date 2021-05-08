@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkProgressBar.cs
 //
 //  Author:

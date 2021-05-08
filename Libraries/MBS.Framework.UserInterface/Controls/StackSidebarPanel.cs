@@ -1,4 +1,4 @@
-﻿//
+//
 //  StackSidebarPanel.cs
 //
 //  Author:
@@ -63,4 +63,3 @@ namespace MBS.Framework.UserInterface.Controls
 		#endregion
 	}
 }
-

@@ -147,7 +147,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarMenuSplitArrow = buttonShadow;
 			ColorTable.CommandBarOptionsButtonShadow = empty;
 			ColorTable.CommandBarShadow = ColorTable.CommandBarBackground;
-			
+
 			ColorTable.CommandBarToolbarSplitterLineHighlight = buttonHighlight;
 			ColorTable.CommandBarMenuSplitterLineHighlight = buttonHighlight;
 
@@ -369,7 +369,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarMenuSplitArrow = Color.FromArgb(128, 128, 128);
 			ColorTable.CommandBarOptionsButtonShadow = Color.FromArgb(255, 255, 255);
 			ColorTable.CommandBarShadow = Color.FromArgb(59, 97, 156);
-			
+
 			ColorTable.CommandBarToolbarSplitterLine = Color.FromArgb(106, 140, 203);
 			ColorTable.CommandBarMenuSplitterLine = Color.FromArgb(106, 140, 203);
 
@@ -596,10 +596,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarMenuSplitArrow = Color.FromArgb(0, 0, 0);
 			ColorTable.CommandBarOptionsButtonShadow = Color.FromArgb(255, 255, 255);
 			ColorTable.CommandBarShadow = Color.FromArgb(96, 128, 88);
-			
+
 			ColorTable.CommandBarToolbarSplitterLine = Color.FromArgb(96, 128, 88);
 			ColorTable.CommandBarMenuSplitterLine = Color.FromArgb(96, 128, 88);
-			
+
 			ColorTable.CommandBarToolbarSplitterLineHighlight = Color.FromArgb(244, 247, 222);
 			ColorTable.CommandBarMenuSplitterLineHighlight = Color.FromArgb(244, 247, 222);
 
@@ -1527,9 +1527,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				rectangle5.X++;
 				Rectangle[] array = new Rectangle[]
 				{
-					rectangle2, 
-					rectangle3, 
-					rectangle4, 
+					rectangle2,
+					rectangle3,
+					rectangle4,
 					rectangle5
 				};
 				for (int i = 0; i < array.Length; i++)
@@ -1734,7 +1734,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			{
 				return;
 			}
-			
+
 			if (item.IsOnDropDown)
 			{
 				Padding dropDownMenuItemPaintPadding = new Padding(2, 0, 1, 0);
@@ -2146,8 +2146,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				{
 					points = new Point[]
 					{
-						new Point(point.X + 2, point.Y - 3), 
-						new Point(point.X + 2, point.Y + 3), 
+						new Point(point.X + 2, point.Y - 3),
+						new Point(point.X + 2, point.Y + 3),
 						new Point(point.X - 1, point.Y)
 					};
 					break;
@@ -2156,8 +2156,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 				{
 					points = new Point[]
 					{
-						new Point(point.X - 2, point.Y + 1), 
-						new Point(point.X + 3, point.Y + 1), 
+						new Point(point.X - 2, point.Y + 1),
+						new Point(point.X + 3, point.Y + 1),
 						new Point(point.X, point.Y - 2)
 					};
 					break;
@@ -2170,8 +2170,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 						{
 							points = new Point[]
 							{
-								new Point(point.X - 2, point.Y - 3), 
-								new Point(point.X - 2, point.Y + 3), 
+								new Point(point.X - 2, point.Y - 3),
+								new Point(point.X - 2, point.Y + 3),
 								new Point(point.X + 1, point.Y)
 							};
 							goto IL_243;
@@ -2179,8 +2179,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					}
 					points = new Point[]
 					{
-						new Point(point.X - 2, point.Y - 1), 
-						new Point(point.X + 3, point.Y - 1), 
+						new Point(point.X - 2, point.Y - 1),
+						new Point(point.X + 3, point.Y - 1),
 						new Point(point.X, point.Y + 2)
 					};
 					break;
@@ -2194,7 +2194,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		#region Button
 		public override void DrawButtonBackground(Graphics g, Rectangle rect, ControlState state)
 		{
-			
+
 		}
 		#endregion
 		#region TextBox
@@ -2208,7 +2208,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		{
 			if (selected)
 			{
-				
+
 			}
 			else if (state == ControlState.Hover)
 			{

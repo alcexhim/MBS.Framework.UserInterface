@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkStack.cs
 //
 //  Author:
@@ -35,4 +35,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_stack_set_visible_child(IntPtr /*GtkStack*/ stack, IntPtr /*GtkWidget*/ child);
 	}
 }
-

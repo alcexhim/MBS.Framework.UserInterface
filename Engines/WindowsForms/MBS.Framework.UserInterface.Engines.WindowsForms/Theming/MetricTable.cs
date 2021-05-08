@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +15,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private int mvarDockingWindowSplitterSize = 6;
 		public int DockingWindowSplitterSize { get { return mvarDockingWindowSplitterSize; } set { mvarDockingWindowSplitterSize = value; } }
-		
+
 		private int mvarDockingWindowTabSize = 20;
 		public int DockingWindowTabSize { get { return mvarDockingWindowTabSize; } set { mvarDockingWindowTabSize = value; } }
 

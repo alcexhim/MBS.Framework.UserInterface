@@ -72,4 +72,3 @@ namespace MBS.Framework.UserInterface.Dialogs
 		public string Website { get { return mvarWebsite; } set { mvarWebsite = value; } }
 	}
 }
-

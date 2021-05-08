@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkIconTheme.cs
 //
 //  Author:

@@ -9,4 +9,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GIO
 		public delegate void ChangeStateDelegate (IntPtr action, IntPtr parameter, IntPtr user_data);
 	}
 }
-

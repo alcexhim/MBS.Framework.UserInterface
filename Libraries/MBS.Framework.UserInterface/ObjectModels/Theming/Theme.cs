@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -129,20 +129,20 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming
 
 			if (value.StartsWith("@"))
 			{
-                string name = value.Substring(1);
+				string name = value.Substring(1);
 				if (mvarThemeColorOverrides.ContainsKey(name))
 				{
 					if (mvarThemeColorOverrides[name] == name) return Color.Empty;
 					return GetColorFromString(mvarThemeColorOverrides[name]);
 				}
 
-                if (!theme.Colors.Contains(name))
-                {
+				if (!theme.Colors.Contains(name))
+				{
 					if (theme.InheritsTheme != null) return GetColorFromString(value, theme.InheritsTheme);
 
-                    Console.WriteLine("ac-theme: theme definition does not contain color '" + name + "'");
-                    return Color.Empty;
-                }
+					Console.WriteLine("ac-theme: theme definition does not contain color '" + name + "'");
+					return Color.Empty;
+				}
 				string color = theme.Colors[name].Value;
 				return GetColorFromString(color);
 			}

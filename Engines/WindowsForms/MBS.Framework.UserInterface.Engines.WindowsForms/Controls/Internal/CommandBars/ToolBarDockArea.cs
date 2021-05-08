@@ -8,7 +8,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 	public class ToolBarDockArea : System.Windows.Forms.UserControl
 	{
 		ToolBarManager _dockManager = null;
-		public ToolBarManager DockManager 
+		public ToolBarManager DockManager
 		{
 			get { return _dockManager; }
 		}
@@ -19,7 +19,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		{
 			InitializeComponent();
 
-			this.SetStyle(	
+			this.SetStyle(
 				ControlStyles.AllPaintingInWmPaint |
 				ControlStyles.DoubleBuffer, true);
 
@@ -38,22 +38,22 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 		public bool Horizontal { get { return this.Dock != DockStyle.Left && this.Dock != DockStyle.Right; } }
 
-		class LineHolder 
+		class LineHolder
 		{
 			public LineHolder(int index)
 			{
 				Index = index;
 			}
-			public ArrayList Columns = new ArrayList();			
-			public int Index = 0;		
+			public ArrayList Columns = new ArrayList();
+			public int Index = 0;
 			public int Size = 0;
 
-			public void AddColumn(ColumnHolder column) 
+			public void AddColumn(ColumnHolder column)
 			{
 				int indx = 0;
-				foreach(ColumnHolder col in Columns) 
+				foreach(ColumnHolder col in Columns)
 				{
-					if(col.Position > column.Position) 
+					if(col.Position > column.Position)
 					{
 						Columns.Insert(indx, column);
 						break;
@@ -64,28 +64,28 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 					Columns.Add(column);
 			}
 
-			public void Distribute() 
+			public void Distribute()
 			{
 				int pos = 0;
-				foreach(ColumnHolder col in Columns) 
+				foreach(ColumnHolder col in Columns)
 				{
 					if(col.Position < pos)
-						col.Position = pos;	
+						col.Position = pos;
 					pos = col.Position + col.Size;
 				}
 			}
 		}
 
-		class ColumnHolder 
+		class ColumnHolder
 		{
 			public ColumnHolder(int pos, ToolBarDockHolder holder, int size)
 			{
 				Position = pos;
 				Holder = holder;
 				Size = size;
-			}			
-			public int Position = 0;	
-			public int Size = 0;		
+			}
+			public int Position = 0;
+			public int Size = 0;
 			public ToolBarDockHolder Holder;
 		}
 
@@ -97,14 +97,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			int lineSzForCalc = 23;
 
 			SortedList lineList = new SortedList();
-			foreach(ToolBarDockHolder holder in this.Controls) 
+			foreach(ToolBarDockHolder holder in this.Controls)
 			{
-				if(holder.Visible) 
+				if(holder.Visible)
 				{
-					int prefLine = GetPreferredLine(lineSzForCalc, holder);	
-					int prefPos = GetPreferredPosition(holder);	
+					int prefLine = GetPreferredLine(lineSzForCalc, holder);
+					int prefPos = GetPreferredPosition(holder);
 					LineHolder line = (LineHolder)lineList[prefLine];
-					if(line == null) 
+					if(line == null)
 					{
 						line = new LineHolder(prefLine);
 						lineList.Add(prefLine, line);
@@ -121,15 +121,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			_lastLineCount = lineList.Count;
 			if(_lastLineCount == 0)
 				_lastLineCount = 1;
-			for(int ndx = 0; ndx < lineList.Count; ndx++) 
+			for(int ndx = 0; ndx < lineList.Count; ndx++)
 			{
 				LineHolder line = (LineHolder)lineList.GetByIndex(ndx);
-				if(line != null) 
+				if(line != null)
 				{
 					line.Distribute();
-					foreach(ColumnHolder col in line.Columns) 
+					foreach(ColumnHolder col in line.Columns)
 					{
-						if(Horizontal) 
+						if(Horizontal)
 						{
 							col.Holder.Location = new Point(col.Position, pos);
 							col.Holder.PreferredDockedLocation = new Point(col.Holder.PreferredDockedLocation.X, pos + col.Holder.Height/2);
@@ -147,25 +147,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			this.ResumeLayout();
 		}
 
-		protected int GetPreferredLine(int lineSz, ToolBarDockHolder holder) 
+		protected int GetPreferredLine(int lineSz, ToolBarDockHolder holder)
 		{
 			int pos, sz;
-			if(Horizontal) 
+			if(Horizontal)
 			{
 				pos = holder.PreferredDockedLocation.Y;
 				sz = holder.Size.Height;
-				if(pos < 0) 
+				if(pos < 0)
 					return Int32.MinValue;
-				if(pos > this.Height) 
+				if(pos > this.Height)
 					return Int32.MaxValue;
-			} 
-			else 
+			}
+			else
 			{
 				pos = holder.PreferredDockedLocation.X;
 				sz = holder.Size.Width;
-				if(pos < 0) 
+				if(pos < 0)
 					return Int32.MinValue;
-				if(pos > this.Width) 
+				if(pos > this.Width)
 					return Int32.MaxValue;
 			}
 			int line = pos / lineSz;
@@ -177,50 +177,50 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			return line*2 + 1;
 		}
 
-		protected int GetPreferredPosition(ToolBarDockHolder holder) 
+		protected int GetPreferredPosition(ToolBarDockHolder holder)
 		{
-			if(Horizontal) 
+			if(Horizontal)
 				return holder.PreferredDockedLocation.X;
-			else 
+			else
 				return holder.PreferredDockedLocation.Y;
 		}
 
-		protected int GetHolderLineSize(ToolBarDockHolder holder) 
+		protected int GetHolderLineSize(ToolBarDockHolder holder)
 		{
-			if(Horizontal) 
+			if(Horizontal)
 				return holder.Height;
-			else 
+			else
 				return holder.Width;
 		}
-		protected int GetMyLineSize() 
+		protected int GetMyLineSize()
 		{
-			if(Horizontal) 
+			if(Horizontal)
 				return Height;
-			else 
+			else
 				return Width;
 		}
-		protected int GetHolderWidth(ToolBarDockHolder holder) 
+		protected int GetHolderWidth(ToolBarDockHolder holder)
 		{
-			if(Horizontal) 
+			if(Horizontal)
 				return holder.Width;
-			else 
+			else
 				return holder.Height;
 		}
-		
-		protected void FitHolders() 
+
+		protected void FitHolders()
 		{
 			Size sz = new Size(0,0);
-			foreach(System.Windows.Forms.Control c in Controls) 
-				if(c.Visible) 
+			foreach(System.Windows.Forms.Control c in Controls)
+				if(c.Visible)
 				{
 					if(c.Right > sz.Width)
 						sz.Width = c.Right;
 					if(c.Bottom > sz.Height)
 						sz.Height = c.Bottom;
-				}			
-			if(Horizontal) 
+				}
+			if(Horizontal)
 				this.Height = sz.Height;
-			else 
+			else
 				this.Width = sz.Width;
 		}
 
@@ -237,15 +237,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 		#region Component Designer generated code
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
 		{
-			// 
+			//
 			// ToolBarDockArea
-			// 
+			//
 			this.Name = "ToolBarDockArea";
 			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ToolBarDockArea_MouseUp);
 		}
@@ -254,8 +254,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 		private void ToolBarDockArea_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			if(e.Button == MouseButtons.Right) 
-			{				
+			if(e.Button == MouseButtons.Right)
+			{
 				DockManager.ShowContextMenu(this.PointToScreen(new Point(e.X, e.Y)));
 			}
 		}

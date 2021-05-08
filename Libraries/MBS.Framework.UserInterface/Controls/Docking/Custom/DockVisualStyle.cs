@@ -108,4 +108,3 @@ namespace MonoDevelop.Components.Docking
 		Simple
 	}
 }
-

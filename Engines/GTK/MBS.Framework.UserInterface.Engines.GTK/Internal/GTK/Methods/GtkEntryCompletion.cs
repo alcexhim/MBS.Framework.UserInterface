@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkEntryCompletion.cs - declares P/Invoke methods for the GtkEntryCompletion control
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTreeModel.cs
 //
 //  Author:
@@ -40,4 +40,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_tree_model_get_path (IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
 	}
 }
-

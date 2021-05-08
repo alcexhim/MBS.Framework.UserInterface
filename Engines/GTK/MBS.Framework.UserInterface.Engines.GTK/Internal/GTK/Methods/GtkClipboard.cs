@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkClipboard.cs
 //
 //  Author:
@@ -30,7 +30,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_clipboard_clear(IntPtr /*GtkClipboard*/ clipboard);
 
-		[DllImport(Gtk.LIBRARY_FILENAME)]	
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_clipboard_request_text(IntPtr handle, Action<IntPtr /*GtkClipboard*/, string, IntPtr> text_received_func, IntPtr user_data);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]

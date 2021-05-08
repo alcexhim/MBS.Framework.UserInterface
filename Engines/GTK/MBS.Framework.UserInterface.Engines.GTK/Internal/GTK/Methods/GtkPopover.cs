@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkPopover.cs
 //
 //  Author:
@@ -44,4 +44,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_popover_get_modal(IntPtr /*GtkPopover*/ popover);
 	}
 }
-

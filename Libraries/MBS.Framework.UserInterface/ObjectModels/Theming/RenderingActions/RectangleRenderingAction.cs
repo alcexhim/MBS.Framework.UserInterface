@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +9,10 @@ namespace MBS.Framework.UserInterface.ObjectModels.Theming.RenderingActions
 	{
 		private RenderingExpression mvarX = null;
 		public RenderingExpression X { get { return mvarX; } set { mvarX = value; } }
-		
+
 		private RenderingExpression mvarY = null;
 		public RenderingExpression Y { get { return mvarY; } set { mvarY = value; } }
-		
+
 		private RenderingExpression mvarWidth = null;
 		public RenderingExpression Width { get { return mvarWidth; } set { mvarWidth = value; } }
 

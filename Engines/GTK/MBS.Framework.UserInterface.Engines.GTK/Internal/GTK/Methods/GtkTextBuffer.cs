@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkSeparator.cs
 //
 //  Author:
@@ -61,4 +61,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_text_buffer_get_selection_bounds(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
 	}
 }
-

@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -41,11 +41,11 @@ namespace MonoDevelop.Components.Docking
 		string name;
 		int layoutWidth = 1024;
 		int layoutHeight = 768;
-		
+
 		public DockLayout (DockFrame frame): base (frame, DockGroupType.Horizontal)
 		{
 		}
-		
+
 		public string Name {
 			get {
 				return name;
@@ -54,7 +54,7 @@ namespace MonoDevelop.Components.Docking
 				name = value;
 			}
 		}
-		
+
 		internal override void Write (XmlWriter writer)
 		{
 			writer.WriteStartElement ("layout");
@@ -64,7 +64,7 @@ namespace MonoDevelop.Components.Docking
 			base.Write (writer);
 			writer.WriteEndElement ();
 		}
-		
+
 		internal override void Read (XmlReader reader)
 		{
 			name = reader.GetAttribute ("name");
@@ -76,14 +76,14 @@ namespace MonoDevelop.Components.Docking
 				layoutHeight = int.Parse (s);
 			base.Read (reader);
 		}
-		
+
 		public static DockLayout Read (DockFrame frame, XmlReader reader)
 		{
 			DockLayout layout = new DockLayout (frame);
 			layout.Read (reader);
 			return layout;
 		}
-		
+
 		public override void SizeAllocate (Gdk.Rectangle rect)
 		{
 			Size = rect.Width;
@@ -96,7 +96,7 @@ namespace MonoDevelop.Components.Docking
 			layoutWidth = Allocation.Width;
 			layoutHeight = Allocation.Height;
 		}
-		
+
 		internal override void RestoreAllocation ()
 		{
 			Allocation = new Gdk.Rectangle (0, 0, layoutWidth, layoutHeight);

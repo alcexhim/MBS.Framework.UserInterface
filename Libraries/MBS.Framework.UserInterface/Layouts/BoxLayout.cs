@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace MBS.Framework.UserInterface.Layouts
 			Start,
 			End
 		}
-		
+
 		public class Constraints : MBS.Framework.UserInterface.Constraints
 		{
 			private bool mvarExpand = false;

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkBin.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GtkWidget*/ gtk_bin_get_child(IntPtr /*GtkBin*/ bin);
 	}
 }
-

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKCursorInfo.cs
 //
 //  Author:

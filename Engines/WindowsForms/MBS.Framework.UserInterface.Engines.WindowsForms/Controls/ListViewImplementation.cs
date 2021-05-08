@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
@@ -58,7 +58,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			// we may or may not have to build our own fake-treeview
 			return ImplementedAsType.ListView;
 		}
-		
+
 		public ListViewImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}
@@ -528,7 +528,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				UpdateTreeModel (handle);
 
 			SetSelectionModeInternal(handle, tv, tv.SelectionMode);
-			
+
 			return new WindowsFormsNativeControl(handle);
 		}
 
@@ -650,7 +650,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			ListViewSelectionChangingEventArgs ee = new ListViewSelectionChangingEventArgs();
 			((sender as Internal.TreeView.ExplorerTreeView).Tag as ListView).OnSelectionChanging(ee);
 			e.Cancel = ee.Cancel;
-			*/		
+			*/
 		}
 
 
@@ -831,7 +831,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			System.Windows.Forms.ListViewItem tn = new System.Windows.Forms.ListViewItem();
 			if (row.RowColumns.Count > 0)
 			{
-				tn.Text = row.RowColumns[0].Value?.ToString();                 
+				tn.Text = row.RowColumns[0].Value?.ToString();
 			}
 			for (int i = 1; i < row.RowColumns.Count; i++)
 			{
@@ -968,7 +968,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 			}
 			else if ((Handle as WindowsFormsNativeControl).Handle is LISTVIEWTYPE)
-			{ 
+			{
 				if (_RowExpanded.ContainsKey(row))
 				{
 					return _RowExpanded[row];
@@ -1041,6 +1041,35 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 					parentNode.Nodes.Insert(position, tn);
 				}
 			}
+		}
+
+		public bool GetSingleClickActivation()
+		{
+			switch (ImplementedAs(Control as ListViewControl))
+			{
+				case ImplementedAsType.ListView: return ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView).HotTracking;
+				case ImplementedAsType.TreeView: return ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TreeView).HotTracking;
+			}
+			throw new NotSupportedException();
+		}
+
+		public void SetSingleClickActivation(bool value)
+		{
+			switch (ImplementedAs(Control as ListViewControl))
+			{
+				case ImplementedAsType.ListView:
+				{
+					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView).HoverSelection = true;
+					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView).HotTracking = true;
+					break;
+				}
+				case ImplementedAsType.TreeView:
+				{
+					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TreeView).HotTracking = true;
+					break;
+				}
+			}
+			throw new NotSupportedException();
 		}
 	}
 }

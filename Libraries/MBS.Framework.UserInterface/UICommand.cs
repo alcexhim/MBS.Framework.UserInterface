@@ -1,4 +1,4 @@
-﻿//
+//
 //  UICommand.cs
 //
 //  Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 //  ComboBoxImplementation.cs
 //
 //  Author:
@@ -123,4 +123,3 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 	}
 }
-

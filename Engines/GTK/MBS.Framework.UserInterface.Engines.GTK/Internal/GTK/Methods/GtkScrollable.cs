@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkScrollable.cs
 //
 //  Author:

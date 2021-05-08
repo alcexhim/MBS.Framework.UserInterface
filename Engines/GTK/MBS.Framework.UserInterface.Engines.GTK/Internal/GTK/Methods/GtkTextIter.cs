@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkTextIter.cs
 //
 //  Author:

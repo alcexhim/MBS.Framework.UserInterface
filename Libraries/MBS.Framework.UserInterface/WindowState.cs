@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowState.cs
 //
 //  Author:

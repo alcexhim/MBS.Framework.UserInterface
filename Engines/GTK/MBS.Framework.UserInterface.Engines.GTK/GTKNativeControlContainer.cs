@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKNativeControlContainer.cs
 //
 //  Author:

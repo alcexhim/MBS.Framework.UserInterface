@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -119,7 +119,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 			// g.DrawRectangle(new Pen(Color.Magenta, 16), rectangle);
 			g.DrawRectangle(new Pen(c, 1), new Rectangle(rectangle.Left + 7, rectangle.Top + 7, rectangle.Width - 15, rectangle.Height - 15));
-			
+
 			g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 
 			/*
@@ -134,7 +134,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		}
 
 		public override CommandBarMenuAnimationType CommandBarMenuAnimationType { get { return Theming.CommandBarMenuAnimationType.None; } }
-		
+
 		public VisualStudio2012Theme(ColorMode colorMode = ColorMode.Light)
 		{
 			Name = String.Format("VisualStudio2012/{0}", colorMode.ToString());
@@ -563,7 +563,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			base.DrawCheck(graphics, item, rect1);
 
 			Rectangle checkRect = new Rectangle(rect1.X + 4, rect1.Y + 4, 10, 11);
-			
+
 			DrawingTools.DrawCheckMark(graphics, Pens.Black, checkRect);
 			return;
 
@@ -706,7 +706,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 				}
 				else
-				*/			
+				*/
 				{
 					LinearGradientBrush b1 = new LinearGradientBrush(r, ColorTable.CommandBarControlBackgroundHoverGradientBegin, ColorTable.CommandBarControlBackgroundHoverGradientMiddle, LinearGradientMode.Vertical);
 					SolidBrush b2 = new SolidBrush(ColorTable.CommandBarControlBackgroundHoverGradientEnd);
@@ -856,7 +856,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		public override void DrawAccordionBackground(Graphics graphics, Rectangle rectangle)
 		{
 			graphics.FillRectangle(new SolidBrush(ColorTable.WindowBackground), rectangle);
-			
+
 		}
 		#endregion
 
@@ -912,7 +912,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					break;
 				}
 			}
-			
+
 			g.DrawRectangle(new Pen(BorderColor), rect);
 		}
 		#endregion

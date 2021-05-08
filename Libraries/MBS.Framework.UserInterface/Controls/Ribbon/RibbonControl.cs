@@ -1,4 +1,4 @@
-﻿//
+//
 //  RibbonControl.cs
 //
 //  Author:
@@ -51,4 +51,3 @@ namespace MBS.Framework.UserInterface.Controls.Ribbon
 		}
 	}
 }
-

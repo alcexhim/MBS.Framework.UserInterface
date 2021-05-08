@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,8 +12,8 @@ using UniversalWidgetToolkit.ObjectModels.Theming;
 
 namespace UniversalWidgetToolkit.Engines.Win32
 {
-    public class Win32Engine : Engine
-    {
+	public class Win32Engine : Engine
+	{
 		private Control mvarPressedControl = null;
 
 		protected override int StartInternal(Window waitForClose = null)
@@ -35,36 +35,36 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				{
 					switch (msg.message)
 					{
-						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
-						{
-							SetPressedControl(ctl);
-							break;
-						}
-						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
-						{
-							if (ctl == mvarPressedControl)
+							case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
 							{
-								ctl.OnClick(EventArgs.Empty);
+								SetPressedControl(ctl);
+								break;
 							}
-							SetPressedControl(null);
-							break;
-						}
-						case Internal.Windows.Constants.User32.WindowMessages.SizeChanging:
-						{
-							ctl.OnResizing(EventArgs.Empty);
-							break;
-						}
-						case Internal.Windows.Constants.User32.WindowMessages.SizeChanged:
-						{
-							break;
-						}
+							case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
+							{
+								if (ctl == mvarPressedControl)
+								{
+									ctl.OnClick(EventArgs.Empty);
+								}
+								SetPressedControl(null);
+								break;
+							}
+							case Internal.Windows.Constants.User32.WindowMessages.SizeChanging:
+							{
+								ctl.OnResizing(EventArgs.Empty);
+								break;
+							}
+							case Internal.Windows.Constants.User32.WindowMessages.SizeChanged:
+							{
+								break;
+							}
 					}
 				}
 
 				Internal.Windows.Methods.User32.TranslateMessage(ref msg);
 				Internal.Windows.Methods.User32.DispatchMessage(ref msg);
 
-				for (int i = 0; i< windowProcs.Count;i++)
+				for (int i = 0; i < windowProcs.Count; i++)
 				{
 					GC.KeepAlive(windowProcs[i]);
 				}
@@ -93,7 +93,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 				return;
 			}
 			IntPtr hWnd = handlesByControl[control];
-			
+
 		}
 
 		private Dictionary<Type, string> ControlClassNames = new Dictionary<Type, string>();
@@ -162,7 +162,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			{
 				IntPtr handle = GetHandleByControl(control.ParentWindow);
 				Rectangle rect = control.Parent.Layout.GetControlBounds(control);
-				
+
 				Internal.Windows.Structures.User32.RECT rct = RectangleToRECT(rect);
 
 				Internal.Windows.Methods.User32.InvalidateRect(handle, ref rct, false);
@@ -180,121 +180,121 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			{
 				switch (uMsg)
 				{
-					case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
-					{
-						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
-
-						int x = BitConverter.ToInt16(xy, 0);
-						int y = BitConverter.ToInt16(xy, 2);
-
-						if (GetProperty<bool>("Windowless"))
+						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonDown:
 						{
-							if (ctl is Container)
+							byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+							int x = BitConverter.ToInt16(xy, 0);
+							int y = BitConverter.ToInt16(xy, 2);
+
+							if (GetProperty<bool>("Windowless"))
 							{
-								Container cnt = (ctl as Container);
-								Control ctl1 = cnt.HitTest(x, y);
-								if (ctl1 != null)
+								if (ctl is Container)
 								{
-									SetPressedControl(ctl1);
-									SetFocusedControl(ctl1);
+									Container cnt = (ctl as Container);
+									Control ctl1 = cnt.HitTest(x, y);
+									if (ctl1 != null)
+									{
+										SetPressedControl(ctl1);
+										SetFocusedControl(ctl1);
+									}
+									else
+									{
+										SetFocusedControl(null);
+									}
 								}
-								else
+							}
+							break;
+						}
+						case Internal.Windows.Constants.User32.WindowMessages.MouseMove:
+						{
+							byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+							int x = BitConverter.ToInt16(xy, 0);
+							int y = BitConverter.ToInt16(xy, 2);
+
+							if (GetProperty<bool>("Windowless"))
+							{
+								if (ctl is Container)
 								{
-									SetFocusedControl(null);
+									Container cnt = (ctl as Container);
+									Control ctl1 = cnt.HitTest(x, y);
+									SetHoverControl(ctl1);
 								}
 							}
+							break;
 						}
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.MouseMove:
-					{
-						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
-
-						int x = BitConverter.ToInt16(xy, 0);
-						int y = BitConverter.ToInt16(xy, 2);
-
-						if (GetProperty<bool>("Windowless"))
+						case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
 						{
-							if (ctl is Container)
+							byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
+
+							int x = BitConverter.ToInt16(xy, 0);
+							int y = BitConverter.ToInt16(xy, 2);
+
+							SetPressedControl(null);
+							if (GetProperty<bool>("Windowless"))
 							{
-								Container cnt = (ctl as Container);
-								Control ctl1 = cnt.HitTest(x, y);
-								SetHoverControl(ctl1);
+								if (ctl is Container)
+								{
+									Container cnt = (ctl as Container);
+									Control ctl1 = cnt.HitTest(x, y);
+									if (ctl1 != null) ctl1.OnClick(EventArgs.Empty);
+								}
 							}
-						}
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.LeftMouseButtonUp:
-					{
-						byte[] xy = BitConverter.GetBytes(lParam.ToInt32());
-
-						int x = BitConverter.ToInt16(xy, 0);
-						int y = BitConverter.ToInt16(xy, 2);
-
-						SetPressedControl(null);
-						if (GetProperty<bool>("Windowless"))
-						{
-							if (ctl is Container)
+							else
 							{
-								Container cnt = (ctl as Container);
-								Control ctl1 = cnt.HitTest(x, y);
-								if (ctl1 != null) ctl1.OnClick(EventArgs.Empty);
+								ctl.OnClick(EventArgs.Empty);
 							}
+							break;
 						}
-						else
+						case Internal.Windows.Constants.User32.WindowMessages.Close:
 						{
-							ctl.OnClick(EventArgs.Empty);
-						}
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.Close:
-					{
-						CancelEventArgs e = new CancelEventArgs();
-						if (ctl is Window)
-						{
-							(ctl as Window).OnClosing(e);
-							if (e.Cancel) return 1;
-						}
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.DESTROY:
-					{
-						if (ctl is Window)
-						{
-							(ctl as Window).OnClosed(EventArgs.Empty);
-							if ((ctl as Window) == mvarMainWindow)
+							CancelEventArgs e = new CancelEventArgs();
+							if (ctl is Window)
 							{
-								Stop();
+								(ctl as Window).OnClosing(e);
+								if (e.Cancel) return 1;
 							}
+							break;
 						}
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.SizeChanging:
-					{
-						if (ctl is Window)
+						case Internal.Windows.Constants.User32.WindowMessages.DESTROY:
 						{
-							RecalculateControlBounds(ctl as Window);
+							if (ctl is Window)
+							{
+								(ctl as Window).OnClosed(EventArgs.Empty);
+								if ((ctl as Window) == mvarMainWindow)
+								{
+									Stop();
+								}
+							}
+							break;
 						}
-						ctl.OnResizing(EventArgs.Empty);
-						ctl.Invalidate();
-						break;
-					}
-					case Internal.Windows.Constants.User32.WindowMessages.Paint:
-					{
-						Graphics graphics = CreateGraphics(ctl);
-						PaintEventArgs e = new PaintEventArgs(graphics);
+						case Internal.Windows.Constants.User32.WindowMessages.SizeChanging:
+						{
+							if (ctl is Window)
+							{
+								RecalculateControlBounds(ctl as Window);
+							}
+							ctl.OnResizing(EventArgs.Empty);
+							ctl.Invalidate();
+							break;
+						}
+						case Internal.Windows.Constants.User32.WindowMessages.Paint:
+						{
+							Graphics graphics = CreateGraphics(ctl);
+							PaintEventArgs e = new PaintEventArgs(graphics);
 
-						if (GetProperty<bool>("Windowless"))
-						{
-							WLPaintControl(ctl, e.Graphics);
+							if (GetProperty<bool>("Windowless"))
+							{
+								WLPaintControl(ctl, e.Graphics);
+							}
+							else
+							{
+								// draw the control itself
+								ctl.OnPaint(e);
+							}
+							break;
 						}
-						else
-						{
-							// draw the control itself
-							ctl.OnPaint(e);
-						}
-						break;
-					}
 				}
 			}
 			return Internal.Windows.Methods.User32.DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -515,7 +515,7 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			// thanks https://support.microsoft.com/en-us/kb/74299
 			lplf.lfHeight = (int)(Math.Round(-(font.Size * lpy) / (double)72));
 			lplf.lfWeight = (int)font.Weight;
-			
+
 			IntPtr retval = Internal.Windows.Methods.GDI.CreateFontIndirect(ref lplf);
 			return retval;
 		}
@@ -631,5 +631,5 @@ namespace UniversalWidgetToolkit.Engines.Win32
 			return items;
 		}
 
-    }
+	}
 }

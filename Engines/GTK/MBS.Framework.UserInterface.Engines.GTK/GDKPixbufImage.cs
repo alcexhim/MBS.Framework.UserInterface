@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKNativeImage.cs
 //
 //  Author:

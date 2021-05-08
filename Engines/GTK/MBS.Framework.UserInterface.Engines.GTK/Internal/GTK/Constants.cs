@@ -360,7 +360,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			Multiple
 		}
 		/// <summary>
-		/// Window placement can be influenced using this enumeration. 
+		/// Window placement can be influenced using this enumeration.
 		/// </summary>
 		public enum GtkWindowPosition
 		{
@@ -695,4 +695,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 		}
 	}
 }
-

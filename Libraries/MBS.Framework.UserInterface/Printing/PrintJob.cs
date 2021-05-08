@@ -1,4 +1,4 @@
-﻿//
+//
 //  PrintJob.cs
 //
 //  Author:

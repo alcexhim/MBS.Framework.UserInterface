@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.Cairo
 {
 	internal static class Constants

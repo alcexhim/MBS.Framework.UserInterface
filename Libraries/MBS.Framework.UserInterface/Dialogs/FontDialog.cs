@@ -13,4 +13,3 @@ namespace MBS.Framework.UserInterface.Dialogs
 		public Font SelectedFont { get { return mvarSelectedFont; } set { mvarSelectedFont = value; } }
 	}
 }
-

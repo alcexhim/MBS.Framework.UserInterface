@@ -1,4 +1,4 @@
-﻿//
+//
 //  RelativePosition.cs
 //
 //  Author:
@@ -32,4 +32,3 @@ namespace MBS.Framework.UserInterface
 		Overlay
 	}
 }
-

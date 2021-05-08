@@ -286,4 +286,3 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Internal.Linux.GLib
 		}
 	}
 }
-

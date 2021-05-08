@@ -1,10 +1,10 @@
-﻿//
+//
 //  GTKNativeImplementation.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -89,19 +89,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		protected override void RegisterDropTargetInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
-			
+
 			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (handle == IntPtr.Zero) return;
-			
+
 			RegisterDropTargetGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
 		}
 		protected override void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 			Internal.GDK.Constants.GdkModifierType modifiers = GTKEngine.KeyboardModifierKeyToGdkModifierType(modifierKeys) | GTKEngine.MouseButtonsToGdkModifierType(buttons);
-			
+
 			IntPtr handle = (Engine.GetHandleForControl(control) as GTKNativeControl).Handle;
 			if (handle == IntPtr.Zero) return;
-			
+
 			RegisterDragSourceGTK(handle, modifiers, GTKEngine.DragDropTargetToGtkTargetEntry(targets), GTKEngine.DragDropEffectToGdkDragAction(actions));
 		}
 
@@ -817,7 +817,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hScrolledWindow = (Handle as GTKNativeControl).GetNamedHandle("ScrolledWindow");
 			if (hScrolledWindow == IntPtr.Zero)
 				return;
-			
+
 			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
 			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_get_policy(hScrolledWindow, ref policyH, ref policyV);
 			switch (orientation)

@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTKDialogImplementation.cs
 //
 //  Author:

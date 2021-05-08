@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -28,7 +28,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			base.InitBlueLunaColors();
 			ColorTable.CommandBarControlBorderHover = Color.FromArgb(49, 106, 197);
 			ColorTable.CommandBarControlBorderPressed = Color.FromArgb(75, 75, 111);
-			
+
 			// Colors for toolbar buttons - Hover
 			ColorTable.CommandBarControlBackgroundSelectedGradientBegin = Color.FromArgb(193, 210, 238);
 			ColorTable.CommandBarGradientSelectedMiddle = Color.FromArgb(193, 210, 238);
@@ -37,7 +37,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			ColorTable.CommandBarControlBackgroundPressedGradientBegin = Color.FromArgb(152, 181, 226);
 			ColorTable.CommandBarGradientPressedMiddle = Color.FromArgb(152, 181, 226);
 			ColorTable.CommandBarControlBackgroundPressedGradientEnd = Color.FromArgb(152, 181, 226);
-			
+
 			// Colors for top-level menu items - Hover
 			ColorTable.CommandBarControlBackgroundHoverGradientBegin = Color.FromArgb(193, 210, 238);
 			ColorTable.CommandBarControlBackgroundHoverGradientMiddle = Color.FromArgb(193, 210, 238);

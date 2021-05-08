@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkPrintOperation.cs
 //
 //  Author:
@@ -31,4 +31,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern Constants.GtkPrintOperationResult gtk_print_operation_run(IntPtr /*GtkPrintOperation*/ op, Constants.GtkPrintOperationAction action, IntPtr /*GtkWindow*/ parent, IntPtr /*GError***/ error);
 	}
 }
-

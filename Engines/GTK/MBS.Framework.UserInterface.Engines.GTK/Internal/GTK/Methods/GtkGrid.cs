@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkGrid.cs
 //
 //  Author:
@@ -45,4 +45,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_grid_attach(IntPtr /*GtkGrid*/ grid, IntPtr /*GtkWidget*/ widget, int left, int top, int width, int height);
 	}
 }
-

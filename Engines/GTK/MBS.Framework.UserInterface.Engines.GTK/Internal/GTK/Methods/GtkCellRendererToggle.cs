@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkCellRendererText.cs
 //
 //  Author:
@@ -37,4 +37,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_cell_renderer_toggle_set_activatable(IntPtr /*GtkCellRendererToggle*/ toggle, bool setting);
 	}
 }
-

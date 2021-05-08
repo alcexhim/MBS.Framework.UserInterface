@@ -50,4 +50,3 @@ namespace MBS.Framework.UserInterface.Layouts
 		}
 	}
 }
-

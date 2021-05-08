@@ -1,4 +1,4 @@
-﻿//
+//
 //  ControlStyle.cs
 //
 //  Author:
@@ -33,4 +33,3 @@ namespace MBS.Framework.UserInterface
 		public ControlStyleClass.ControlStyleClassCollection Classes { get; } = new ControlStyleClass.ControlStyleClassCollection();
 	}
 }
-

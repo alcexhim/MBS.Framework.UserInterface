@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkMessageDialog.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_message_dialog_new(IntPtr parentHandle, Constants.GtkDialogFlags flags, Constants.GtkMessageType type, Constants.GtkButtonsType buttons, string content);
 	}
 }
-

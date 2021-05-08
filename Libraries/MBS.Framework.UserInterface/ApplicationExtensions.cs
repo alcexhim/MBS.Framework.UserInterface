@@ -1,4 +1,4 @@
-﻿//
+//
 //  ApplicationExtensions.cs
 //
 //  Author:

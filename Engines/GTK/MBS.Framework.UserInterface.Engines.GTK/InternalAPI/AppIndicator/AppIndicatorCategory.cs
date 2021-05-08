@@ -1,4 +1,4 @@
-﻿//
+//
 //  AppIndicatorCategory.cs
 //
 //  Author:

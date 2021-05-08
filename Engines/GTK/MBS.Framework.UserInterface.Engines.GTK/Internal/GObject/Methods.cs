@@ -482,4 +482,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GObject
 		public static extern void g_signal_emit_by_name(IntPtr handle, string detailed_signal);
 	}
 }
-

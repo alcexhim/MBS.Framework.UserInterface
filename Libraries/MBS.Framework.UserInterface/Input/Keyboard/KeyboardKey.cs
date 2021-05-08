@@ -196,4 +196,3 @@ namespace MBS.Framework.UserInterface.Input.Keyboard
 		ArrowDown = 0x28
 	}
 }
-

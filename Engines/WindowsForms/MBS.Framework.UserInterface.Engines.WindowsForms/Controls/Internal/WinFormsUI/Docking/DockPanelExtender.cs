@@ -6,222 +6,222 @@ using static WeifenLuo.WinFormsUI.Docking.DockPanel.DockDragHandler;
 
 namespace WeifenLuo.WinFormsUI.Docking
 {
-    public sealed class DockPanelExtender
-    {
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public interface IDockPaneFactory
-        {
-            DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show);
+	public sealed class DockPanelExtender
+	{
+		[SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+		public interface IDockPaneFactory
+		{
+			DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show);
 
-            [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
-            DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show);
+			[SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
+			DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show);
 
-            DockPane CreateDockPane(IDockContent content, DockPane previousPane, DockAlignment alignment,
-                                    double proportion, bool show);
+			DockPane CreateDockPane(IDockContent content, DockPane previousPane, DockAlignment alignment,
+									double proportion, bool show);
 
-            [SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
-            DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show);
-        }
+			[SuppressMessage("Microsoft.Naming", "CA1720:AvoidTypeNamesInParameters", MessageId = "1#")]
+			DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show);
+		}
 
-        public interface IDockPaneSplitterControlFactory
-        {
-            DockPane.SplitterControlBase CreateSplitterControl(DockPane pane);
-        }
-        
-        public interface IWindowSplitterControlFactory
-        {
-            SplitterBase CreateSplitterControl(ISplitterHost host);
-        }
+		public interface IDockPaneSplitterControlFactory
+		{
+			DockPane.SplitterControlBase CreateSplitterControl(DockPane pane);
+		}
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public interface IFloatWindowFactory
-        {
-            FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane);
-            FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds);
-        }
+		public interface IWindowSplitterControlFactory
+		{
+			SplitterBase CreateSplitterControl(ISplitterHost host);
+		}
 
-        public interface IDockWindowFactory
-        {
-            DockWindow CreateDockWindow(DockPanel dockPanel, DockState dockState);
-        }
+		[SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+		public interface IFloatWindowFactory
+		{
+			FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane);
+			FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds);
+		}
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public interface IDockPaneCaptionFactory
-        {
-            DockPaneCaptionBase CreateDockPaneCaption(DockPane pane);
-        }
+		public interface IDockWindowFactory
+		{
+			DockWindow CreateDockWindow(DockPanel dockPanel, DockState dockState);
+		}
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public interface IDockPaneStripFactory
-        {
-            DockPaneStripBase CreateDockPaneStrip(DockPane pane);
-        }
+		[SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+		public interface IDockPaneCaptionFactory
+		{
+			DockPaneCaptionBase CreateDockPaneCaption(DockPane pane);
+		}
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public interface IAutoHideStripFactory
-        {
-            AutoHideStripBase CreateAutoHideStrip(DockPanel panel);
-        }
+		[SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+		public interface IDockPaneStripFactory
+		{
+			DockPaneStripBase CreateDockPaneStrip(DockPane pane);
+		}
 
-        public interface IAutoHideWindowFactory
-        {
-            AutoHideWindowControl CreateAutoHideWindow(DockPanel panel);
-        }
+		[SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+		public interface IAutoHideStripFactory
+		{
+			AutoHideStripBase CreateAutoHideStrip(DockPanel panel);
+		}
 
-        public interface IPaneIndicatorFactory
-        {
-            IPaneIndicator CreatePaneIndicator(ThemeBase theme);
-        }
+		public interface IAutoHideWindowFactory
+		{
+			AutoHideWindowControl CreateAutoHideWindow(DockPanel panel);
+		}
 
-        public interface IPanelIndicatorFactory
-        {
-            IPanelIndicator CreatePanelIndicator(DockStyle style, ThemeBase theme);
-        }
+		public interface IPaneIndicatorFactory
+		{
+			IPaneIndicator CreatePaneIndicator(ThemeBase theme);
+		}
 
-        public interface IDockOutlineFactory
-        {
-            DockOutlineBase CreateDockOutline();
-        }
+		public interface IPanelIndicatorFactory
+		{
+			IPanelIndicator CreatePanelIndicator(DockStyle style, ThemeBase theme);
+		}
 
-        public interface IDockIndicatorFactory
-        {
-            DockIndicator CreateDockIndicator(DockDragHandler dockDragHandler);
-        }
+		public interface IDockOutlineFactory
+		{
+			DockOutlineBase CreateDockOutline();
+		}
 
-        #region DefaultDockPaneFactory
+		public interface IDockIndicatorFactory
+		{
+			DockIndicator CreateDockIndicator(DockDragHandler dockDragHandler);
+		}
 
-        private class DefaultDockPaneFactory : IDockPaneFactory
-        {
-            public DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show)
-            {
-                return new DockPane(content, visibleState, show);
-            }
+		#region DefaultDockPaneFactory
 
-            public DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show)
-            {
-                return new DockPane(content, floatWindow, show);
-            }
+		private class DefaultDockPaneFactory : IDockPaneFactory
+		{
+			public DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show)
+			{
+				return new DockPane(content, visibleState, show);
+			}
 
-            public DockPane CreateDockPane(IDockContent content, DockPane prevPane, DockAlignment alignment,
-                                           double proportion, bool show)
-            {
-                return new DockPane(content, prevPane, alignment, proportion, show);
-            }
+			public DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show)
+			{
+				return new DockPane(content, floatWindow, show);
+			}
 
-            public DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
-            {
-                return new DockPane(content, floatWindowBounds, show);
-            }
-        }
+			public DockPane CreateDockPane(IDockContent content, DockPane prevPane, DockAlignment alignment,
+										   double proportion, bool show)
+			{
+				return new DockPane(content, prevPane, alignment, proportion, show);
+			}
 
-        #endregion
+			public DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
+			{
+				return new DockPane(content, floatWindowBounds, show);
+			}
+		}
 
-        #region DefaultFloatWindowFactory
+		#endregion
 
-        private class DefaultFloatWindowFactory : IFloatWindowFactory
-        {
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
-            {
-                return new FloatWindow(dockPanel, pane);
-            }
+		#region DefaultFloatWindowFactory
 
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
-            {
-                return new FloatWindow(dockPanel, pane, bounds);
-            }
-        }
+		private class DefaultFloatWindowFactory : IFloatWindowFactory
+		{
+			public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
+			{
+				return new FloatWindow(dockPanel, pane);
+			}
 
-        #endregion
+			public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+			{
+				return new FloatWindow(dockPanel, pane, bounds);
+			}
+		}
 
-        private IDockPaneFactory m_dockPaneFactory = null;
+		#endregion
 
-        public IDockPaneFactory DockPaneFactory
-        {
-            get
-            {
-                if (m_dockPaneFactory == null)
-                {
-                    m_dockPaneFactory = new DefaultDockPaneFactory();
-                }
+		private IDockPaneFactory m_dockPaneFactory = null;
 
-                return m_dockPaneFactory;
-            }
-            set
-            {
-                m_dockPaneFactory = value;
-            }
-        }
+		public IDockPaneFactory DockPaneFactory
+		{
+			get
+			{
+				if (m_dockPaneFactory == null)
+				{
+					m_dockPaneFactory = new DefaultDockPaneFactory();
+				}
 
-        public IDockPaneSplitterControlFactory DockPaneSplitterControlFactory { get; set; }
+				return m_dockPaneFactory;
+			}
+			set
+			{
+				m_dockPaneFactory = value;
+			}
+		}
 
-        public IWindowSplitterControlFactory WindowSplitterControlFactory { get; set; }
+		public IDockPaneSplitterControlFactory DockPaneSplitterControlFactory { get; set; }
 
-        private IFloatWindowFactory m_floatWindowFactory = null;
+		public IWindowSplitterControlFactory WindowSplitterControlFactory { get; set; }
 
-        public IFloatWindowFactory FloatWindowFactory
-        {
-            get
-            {
-                if (m_floatWindowFactory == null)
-                {
-                    m_floatWindowFactory = new DefaultFloatWindowFactory();
-                }
+		private IFloatWindowFactory m_floatWindowFactory = null;
 
-                return m_floatWindowFactory;
-            }
-            set
-            {
-                m_floatWindowFactory = value;
-            }
-        }
+		public IFloatWindowFactory FloatWindowFactory
+		{
+			get
+			{
+				if (m_floatWindowFactory == null)
+				{
+					m_floatWindowFactory = new DefaultFloatWindowFactory();
+				}
 
-        public IDockWindowFactory DockWindowFactory { get; set; }
+				return m_floatWindowFactory;
+			}
+			set
+			{
+				m_floatWindowFactory = value;
+			}
+		}
 
-        public IDockPaneCaptionFactory DockPaneCaptionFactory { get; set; }
+		public IDockWindowFactory DockWindowFactory { get; set; }
 
-        public IDockPaneStripFactory DockPaneStripFactory { get; set; }
+		public IDockPaneCaptionFactory DockPaneCaptionFactory { get; set; }
 
-        private IAutoHideStripFactory m_autoHideStripFactory = null;
+		public IDockPaneStripFactory DockPaneStripFactory { get; set; }
 
-        public IAutoHideStripFactory AutoHideStripFactory
-        {
-            get
-            {
-                return m_autoHideStripFactory;
-            }
-            set
-            {
-                if (m_autoHideStripFactory == value)
-                {
-                    return;
-                }
+		private IAutoHideStripFactory m_autoHideStripFactory = null;
 
-                m_autoHideStripFactory = value;
-            }
-        }
+		public IAutoHideStripFactory AutoHideStripFactory
+		{
+			get
+			{
+				return m_autoHideStripFactory;
+			}
+			set
+			{
+				if (m_autoHideStripFactory == value)
+				{
+					return;
+				}
 
-        private IAutoHideWindowFactory m_autoHideWindowFactory;
-        
-        public IAutoHideWindowFactory AutoHideWindowFactory
-        {
-            get { return m_autoHideWindowFactory; }
-            set
-            {
-                if (m_autoHideWindowFactory == value)
-                {
-                    return;
-                }
+				m_autoHideStripFactory = value;
+			}
+		}
 
-                m_autoHideWindowFactory = value;
-            }
-        }
+		private IAutoHideWindowFactory m_autoHideWindowFactory;
 
-        public IPaneIndicatorFactory PaneIndicatorFactory { get; set; }
+		public IAutoHideWindowFactory AutoHideWindowFactory
+		{
+			get { return m_autoHideWindowFactory; }
+			set
+			{
+				if (m_autoHideWindowFactory == value)
+				{
+					return;
+				}
 
-        public IPanelIndicatorFactory PanelIndicatorFactory { get; set; }
+				m_autoHideWindowFactory = value;
+			}
+		}
 
-        public IDockOutlineFactory DockOutlineFactory { get; set; }
+		public IPaneIndicatorFactory PaneIndicatorFactory { get; set; }
 
-        public IDockIndicatorFactory DockIndicatorFactory { get; set; }
-    }
+		public IPanelIndicatorFactory PanelIndicatorFactory { get; set; }
+
+		public IDockOutlineFactory DockOutlineFactory { get; set; }
+
+		public IDockIndicatorFactory DockIndicatorFactory { get; set; }
+	}
 }

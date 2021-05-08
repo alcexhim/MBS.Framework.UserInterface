@@ -1,4 +1,4 @@
-﻿//
+//
 //  ListViewSelectionChangingEvent.cs
 //
 //  Author:

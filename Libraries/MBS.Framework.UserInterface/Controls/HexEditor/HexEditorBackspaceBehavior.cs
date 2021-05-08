@@ -1,4 +1,4 @@
-﻿//
+//
 //  HexEditorBackspaceBehavior.cs
 //
 //  Author:

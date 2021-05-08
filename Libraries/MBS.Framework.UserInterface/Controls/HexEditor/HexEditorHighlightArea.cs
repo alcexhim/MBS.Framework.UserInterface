@@ -1,4 +1,4 @@
-﻿//
+//
 //  HexEditorHighlightArea.cs
 //
 //  Author:

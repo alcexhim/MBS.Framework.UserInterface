@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkToolbar.cs
 //
 //  Author:
@@ -36,4 +36,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_toolbar_set_style(IntPtr /*GtkToolbar*/ toolbar, Constants.GtkToolbarStyle /*GtkToolItem*/ style);
 	}
 }
-

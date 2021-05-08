@@ -10,13 +10,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 	public class ToolBarDockHolder : System.Windows.Forms.UserControl
 	{
 		private System.ComponentModel.Container components = null;
-		
+
 		// Added by mav
 		private AllowedBorders _allowedBorders = AllowedBorders.All;
 		public AllowedBorders AllowedBorders
 		{
 			get {  return _allowedBorders; }
-			set { _allowedBorders = value; }    
+			set { _allowedBorders = value; }
 		}
 
 		public bool IsAllowed (DockStyle dock)
@@ -43,21 +43,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		public System.Windows.Forms.Control Control { get { return _control; } }
 
 		Point _preferredDockedLocation = new Point(0,0);
-		public Point PreferredDockedLocation 
+		public Point PreferredDockedLocation
 		{
 			get { return _preferredDockedLocation; }
 			set { _preferredDockedLocation = value; }
 		}
 
 		ToolBarDockArea _preferredDockedArea;
-		public ToolBarDockArea PreferredDockedArea 
+		public ToolBarDockArea PreferredDockedArea
 		{
 			get { return _preferredDockedArea; }
 			set { _preferredDockedArea = value; }
 		}
 
 		Form _form = new Form();
-		public Form FloatForm 
+		public Form FloatForm
 		{
 			get { return _form; }
 		}
@@ -68,23 +68,23 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		{
 			get {  return _toolbarTitle; }
 			set
-			{ 
+			{
 				if (_toolbarTitle != value)
 				{
 					_toolbarTitle = value;
 					TitleTextChanged();
 				}
 
-			}    
+			}
 		}
 
 		DockStyle _style = DockStyle.Top;
 		private System.Windows.Forms.Panel _panel;
-	
-		public DockStyle DockStyle 
+
+		public DockStyle DockStyle
 		{
 			get { return _style; }
-			set 
+			set
 			{
 				_style = value;
 				Create();
@@ -92,7 +92,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 		ToolBarManager _dockManager = null;
-		public ToolBarManager DockManager 
+		public ToolBarManager DockManager
 		{
 			get { return _dockManager; }
 			set { _dockManager = value; }
@@ -101,25 +101,25 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		public ToolBarDockHolder(ToolBarManager dm, System.Windows.Forms.Control c, DockStyle style)
 		{
 			InitializeComponent();
-			this.SetStyle(	
-				ControlStyles.AllPaintingInWmPaint | 
-				ControlStyles.UserPaint | 
+			this.SetStyle(
+				ControlStyles.AllPaintingInWmPaint |
+				ControlStyles.UserPaint |
 				ControlStyles.DoubleBuffer, true);
 
 			_panel.Controls.AddRange(new System.Windows.Forms.Control[]{c});
 			DockManager = dm;
-			if(style == DockStyle.Left) 
+			if(style == DockStyle.Left)
 			{
 				_preferredDockedArea = dm.Left;
-			} 
-			else if(style == DockStyle.Right) 
+			}
+			else if(style == DockStyle.Right)
 			{
 				_preferredDockedArea = dm.Right;
 			}
-			else if(style == DockStyle.Bottom) 
+			else if(style == DockStyle.Bottom)
 			{
 				_preferredDockedArea = dm.Bottom;
-			} 
+			}
 			else
 			{
 				_preferredDockedArea = dm.Top;
@@ -132,7 +132,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			FloatForm.ShowInTaskbar = false;
 			FloatForm.ClientSize = new Size(10,10);
 			// Added by mav
-			DockManager.MainForm.AddOwnedForm(FloatForm); 
+			DockManager.MainForm.AddOwnedForm(FloatForm);
 			DockStyle = style;
 			ToolbarTitle = c.Text;
 			_control.TextChanged += new EventHandler(control_TextChanged);
@@ -155,13 +155,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			ToolbarTitle = _control.Text;
 		}
 
-		private void TitleTextChanged() 
+		private void TitleTextChanged()
 		{
 			if(FloatForm.Visible)
 				this.Invalidate(false);
 		}
 
-		void Create() 
+		void Create()
 		{
 			UpdateSize();
 		}
@@ -264,13 +264,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 
-		public bool CanDrag(Point p) 
+		public bool CanDrag(Point p)
 		{
-			if(DockStyle == DockStyle.None) 
+			if(DockStyle == DockStyle.None)
 			{
 				return p.Y < 16 && p.X < Width-16;
 			}
-			else 
+			else
 			{
 				if(DockStyle != DockStyle.Right && DockStyle != DockStyle.Left)
 					return p.X < 8 && ClientRectangle.Contains(p);
@@ -291,24 +291,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 		#region Component Designer generated code
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
 		{
 			this._panel = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
-			// 
+			//
 			// _panel
-			// 
+			//
 			this._panel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this._panel.Name = "_panel";
 			this._panel.Size = new System.Drawing.Size(384, 40);
 			this._panel.TabIndex = 0;
-			// 
+			//
 			// ToolBarDockHolder
-			// 
+			//
 			this.BackColor = System.Drawing.SystemColors.ControlLight;
 			this.Controls.AddRange(new System.Windows.Forms.Control[] {
 																		  this._panel});
@@ -324,7 +324,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		{
 			base.OnPaint(e);
 
-			if(DockStyle == DockStyle.None) 
+			if(DockStyle == DockStyle.None)
 			{
 				e.Graphics.FillRectangle(SystemBrushes.ControlDark, ClientRectangle);
 				// Added by mav
@@ -351,14 +351,14 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 
 				// draw the gripper
 				/*
-				if(DockStyle != DockStyle.Right && DockStyle != DockStyle.Left) 
+				if(DockStyle != DockStyle.Right && DockStyle != DockStyle.Left)
 				{
-					for(int i=3; i<this.Size.Height-3; i+=off) 
+					for(int i=3; i<this.Size.Height-3; i+=off)
 						e.Graphics.DrawLine(pen, new Point(off, i), new Point(off+off, i));
-				} 
-				else 
+				}
+				else
 				{
-					for(int i=3; i<this.Size.Width-3; i+=off) 
+					for(int i=3; i<this.Size.Width-3; i+=off)
 						e.Graphics.DrawLine(pen, new Point(i, off), new Point(i, off+off));
 				}
 				*/
@@ -402,12 +402,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		{
 			base.OnMouseUp(e);
 
-			if(e.Button == MouseButtons.Right && CanDrag(new Point(e.X, e.Y))) 
-			{				
+			if(e.Button == MouseButtons.Right && CanDrag(new Point(e.X, e.Y)))
+			{
 				DockManager.ShowContextMenu(this.PointToScreen(new Point(e.X, e.Y)));
-			} 
+			}
 			// Floating Form Close Button Clicked
-			if(e.Button == MouseButtons.Left 
+			if(e.Button == MouseButtons.Left
 				&& DockStyle == DockStyle.None
 				&& e.Y < 16 && e.X > Width-16)
 			{
@@ -416,19 +416,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 		}
 
 		static int _mininumStrSize = 0;
-		private void DrawString(Graphics g, string s, Rectangle area, Brush brush) 
+		private void DrawString(Graphics g, string s, Rectangle area, Brush brush)
 		{
-			if(_mininumStrSize == 0) 
+			if(_mininumStrSize == 0)
 			{
 				_mininumStrSize = (int)g.MeasureString("....", this.Font).Width;
 			}
-			if(area.Width < _mininumStrSize) 
+			if(area.Width < _mininumStrSize)
 				return;
 			StringFormat drawFormat = new StringFormat();
 			drawFormat.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
 			drawFormat.Trimming = StringTrimming.EllipsisCharacter;
 			SizeF ss = g.MeasureString(s, this.Font);
-			if(ss.Height < area.Height) 
+			if(ss.Height < area.Height)
 			{
 				int offset = (int)(area.Height - ss.Height)/2;
 				area.Y += offset;
@@ -437,7 +437,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Com
 			g.DrawString(s, this.Font, brush, area, drawFormat);
 		}
 
-		private void DrawCloseButton(Graphics g, Rectangle cross, Pen pen) 
+		private void DrawCloseButton(Graphics g, Rectangle cross, Pen pen)
 		{
 			cross.Inflate(-2, -2);
 

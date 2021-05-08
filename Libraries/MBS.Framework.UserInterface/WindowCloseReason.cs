@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowCloseReason.cs
 //
 //  Author:

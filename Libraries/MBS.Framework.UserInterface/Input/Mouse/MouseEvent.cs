@@ -1,10 +1,10 @@
-﻿//
+//
 //  MouseEvent.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -31,12 +31,12 @@ namespace MBS.Framework.UserInterface.Input.Mouse
 		public double Y { get; private set; }
 
 		public Vector2D Location { get { return new Vector2D((int)X, (int)Y); } }
-		
+
 		public MouseButtons Buttons { get; private set; }
 		public KeyboardModifierKey ModifierKeys { get; private set; }
 
 		public bool Handled { get; set; } = false;
-		
+
 		public MouseEventArgs(double x, double y, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
 			if (((UIApplication)Application.Instance).ShouldDpiScale)

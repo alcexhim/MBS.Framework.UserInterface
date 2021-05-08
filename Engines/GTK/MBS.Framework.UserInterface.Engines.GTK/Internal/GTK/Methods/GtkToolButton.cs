@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkToolButton.cs
 //
 //  Author:
@@ -37,4 +37,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, IntPtr label);
 	}
 }
-

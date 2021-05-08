@@ -1,4 +1,4 @@
-﻿//
+//
 //  AutoSuggestWindow.cs
 //
 //  Author:

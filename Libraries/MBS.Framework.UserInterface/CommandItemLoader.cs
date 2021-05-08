@@ -1,4 +1,4 @@
-﻿//
+//
 //  CommandItemLoader.cs
 //
 //  Author:

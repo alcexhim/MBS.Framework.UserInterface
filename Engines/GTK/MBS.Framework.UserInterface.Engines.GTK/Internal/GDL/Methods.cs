@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
@@ -14,7 +14,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		public static extern IntPtr gdl_dock_bar_new(IntPtr hDock);
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="dock">The GdlDock widget to bind it to. Note that this widget must be a type of GdlDock.</param>
 		/// <param name="item">The item to bind.</param>

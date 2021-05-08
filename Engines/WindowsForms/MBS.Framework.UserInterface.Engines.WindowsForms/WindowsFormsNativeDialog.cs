@@ -1,4 +1,4 @@
-﻿//
+//
 //  WindowsFormsNativeDialog.cs
 //
 //  Author:

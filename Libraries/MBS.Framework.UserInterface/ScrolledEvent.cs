@@ -1,4 +1,4 @@
-﻿//
+//
 //  ScrolledEvent.cs
 //
 //  Author:

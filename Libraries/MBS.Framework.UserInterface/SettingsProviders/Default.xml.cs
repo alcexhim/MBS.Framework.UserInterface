@@ -1,4 +1,4 @@
-﻿//
+//
 //  Default.xml.cs
 //
 //  Author:

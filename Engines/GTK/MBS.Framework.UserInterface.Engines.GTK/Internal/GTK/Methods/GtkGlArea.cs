@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkGlArea.cs
 //
 //  Author:
@@ -35,4 +35,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr /*GError*/ gtk_gl_area_get_error(IntPtr /*GtkWidget*/ area);
 	}
 }
-

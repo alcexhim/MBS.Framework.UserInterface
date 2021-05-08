@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using MBS.Framework;
 using MBS.Framework.UserInterface.ObjectModels.Theming;
 using MBS.Framework.UserInterface.ObjectModels.Theming.Metrics;
 using MBS.Framework.UserInterface.ObjectModels.Theming.RenderingActions;
@@ -13,12 +10,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 {
 	public class CustomTheme : Theme
 	{
-		private ObjectModels.Theming.Theme mvarThemeDefinition = null;
-		public ObjectModels.Theming.Theme ThemeDefinition { get { return mvarThemeDefinition; } }
+		public ObjectModels.Theming.Theme ThemeDefinition { get; } = null;
 
 		public CustomTheme(ObjectModels.Theming.Theme themeDefinition)
 		{
-			mvarThemeDefinition = themeDefinition;
+			ThemeDefinition = themeDefinition;
 
 			base.ID = themeDefinition.ID;
 			base.Name = themeDefinition.Name;
@@ -39,12 +35,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private System.Drawing.Font FontFromString(string value, ObjectModels.Theming.Theme theme = null)
 		{
-			if (theme == null) theme = mvarThemeDefinition;
+			if (theme == null) theme = ThemeDefinition;
 
 			if (value.StartsWith("@"))
 			{
 				string name = value.Substring(1);
-				
+
 				if (mvarThemeFontOverrides.ContainsKey(name))
 				{
 					if (mvarThemeFontOverrides[name] == name) return null;
@@ -58,7 +54,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 					Console.WriteLine("ac-theme: theme definition does not contain font '" + name + "'");
 					return null;
 				}
-				
+
 				string font = theme.Fonts[name].Value;
 				return FontFromString(font);
 			}
@@ -105,24 +101,24 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private System.Drawing.Color ColorFromString(string value, ObjectModels.Theming.Theme theme = null)
 		{
-			if (theme == null) theme = mvarThemeDefinition;
+			if (theme == null) theme = ThemeDefinition;
 
 			if (value.StartsWith("@"))
 			{
-                string name = value.Substring(1);
+				string name = value.Substring(1);
 				if (mvarThemeColorOverrides.ContainsKey(name))
 				{
 					if (mvarThemeColorOverrides[name] == name) return System.Drawing.Color.Empty;
 					return ColorFromString(mvarThemeColorOverrides[name]);
 				}
 
-                if (!theme.Colors.Contains(name))
-                {
+				if (!theme.Colors.Contains(name))
+				{
 					if (theme.InheritsTheme != null) return ColorFromString(value, theme.InheritsTheme);
 
-                    Console.WriteLine("ac-theme: theme definition does not contain color '" + name + "'");
-                    return System.Drawing.Color.Empty;
-                }
+					Console.WriteLine("ac-theme: theme definition does not contain color '" + name + "'");
+					return System.Drawing.Color.Empty;
+				}
 				string color = theme.Colors[name].Value;
 				return ColorFromString(color);
 			}
@@ -240,8 +236,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		public override string GetBasePath()
 		{
-			if (String.IsNullOrEmpty(mvarThemeDefinition.BasePath)) return base.GetBasePath();
-			return mvarThemeDefinition.BasePath;
+			if (String.IsNullOrEmpty(ThemeDefinition.BasePath)) return base.GetBasePath();
+			return ThemeDefinition.BasePath;
 		}
 
 		private void DrawRenderingAction(System.Drawing.Graphics graphics, object component, RenderingAction action, Dictionary<string, object> variables)
@@ -265,7 +261,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 				System.Windows.Forms.ToolStripItem tsi = (component as System.Windows.Forms.ToolStripItem);
 				bounds = tsi.Bounds;
 				bounds = new System.Drawing.RectangleF(0, 0, bounds.Width, bounds.Height);
-				
+
 				if (tsi is System.Windows.Forms.ToolStripMenuItem)
 				{
 					PaddingMetric padding = (GetMetric("MenuItemMargin") as PaddingMetric);
@@ -304,7 +300,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			if (action is RectangleRenderingAction)
 			{
 				RectangleRenderingAction act = (action as RectangleRenderingAction);
-				
+
 				float x = act.X.Evaluate(dict) + bounds.X;
 				float y = act.Y.Evaluate(dict) + bounds.Y;
 				float w = act.Width.Evaluate(dict);
@@ -313,9 +309,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 				if (act.Fill != null)
 				{
 					graphics.FillRectangle(BrushFromFill(act.Fill, new System.Drawing.RectangleF(x, y, w, h)), x, y, w, h);
-                }
-                if (act.Outline != null)
-                {
+				}
+				if (act.Outline != null)
+				{
 					if (act.Outline is SolidOutline)
 					{
 						graphics.DrawRectangle(PenFromOutline(act.Outline), x, y, w - 1, h - 1);
@@ -351,7 +347,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 						graphics.DrawLine(darkPen, x + w - 1, y, x + w - 1, y + h - 1);
 						graphics.DrawLine(darkPen, x, y + h - 1, x + w - 1, y + h - 1);
 					}
-                }
+				}
 			}
 			else if (action is LineRenderingAction)
 			{
@@ -392,7 +388,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private ThemeMetric GetMetric(string name, ObjectModels.Theming.Theme theme = null)
 		{
-			if (theme == null) theme = mvarThemeDefinition;
+			if (theme == null) theme = ThemeDefinition;
 
 			ThemeMetric tc = theme.Metrics[name];
 			if (tc == null && theme.InheritsTheme != null) return GetMetric(name, theme.InheritsTheme);
@@ -439,12 +435,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			}
 		}
 
-        private Guid GetThemeStateGUIDForControlState(ControlState state, bool focused, bool selected)
-        {
-            switch (state)
-            {
-                case ControlState.Normal:
-                {
+		private Guid GetThemeStateGUIDForControlState(ControlState state, bool focused, bool selected)
+		{
+			switch (state)
+			{
+				case ControlState.Normal:
+				{
 					if (focused)
 					{
 						if (selected)
@@ -463,10 +459,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 							return ThemeComponentStateGuids.NormalSelected;
 						}
 					}
-                    return ThemeComponentStateGuids.Normal;
-                }
-                case ControlState.Hover:
-                {
+					return ThemeComponentStateGuids.Normal;
+				}
+				case ControlState.Hover:
+				{
 					if (focused)
 					{
 						if (selected)
@@ -485,9 +481,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 							return ThemeComponentStateGuids.HoverSelected;
 						}
 					}
-                    return ThemeComponentStateGuids.Hover;
-                }
-                case ControlState.Pressed:
+					return ThemeComponentStateGuids.Hover;
+				}
+				case ControlState.Pressed:
 				{
 					if (focused)
 					{
@@ -507,15 +503,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 							return ThemeComponentStateGuids.PressedSelected;
 						}
 					}
-                    return ThemeComponentStateGuids.Pressed;
-                }
-                case ControlState.Disabled:
-                {
-                    return ThemeComponentStateGuids.Disabled;
-                }
-            }
-            return ThemeComponentStateGuids.None;
-        }
+					return ThemeComponentStateGuids.Pressed;
+				}
+			case ControlState.Disabled:
+				{
+					return ThemeComponentStateGuids.Disabled;
+				}
+			}
+			return ThemeComponentStateGuids.None;
+		}
 
 		public override void DrawCommandBarBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle, Orientation orientation, System.Windows.Forms.ToolStrip parent)
 		{
@@ -553,8 +549,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private ThemeProperty GetProperty(string name, ObjectModels.Theming.Theme theme = null)
 		{
-			if (theme == null) theme = mvarThemeDefinition;
-			
+			if (theme == null) theme = ThemeDefinition;
+
 			ThemeProperty property = theme.Properties[name];
 			if (property == null && theme.InheritsTheme != null) return GetProperty(name, theme.InheritsTheme);
 			return property;
@@ -562,11 +558,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 
 		private ThemeComponent GetComponent(Guid id, ObjectModels.Theming.Theme theme = null)
 		{
-			if (theme == null) theme = mvarThemeDefinition;
-			
+			if (theme == null) theme = ThemeDefinition;
+
 			ThemeComponent tc = theme.Components[id];
 			if (tc == null && theme.InheritsTheme != null) return GetComponent(id, theme.InheritsTheme);
-			
+
 			return tc;
 		}
 
@@ -585,13 +581,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			if (tc != null) DrawThemeComponent(graphics, rectangle, tc, ThemeComponentStateGuids.Normal);
 		}
 
-        public override void DrawMenuItemBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStripItem item)
-        {
-            ThemeComponent tc = null;
-            if (!item.IsOnDropDown)
-            {
+		public override void DrawMenuItemBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStripItem item)
+		{
+			ThemeComponent tc = null;
+			if (!item.IsOnDropDown)
+			{
 				tc = GetComponent(ThemeComponentGuids.CommandBarTopLevelItem);
-            }
+			}
 			if (tc == null) tc = GetComponent(ThemeComponentGuids.CommandBarMenuItem);
 			if (tc == null) tc = GetComponent(ThemeComponentGuids.CommandBarItem);
 
@@ -600,8 +596,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			if (item.Pressed) state = ThemeComponentStateGuids.Pressed;
 			if (!item.Enabled) state = ThemeComponentStateGuids.Disabled;
 
-            if (tc != null) DrawThemeComponent(graphics, item, tc, state);
-        }
+			if (tc != null) DrawThemeComponent(graphics, item, tc, state);
+		}
 		public override void DrawCommandButtonBackground(System.Drawing.Graphics graphics, System.Windows.Forms.ToolStripButton item, System.Windows.Forms.ToolStrip parent)
 		{
 			ThemeComponent tc = GetComponent(ThemeComponentGuids.CommandBarItem);
@@ -624,21 +620,21 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming
 			if (tc != null) DrawThemeComponent(graphics, item, tc, state);
 		}
 
-        public override void DrawText(System.Drawing.Graphics graphics, string text, System.Drawing.Color color, System.Drawing.Font font, System.Drawing.Rectangle textRectangle, System.Windows.Forms.TextFormatFlags textFormat, System.Windows.Forms.ToolStripTextDirection textDirection, System.Windows.Forms.ToolStripItem item)
+		public override void DrawText(System.Drawing.Graphics graphics, string text, System.Drawing.Color color, System.Drawing.Font font, System.Drawing.Rectangle textRectangle, System.Windows.Forms.TextFormatFlags textFormat, System.Windows.Forms.ToolStripTextDirection textDirection, System.Windows.Forms.ToolStripItem item)
 		{
 			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-			
-            color = ColorFromString("@CommandBarItemForeground");
+
+			color = ColorFromString("@CommandBarItemForeground");
 			if (!item.Enabled) color = ColorFromString("@CommandBarItemForegroundDisabled");
 
-            base.DrawText(graphics, text, color, font, textRectangle, textFormat, textDirection, item);
-        }
+			base.DrawText(graphics, text, color, font, textRectangle, textFormat, textDirection, item);
+		}
 
-        public override void DrawCommandBarPanelBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle)
-        {
-            ThemeComponent tc = GetComponent(ThemeComponentGuids.CommandBarRaftingContainer);
+		public override void DrawCommandBarPanelBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle)
+		{
+			ThemeComponent tc = GetComponent(ThemeComponentGuids.CommandBarRaftingContainer);
 			if (tc != null) DrawThemeComponent(graphics, rectangle, tc, ThemeComponentStateGuids.Normal);
-        }
+		}
 
 		public override void DrawDropDownBackground(System.Drawing.Graphics graphics, System.Drawing.Rectangle rectangle, ControlState state)
 		{

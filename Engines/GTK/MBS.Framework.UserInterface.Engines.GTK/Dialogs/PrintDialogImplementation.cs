@@ -1,4 +1,4 @@
-﻿//
+//
 //  PrintDialogImplementation.cs
 //
 //  Author:

@@ -1,10 +1,10 @@
-﻿//
+//
 //  GType.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 
+//  Copyright (c) 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -178,7 +178,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				value = ManagedValue.GType;
 			}
 			Register(value, type);
-			*/		
+			*/
 			return value;
 		}
 

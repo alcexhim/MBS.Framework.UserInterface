@@ -1,4 +1,4 @@
-﻿//
+//
 //  SystemColors.cs
 //
 //  Author:

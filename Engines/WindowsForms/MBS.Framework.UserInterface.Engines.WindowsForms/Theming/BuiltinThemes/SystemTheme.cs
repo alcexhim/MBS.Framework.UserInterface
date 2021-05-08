@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms.VisualStyles;
@@ -25,7 +25,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					public static VisualStyleRenderer Normal
 					{
 						get
-						{ 
+						{
 							if (_Normal == null)
 							{
 								_Normal = new VisualStyleRenderer(VisualStyleElement.Button.PushButton.Normal);
@@ -190,7 +190,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 		protected override void InitBlueLunaColors()
 		{
 			base.InitBlueLunaColors();
-			
+
 			ColorTable.CommandBarControlTextHover = ColorTable.CommandBarControlText;
 			ColorTable.CommandBarMenuControlTextHighlight = Color.FromKnownColor(KnownColor.HighlightText);
 			ColorTable.CommandBarMenuControlTextPressed = Color.FromKnownColor(KnownColor.HighlightText);
@@ -310,7 +310,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 					renderer.DrawBackground(graphics, new System.Drawing.Rectangle(-parent.Left, -parent.Top, w, h));
 				}
 			}
-			
+
 			if (parent is System.Windows.Forms.ToolStripDropDownMenu)
 			{
 				graphics.FillRectangle(new SolidBrush(Color.FromKnownColor(KnownColor.Menu)), new Rectangle(0, 0, parent.Bounds.Width, parent.Bounds.Height));
@@ -453,7 +453,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			}
 
 			Rectangle checkRect = new Rectangle(2, 0, item.Height, item.Height);
-			
+
 			if (item is System.Windows.Forms.ToolStripMenuItem)
 			{
 				System.Windows.Forms.ToolStripMenuItem tsmi = (item as System.Windows.Forms.ToolStripMenuItem);
@@ -565,7 +565,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 
 			base.DrawText(graphics, text, color, font, textRectangle, textFormat, textDirection, item);
 		}
-		
+
 		#region DockPanel
 		public override void DrawDocumentTabBackground(Graphics g, Rectangle rectTab, ControlState controlState, MBS.Framework.UserInterface.Controls.Docking.DockingItemPlacement position, bool selected, bool focused)
 		{
@@ -753,7 +753,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 			}
 
 			if (System.Environment.OSVersion.Version.Major >= 6)
-			{	
+			{
 				if (state == ControlState.Hover)
 				{
 					vsr = new VisualStyleRenderer(vsr.Class, 4, vsr.State);

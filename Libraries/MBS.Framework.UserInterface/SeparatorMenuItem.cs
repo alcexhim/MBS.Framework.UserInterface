@@ -6,4 +6,3 @@ namespace MBS.Framework.UserInterface
 	{
 	}
 }
-

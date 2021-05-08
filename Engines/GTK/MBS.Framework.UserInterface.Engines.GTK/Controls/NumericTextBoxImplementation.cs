@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
@@ -98,7 +98,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr h = Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_new_with_range(txt.Minimum, txt.Maximum, txt.LargeIncrement);
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_value(h, txt.Value);
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_digits(h, (uint)txt.DecimalPlaces);
- 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments(h, txt.SmallIncrement, txt.LargeIncrement);
+			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments(h, txt.SmallIncrement, txt.LargeIncrement);
 			Internal.GObject.Methods.g_signal_connect(h, "value_changed", value_changed_d);
 			return new GTKNativeControl(h);
 		}

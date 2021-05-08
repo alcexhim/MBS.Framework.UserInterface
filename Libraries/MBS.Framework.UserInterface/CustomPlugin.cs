@@ -1,4 +1,4 @@
-﻿//
+//
 //  CustomPlugin.cs
 //
 //  Author:

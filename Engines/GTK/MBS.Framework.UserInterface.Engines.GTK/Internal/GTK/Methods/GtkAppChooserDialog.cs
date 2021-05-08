@@ -1,4 +1,4 @@
-﻿//
+//
 //  GtkAppChooserDialog.cs
 //
 //  Author:
@@ -29,4 +29,3 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern IntPtr gtk_app_chooser_dialog_new_for_content_type(IntPtr /*GtkWindow*/ parent, Constants.GtkDialogFlags modal, string contentType);
 	}
 }
-

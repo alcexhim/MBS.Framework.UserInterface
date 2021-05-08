@@ -1,4 +1,4 @@
-﻿//
+//
 //  SettingsProfileDialog.cs
 //
 //  Author:

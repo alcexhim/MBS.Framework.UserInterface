@@ -1,4 +1,4 @@
-﻿//
+//
 //  ListViewColumn.cs
 //
 //  Author:

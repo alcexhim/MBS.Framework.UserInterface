@@ -11,4 +11,3 @@ namespace MBS.Framework.UserInterface
 		public bool VerticalExpand { get; set; } = false;
 	}
 }
-

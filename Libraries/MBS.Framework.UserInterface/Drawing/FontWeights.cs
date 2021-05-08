@@ -1,4 +1,4 @@
-﻿//
+//
 //  FontWeights.cs
 //
 //  Author:

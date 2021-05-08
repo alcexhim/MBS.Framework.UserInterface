@@ -453,7 +453,10 @@ namespace MBS.Framework.UserInterface
 			set
 			{
 				mvarVisible = value;
-				if (!IsCreated) ((UIApplication)Application.Instance).Engine.CreateControl (this);
+				if (value)
+				{
+					if (!IsCreated) ((UIApplication)Application.Instance).Engine.CreateControl(this);
+				}
 				(this.ControlImplementation)?.SetControlVisibility (value);
 			}
 		}

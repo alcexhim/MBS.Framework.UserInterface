@@ -29,6 +29,11 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		/// <value>The owner.</value>
 		public Control Owner { get; set; } = null;
+		/// <summary>
+		/// Gets or sets the relative direction for this <see cref="PopupWindow"/>.
+		/// </summary>
+		/// <value>The popup direction.</value>
+		public CardinalDirection PopupDirection { get; set; } = CardinalDirection.Top;
 
 		public PopupWindow ()
 		{

@@ -125,6 +125,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(handle, Control.TooltipText);
 
+			if (Control.Size != Dimension2D.Empty)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+			}
+
 			if (Control.Margin != Padding.Empty)
 			{
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_top(handle, Control.Margin.Top);
@@ -237,6 +242,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override void SetControlSizeInternal(Dimension2D value)
 		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)value.Width, (int)value.Height);
 		}
 
 

@@ -36,6 +36,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_popover_popdown(IntPtr /*GtkPopover*/ popover);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_popover_set_position(IntPtr /*GtkPopover*/ popover, Internal.GTK.Constants.GtkPositionType value);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_popover_set_modal(IntPtr /*GtkPopover*/ popover, bool modal);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_popover_get_modal(IntPtr /*GtkPopover*/ popover);

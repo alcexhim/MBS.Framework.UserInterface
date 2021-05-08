@@ -14,6 +14,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\Production.snk</AssemblyOriginatorKeyFile>
     <ReleaseVersion>4.0.2019.12</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -164,7 +165,6 @@
     <Compile Include="ListViewHitTestInfo.cs" />
     <Compile Include="SelectionMode.cs" />
     <Compile Include="WindowStartPosition.cs" />
-    <Compile Include="Controls\SyntaxTextBox.cs" />
     <Compile Include="Controls\Ribbon\RibbonControl.cs" />
     <Compile Include="CustomImplementation.cs" />
     <Compile Include="ControlImplementation.cs" />
@@ -295,6 +295,8 @@
     <Compile Include="CommandBinding.cs" />
     <Compile Include="Internal\Controls\KeyboardSettings\KeyboardSettingsControl.cs" />
     <Compile Include="Internal\Controls\KeyboardSettings\KeyboardSettingsChangeBindingDialog.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxTextBoxControl.cs" />
+    <Compile Include="Controls\SyntaxTextBox\AutoSuggestionWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -341,6 +343,7 @@
     <Folder Include="Internal\" />
     <Folder Include="Internal\Controls\" />
     <Folder Include="Internal\Controls\KeyboardSettings\" />
+    <Folder Include="Controls\SyntaxTextBox\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />

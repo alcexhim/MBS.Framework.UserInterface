@@ -428,5 +428,66 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 		}
+
+
+
+
+
+		internal Internal.GTK.Structures.GtkTextIter GetStartIter()
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_start_iter(hBuffer, ref iter);
+			return iter;
+		}
+		internal Internal.GTK.Structures.GtkTextIter GetEndIter()
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_end_iter(hBuffer, ref iter);
+			return iter;
+		}
+		internal Internal.GTK.Structures.GtkTextIter GetIterAtPosition(int column)
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_offset(hBuffer, ref iter, column);
+			return iter;
+		}
+		internal Internal.GTK.Structures.GtkTextIter GetIterAtLine(int line, int column = 0)
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_line_offset(hBuffer, ref iter, line, column);
+			return iter;
+		}
+
+		internal MBS.Framework.Drawing.Rectangle GetIterLocation(Internal.GTK.Structures.GtkTextIter iter)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle();
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_get_iter_location(handle, ref iter, ref rect);
+			return new Framework.Drawing.Rectangle(rect.x, rect.y, rect.width, rect.height);
+		}
 	}
 }

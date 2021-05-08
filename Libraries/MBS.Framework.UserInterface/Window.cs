@@ -268,6 +268,10 @@ namespace MBS.Framework.UserInterface
 			return true;
 		}
 
+		public void Present()
+		{
+			Present(DateTime.Now);
+		}
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order, deiconifying it, moving it to the current desktop, and/or giving it the
 		/// keyboard focus, possibly dependent on the user’s platform, window manager, and preferences.

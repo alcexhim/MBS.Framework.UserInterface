@@ -67,6 +67,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hLoader = CreateImageLoader(type);
 			return LoadImage(hLoader, filedata, ref hError);
 		}
+
+		internal static Constants.GtkPositionType CardinalDirectionToGtkPositionType(CardinalDirection direction)
+		{
+			switch (direction)
+			{
+				case CardinalDirection.Bottom: return Constants.GtkPositionType.Bottom;
+				case CardinalDirection.Left: return Constants.GtkPositionType.Left;
+				case CardinalDirection.Right: return Constants.GtkPositionType.Right;
+				case CardinalDirection.Top: return Constants.GtkPositionType.Top;
+			}
+			throw new ArgumentException("direction");
+		}
+
 		protected override Image LoadImage(string filename, string type = null)
 		{
 			IntPtr hError = IntPtr.Zero;

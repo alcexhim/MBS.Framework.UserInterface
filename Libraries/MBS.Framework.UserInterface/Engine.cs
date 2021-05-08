@@ -204,8 +204,8 @@ namespace MBS.Framework.UserInterface
 		internal void InsertChildControl(IControlContainer parent, Control control)
 		{
 			if (!parent.IsCreated) return;
-			if (!control.IsCreated)
-				CreateControl(control);
+			if (!control.IsCreated) return;
+				// CreateControl(control);
 
 			InsertChildControlInternal(parent, control);
 		}

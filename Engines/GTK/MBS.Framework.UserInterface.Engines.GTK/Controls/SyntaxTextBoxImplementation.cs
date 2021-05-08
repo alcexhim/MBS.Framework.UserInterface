@@ -20,11 +20,14 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.UserInterface.Controls.SyntaxTextBox;
+using MBS.Framework.UserInterface.Engines.GTK;
+using MBS.Framework.UserInterface.Engines.GTK.Internal.GTK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
-	[ControlImplementation(typeof(SyntaxTextBox))]
-	public class SyntaxTextBoxImplementation : GTKNativeImplementation
+	[ControlImplementation(typeof(SyntaxTextBoxControl))]
+	public class SyntaxTextBoxImplementation : TextBoxImplementation
 	{
 		public SyntaxTextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
@@ -32,6 +35,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 
 		protected override bool SubclassHandlesContextMenu => true;
+
+		protected override string GetControlTextInternal(Control control)
+		{
+			// base.SetControlTextInternal(control, text);
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer != IntPtr.Zero)
+			{
+				Internal.GTK.Structures.GtkTextIter hStartIter = GetStartIter();
+				Internal.GTK.Structures.GtkTextIter hEndIter = GetEndIter();
+
+				string text = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_text(hBuffer, ref hStartIter, ref hEndIter, true);
+				return text;
+			}
+			return null;
+		}
 
 		protected override void SetControlTextInternal(Control control, string text)
 		{
@@ -51,7 +69,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Action<IntPtr /*GtkTextView*/, IntPtr /*GtkWidget*/, IntPtr> populate_popup_d;
 		private void populate_popup(IntPtr /*GtkTextView*/ text_view, IntPtr /*GtkWidget*/ popup, IntPtr user_data)
 		{
-			SyntaxTextBox ctl = (Control as SyntaxTextBox);
+			SyntaxTextBoxControl ctl = (Control as SyntaxTextBoxControl);
 			if (!ctl.MergeContextMenu)
 			{
 				// clear the menu items
@@ -73,7 +91,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private NativeControl CreateSyntaxTextBox(Control control)
 		{
-			SyntaxTextBox ctl = (control as SyntaxTextBox);
+			SyntaxTextBoxControl ctl = (control as SyntaxTextBoxControl);
 			IntPtr handle = IntPtr.Zero;
 
 			IntPtr hLanguageManager = Internal.GTK.Methods.GtkSourceLanguageManager.gtk_source_language_manager_get_default();

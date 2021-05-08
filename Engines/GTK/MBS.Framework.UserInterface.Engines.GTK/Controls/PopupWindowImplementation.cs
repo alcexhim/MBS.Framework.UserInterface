@@ -64,6 +64,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
 			}
 
+			Internal.GTK.Methods.GtkPopover.gtk_popover_set_position(handle, GTKEngine.CardinalDirectionToGtkPositionType(ctl.PopupDirection));
+
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_modal (handle, ctl.Modal);
 			return new GTKNativeControl (handle);
 		}

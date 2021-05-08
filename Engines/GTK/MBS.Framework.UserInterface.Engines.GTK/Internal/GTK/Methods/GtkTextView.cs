@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Runtime.InteropServices;
+using MBS.Framework.UserInterface.Engines.GTK.Internal.GDK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
@@ -39,6 +40,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern bool gtk_text_view_get_editable(IntPtr /*GtkTextView*/ text_view);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_view_set_editable(IntPtr /*GtkTextView*/ text_view, bool editable);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_view_get_iter_location(IntPtr handle, ref Structures.GtkTextIter iter, ref GDK.Structures.GdkRectangle rect);
 	}
 }
 

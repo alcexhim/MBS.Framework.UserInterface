@@ -45,6 +45,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_text_buffer_get_start_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_buffer_get_end_iter(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_get_iter_at_offset(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter, int offset);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_get_iter_at_line_offset(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter, int line, int offset);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_buffer_insert(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter, string text, int len);

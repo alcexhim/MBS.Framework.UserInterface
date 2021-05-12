@@ -34,7 +34,10 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 
 			lv = new ListViewControl();
 			lv.Model = new DefaultTreeModel(new Type[] { typeof(string) });
-			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[0], "Item"));
+			lv.Columns.Add(new ListViewColumn("Item", new CellRenderer[]
+			{
+				new CellRendererText(lv.Model.Columns[0])
+			}));
 			lv.HeaderStyle = ColumnHeaderStyle.None;
 
 			this.Controls.Add(lv, new BoxLayout.Constraints(true, true));

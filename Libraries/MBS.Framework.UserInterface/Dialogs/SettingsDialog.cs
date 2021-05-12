@@ -143,13 +143,17 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				// FIXME: these two lines do completely different things for completely different purposes
 				setting.SetValue((ctl as CheckBox).Checked); // for custom SettingsDialog used as a prompt dialog
-				((UIApplication)Application.Instance).SetSetting<bool>(setting.ID, (ctl as CheckBox).Checked); // for application SettingsDialog
+				// ((UIApplication)Application.Instance).SetSetting<bool>(setting.ID, (ctl as CheckBox).Checked); // for application SettingsDialog
 			}
 			else if (ctl is TextBox)
 			{
 				// FIXME: these two lines do completely different things for completely different purposes
 				setting.SetValue((ctl as TextBox).Text); // for custom SettingsDialog used as a prompt dialog
-				((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
+				// ((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
+			}
+			else if (ctl is ComboBox)
+			{
+				setting.SetValue((ctl as ComboBox).SelectedItem.GetExtraData<ChoiceSetting.ChoiceSettingValue>("value"));
 			}
 			else
 			{
@@ -170,7 +174,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			tv = new ListViewControl();
 			tv.Model = tmOptionGroups;
-			tv.Columns.Add (new ListViewColumnText (tmOptionGroups.Columns [0], "Group"));
+			tv.Columns.Add(new ListViewColumn("Group", new CellRenderer[] { new CellRendererText(tmOptionGroups.Columns[0]) }));
 			tv.HeaderStyle = ColumnHeaderStyle.None;
 			tv.SelectionChanged += tv_SelectionChanged;
 
@@ -702,10 +706,12 @@ namespace MBS.Framework.UserInterface.Dialogs
 				DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(string) });
 				foreach (ChoiceSetting.ChoiceSettingValue value in o.ValidValues)
 				{
-					tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
+					TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
 					{
 						new TreeModelRowColumn(tm.Columns[0], value.Title)
-					}));
+					});
+					row.SetExtraData<ChoiceSetting.ChoiceSettingValue>("value", value);
+					tm.Rows.Add(row);
 				}
 				cbo.Model = tm;
 				cbo.Text = o.GetValue<string>();
@@ -745,7 +751,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				clv.ListView.Model = tm;
 				for (int i = 0; i < o.Settings.Count; i++)
 				{
-					clv.ListView.Columns.Add(new ListViewColumnText(tm.Columns[i], o.Settings[i].Title));
+					clv.ListView.Columns.Add(new ListViewColumn(o.Settings[i].Title, new CellRenderer[] { new CellRendererText(tm.Columns[i]) }));
 				}
 
 				clv.ItemAdding += clv_ItemAdding;

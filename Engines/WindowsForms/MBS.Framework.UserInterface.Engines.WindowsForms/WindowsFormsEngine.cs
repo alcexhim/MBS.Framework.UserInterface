@@ -40,6 +40,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Win32NT ? 1 : -1);
 
+		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected override void SetMenuItemEnabledInternal(MenuItem item, bool enabled)
 		{
 			WindowsFormsNativeControl wfnc = GetHandleForMenuItem(item) as WindowsFormsNativeControl;

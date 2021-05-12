@@ -305,11 +305,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 			if (tv.Model != null)
 			{
-				if (_OldModel != tv.Model)
-				{
-					tv.Model.TreeModelChanged += Model_TreeModelChanged;
-				}
-
 				switch (ImplementedAs(tv))
 				{
 					case ImplementedAsType.ListView:
@@ -423,45 +418,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				}
 			}
 			return size;
-		}
-
-		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
-		{
-			DefaultTreeModel coll = (sender as DefaultTreeModel);
-			UpdateTreeModel(coll, e);
-		}
-
-
-		private Dictionary<ListViewColumnText, DefaultTreeModel> TreeModelForListViewColumn = new Dictionary<ListViewColumnText, DefaultTreeModel>();
-		public void AddColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
-		{
-			if (!TreeModelForListViewColumn.ContainsKey(tvc))
-				return;
-
-			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
-			for (int i = 0; i < list.Count; i++)
-			{
-				model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
-				{
-					new TreeModelRowColumn(model.Columns[0], list[i])
-				}));
-			}
-		}
-		public void RemoveColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
-		{
-			if (!TreeModelForListViewColumn.ContainsKey(tvc))
-				return;
-
-			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
-			return;
-
-			for (int i = 0; i < list.Count; i++)
-			{
-				model.Rows.Remove(new TreeModelRow(new TreeModelRowColumn[]
-				{
-					new TreeModelRowColumn(model.Columns[0], list[i])
-				}));
-			}
 		}
 
 		private Dictionary<ListViewColumn, bool> _ColumnsEditable = new Dictionary<ListViewColumn, bool>();

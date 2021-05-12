@@ -204,8 +204,12 @@ namespace MBS.Framework.UserInterface
 		internal void InsertChildControl(IControlContainer parent, Control control)
 		{
 			if (!parent.IsCreated) return;
-			if (!control.IsCreated) return;
-				// CreateControl(control);
+
+			// FIXME: if we return if !control.IsCreated then we break dynamically adding new Controls to containers
+			// ------ however, if we CreateControl we break... something else, can't remember what right now
+
+			if (!control.IsCreated) //return;
+				CreateControl(control);
 
 			InsertChildControlInternal(parent, control);
 		}
@@ -665,8 +669,28 @@ namespace MBS.Framework.UserInterface
 			}
 
 			NativeTreeModel handle = CreateTreeModelInternal(model);
+			((DefaultTreeModel)model).TreeModelChanged += Model_TreeModelChanged;
+
 			RegisterTreeModel(model, handle);
 			return handle;
+		}
+
+		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
+		{
+			if (sender is DefaultTreeModel)
+			{
+				UpdateTreeModel((sender as DefaultTreeModel), e);
+			}
+			else if (sender is TreeModelRow.TreeModelRowCollection)
+			{
+				UpdateTreeModel((sender as TreeModelRow.TreeModelRowCollection).Model, e);
+			}
+		}
+
+		protected abstract void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e);
+		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)
+		{
+			UpdateTreeModelInternal(tm, e);
 		}
 
 		[DebuggerNonUserCode]

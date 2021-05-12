@@ -609,6 +609,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.Find, "gtk-find");
 			RegisterStockType(StockType.FindAndReplace, "gtk-find-and-replace");
 			RegisterStockType(StockType.Floppy, "gtk-floppy");
+			RegisterStockType(StockType.Folder, "folder");
 			RegisterStockType(StockType.Fullscreen, "gtk-fullscreen");
 			RegisterStockType(StockType.GotoBottom, "gtk-goto-bottom");
 			RegisterStockType(StockType.GotoFirst, "gtk-goto-first");
@@ -1680,7 +1681,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			UpdateTreeModel((sender as TreeModel), e);
 		}
 
-		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)
+		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)
 		{
 			IntPtr hTreeModel = (GetHandleForTreeModel(tm) as GTKNativeTreeModel).Handle;
 			if (hTreeModel == IntPtr.Zero)

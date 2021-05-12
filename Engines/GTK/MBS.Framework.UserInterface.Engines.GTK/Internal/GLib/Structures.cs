@@ -21,6 +21,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 {
@@ -310,6 +311,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 				{
 					val = new Value((double)value);
 				}
+				else if (value is GDKPixbufImage)
+				{
+					val = new Value(value as GDKPixbufImage);
+				}
 				else
 				{
 					val = new Value(value.ToString());
@@ -424,6 +429,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 			{
 				this = new Value(GType.Pointer);
 				GObject.Methods.g_value_set_pointer(ref this, val);
+			}
+
+			public Value(GDKPixbufImage val)
+			{
+				this = new Value(GType.Object);
+				GObject.Methods.g_value_set_object(ref this, val.Handle);
 			}
 			/*
 			public Value(Opaque val, string type_name)

@@ -71,8 +71,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			this.lv = new ListViewControl();
 			lv.Model = tm;
-			lv.Columns.Add(new ListViewColumnCheckBox(tm.Columns[0], "Save"));
-			lv.Columns.Add(new ListViewColumnText(tm.Columns[1], "File name"));
+			lv.Columns.Add(new ListViewColumn("Save", new CellRenderer[] { new CellRendererToggle(tm.Columns[0]) }));
+			lv.Columns.Add(new ListViewColumn("File name", new CellRenderer[] { new CellRendererText(tm.Columns[1]) }));
 			lv.HeaderStyle = ColumnHeaderStyle.None;
 
 			ct.Controls.Add(lv, new BoxLayout.Constraints(true, true, 16));

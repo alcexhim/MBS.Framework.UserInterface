@@ -155,12 +155,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				else
 				{
 					IntPtr area = Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_new();
-					IntPtr renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
 
-					Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_pack_start(area, renderer, true, true, false);
+					IntPtr[] renderers = ListViewImplementation.CreateCellRenderers(area, ctl);
+
+					for (int i = 0; i < renderers.Length; i++)
+					{
+						Internal.GTK.Methods.GtkCellArea.gtk_cell_area_attribute_connect(area, renderers[i], "text", 0);
+						Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_pack_start(area, renderers[i], true, true, false);
+					}
+
 					handle = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_new_with_area(area);
-
-					Internal.GTK.Methods.GtkCellArea.gtk_cell_area_attribute_connect(area, renderer, "text", 0);
 				}
 			}
 			else

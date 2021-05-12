@@ -229,6 +229,8 @@
     <Compile Include="InternalAPI\AppIndicator\Indicator.cs" />
     <Compile Include="InternalAPI\AppIndicator\AppIndicatorStatus.cs" />
     <Compile Include="Internal\GTK\Methods\GtkEntryCompletion.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkCellRendererPixbuf.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkCellLayout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -19,9 +19,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+
 namespace MBS.Framework.UserInterface.Controls.ListView
 {
-	public abstract class ListViewColumn
+	public class ListViewColumn : ICellRendererContainer
 	{
 		public class ListViewColumnCollection
 			: System.Collections.ObjectModel.Collection<ListViewColumn>
@@ -49,6 +51,8 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 				base.RemoveItem(index);
 			}
 		}
+
+		public CellRenderer.CellRendererCollection Renderers { get; } = new CellRenderer.CellRendererCollection();
 
 		public ListViewControl Parent { get; private set; } = null;
 
@@ -129,56 +133,16 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			}
 		}
 
-		public ListViewColumn(TreeModelColumn column, string title = "")
+		public ListViewColumn(string title = "", IEnumerable<CellRenderer> renderers = null)
 		{
-			mvarColumn = column;
 			mvarTitle = title;
-		}
-	}
-	public class ListViewColumnCheckBox
-		: ListViewColumn
-	{
-		public ListViewColumnCheckBox(TreeModelColumn column, string title = "") : base(column, title)
-		{
-		}
-	}
-	public class ListViewColumnText
-		: ListViewColumn
-	{
-		/// <summary>
-		/// Gets a collection of <see cref="String" /> values that are valid for this <see cref="ListViewColumn" />.
-		/// </summary>
-		/// <value>The valid values.</value>
-		public System.Collections.ObjectModel.ObservableCollection<string> ValidValues { get; } = new System.Collections.ObjectModel.ObservableCollection<string>();
-
-		public ListViewColumnText(TreeModelColumn column, string title = "", string[] validValues = null) : base(column, title)
-		{
-			ValidValues.CollectionChanged += ValidValues_CollectionChanged;
-			if (validValues != null)
+			if (renderers != null)
 			{
-				for (int i = 0; i < validValues.Length; i++)
+				foreach (CellRenderer renderer in renderers)
 				{
-					ValidValues.Add(validValues[i]);
+					Renderers.Add(renderer);
 				}
 			}
 		}
-
-		private void ValidValues_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-			switch (e.Action)
-			{
-			case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-				{
-					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.AddColumnValidValues(this, e.NewItems);
-					break;
-				}
-			case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-				{
-					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.RemoveColumnValidValues(this, e.OldItems);
-					break;
-				}
-			}
-		}
-
 	}
 }

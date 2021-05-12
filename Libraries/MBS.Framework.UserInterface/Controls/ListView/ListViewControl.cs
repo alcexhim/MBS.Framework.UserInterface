@@ -25,9 +25,6 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			void SetColumnResizable(ListViewColumn column, bool value);
 			void SetColumnEditable(ListViewColumn column, bool value);
 
-			void AddColumnValidValues(ListViewColumnText column, IList items);
-			void RemoveColumnValidValues(ListViewColumnText column, IList items);
-
 			bool GetSingleClickActivation();
 			void SetSingleClickActivation(bool value);
 		}

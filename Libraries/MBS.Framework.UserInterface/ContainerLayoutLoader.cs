@@ -284,6 +284,7 @@ namespace MBS.Framework.UserInterface
 					case "gdouble": types.Add(typeof(double)); break;
 					case "gchararray": types.Add(typeof(string)); break;
 					case "gpointer": types.Add(typeof(IntPtr)); break;
+					case "GdkPixbuf": types.Add(typeof(Image)); break;
 					default: types.Add(typeof(string)); break;
 				}
 			}
@@ -653,16 +654,9 @@ namespace MBS.Framework.UserInterface
 					{
 						if (item2.ClassName == "GtkTreeViewColumn")
 						{
-							TreeModelColumn col = null;
-							if (item2.Items.Count > 0)
-							{
-								if (item2.Items[0].Attributes["text"] != null)
-								{
-									int colindex = Int32.Parse(item2.Items[0].Attributes["text"].Value);
-									col = (ctl as ListViewControl).Model?.Columns[colindex];
-								}
-							}
-							ListViewColumn ch = new ListViewColumnText(col, item2.Properties["title"]?.Value);
+							List<CellRenderer> renderers = LoadCellRenderers(item2, (ctl as ListViewControl).Model);
+							ListViewColumn ch = new ListViewColumn(item2.Properties["title"]?.Value, renderers);
+
 							(ctl as ListViewControl).Columns.Add(ch);
 						}
 						else if (item2.ClassName == "GtkTreeSelection" && item2.InternalType == "selection")
@@ -827,6 +821,41 @@ namespace MBS.Framework.UserInterface
 				Console.Error.WriteLine("uwt: ContainerLayout: control class '" + item.ClassName + "' not handled");
 			}
 			return ctl;
+		}
+
+		private List<CellRenderer> LoadCellRenderers(LayoutItem item2, TreeModel model)
+		{
+			List<CellRenderer> list = new List<CellRenderer>();
+			foreach (LayoutItem item3 in item2.Items)
+			{
+				CellRenderer renderer = null;
+				switch (item3.ClassName)
+				{
+					case "GtkCellRendererText":
+					{
+						if (item3.Attributes["text"] != null)
+						{
+							int colindex = Int32.Parse(item3.Attributes["text"].Value);
+							renderer = new CellRendererText(model?.Columns[colindex]);
+						}
+						break;
+					}
+					case "GtkCellRendererPixbuf":
+					{
+						if (item3.Attributes["pixbuf"] != null)
+						{
+							int colindex = Int32.Parse(item3.Attributes["pixbuf"].Value);
+							renderer = new CellRendererImage(model?.Columns[colindex]);
+						}
+						break;
+					}
+				}
+				if (renderer != null)
+				{
+					list.Add(renderer);
+				}
+			}
+			return list;
 		}
 
 		private Image ImageFromGtkImage(LayoutItem item)

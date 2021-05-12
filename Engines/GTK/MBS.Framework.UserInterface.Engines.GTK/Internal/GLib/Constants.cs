@@ -1,4 +1,5 @@
 using System;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 {
@@ -29,6 +30,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 			public static IntPtr Object { get; } = new IntPtr(20 << 2);
 			public static IntPtr Variant { get; } = new IntPtr(21 << 2);
 
+			private static IntPtr _GdkPixbuf = IntPtr.Zero;
+			public static IntPtr GdkPixbuf
+			{
+				get
+				{
+					if (_GdkPixbuf == IntPtr.Zero)
+					{
+						_GdkPixbuf = Internal.GObject.Methods.g_type_from_name("GdkPixbuf");
+					}
+					return _GdkPixbuf;
+				}
+			}
+
 			public static IntPtr FromType(Type t)
 			{
 				if (t == typeof(bool)) return Boolean;
@@ -53,6 +67,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 				else if (t == typeof(UInt64)) return UInt64;
 				else if (t == typeof(UInt32)) return ULong;
 				// else if (t == typeof(Enum)) return Variant;
+				else if (t == typeof(Image)) return GdkPixbuf;
 				return IntPtr.Zero;
 			}
 		}

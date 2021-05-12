@@ -181,6 +181,71 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			base.OnMouseDown(e);
 		}
 
+		internal static IntPtr[] CreateCellRenderers(IntPtr /*GtkCellLayout*/ hParent, ICellRendererContainer container)
+		{
+			List<IntPtr> list = new List<IntPtr>();
+			foreach (CellRenderer renderer in container.Renderers)
+			{
+				IntPtr hRenderer = IntPtr.Zero;
+				if (renderer is CellRendererText)
+				{
+					CellRendererText tvct = (renderer as CellRendererText);
+					hRenderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
+
+					if (hRenderer != IntPtr.Zero)
+					{
+						// Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+						RegisterCellRendererForColumn(container, hRenderer);
+					}
+				}
+				else if (renderer is CellRendererImage)
+				{
+					CellRendererImage tvct = (renderer as CellRendererImage);
+					hRenderer = Internal.GTK.Methods.GtkCellRendererPixbuf.gtk_cell_renderer_pixbuf_new();
+
+					if (hRenderer != IntPtr.Zero)
+					{
+						RegisterCellRendererForColumn(container, hRenderer);
+					}
+				}
+				else if (renderer is CellRendererChoice)
+				{
+					CellRendererChoice cr = (renderer as CellRendererChoice);
+					if (cr.Model != null)
+					{
+						hRenderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
+
+						NativeTreeModel nTreeModel = ((UIApplication)Application.Instance).Engine.CreateTreeModel(cr.Model);
+						IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
+
+						Internal.GObject.Methods.g_object_set_property(hRenderer, "model", hModel);
+
+						Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value((int)0);
+						Internal.GObject.Methods.g_object_set_property(hRenderer, "text_column", ref valTextColumn);
+					}
+				}
+				else if (renderer is CellRendererToggle)
+				{
+					hRenderer = Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_new();
+					Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(hRenderer, true);
+
+					// Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+					RegisterCellRendererForColumn(container, hRenderer);
+
+					Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hParent, hRenderer, true);
+					// Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "active", columnIndex);
+				}
+
+				if (hRenderer != IntPtr.Zero)
+				{
+					Internal.GTK.Methods.GtkCellLayout.gtk_cell_layout_pack_start(hParent, hRenderer, renderer.Expand);
+					RegisterCellRenderer(renderer, hRenderer);
+					list.Add(hRenderer);
+				}
+			}
+			return list.ToArray();
+		}
+
 		protected override void OnMouseDoubleClick (MouseEventArgs e)
 		{
 			base.OnMouseDoubleClick (e);
@@ -368,54 +433,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_title(hColumn, tvc.Title);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_clear(hColumn);
 
-								if (tvc is ListViewColumnText)
+								IntPtr[] hRenderers = CreateCellRenderers(hColumn, tvc);
+								for (int i = 0; i < hRenderers.Length; i++)
 								{
-									IntPtr renderer = IntPtr.Zero;
-									ListViewColumnText tvct = (tvc as ListViewColumnText);
-
-									if (tvct.ValidValues.Count > 0)
+									for (int j = 0; j < tvc.Renderers[i].Columns.Count; j++)
 									{
-										renderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
-
-										DefaultTreeModel model = new DefaultTreeModel(new Type[] { typeof(string) });
-										model.TreeModelChanged += Model_TreeModelChanged;
-
-										NativeTreeModel nTreeModel = (Engine as GTKEngine).CreateTreeModel(model);
-										IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
-
-										TreeModelForListViewColumn[tvct] = model;
-
-										Internal.GObject.Methods.g_object_set_property(renderer, "model", hModel);
-
-										Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value((int)0);
-										Internal.GObject.Methods.g_object_set_property(renderer, "text_column", ref valTextColumn);
-
-										AddColumnValidValues(tvct, tvct.ValidValues);
+										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, hRenderers[i], GetNameForCellRendererProperty(tvc.Renderers[i].Columns[j].Property), tv.Model.Columns.IndexOf(tvc.Renderers[i].Columns[j].Column));
 									}
-									else
-									{
-										renderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
-									}
-
-									if (renderer != null)
-									{
-										Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
-										RegisterCellRendererForColumn(tvc, renderer);
-
-										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
-										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "text", columnIndex);
-									}
-								}
-								else if (tvc is ListViewColumnCheckBox)
-								{
-									IntPtr renderer = Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_new();
-									Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(renderer, true);
-
-									Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
-									RegisterCellRendererForColumn(tvc, renderer);
-
-									Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hColumn, renderer, true);
-									// Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "active", columnIndex);
 								}
 
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column(handle, hColumn, -1);
@@ -446,49 +470,36 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);
 		}
 
-		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
+		private string GetNameForCellRendererProperty(CellRendererProperty property)
 		{
-			TreeModelRow.TreeModelRowCollection coll = (sender as TreeModelRow.TreeModelRowCollection);
-			(((UIApplication)Application.Instance).Engine as GTKEngine).UpdateTreeModel(coll.Model, e);
-		}
-
-
-		private Dictionary<ListViewColumnText, DefaultTreeModel> TreeModelForListViewColumn = new Dictionary<ListViewColumnText, DefaultTreeModel>();
-		public void AddColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
-		{
-			if (!TreeModelForListViewColumn.ContainsKey(tvc))
-				return;
-
-			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
-			for (int i = 0; i < list.Count; i++)
+			switch (property)
 			{
-				model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
-				{
-					new TreeModelRowColumn(model.Columns[0], list[i])
-				}));
+				case CellRendererProperty.Text: return "text";
+				case CellRendererProperty.Image: return "pixbuf";
 			}
+			return null;
 		}
-		public void RemoveColumnValidValues(ListViewColumnText tvc, System.Collections.IList list)
+
+		private static Dictionary<CellRenderer, IntPtr> _HandlesForCellRenderer = new Dictionary<CellRenderer, IntPtr>();
+		private static Dictionary<IntPtr, CellRenderer> _CellRenderersForHandle = new Dictionary<IntPtr, CellRenderer>();
+		private static void RegisterCellRenderer(CellRenderer renderer, IntPtr hrenderer)
 		{
-			if (!TreeModelForListViewColumn.ContainsKey(tvc))
-				return;
-
-			DefaultTreeModel model = TreeModelForListViewColumn[tvc];
-			return;
-
-			for (int i = 0; i < list.Count; i++)
+			if (_HandlesForCellRenderer.ContainsKey(renderer))
 			{
-				model.Rows.Remove(new TreeModelRow(new TreeModelRowColumn[]
-				{
-					new TreeModelRowColumn(model.Columns[0], list[i])
-				}));
+				Console.Error.WriteLine("WARNING: clobbering CellRenderer handle {0} ({1}) for {2}", renderer, _HandlesForCellRenderer[renderer], hrenderer);
 			}
+			_HandlesForCellRenderer[renderer] = hrenderer;
+			_CellRenderersForHandle[hrenderer] = renderer;
 		}
 
-		private Dictionary<ListViewColumn, IntPtr> _CellRenderersForColumn = new Dictionary<ListViewColumn, IntPtr>();
-		private Dictionary<IntPtr, ListViewColumn> _ColumnsForCellRenderer = new Dictionary<IntPtr, ListViewColumn>();
-		private void RegisterCellRendererForColumn(ListViewColumn column, IntPtr hrenderer)
+		private static Dictionary<ICellRendererContainer, IntPtr> _CellRenderersForColumn = new Dictionary<ICellRendererContainer, IntPtr>();
+		private static Dictionary<IntPtr, ICellRendererContainer> _ColumnsForCellRenderer = new Dictionary<IntPtr, ICellRendererContainer>();
+		private static void RegisterCellRendererForColumn(ICellRendererContainer column, IntPtr hrenderer)
 		{
+			if (_CellRenderersForColumn.ContainsKey(column))
+			{
+				Console.Error.WriteLine("WARNING: clobbering CellRenderer {0} ({1}) for {2}", column, _CellRenderersForColumn[column], hrenderer);
+			}
 			_CellRenderersForColumn[column] = hrenderer;
 			_ColumnsForCellRenderer[hrenderer] = column;
 		}

@@ -36,7 +36,7 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetSelectedItem(TreeModelRow value);
 		}
 	}
-	public class ComboBox : Control
+	public class ComboBox : Control, ICellRendererContainer
 	{
 		private bool mvarReadOnly = false;
 		/// <summary>
@@ -105,6 +105,8 @@ namespace MBS.Framework.UserInterface.Controls
 					OnChanged(EventArgs.Empty);
 			}
 		}
+
+		public CellRenderer.CellRendererCollection Renderers { get; } = new CellRenderer.CellRendererCollection();
 
 		public event EventHandler Changed;
 		protected virtual void OnChanged(EventArgs e)

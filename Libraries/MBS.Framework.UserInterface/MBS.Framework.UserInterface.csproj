@@ -297,6 +297,10 @@
     <Compile Include="Internal\Controls\KeyboardSettings\KeyboardSettingsChangeBindingDialog.cs" />
     <Compile Include="Controls\SyntaxTextBox\SyntaxTextBoxControl.cs" />
     <Compile Include="Controls\SyntaxTextBox\AutoSuggestionWindow.cs" />
+    <Compile Include="CellRenderer.cs" />
+    <Compile Include="ICellRendererContainer.cs" />
+    <Compile Include="CellRendererProperty.cs" />
+    <Compile Include="CellRendererColumn.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

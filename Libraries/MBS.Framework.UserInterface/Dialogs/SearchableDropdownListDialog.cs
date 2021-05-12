@@ -67,8 +67,14 @@ namespace MBS.Framework.UserInterface.Dialogs
 			this.lv = new ListViewControl();
 			this.lv.Model = new DefaultTreeModel(new Type[] { typeof(string), typeof(string) });
 
-			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[0], "Name"));
-			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[1], "Description"));
+			lv.Columns.Add(new ListViewColumn("Name", new CellRenderer[]
+			{
+				new CellRendererText(lv.Model.Columns[0])
+			}));
+			lv.Columns.Add(new ListViewColumn("Description", new CellRenderer[]
+			{
+				new CellRendererText(lv.Model.Columns[1])
+			}));
 			lv.RowActivated += this.lv_RowActivated;
 			this.Controls.Add(this.lv, new BoxLayout.Constraints(true, true));
 
@@ -127,7 +133,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				lv.Columns.Clear();
 				for (int i = 0; i < value.Length; i++)
 				{
-					lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[i], value[i]));
+					lv.Columns.Add(new ListViewColumn(value[i], new CellRenderer[] { new CellRendererText(lv.Model.Columns[i]) }));
 				}
 			}
 		}

@@ -125,12 +125,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return hLoader;
 		}
 
+		private static Dictionary<IntPtr, GDKPixbufImage> _PixbufsForHandle = new Dictionary<IntPtr, GDKPixbufImage>();
 		private Image LoadImage(IntPtr hLoader, byte[] buffer, ref IntPtr hError)
 		{
 			Internal.GDK.Methods.gdk_pixbuf_loader_write(hLoader, buffer, buffer.Length, ref hError);
 			IntPtr hPixbuf = Internal.GDK.Methods.gdk_pixbuf_loader_get_pixbuf(hLoader);
 			Internal.GDK.Methods.gdk_pixbuf_loader_close(hLoader, ref hError);
-			return new GDKPixbufImage(hPixbuf);
+
+			if (!_PixbufsForHandle.ContainsKey(hPixbuf))
+			{
+				_PixbufsForHandle[hPixbuf] = new GDKPixbufImage(hPixbuf);
+			}
+			return _PixbufsForHandle[hPixbuf];
 		}
 
 		private static Version _Version = null;

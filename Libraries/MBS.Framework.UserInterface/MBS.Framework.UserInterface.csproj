@@ -304,6 +304,7 @@
     <Compile Include="Inhibitor.cs" />
     <Compile Include="InhibitorType.cs" />
     <Compile Include="SessionEndingEvent.cs" />
+    <Compile Include="WindowTypeHint.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

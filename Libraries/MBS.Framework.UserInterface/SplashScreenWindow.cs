@@ -29,6 +29,8 @@ namespace MBS.Framework.UserInterface
 {
 	public class SplashScreenWindow : Window
 	{
+		public override WindowTypeHint TypeHint => WindowTypeHint.SplashScreen;
+
 		private ProgressBar pb = new ProgressBar();
 		public SplashScreenWindow()
 		{

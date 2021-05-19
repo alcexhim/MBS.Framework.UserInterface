@@ -26,6 +26,7 @@ using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Drawing;
+using MBS.Framework.UserInterface.Engines.GTK.Internal.GDK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
@@ -452,8 +453,33 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				return;
 			}
 
+			Internal.GTK.Methods.GtkWindow.gtk_window_set_type_hint(widget, WindowTypeHintToGdkWindowTypeHint(Control.TypeHint));
+
 			OnRealize(EventArgs.Empty);
 		}
+
+		private static Constants.GdkWindowTypeHint WindowTypeHintToGdkWindowTypeHint(WindowTypeHint typeHint)
+		{
+			switch (typeHint)
+			{
+				case WindowTypeHint.Combo: return Constants.GdkWindowTypeHint.Combo;
+				case WindowTypeHint.Desktop: return Constants.GdkWindowTypeHint.Desktop;
+				case WindowTypeHint.Dialog: return Constants.GdkWindowTypeHint.Dialog;
+				case WindowTypeHint.Dnd: return Constants.GdkWindowTypeHint.Dnd;
+				case WindowTypeHint.Dock: return Constants.GdkWindowTypeHint.Dock;
+				case WindowTypeHint.DropdownMenu: return Constants.GdkWindowTypeHint.DropdownMenu;
+				case WindowTypeHint.Menu: return Constants.GdkWindowTypeHint.Menu;
+				case WindowTypeHint.Normal: return Constants.GdkWindowTypeHint.Normal;
+				case WindowTypeHint.Notification: return Constants.GdkWindowTypeHint.Notification;
+				case WindowTypeHint.PopupMenu: return Constants.GdkWindowTypeHint.PopupMenu;
+				case WindowTypeHint.SplashScreen: return Constants.GdkWindowTypeHint.SplashScreen;
+				case WindowTypeHint.Toolbar: return Constants.GdkWindowTypeHint.Toolbar;
+				case WindowTypeHint.Tooltip: return Constants.GdkWindowTypeHint.Tooltip;
+				case WindowTypeHint.Utility: return Constants.GdkWindowTypeHint.Utility;
+			}
+			return Constants.GdkWindowTypeHint.Normal;
+		}
+
 		private void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			if (this == null)

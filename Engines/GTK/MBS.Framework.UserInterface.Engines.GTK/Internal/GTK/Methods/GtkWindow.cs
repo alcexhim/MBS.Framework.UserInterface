@@ -101,5 +101,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_window_fullscreen(IntPtr /*GtkWindow*/ window);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_unfullscreen(IntPtr /*GtkWindow*/ window);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_set_type_hint(IntPtr /*GdkWindow*/ handle, GDK.Constants.GdkWindowTypeHint value);
 	}
 }

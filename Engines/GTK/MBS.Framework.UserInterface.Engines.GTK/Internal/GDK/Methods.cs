@@ -49,6 +49,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_monitor_get_workarea(IntPtr /*GdkMonitor*/ handle, ref Structures.GdkRectangle workarea);
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_window_set_type_hint(IntPtr /*GdkWindow*/ handle, Constants.GdkWindowTypeHint value);
+
 		// pixbuf
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gdk_pixbuf_new(Constants.GdkColorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height);

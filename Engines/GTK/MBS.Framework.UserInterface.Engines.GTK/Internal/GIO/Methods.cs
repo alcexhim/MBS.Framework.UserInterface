@@ -11,6 +11,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GIO
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr g_application_new (string application_id, Constants.GApplicationFlags flags);
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr g_application_get_default();
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool g_application_register (IntPtr /*GApplication*/ application, IntPtr /*GCancellable*/ cancellable, IntPtr /*GError*/ error);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool g_application_get_is_registered (IntPtr /*GApplication*/ application);

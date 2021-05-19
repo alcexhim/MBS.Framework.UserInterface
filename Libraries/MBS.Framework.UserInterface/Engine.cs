@@ -19,6 +19,17 @@ namespace MBS.Framework.UserInterface
 
 		public MainWindow LastWindow { get; internal set; }
 
+		protected abstract void RegisterInhibitorInternal(Inhibitor item);
+		internal void RegisterInhibitor(Inhibitor item)
+		{
+			RegisterInhibitorInternal(item);
+		}
+		protected abstract void UnregisterInhibitorInternal(Inhibitor item);
+		internal void UnregisterInhibitor(Inhibitor item)
+		{
+			UnregisterInhibitorInternal(item);
+		}
+
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
 
 		protected abstract Graphics CreateGraphicsInternal(Image image);

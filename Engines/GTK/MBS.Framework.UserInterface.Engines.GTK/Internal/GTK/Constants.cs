@@ -693,5 +693,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK
 			/// </summary>
 			MultiplePagesPerSheetLayout = 1 << 9
 		}
+
+		[Flags()]
+		public enum GtkApplicationInhibitFlags
+		{
+			None = 0,
+			Logout = (1 << 0),
+			Switch = (1 << 1),
+			Suspend = (1 << 2),
+			Idle = (1 << 3)
+		}
 	}
 }

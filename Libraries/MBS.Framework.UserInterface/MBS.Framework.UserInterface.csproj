@@ -301,6 +301,9 @@
     <Compile Include="ICellRendererContainer.cs" />
     <Compile Include="CellRendererProperty.cs" />
     <Compile Include="CellRendererColumn.cs" />
+    <Compile Include="Inhibitor.cs" />
+    <Compile Include="InhibitorType.cs" />
+    <Compile Include="SessionEndingEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

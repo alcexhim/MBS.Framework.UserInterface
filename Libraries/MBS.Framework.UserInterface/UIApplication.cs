@@ -21,6 +21,14 @@ namespace MBS.Framework.UserInterface
 {
 	public class UIApplication : Application
 	{
+		public Inhibitor.InhibitorCollection Inhibitors { get; } = null;
+
+		public event EventHandler<SessionEndingEventArgs> SessionEnding;
+		protected virtual void OnSessionEnding(SessionEndingEventArgs e)
+		{
+			SessionEnding?.Invoke(this, e);
+		}
+
 		public CommandBinding.CommandBindingCollection CommandBindings { get; } = new CommandBinding.CommandBindingCollection();
 
 		private Engine mvarEngine = null;
@@ -1132,6 +1140,7 @@ namespace MBS.Framework.UserInterface
 		public UIApplication()
 		{
 			CommandLine = new DefaultCommandLine();
+			Inhibitors = new Inhibitor.InhibitorCollection(this);
 		}
 
 		protected override int StartInternal()

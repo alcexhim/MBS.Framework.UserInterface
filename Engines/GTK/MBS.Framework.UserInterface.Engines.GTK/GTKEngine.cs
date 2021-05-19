@@ -34,6 +34,52 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		public IntPtr ApplicationHandle { get; private set; } = IntPtr.Zero;
 
+		private Dictionary<Inhibitor, uint> _InhibitorIDs = new Dictionary<Inhibitor, uint>();
+		protected override void RegisterInhibitorInternal(Inhibitor item)
+		{
+			if (_InhibitorIDs.ContainsKey(item))
+			{
+				// throw new InvalidOperationException("inhibitor already registered, please unregister it first");
+				Console.Error.WriteLine("uwt: inhibitor: inhibitor already registered, please unregister it first");
+				return;
+			}
+
+			Constants.GtkApplicationInhibitFlags flags = Constants.GtkApplicationInhibitFlags.None;
+			if ((item.Type & InhibitorType.SystemIdle) == InhibitorType.SystemIdle)
+			{
+				flags |= Constants.GtkApplicationInhibitFlags.Idle;
+			}
+			if ((item.Type & InhibitorType.SystemLogout) == InhibitorType.SystemLogout)
+			{
+				flags |= Constants.GtkApplicationInhibitFlags.Logout;
+			}
+			if ((item.Type & InhibitorType.SystemSuspend) == InhibitorType.SystemSuspend)
+			{
+				flags |= Constants.GtkApplicationInhibitFlags.Suspend;
+			}
+			if ((item.Type & InhibitorType.SystemUserSwitch) == InhibitorType.SystemUserSwitch)
+			{
+				flags |= Constants.GtkApplicationInhibitFlags.Switch;
+			}
+
+			IntPtr hWnd = IntPtr.Zero;
+			if (item.ParentWindow != null)
+			{
+				hWnd = (GetHandleForControl(item.ParentWindow) as GTKNativeControl).Handle;
+			}
+			_InhibitorIDs[item] = Internal.GTK.Methods.GtkApplication.gtk_application_inhibit(ApplicationHandle, hWnd, flags, item.Message);
+		}
+		protected override void UnregisterInhibitorInternal(Inhibitor item)
+		{
+			if (!_InhibitorIDs.ContainsKey(item))
+			{
+				Console.Error.WriteLine("uwt: inhibitor: no registered inhibitor found");
+				return;
+			}
+			Internal.GTK.Methods.GtkApplication.gtk_application_uninhibit(ApplicationHandle, _InhibitorIDs[item]);
+			_InhibitorIDs.Remove(item);
+		}
+
 		protected override Graphics CreateGraphicsInternal(Image image)
 		{
 			CairoImage ci = (image as CairoImage);
@@ -430,9 +476,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			gc_Application_Startup = new Internal.GObject.Delegates.GCallback(Application_Startup);
 			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
+			gc_Application_QueryEnd = new Internal.GObject.Delegates.GCallback(Application_QueryEnd);
 
 			Console.WriteLine("uwt-gtk: creating GtkApplication with unique name '{0}'", Application.Instance.UniqueName);
 			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.Instance.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
+
+			Internal.GLib.Structures.Value val = new Internal.GLib.Structures.Value(true);
+			Internal.GObject.Methods.g_object_set_property(ApplicationHandle, "register-session", ref val);
 
 			return check;
 		}
@@ -446,6 +496,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "query_end", gc_Application_QueryEnd, IntPtr.Zero);
 
 				_exitCode = Internal.GIO.Methods.g_application_run(ApplicationHandle, argc, argv);
 
@@ -514,11 +565,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;
 		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
+		private Internal.GObject.Delegates.GCallback gc_Application_QueryEnd = null;
 
 		private void Application_Startup(IntPtr application, IntPtr user_data)
 		{
 			Console.WriteLine("Application_Startup");
 			InvokeMethod(Application.Instance, "OnStartup", new object[] { EventArgs.Empty });
+		}
+		private void Application_QueryEnd(IntPtr application, IntPtr user_data)
+		{
+			Console.WriteLine("Application_QueryEnd");
+
+			SessionEndingEventArgs ee = new SessionEndingEventArgs();
+			InvokeMethod(Application.Instance, "OnSessionEnding", new object[] { ee });
+			if (ee.PreventReason != null)
+			{
+				Internal.GTK.Methods.GtkApplication.gtk_application_inhibit(application, IntPtr.Zero, Constants.GtkApplicationInhibitFlags.Logout, ee.PreventReason);
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

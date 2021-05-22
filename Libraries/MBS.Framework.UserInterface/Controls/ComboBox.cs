@@ -87,10 +87,12 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			get
 			{
-				Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
-				if (impl != null)
-					mvarSelectedItem = impl.GetSelectedItem();
-
+				if (IsCreated)
+				{
+					Native.IComboBoxNativeImplementation impl = (this.ControlImplementation as Native.IComboBoxNativeImplementation);
+					if (impl != null)
+						mvarSelectedItem = impl.GetSelectedItem();
+				}
 				return mvarSelectedItem;
 			}
 			set

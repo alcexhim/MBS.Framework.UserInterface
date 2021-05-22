@@ -123,11 +123,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return null;
 		}
 
+		private void _SetSelectedItem(IntPtr handle, TreeModelRow value)
+		{
+			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(value);
+			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_active_iter(handle, ref hIter);
+		}
+
 		public void SetSelectedItem(TreeModelRow value)
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(value);
-			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_active_iter(handle, ref hIter);
+			_SetSelectedItem(handle, value);
 		}
 
 		private Action<IntPtr> gc_Changed_Handler = null;
@@ -182,6 +187,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 
 			Internal.GObject.Methods.g_signal_connect(handle, "changed", gc_Changed_Handler);
+
+			if (ctl.SelectedItem != null)
+			{
+				_SetSelectedItem(handle, ctl.SelectedItem);
+			}
 
 			return new GTKNativeControl (handle, new KeyValuePair<string, IntPtr>[]
 			{

@@ -704,15 +704,19 @@ namespace MBS.Framework.UserInterface.Dialogs
 				ComboBox cbo = new ComboBox();
 				cbo.ReadOnly = true; // o.RequireSelectionFromList;
 				DefaultTreeModel tm = new DefaultTreeModel(new Type[] { typeof(string) });
+				TreeModelRow rowSelected = null;
 				foreach (ChoiceSetting.ChoiceSettingValue value in o.ValidValues)
 				{
 					TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
 					{
 						new TreeModelRowColumn(tm.Columns[0], value.Title)
 					});
+					if (rowSelected == null && o.DefaultValue != null && o.DefaultValue.Equals(value.Value))
+						rowSelected = row;
 					row.SetExtraData<ChoiceSetting.ChoiceSettingValue>("value", value);
 					tm.Rows.Add(row);
 				}
+				cbo.SelectedItem = rowSelected;
 				cbo.Model = tm;
 				cbo.Renderers.Add(new CellRendererText(tm.Columns[0]));
 				cbo.Text = o.GetValue<string>();

@@ -714,6 +714,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 					tm.Rows.Add(row);
 				}
 				cbo.Model = tm;
+				cbo.Renderers.Add(new CellRendererText(tm.Columns[0]));
 				cbo.Text = o.GetValue<string>();
 				cbo.SetExtraData<Setting>("setting", o);
 				control = cbo;

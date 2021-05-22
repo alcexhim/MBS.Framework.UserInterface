@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MBS.Framework.Collections.Generic;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
@@ -377,6 +378,9 @@ namespace MBS.Framework.UserInterface
 					{
 						(ctl as ComboBox).Model = GetPropertyOrLocalRef(item.Properties["model"].Value) as TreeModel;
 					}
+
+					List<CellRenderer> renderers = LoadCellRenderers(item, (ctl as ComboBox).Model);
+					(ctl as ComboBox).Renderers.AddRange(renderers);
 					break;
 				}
 				case "GtkSpinButton":

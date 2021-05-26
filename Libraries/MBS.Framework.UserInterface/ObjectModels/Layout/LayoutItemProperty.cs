@@ -37,7 +37,15 @@ namespace MBS.Framework.UserInterface.ObjectModels.Layout
 			protected override void InsertItem(int index, LayoutItemProperty item)
 			{
 				base.InsertItem(index, item);
-				if (!String.IsNullOrEmpty(item.Name)) _itemsByName[item.Name] = item;
+				if (!String.IsNullOrEmpty(item.Name))
+				{
+					string itemNameWithUnderscore = item.Name.Replace("-", "_");
+					string itemNameWithHyphen = item.Name.Replace("_", "-");
+
+					// support glade 3.22.x (uses underscore) as well as 3.38.x (uses hyphen)
+					_itemsByName[itemNameWithUnderscore] = item;
+					_itemsByName[itemNameWithHyphen] = item;
+				}
 			}
 			protected override void RemoveItem(int index)
 			{

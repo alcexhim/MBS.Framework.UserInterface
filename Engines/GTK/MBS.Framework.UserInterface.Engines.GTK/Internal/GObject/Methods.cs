@@ -247,6 +247,30 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GObject
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
 		}
 		#endregion
+		#region Action<IntPtr, IntPtr, string, IntPtr>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr, string, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr, string, IntPtr> c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
+		}
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr, string, IntPtr> c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
+		}
+		#endregion
+		#region Action<IntPtr, string, IntPtr>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, string, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Action<IntPtr, string, IntPtr> c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
+		}
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Action<IntPtr, string, IntPtr> c_handler, IntPtr data = default(IntPtr))
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
+		}
+		#endregion
 		#region Action<IntPtr, IntPtr, uint>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr, uint> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
@@ -466,6 +490,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GObject
 
 		[DllImport(LIBRARY_FILENAME, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void g_object_set_property(IntPtr /*GObject*/ obj, string property_name, ref GLib.Structures.Value value);
+
+		/// <summary>
+		/// Convenience method for setting a <see cref="Boolean" /> value on a GObject.
+		/// </summary>
+		/// <param name="obj">Object.</param>
+		/// <param name="property_name">Property name.</param>
+		/// <param name="value">If set to <c>true</c> value.</param>
+		public static void g_object_set_property(IntPtr /*GObject*/ obj, string property_name, bool value)
+		{
+			GLib.Structures.Value val = GLib.Structures.Value.FromObject(value);
+			g_object_set_property(obj, property_name, ref val);
+		}
+
 		[DllImport(LIBRARY_FILENAME, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void g_object_get_property(IntPtr /*GObject*/ obj, string property_name, ref GLib.Structures.Value value);
 

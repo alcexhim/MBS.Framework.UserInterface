@@ -55,6 +55,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		public CellRenderer.CellRendererCollection Renderers { get; } = new CellRenderer.CellRendererCollection();
 
 		public ListViewControl Parent { get; private set; } = null;
+		public TreeModel Model { get { return Parent?.Model; } }
 
 		private TreeModelColumn mvarColumn = null;
 		public TreeModelColumn Column { get { return mvarColumn; } set { mvarColumn = value; } }
@@ -116,7 +117,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 				_Reorderable = value;
 			}
 		}
-
+		/*
 		private bool _Editable = false;
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:MBS.Framework.UserInterface.Controls.ListViewColumn"/>
@@ -132,7 +133,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 				_Editable = value;
 			}
 		}
-
+		*/
 		public ListViewColumn(string title = "", IEnumerable<CellRenderer> renderers = null)
 		{
 			mvarTitle = title;

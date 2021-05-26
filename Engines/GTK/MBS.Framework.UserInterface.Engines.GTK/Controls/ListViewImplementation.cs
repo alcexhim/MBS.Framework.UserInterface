@@ -46,6 +46,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			block_selection_func_handler =  new Internal.GTK.Delegates.GtkTreeSelectionFunc(block_selection_func);
 			gtk_cell_renderer_edited_d = new Action<IntPtr, string, string, IntPtr>(gtk_cell_renderer_edited);
+
+			gtk_cell_renderer_text_editing_started_d = new Action<IntPtr, IntPtr, string, IntPtr>(gtk_cell_renderer_text_editing_started);
+			gtk_cell_renderer_text_edited_d = new Action<IntPtr, string, string, IntPtr>(gtk_cell_renderer_text_edited);
 		}
 
 		private void SetSelectionModeInternal(IntPtr handle, ListViewControl tv, SelectionMode value)
@@ -181,7 +184,65 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			base.OnMouseDown(e);
 		}
 
-		internal static IntPtr[] CreateCellRenderers(IntPtr /*GtkCellLayout*/ hParent, ICellRendererContainer container)
+		protected virtual void OnCellEditing(CellEditingEventArgs e)
+		{
+			InvokeMethod(Control, "OnCellEditing", new object[] { e });
+		}
+		protected virtual void OnCellEdited(CellEditedEventArgs e)
+		{
+			InvokeMethod(Control, "OnCellEdited", new object[] { e });
+		}
+
+		private Action<IntPtr, IntPtr, string, IntPtr> gtk_cell_renderer_text_editing_started_d = null;
+		private void gtk_cell_renderer_text_editing_started(IntPtr /*GtkCellRenderer*/ renderer, IntPtr /*GtkCellEditable*/ editable, string path, IntPtr user_data)
+		{
+		}
+		private Action<IntPtr, IntPtr, string, IntPtr> gtk_cell_renderer_toggle_editing_started_d = null;
+		private void gtk_cell_renderer_toggle_editing_started(IntPtr /*GtkCellRenderer*/ renderer, IntPtr /*GtkCellEditable*/ editable, string path, IntPtr user_data)
+		{
+
+		}
+		private Action<IntPtr, string, IntPtr> gtk_cell_renderer_toggle_toggled_d = null;
+		private void gtk_cell_renderer_toggle_toggled(IntPtr /*GtkCellRendererToggle*/ renderer, string path, IntPtr user_data)
+		{
+
+		}
+
+		private Action<IntPtr, string, string, IntPtr> gtk_cell_renderer_text_edited_d = null;
+		private void gtk_cell_renderer_text_edited(IntPtr /*GtkCellRendererText*/ renderer, string path, string new_text, IntPtr user_data)
+		{
+			ICellRendererContainer tmc = _ColumnsForCellRenderer[renderer];
+			CellRenderer rend = _CellRenderersForHandle[renderer];
+
+			Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(new_text);
+
+			IntPtr hTreeStore = ((((UIApplication)Application.Instance).Engine as GTKEngine).GetHandleForTreeModel(tmc.Model) as GTKNativeTreeModel).Handle;
+			Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter();
+			bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter_from_string(hTreeStore, ref hIter, path);
+			if (ret)
+			{
+				TreeModelRow row = (Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(hIter);
+
+				int columnIndex = tmc.Model.Columns.IndexOf(rend.GetColumnForProperty(CellRendererProperty.Text));
+
+				Internal.GLib.Structures.Value oldval = new Internal.GLib.Structures.Value();
+				Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_value(hTreeStore, ref hIter, columnIndex, ref oldval);
+
+				CellEditingEventArgs ce = new CellEditingEventArgs(row, rend.Columns[user_data.ToInt32()].Column, oldval.Val, new_text);
+				OnCellEditing(ce);
+
+				if (ce.Cancel)
+				{
+					return;
+				}
+
+				OnCellEdited(new CellEditedEventArgs(row, rend.Columns[user_data.ToInt32()].Column, oldval.Val, new_text));
+
+				Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, columnIndex, ref val);
+			}
+		}
+
+		internal static IntPtr[] CreateCellRenderers(Control parent, IntPtr /*GtkCellLayout*/ hParent, ICellRendererContainer container)
 		{
 			List<IntPtr> list = new List<IntPtr>();
 			foreach (CellRenderer renderer in container.Renderers)
@@ -194,7 +255,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 					if (hRenderer != IntPtr.Zero)
 					{
-						// Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
+						Internal.GObject.Methods.g_object_set_property(hRenderer, "editable", renderer.Editable);
+						Internal.GObject.Methods.g_object_set_property(hRenderer, "editable-set", true);
+
+						if (parent.ControlImplementation is ListViewImplementation)
+						{
+							Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_editing_started_d, IntPtr.Zero);
+							Internal.GObject.Methods.g_signal_connect(hRenderer, "edited", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_edited_d, IntPtr.Zero);
+						}
 						RegisterCellRendererForColumn(container, hRenderer);
 					}
 				}
@@ -229,6 +297,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					hRenderer = Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_new();
 					Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(hRenderer, true);
 
+					if (parent.ControlImplementation is ListViewImplementation)
+					{
+						Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_editing_started_d, IntPtr.Zero);
+						Internal.GObject.Methods.g_signal_connect(hRenderer, "toggled", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_toggled_d, IntPtr.Zero);
+					}
 					// Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
 					RegisterCellRendererForColumn(container, hRenderer);
 
@@ -314,7 +387,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr hTreeStore = ntm.Handle;
 
 			Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
-
 			Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 		}
 
@@ -402,7 +474,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			InvokeMethod((Control as ListViewControl), "OnRowColumnEdited", new object[] { e });
 		}
 
-		protected void UpdateTreeModel (IntPtr handle)
+		protected void UpdateTreeModel(IntPtr handle)
 		{
 			ListViewControl tv = (Control as ListViewControl);
 
@@ -433,7 +505,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_title(hColumn, tvc.Title);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_clear(hColumn);
 
-								IntPtr[] hRenderers = CreateCellRenderers(hColumn, tvc);
+								IntPtr[] hRenderers = CreateCellRenderers(tv, hColumn, tvc);
 								for (int i = 0; i < hRenderers.Length; i++)
 								{
 									for (int j = 0; j < tvc.Renderers[i].Columns.Count; j++)
@@ -450,7 +522,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_resizable(hColumn, tvc.Resizable);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_reorderable(hColumn, tvc.Reorderable);
 
-								SetColumnEditable(tvc, tvc.Editable);
+								// SetColumnEditable(tvc, tvc.Editable);
 							}
 						}
 

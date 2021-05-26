@@ -27,6 +27,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_model_get_iter(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter, IntPtr /*GtkTreePath*/ path);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_model_get_iter_from_string(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter, string path_string);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_tree_model_get_iter_first(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
@@ -38,5 +40,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_tree_model_get_path (IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_model_get_value(IntPtr /*GtkTreeModel*/ tree_model, ref Structures.GtkTreeIter iter, int column, ref GLib.Structures.Value value);
 	}
 }

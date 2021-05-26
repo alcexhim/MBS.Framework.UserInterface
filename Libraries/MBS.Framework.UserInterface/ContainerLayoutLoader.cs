@@ -842,6 +842,10 @@ namespace MBS.Framework.UserInterface
 							int colindex = Int32.Parse(item3.Attributes["text"].Value);
 							renderer = new CellRendererText(model?.Columns[colindex]);
 						}
+						if (item3.Properties["editable"] != null)
+						{
+							renderer.Editable = item3.Properties["editable"].Value == "True";
+						}
 						break;
 					}
 					case "GtkCellRendererPixbuf":

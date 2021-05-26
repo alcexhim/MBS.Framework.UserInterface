@@ -161,7 +161,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					IntPtr area = Internal.GTK.Methods.GtkCellAreaBox.gtk_cell_area_box_new();
 
-					IntPtr[] renderers = ListViewImplementation.CreateCellRenderers(area, ctl);
+					IntPtr[] renderers = ListViewImplementation.CreateCellRenderers(ctl, area, ctl);
 
 					for (int i = 0; i < renderers.Length; i++)
 					{

@@ -318,7 +318,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 							lvh.Text = tvc.Title;
 							lvh.Tag = tvc;
 							lv.Columns.Add(lvh);
-							SetColumnEditable(tvc, tvc.Editable);
+							// SetColumnEditable(tvc, tvc.Editable);
 						}
 
 						if (lv.VirtualMode)

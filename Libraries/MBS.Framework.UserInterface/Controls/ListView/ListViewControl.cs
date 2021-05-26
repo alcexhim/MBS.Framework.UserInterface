@@ -95,6 +95,18 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			LastHitTest = HitTest(e.X, e.Y);
 		}
 
+		public event EventHandler<CellEditingEventArgs> CellEditing;
+		protected virtual void OnCellEditing(CellEditingEventArgs e)
+		{
+			CellEditing?.Invoke(this, e);
+		}
+
+		public event EventHandler<CellEditedEventArgs> CellEdited;
+		protected virtual void OnCellEdited(CellEditedEventArgs e)
+		{
+			CellEdited?.Invoke(this, e);
+		}
+
 		public event TreeModelChangedEventHandler TreeModelChanged;
 		public void OnTreeModelChanged(object sender, TreeModelChangedEventArgs e)
 		{

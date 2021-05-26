@@ -275,6 +275,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 				{
 					val = new Value((byte)value);
 				}
+				else if (value is bool)
+				{
+					val = new Value((bool)value);
+				}
 				else if (value is sbyte)
 				{
 					val = new Value((sbyte)value);

@@ -1,5 +1,5 @@
 //
-//  ICellRendererContainer.cs
+//  CellEditingEvent.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -21,9 +21,19 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
-	public interface ICellRendererContainer
+	public class CellEditingEventArgs : System.ComponentModel.CancelEventArgs
 	{
-		TreeModel Model { get; }
-		CellRenderer.CellRendererCollection Renderers { get; }
+		public TreeModelRow Row { get; } = null;
+		public TreeModelColumn Column { get; } = null;
+		public object OldValue { get; set; } = null;
+		public object NewValue { get; set; } = null;
+
+		public CellEditingEventArgs(TreeModelRow row, TreeModelColumn column, object oldValue, object newValue)
+		{
+			Row = row;
+			Column = column;
+			OldValue = oldValue;
+			NewValue = newValue;
+		}
 	}
 }

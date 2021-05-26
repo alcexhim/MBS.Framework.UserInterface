@@ -39,7 +39,18 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public CellRendererColumn.CellRendererColumnCollection Columns { get; } = new CellRendererColumn.CellRendererColumnCollection();
+		public bool Editable { get; set; } = false;
 		public bool Expand { get; set; }
+
+		public TreeModelColumn GetColumnForProperty(CellRendererProperty property)
+		{
+			foreach (CellRendererColumn column in Columns)
+			{
+				if (column.Property == property)
+					return column.Column;
+			}
+			return null;
+		}
 	}
 
 	public class CellRendererText

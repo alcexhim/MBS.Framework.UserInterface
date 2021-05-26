@@ -1,5 +1,5 @@
 //
-//  ICellRendererContainer.cs
+//  GtkCellEditable.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
@@ -19,11 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface
+using System.Runtime.InteropServices;
+
+namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
-	public interface ICellRendererContainer
+	internal static class GtkCellEditable
 	{
-		TreeModel Model { get; }
-		CellRenderer.CellRendererCollection Renderers { get; }
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_cell_editable_start_editing(IntPtr /*GtkCellEditable*/ cell_editable, IntPtr /*GdkEvent*/ evt);
 	}
 }

@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			}
 		}
 
-		public CellRenderer.CellRendererCollection Renderers { get; } = new CellRenderer.CellRendererCollection();
+		public CellRenderer.CellRendererCollection Renderers { get; } = null;
 
 		public ListViewControl Parent { get; private set; } = null;
 		public TreeModel Model { get { return Parent?.Model; } }
@@ -136,6 +136,8 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		*/
 		public ListViewColumn(string title = "", IEnumerable<CellRenderer> renderers = null)
 		{
+			Renderers = new CellRenderer.CellRendererCollection(this);
+
 			mvarTitle = title;
 			if (renderers != null)
 			{

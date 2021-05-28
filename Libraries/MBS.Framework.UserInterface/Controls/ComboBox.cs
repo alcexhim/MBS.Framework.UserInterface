@@ -38,6 +38,11 @@ namespace MBS.Framework.UserInterface.Controls
 	}
 	public class ComboBox : Control, ICellRendererContainer
 	{
+		public ComboBox()
+		{
+			Renderers = new CellRenderer.CellRendererCollection(this);
+		}
+
 		private bool mvarReadOnly = false;
 		/// <summary>
 		/// Determines if the current value in this <see cref="ComboBox" /> can be edited in a text box.
@@ -108,7 +113,7 @@ namespace MBS.Framework.UserInterface.Controls
 			}
 		}
 
-		public CellRenderer.CellRendererCollection Renderers { get; } = new CellRenderer.CellRendererCollection();
+		public CellRenderer.CellRendererCollection Renderers { get; } = null;
 
 		public event EventHandler Changed;
 		protected virtual void OnChanged(EventArgs e)

@@ -23,7 +23,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 
 			bool IsColumnResizable(ListViewColumn column);
 			void SetColumnResizable(ListViewColumn column, bool value);
-			void SetColumnEditable(ListViewColumn column, bool value);
+			void SetCellRendererEditable(CellRenderer renderer, bool value);
 
 			bool GetSingleClickActivation();
 			void SetSingleClickActivation(bool value);

@@ -576,12 +576,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			_ColumnsForCellRenderer[hrenderer] = column;
 		}
 
-		public void SetColumnEditable(ListViewColumn tvc, bool editable)
+		public void SetCellRendererEditable(CellRenderer renderer, bool editable)
 		{
-			if (!_CellRenderersForColumn.ContainsKey(tvc))
-				return;
-
-			IntPtr hRenderer = _CellRenderersForColumn[tvc];
+			IntPtr hRenderer = _HandlesForCellRenderer[renderer];
 
 			Internal.GLib.Structures.Value valEditable = new Internal.GLib.Structures.Value(editable);
 			Internal.GObject.Methods.g_object_set_property(hRenderer, "editable", ref valEditable);

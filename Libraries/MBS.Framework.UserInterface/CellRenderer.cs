@@ -25,10 +25,33 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class CellRenderer
 	{
+		public ICellRendererContainer Parent { get; private set; } = null;
+
 		public class CellRendererCollection
 			: System.Collections.ObjectModel.Collection<CellRenderer>
 		{
+			private ICellRendererContainer _parent = null;
+			public CellRendererCollection(ICellRendererContainer parent)
+			{
+				_parent = parent;
+			}
 
+			protected override void ClearItems()
+			{
+				for (int i = 0; i < Count; i++)
+					this[i].Parent = null;
+				base.ClearItems();
+			}
+			protected override void InsertItem(int index, CellRenderer item)
+			{
+				base.InsertItem(index, item);
+				item.Parent = _parent;
+			}
+			protected override void RemoveItem(int index)
+			{
+				this[index].Parent = null;
+				base.RemoveItem(index);
+			}
 		}
 		public CellRenderer(IEnumerable<CellRendererColumn> columns)
 		{
@@ -39,7 +62,25 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public CellRendererColumn.CellRendererColumnCollection Columns { get; } = new CellRendererColumn.CellRendererColumnCollection();
-		public bool Editable { get; set; } = false;
+
+		private bool _Editable = false;
+		public bool Editable
+		{
+			get { return _Editable; }
+			set
+			{
+				_Editable = value;
+				if (Parent is Control)
+				{
+
+				}
+				else if (Parent is Controls.ListView.ListViewColumn)
+				{
+					((Parent as Controls.ListView.ListViewColumn).Parent.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation).SetCellRendererEditable(this, value);
+				}
+			}
+		}
+
 		public bool Expand { get; set; }
 
 		public TreeModelColumn GetColumnForProperty(CellRendererProperty property)

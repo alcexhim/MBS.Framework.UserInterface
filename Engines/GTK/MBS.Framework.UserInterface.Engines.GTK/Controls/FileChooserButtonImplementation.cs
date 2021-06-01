@@ -100,6 +100,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Container fallbackContainer = new Container();
 			fallbackContainer.Layout = new Layouts.BoxLayout(Orientation.Horizontal);
 			fallbackTextBox = new TextBox();
+			fallbackTextBox.Text = btn.SelectedFileName;
 			fallbackTextBox.Changed += FallbackTextBox_Changed;
 			fallbackContainer.Controls.Add(fallbackTextBox, new Layouts.BoxLayout.Constraints(true, true));
 

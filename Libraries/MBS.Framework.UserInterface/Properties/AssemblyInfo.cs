@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MBS.Framework.UserInterface")]
+[assembly: AssemblyTitle("Universal Application Toolkit - User Interface")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MBS.Framework.UserInterface")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Mike Becker's Software")]
+[assembly: AssemblyProduct("Universal Application Toolkit")]
+[assembly: AssemblyCopyright("Copyright © 2015-2021 Mike Becker's Software")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

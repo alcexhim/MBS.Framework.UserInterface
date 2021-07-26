@@ -53,10 +53,8 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			base.OnPaint(e);
 
-			if (BackgroundBrush != null)
-			{
-				e.Graphics.FillRectangle(BackgroundBrush, new MBS.Framework.Drawing.Rectangle(0, 0, Size.Width, Size.Height));
-			}
+			if (Image == null)
+				return;
 
 			if (AutoSize)
 			{
@@ -64,8 +62,10 @@ namespace MBS.Framework.UserInterface.Controls
 				ScrollBounds = Size;
 			}
 
-			if (Image == null)
-				return;
+			if (BackgroundBrush != null)
+			{
+				e.Graphics.FillRectangle(BackgroundBrush, new MBS.Framework.Drawing.Rectangle(0, 0, Size.Width, Size.Height));
+			}
 
 			switch (DisplayMode)
 			{

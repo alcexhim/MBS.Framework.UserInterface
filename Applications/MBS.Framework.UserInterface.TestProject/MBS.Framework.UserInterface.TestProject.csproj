@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A5DAA120-961D-46DB-AD14-B1446DE5A9C3}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UniversalWidgetToolkit.TestProject</RootNamespace>
     <AssemblyName>UniversalWidgetToolkit.TestProject</AssemblyName>

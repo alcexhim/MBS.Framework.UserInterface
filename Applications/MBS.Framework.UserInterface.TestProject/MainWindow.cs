@@ -6,6 +6,7 @@ using MBS.Framework.UserInterface.Layouts;
 
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls.ListView;
+using MBS.Framework.UserInterface.Controls.SyntaxTextBox;
 
 namespace MBS.Framework.UserInterface.TestProject
 {
@@ -67,7 +68,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			TabPage tabCodeEditor = new TabPage();
 			tabCodeEditor.Layout = new BoxLayout(Orientation.Vertical);
 			tabCodeEditor.Text = "Code Editor";
-			SyntaxTextBox txtCodeEditor = new SyntaxTextBox();
+			SyntaxTextBoxControl txtCodeEditor = new SyntaxTextBoxControl();
 			// txtCodeEditor.Multiline = true;
 			tabCodeEditor.Controls.Add(txtCodeEditor, new BoxLayout.Constraints(true, true));
 			tbsTabs.TabPages.Add(tabCodeEditor);
@@ -86,8 +87,8 @@ namespace MBS.Framework.UserInterface.TestProject
 
 
 			tv.Model = tm;
-			tv.Columns.Add(new ListViewColumnText(tm.Columns[0], "Name"));
-			tv.Columns.Add(new ListViewColumnText(tm.Columns[1], "Age"));
+			tv.Columns.Add(new ListViewColumn("Name", new CellRenderer[] { new CellRendererText(tm.Columns[0]) }));
+			tv.Columns.Add(new ListViewColumn("Age", new CellRenderer[] { new CellRendererText(tm.Columns[1]) }));
 
 			tm.Rows.Add(new TreeModelRow(new TreeModelRowColumn[]
 			{
@@ -260,7 +261,7 @@ namespace MBS.Framework.UserInterface.TestProject
 					new SeparatorMenuItem(),
 					new CommandMenuItem("E_xit", null, delegate(object sender, EventArgs e)
 					{
-						Application.Stop ();
+						Application.Instance.Stop ();
 					}, new Shortcut(Input.Keyboard.KeyboardKey.Q, Input.Keyboard.KeyboardModifierKey.Control))
 				}),
 				new CommandMenuItem("_Edit", new MenuItem[]
@@ -387,8 +388,8 @@ namespace MBS.Framework.UserInterface.TestProject
 
 			ListViewControl lv = new ListViewControl();
 			lv.Model = new DefaultTreeModel(new Type[] { typeof(string), typeof(string) });
-			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[0], "Name"));
-			lv.Columns.Add(new ListViewColumnText(lv.Model.Columns[1], "Text"));
+			lv.Columns.Add(new ListViewColumn("Name", new CellRenderer[] { new CellRendererText(lv.Model.Columns[0]) }));
+			lv.Columns.Add(new ListViewColumn("Text", new CellRenderer[] { new CellRendererText(lv.Model.Columns[0]) }));
 
 			StockType[] stockTypes = (StockType[])Enum.GetValues(typeof(StockType));
 			for (int i = 0; i < stockTypes.Length; i++)
@@ -396,14 +397,14 @@ namespace MBS.Framework.UserInterface.TestProject
 				TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
 				{
 					new TreeModelRowColumn(lv.Model.Columns[0], stockTypes[i].ToString()),
-					new TreeModelRowColumn(lv.Model.Columns[1], Application.Engine.StockTypeToLabel(stockTypes[i]))
+					new TreeModelRowColumn(lv.Model.Columns[1], ((UIApplication)Application.Instance).Engine.StockTypeToLabel(stockTypes[i]))
 				});
 				row.SetExtraData<StockType>("stocktype", stockTypes[i]);
 				lv.Model.Rows.Add(row);
 			}
 			ct.Controls.Add(lv, new BoxLayout.Constraints(true, true));
 
-			PictureFrame img = new PictureFrame();
+			ImageView img = new ImageView();
 			lv.SelectionChanged += (sender, e) => img.Image = Image.FromStock(lv.SelectedRows[0].GetExtraData<StockType>("stocktype"), 48);
 			ct.Controls.Add(img, new BoxLayout.Constraints(false, false));
 
@@ -425,7 +426,7 @@ namespace MBS.Framework.UserInterface.TestProject
 		{
 			base.OnClosed(e);
 
-			Application.Stop();
+			Application.Instance.Stop();
 		}
 
 		private void tbsTabs_TabPageDetached(object sender, TabPageDetachedEventArgs e)
@@ -435,7 +436,7 @@ namespace MBS.Framework.UserInterface.TestProject
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			Application.Stop();
+			Application.Instance.Stop();
 		}
 	}
 }

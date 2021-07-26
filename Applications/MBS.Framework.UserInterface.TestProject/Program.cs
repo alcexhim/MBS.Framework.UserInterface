@@ -9,28 +9,33 @@ using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.TestProject
 {
-	static class Program
+	class Program : UIApplication
 	{
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main()
+		static int Main()
 		{
-			Application.DpiAwareness = DpiAwareness.SystemAware;
-			Application.Initialize();
+			return (new Program()).Start();
+		}
 
-			Application.Engine.SetProperty("Windowless", true);
+		public Program()
+		{
+			DpiAwareness = DpiAwareness.SystemAware;
+			ShortName = "uwt-testproject";
+
+			// ((UIApplication)Application.Instance).Engine.SetProperty("Windowless", true);
 
 			Theming.ThemeManager.CurrentTheme = Theming.ThemeManager.GetByID(new Guid("{4D86F538-E277-4E6F-9CAC-60F82D49A19D}"));
 
-			Application.ConfigurationFileNameFilter = "*.uwtxml";
-			Application.Activated += Application_Activated;
-			int nExitCode = Application.Start();
+			ConfigurationFileNameFilter = "*.uwtxml";
 		}
 
-		static void Application_Activated(object sender, ApplicationActivatedEventArgs e)
+		protected override void OnActivated(ApplicationActivatedEventArgs e)
 		{
+			base.OnActivated(e);
+
 			MainWindow window = new MainWindow();
 			window.Show();
 		}

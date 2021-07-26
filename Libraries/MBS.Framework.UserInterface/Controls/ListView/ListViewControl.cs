@@ -62,11 +62,12 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			}
 		}
 
-		private void RecursiveSetControlParent (TreeModelRow row)
+		private void RecursiveSetControlParent(TreeModelRow row)
 		{
 			row.ParentControl = this;
-			foreach (TreeModelRow row2 in row.Rows) {
-				RecursiveSetControlParent (row2);
+			foreach (TreeModelRow row2 in row.Rows)
+			{
+				RecursiveSetControlParent(row2);
 			}
 		}
 

@@ -14,12 +14,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 
 		protected override bool AcceptInternal()
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 
 		protected override WindowsFormsNativeDialog CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
-			throw new NotImplementedException();
+			Internal.AboutDialog.AboutDialog dlg = new Internal.AboutDialog.AboutDialog();
+			return new WindowsFormsNativeDialog(null, dlg);
 		}
 	}
 }

@@ -35,7 +35,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		protected override bool IsSupportedInternal()
 		{
 			// we do not support WinForms on linux coexisting with GTK, because it uses GTK2 and the GTKEngine uses GTK3
-			return Environment.OSVersion.Platform == PlatformID.Win32NT;
+			return true; // return Environment.OSVersion.Platform == PlatformID.Win32NT;
 		}
 	}
 }

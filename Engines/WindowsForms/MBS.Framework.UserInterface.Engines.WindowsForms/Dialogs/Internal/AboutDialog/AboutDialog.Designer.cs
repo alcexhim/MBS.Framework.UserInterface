@@ -148,6 +148,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 24;
 			this.okButton.Text = "&OK";
+			this.okButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			//
 			// AboutBox1
 			//

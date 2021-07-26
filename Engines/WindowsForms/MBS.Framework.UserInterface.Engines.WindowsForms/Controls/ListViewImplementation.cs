@@ -313,12 +313,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
-							TreeModelColumn c = tvc.Column;
 							LISTVIEWCOLUMNHEADERTYPE lvh = new LISTVIEWCOLUMNHEADERTYPE();
 							lvh.Text = tvc.Title;
 							lvh.Tag = tvc;
 							lv.Columns.Add(lvh);
-							// SetColumnEditable(tvc, tvc.Editable);
 						}
 
 						if (lv.VirtualMode)
@@ -420,10 +418,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			return size;
 		}
 
-		private Dictionary<ListViewColumn, bool> _ColumnsEditable = new Dictionary<ListViewColumn, bool>();
-		public void SetColumnEditable(ListViewColumn tvc, bool editable)
+		private Dictionary<CellRenderer, bool> _ColumnsEditable = new Dictionary<CellRenderer, bool>();
+		public void SetCellRendererEditable(CellRenderer renderer, bool editable)
 		{
-			_ColumnsEditable[tvc] = editable;
+			_ColumnsEditable[renderer] = editable;
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -1017,15 +1015,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				{
 					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView).HoverSelection = true;
 					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ListView).HotTracking = true;
-					break;
+					return;
 				}
 				case ImplementedAsType.TreeView:
 				{
 					((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TreeView).HotTracking = true;
-					break;
+					return;
 				}
 			}
 			throw new NotSupportedException();
+		}
+
+		public void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

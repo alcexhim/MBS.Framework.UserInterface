@@ -9,6 +9,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 {
 	partial class AboutDialog : Form
 	{
+		public MBS.Framework.UserInterface.Dialogs.AboutDialog Dialog { get; set; } = null;
+
 		public AboutDialog()
 		{
 			InitializeComponent();
@@ -17,12 +19,27 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			//  Change assembly information settings for your application through either:
 			//  - Project->Properties->Application->Assembly Information
 			//  - AssemblyInfo.cs
-			this.Text = String.Format("About {0}", AssemblyTitle);
-			this.labelProductName.Text = AssemblyProduct;
-			this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-			this.labelCopyright.Text = AssemblyCopyright;
-			this.labelCompanyName.Text = AssemblyCompany;
-			this.textBoxDescription.Text = AssemblyDescription;
+
+			if (Dialog != null)
+			{
+				this.Text = String.Format("About {0}", Dialog.ProgramName);
+				this.labelProductName.Text = Dialog.ProgramName;
+				this.labelVersion.Text = String.Format("Version {0}", Dialog.Version);
+				this.labelCopyright.Text = Dialog.Copyright;
+				this.labelCompanyName.Text = Dialog.Website;
+				this.textBoxDescription.Text = Dialog.Comments;
+			}
+			else
+			{
+				this.Text = String.Format("About {0}", AssemblyTitle);
+				this.labelProductName.Text = AssemblyProduct;
+				this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+				this.labelCopyright.Text = AssemblyCopyright;
+				this.labelCompanyName.Text = AssemblyCompany;
+				this.textBoxDescription.Text = AssemblyDescription;
+			}
+
+			Font = System.Drawing.SystemFonts.MenuFont;
 		}
 
 		#region Assembly Attribute Accessors

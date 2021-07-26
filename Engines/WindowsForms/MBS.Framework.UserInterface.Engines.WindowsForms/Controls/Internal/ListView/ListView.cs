@@ -117,10 +117,26 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Lis
 					UserInterface.Controls.ListView.ListViewColumn tvc = Columns[i].Tag as UserInterface.Controls.ListView.ListViewColumn;
 					if (tvc != null)
 					{
-						if (row.RowColumns[tvc.Column] != null)
+						if (tvc.SortColumn != null)
 						{
-							lvsi.Tag = row.RowColumns[tvc.Column];
-							lvsi.Text = row.RowColumns[tvc.Column].Value?.ToString() ?? String.Empty;
+							lvsi.Tag = row.RowColumns[tvc.SortColumn];
+						}
+						foreach (CellRenderer rend in tvc.Renderers)
+						{
+							foreach (CellRendererColumn col in rend.Columns)
+							{
+								if (row.RowColumns[col.Column] != null)
+								{
+									switch (col.Property)
+									{
+										case CellRendererProperty.Text:
+										{
+											lvsi.Text = row.RowColumns[col.Column].Value?.ToString() ?? String.Empty;
+											break;
+										}
+									}
+								}
+							}
 						}
 					}
 

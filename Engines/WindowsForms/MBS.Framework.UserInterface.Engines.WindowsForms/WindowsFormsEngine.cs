@@ -45,6 +45,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			throw new NotImplementedException();
 		}
 
+		protected override void RegisterInhibitorInternal(Inhibitor item)
+		{
+			throw new NotImplementedException();
+		}
+		protected override void UnregisterInhibitorInternal(Inhibitor item)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected override void SetMenuItemEnabledInternal(MenuItem item, bool enabled)
 		{
 			WindowsFormsNativeControl wfnc = GetHandleForMenuItem(item) as WindowsFormsNativeControl;
@@ -954,33 +963,40 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
 			{
-				switch (((UIApplication)Application.Instance).DpiAwareness)
+				try
 				{
-					case DpiAwareness.Unaware:
+					switch (((UIApplication)Application.Instance).DpiAwareness)
 					{
-						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.Unaware);
-						break;
+						case DpiAwareness.Unaware:
+						{
+							Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.Unaware);
+							break;
+						}
+						case DpiAwareness.SystemAware:
+						{
+							Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.SystemAware);
+							break;
+						}
+						case DpiAwareness.PerMonitorAware:
+						{
+							Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerMonitorAware);
+							break;
+						}
+						case DpiAwareness.PerWindowAware:
+						{
+							Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerWindowAware);
+							break;
+						}
+						case DpiAwareness.UnawareGDIScaled:
+						{
+							Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.UnawareGDIScaled);
+							break;
+						}
 					}
-					case DpiAwareness.SystemAware:
-					{
-						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.SystemAware);
-						break;
-					}
-					case DpiAwareness.PerMonitorAware:
-					{
-						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerMonitorAware);
-						break;
-					}
-					case DpiAwareness.PerWindowAware:
-					{
-						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.PerWindowAware);
-						break;
-					}
-					case DpiAwareness.UnawareGDIScaled:
-					{
-						Internal.Windows.Methods.SetProcessDpiAwarenessContext(Internal.Windows.Constants.DpiAwarenessContext.UnawareGDIScaled);
-						break;
-					}
+				}
+				catch (EntryPointNotFoundException ex)
+				{
+					Console.WriteLine("SetProcessDpiAwarenessContext failed - are you using a supported version of Windows?");
 				}
 			}
 

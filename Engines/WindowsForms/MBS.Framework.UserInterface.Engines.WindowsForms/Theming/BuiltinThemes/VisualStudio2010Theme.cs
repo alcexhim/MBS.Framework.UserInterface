@@ -10,6 +10,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Theming.BuiltinThemes
 {
 	public class VisualStudio2010Theme : VisualStudio2008Theme
 	{
+		public VisualStudio2010Theme()
+		{
+			Name = "VisualStudio2010";
+		}
+
 		private Bitmap ContentAreaBackgroundImage = new Bitmap(4, 4);
 		private TextureBrush tContentAreaBackgroundImage = null;
 

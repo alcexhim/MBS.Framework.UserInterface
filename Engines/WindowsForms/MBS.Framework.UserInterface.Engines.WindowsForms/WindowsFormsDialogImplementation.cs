@@ -180,6 +180,62 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 					}
 				}
 			}
+			else if (nc.Form != null)
+			{
+				System.Windows.Forms.DialogResult nativeResult = nc.Form.ShowDialog(parentHandle);
+				nativeResult = nc.Form.DialogResult;
+
+				switch (nativeResult)
+				{
+					case System.Windows.Forms.DialogResult.OK:
+					{
+						if (Accept())
+						{
+							result = DialogResult.OK;
+						}
+						else
+						{
+							result = DialogResult.Cancel;
+						}
+						break;
+					}
+					case System.Windows.Forms.DialogResult.Cancel:
+					{
+						result = DialogResult.Cancel;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.No:
+					{
+						result = DialogResult.No;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.None:
+					{
+						result = DialogResult.None;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.Yes:
+					{
+						result = DialogResult.Yes;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.Abort:
+					{
+						result = DialogResult.Abort;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.Ignore:
+					{
+						result = DialogResult.Ignore;
+						break;
+					}
+					case System.Windows.Forms.DialogResult.Retry:
+					{
+						result = DialogResult.Retry;
+						break;
+					}
+				}
+			}
 			return result;
 		}
 	}

@@ -85,5 +85,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern int gdk_pixbuf_get_width(IntPtr /*GdkPixbuf*/ pixbuf);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gdk_pixbuf_get_height(IntPtr /*GdkPixbuf*/ pixbuf);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_x11_window_get_xid(IntPtr /*GdkWindow*/ window); // GTK3 only, GTK2 use gdk_x11_drawable_get_xid
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_x11_display_get_xdisplay(IntPtr /*GdkDisplay*/ display);
 	}
 }

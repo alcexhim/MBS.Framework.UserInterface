@@ -84,6 +84,10 @@ namespace MBS.Framework.UserInterface
 
 		public string Name { get; set; } = String.Empty;
 
+		// CreateParams
+		public virtual string WindowName { get; } = null;
+		public virtual string WindowClass { get; } = null;
+
 		private Rectangle _Bounds = Rectangle.Empty;
 		public Rectangle Bounds
 		{

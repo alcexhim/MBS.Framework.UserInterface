@@ -232,6 +232,8 @@
     <Compile Include="Internal\GTK\Methods\GtkCellRendererPixbuf.cs" />
     <Compile Include="Internal\GTK\Methods\GtkCellLayout.cs" />
     <Compile Include="Internal\GTK\Methods\GtkCellEditable.cs" />
+    <Compile Include="Internal\X11\Structures.cs" />
+    <Compile Include="Internal\X11\Methods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -245,6 +247,7 @@
     <Folder Include="InternalAPI\" />
     <Folder Include="InternalAPI\GTK\" />
     <Folder Include="InternalAPI\AppIndicator\" />
+    <Folder Include="Internal\X11\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\UniversalEditor\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">

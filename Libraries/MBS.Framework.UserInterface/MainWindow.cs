@@ -32,6 +32,8 @@ namespace MBS.Framework.UserInterface
 			InitializeMainMenu();
 		}
 
+		public override string WindowName => "MainWindow";
+
 		private void InitializeMainMenu()
 		{
 			foreach (CommandItem ci in ((UIApplication)Application.Instance).MainMenu.Items)

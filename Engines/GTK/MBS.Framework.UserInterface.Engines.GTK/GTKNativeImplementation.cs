@@ -27,6 +27,7 @@ using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.GTK.Internal.GDK;
+using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK
 {
@@ -500,12 +501,54 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			OnMapping(EventArgs.Empty);
 		}
+
+
+
+
+		protected static void SetWmClass(string name, string @class, IntPtr handle)
+		{
+			var a = new Internal.X11.Structures.XClassHint
+			{
+				res_name = Marshal.StringToCoTaskMemAnsi(name),
+				res_class = Marshal.StringToCoTaskMemAnsi(@class)
+			};
+			IntPtr classHints = Marshal.AllocCoTaskMem(Marshal.SizeOf(a));
+			Marshal.StructureToPtr(a, classHints, true);
+
+			IntPtr hWndGdk = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window(handle);
+			IntPtr hDpyGdk = Internal.GDK.Methods.gdk_window_get_display(hWndGdk);
+			IntPtr hDpyX11 = Internal.GDK.Methods.gdk_x11_display_get_xdisplay(hDpyGdk);
+			IntPtr hWndX11 = Internal.GDK.Methods.gdk_x11_window_get_xid(hWndGdk);
+			Internal.X11.Methods.XSetClassHint(hDpyX11, hWndX11, classHints);
+
+			Marshal.FreeCoTaskMem(a.res_name);
+			Marshal.FreeCoTaskMem(a.res_class);
+
+			Marshal.FreeCoTaskMem(classHints);
+		}
+
 		private void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
 		{
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_map_event: ControlImplementation is NULL");
 				return;
+			}
+
+			if (Control.WindowName != null || Control.WindowClass != null)
+			{
+				string windowName = Control.WindowName;
+				string windowClass = Control.WindowClass;
+
+				if (windowName == null)
+				{
+					windowName = System.IO.Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+				}
+				else if (windowClass == null)
+				{
+					windowClass = System.IO.Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
+				}
+				SetWmClass(windowName, windowClass, widget);
 			}
 
 			OnMapped(EventArgs.Empty);

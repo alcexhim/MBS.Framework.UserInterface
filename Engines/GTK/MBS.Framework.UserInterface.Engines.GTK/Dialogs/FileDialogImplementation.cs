@@ -201,6 +201,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 				}
 			}
 
+			if (!String.IsNullOrEmpty(dlg.SelectedPath))
+			{
+				Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_current_folder(handle, dlg.SelectedPath);
+			}
+
 			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_select_multiple(handle, dlg.MultiSelect);
 			Internal.GTK.Methods.GtkFileChooser.gtk_file_chooser_set_do_overwrite_confirmation(handle, dlg.ConfirmOverwrite);
 			if (dlg.SelectedFileNames.Count > 0)

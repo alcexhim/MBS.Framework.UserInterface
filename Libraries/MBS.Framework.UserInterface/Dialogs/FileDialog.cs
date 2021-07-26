@@ -105,5 +105,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				SelectedFileNames.Add(value);
 			}
 		}
+
+		public string SelectedPath { get; set; }
 	}
 }

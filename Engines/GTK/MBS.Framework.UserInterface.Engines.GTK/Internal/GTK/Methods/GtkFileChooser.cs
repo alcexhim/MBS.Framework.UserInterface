@@ -120,5 +120,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 			Internal.GLib.Methods.g_slist_free (gslist);
 			return list.ToArray ();
 		}
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_file_chooser_set_current_folder(IntPtr /*GtkFileChooser*/ chooser, string filename);
 	}
 }

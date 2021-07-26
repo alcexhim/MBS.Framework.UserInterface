@@ -78,5 +78,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern int gtk_tree_view_get_n_columns(IntPtr handle);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tree_view_set_cursor_on_cell(IntPtr /*GtkTreeView*/ tree_view, IntPtr /*GtkTreePath*/ path,
+									 IntPtr /*GtkTreeViewColumn*/ focus_column,
+									 IntPtr /*GtkCellRenderer*/ focus_cell,
+									 bool start_editing);
 	}
 }

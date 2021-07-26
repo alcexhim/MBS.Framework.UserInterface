@@ -8,7 +8,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 	{
 		public interface IListViewNativeImplementation
 		{
-			void UpdateTreeModel ();
+			void UpdateTreeModel();
 			void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e);
 
 			void UpdateTreeModelColumn(TreeModelRowColumn rc);
@@ -27,6 +27,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 
 			bool GetSingleClickActivation();
 			void SetSingleClickActivation(bool value);
+			void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit);
 		}
 	}
 
@@ -210,6 +211,22 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		protected virtual void OnRowColumnEdited(TreeModelRowColumnEditedEventArgs e)
 		{
 			RowColumnEdited?.Invoke(this, e);
+		}
+
+		/// <summary>
+		/// Selects the specified <see cref="TreeModelRow" />, and optionally
+		/// sets focus to the specified <see cref="ListViewColumn" /> and
+		/// <see cref="CellRenderer" />. If <paramref name="edit" /> is
+		/// <see langword="true" />, initiates editing of the given
+		/// <see cref="CellRenderer" />.
+		/// </summary>
+		/// <param name="row">Row.</param>
+		/// <param name="listViewColumn">List view column.</param>
+		/// <param name="cellRenderer">Cell renderer.</param>
+		/// <param name="v">If set to <c>true</c> v.</param>
+		public void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit = false)
+		{
+			(ControlImplementation as Native.IListViewNativeImplementation).Focus(row, column, renderer, edit);
 		}
 	}
 }

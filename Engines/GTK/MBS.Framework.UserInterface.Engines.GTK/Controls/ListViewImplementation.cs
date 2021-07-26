@@ -554,6 +554,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		private static Dictionary<CellRenderer, IntPtr> _HandlesForCellRenderer = new Dictionary<CellRenderer, IntPtr>();
 		private static Dictionary<IntPtr, CellRenderer> _CellRenderersForHandle = new Dictionary<IntPtr, CellRenderer>();
+		private static IntPtr GetHandleForCellRenderer(CellRenderer renderer)
+		{
+			return _HandlesForCellRenderer[renderer];
+		}
+		private static CellRenderer GetCellRendererForHandle(IntPtr handle)
+		{
+			return _CellRenderersForHandle[handle];
+		}
 		private static void RegisterCellRenderer(CellRenderer renderer, IntPtr hrenderer)
 		{
 			if (_HandlesForCellRenderer.ContainsKey(renderer))
@@ -1033,6 +1041,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					break;
 				}
 			}
+		}
+
+		public void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit)
+		{
+			ListViewControl lv = (Control as ListViewControl);
+
+			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+			IntPtr hModel = GetHandleForTreeModel(lv.Model);
+			IntPtr hTreeView = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			IntPtr path = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path(hModel, ref iter);
+			IntPtr hColumn = GetHandleForTreeViewColumn(column);
+
+			IntPtr hRenderer = GetHandleForCellRenderer(renderer);
+
+			Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_cursor_on_cell(hTreeView, path, hColumn, hRenderer, edit);
 		}
 	}
 }

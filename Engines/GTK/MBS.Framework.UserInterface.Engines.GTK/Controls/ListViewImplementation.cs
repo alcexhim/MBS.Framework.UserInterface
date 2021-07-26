@@ -496,10 +496,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 						foreach (ListViewColumn tvc in tv.Columns)
 						{
-							TreeModelColumn c = tvc.Column;
+							TreeModelColumn c = tvc.SortColumn;
 							if (tv.Model != null)
 							{
-								int columnIndex = tv.Model.Columns.IndexOf(tvc.Column);
+								int columnIndex = tv.Model.Columns.IndexOf(tvc.SortColumn);
 
 								IntPtr hColumn = Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_new();
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_title(hColumn, tvc.Title);

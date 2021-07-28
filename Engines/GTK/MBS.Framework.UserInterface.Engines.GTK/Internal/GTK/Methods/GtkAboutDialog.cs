@@ -49,9 +49,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_about_dialog_set_license(IntPtr handle, string value);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_about_dialog_set_license_type(IntPtr handle, Internal.GTK.Constants.GtkLicense value);
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_about_dialog_get_website(IntPtr handle);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_about_dialog_set_website(IntPtr handle, string value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_set_website_label(IntPtr handle, string value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_set_authors(IntPtr handle, string[] value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_set_artists(IntPtr handle, string[] value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_set_documenters(IntPtr handle, string[] value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_set_translator_credits(IntPtr handle, string value);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_about_dialog_add_credit_section(IntPtr handle, string title, string[] names);
 	}
 }

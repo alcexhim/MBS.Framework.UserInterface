@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+
+using MBS.Framework.Collections;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Dialogs;
 
@@ -35,6 +37,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			if (dlg.Website != null)
 			{
 				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_website(handle, dlg.Website);
+			}
+			if (dlg.WebsiteLabel != null)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_website_label(handle, dlg.WebsiteLabel);
+			}
+
+			foreach (string s in dlg.Authors)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_authors(handle, dlg.Authors.ToNullTerminatedArray<string>());
+			}
+			foreach (string s in dlg.Artists)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_artists(handle, dlg.Artists.ToNullTerminatedArray<string>());
+			}
+			foreach (string s in dlg.Documenters)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_documenters(handle, dlg.Documenters.ToNullTerminatedArray<string>());
+			}
+			if (dlg.TranslatorCredits != null)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_set_translator_credits(handle, dlg.TranslatorCredits);
+			}
+			foreach (AboutDialog.CreditSection sect in dlg.AdditionalCreditSections)
+			{
+				Internal.GTK.Methods.GtkAboutDialog.gtk_about_dialog_add_credit_section(handle, sect.Title, sect.Names.ToNullTerminatedArray<string>());
 			}
 
 			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V3)

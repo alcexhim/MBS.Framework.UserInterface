@@ -4,33 +4,51 @@ namespace MBS.Framework.UserInterface.Dialogs
 {
 	public class AboutDialog : CommonDialog
 	{
-		private string mvarProgramName = String.Empty;
-		public string ProgramName { get { return mvarProgramName; } set { mvarProgramName = value; } }
+		public class CreditSection
+		{
+			public class CreditSectionCollection
+				: System.Collections.ObjectModel.Collection<CreditSection>
+			{
 
-		private Version mvarVersion = null;
-		public Version Version { get { return mvarVersion; } set { mvarVersion = value; } }
+			}
 
-		private string mvarCopyright = String.Empty;
-		public string Copyright { get { return mvarCopyright; } set { mvarCopyright = value; } }
+			public string Title { get; set; } = null;
+			public System.Collections.Specialized.StringCollection Names { get; } = new System.Collections.Specialized.StringCollection();
+		}
 
-		private string mvarComments = String.Empty;
-		public string Comments { get { return mvarComments; } set { mvarComments = value; } }
+		public string ProgramName { get; set; } = String.Empty;
+		public Version Version { get; set; } = null;
+		public string Copyright { get; set; } = String.Empty;
+		public string Comments { get; set; } = String.Empty;
+		public string Website { get; set; } = null;
+		public string WebsiteLabel { get; set; } = null;
+
+		public System.Collections.Specialized.StringCollection Authors { get; } = new System.Collections.Specialized.StringCollection();
+		public System.Collections.Specialized.StringCollection Artists { get; } = new System.Collections.Specialized.StringCollection();
+		public System.Collections.Specialized.StringCollection Documenters { get; } = new System.Collections.Specialized.StringCollection();
+		public string TranslatorCredits { get; set; } = null;
+		public CreditSection.CreditSectionCollection AdditionalCreditSections { get; } = new CreditSection.CreditSectionCollection();
 
 		private string mvarLicenseText = null;
-		public string LicenseText {
+		public string LicenseText
+		{
 			get { return mvarLicenseText; }
-			set {
+			set
+			{
 				mvarLicenseText = value;
 				mvarLicenseType = LicenseType.Unknown;
 			}
 		}
 
 		private LicenseType mvarLicenseType = LicenseType.Unknown;
-		public LicenseType LicenseType {
+		public LicenseType LicenseType
+		{
 			get { return mvarLicenseType; }
-			set {
+			set
+			{
 				mvarLicenseType = value;
-				switch (mvarLicenseType) {
+				switch (mvarLicenseType)
+				{
 					case LicenseType.Artistic:
 					{
 						break;
@@ -67,8 +85,5 @@ namespace MBS.Framework.UserInterface.Dialogs
 			mvarLicenseText = System.IO.File.ReadAllText (filename);
 			mvarLicenseType = LicenseType.Unknown;
 		}
-
-		private string mvarWebsite = null;
-		public string Website { get { return mvarWebsite; } set { mvarWebsite = value; } }
 	}
 }

@@ -153,7 +153,10 @@ namespace MBS.Framework.UserInterface.Dialogs
 			}
 			else if (ctl is ComboBox)
 			{
-				setting.SetValue((ctl as ComboBox).SelectedItem.GetExtraData<ChoiceSetting.ChoiceSettingValue>("value"));
+				if ((ctl as ComboBox).SelectedItem != null)
+				{
+					setting.SetValue((ctl as ComboBox).SelectedItem.GetExtraData<ChoiceSetting.ChoiceSettingValue>("value"));
+				}
 			}
 			else
 			{

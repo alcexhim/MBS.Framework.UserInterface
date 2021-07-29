@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Reflection;
+using System.Windows.Forms;
+
+using MBS.Framework.Collections;
 
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.AboutDialog
 {
@@ -20,14 +19,79 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			//  - Project->Properties->Application->Assembly Information
 			//  - AssemblyInfo.cs
 
+			this.okButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.Font = System.Drawing.SystemFonts.MenuFont;
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
 			if (Dialog != null)
 			{
 				this.Text = String.Format("About {0}", Dialog.ProgramName);
 				this.labelProductName.Text = Dialog.ProgramName;
-				this.labelVersion.Text = String.Format("Version {0}", Dialog.Version);
+				this.labelVersion.Text = String.Format("Version {0}", Dialog.Version.ToString());
 				this.labelCopyright.Text = Dialog.Copyright;
 				this.labelCompanyName.Text = Dialog.Website;
 				this.textBoxDescription.Text = Dialog.Comments;
+
+				if (Dialog.Authors.Count == 0 && Dialog.Documenters.Count == 0 && Dialog.TranslatorCredits == null &&
+				Dialog.Artists.Count == 0 && Dialog.AdditionalCreditSections.Count == 0)
+				{
+					tbs.TabPages.Remove(tabPage2);
+				}
+				else
+				{
+					if (Dialog.Authors.Count > 0)
+					{
+						AddCreditSection("Created by", Dialog.Authors);
+					}
+					if (Dialog.Documenters.Count > 0)
+					{
+						AddCreditSection("Documented by", Dialog.Documenters);
+					}
+					if (Dialog.TranslatorCredits != null)
+					{
+						AddCreditSection("Translated by", new string[] { Dialog.TranslatorCredits });
+					}
+					if (Dialog.Artists.Count > 0)
+					{
+						AddCreditSection("Artwork by", Dialog.Artists);
+					}
+					foreach (MBS.Framework.UserInterface.Dialogs.AboutDialog.CreditSection cs in Dialog.AdditionalCreditSections)
+					{
+						AddCreditSection(cs.Title, cs.Names.ToArray<string>());
+					}
+
+					lvCredits.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+					lvCredits.ItemSelectionChanged += delegate (object sender1, System.Windows.Forms.ListViewItemSelectionChangedEventArgs e1)
+					{
+					// this emulates UWT SelectionMode.None on Windows Forms
+					// thanks https://stackoverflow.com/questions/12647752
+						if (e1.IsSelected)
+						{
+							e1.Item.Selected = false;
+							e1.Item.Focused = false;
+						}
+					};
+				}
+
+
+				if (Dialog.LicenseText != null)
+				{
+					System.Windows.Forms.TabPage tabLicense = new System.Windows.Forms.TabPage();
+					tabLicense.Text = "License";
+
+					System.Windows.Forms.TextBox txtLicense = new System.Windows.Forms.TextBox();
+					txtLicense.Dock = System.Windows.Forms.DockStyle.Fill;
+					txtLicense.Text = Dialog.LicenseText.Replace("\r\n", "\r").Replace("\r", "\r\n");
+					txtLicense.ReadOnly = true;
+					txtLicense.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+					txtLicense.Multiline = true;
+
+					tabLicense.Controls.Add(txtLicense);
+
+					tbs.TabPages.Add(tabLicense);
+				}
 			}
 			else
 			{
@@ -38,8 +102,30 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 				this.labelCompanyName.Text = AssemblyCompany;
 				this.textBoxDescription.Text = AssemblyDescription;
 			}
+		}
 
-			Font = System.Drawing.SystemFonts.MenuFont;
+		private void AddCreditSection(string title, System.Collections.IEnumerable names)
+		{
+			bool t = false;
+			foreach (object n in names)
+			{
+				if (n == null)
+					continue;
+
+				System.Windows.Forms.ListViewItem lvi = new System.Windows.Forms.ListViewItem();
+				if (!t)
+				{
+					lvi.Text = title;
+					lvi.SubItems.Add(n.ToString());
+					t = true;
+				}
+				else
+				{
+					lvi.Text = String.Empty;
+					lvi.SubItems.Add(n.ToString());
+				}
+				lvCredits.Items.Add(lvi);
+			}
 		}
 
 		#region Assembly Attribute Accessors

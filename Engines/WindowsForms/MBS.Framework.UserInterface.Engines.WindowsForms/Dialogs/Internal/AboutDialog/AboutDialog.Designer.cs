@@ -34,10 +34,19 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.labelVersion = new System.Windows.Forms.Label();
 			this.labelCopyright = new System.Windows.Forms.Label();
 			this.labelCompanyName = new System.Windows.Forms.Label();
-			this.textBoxDescription = new System.Windows.Forms.TextBox();
 			this.okButton = new System.Windows.Forms.Button();
+			this.tbs = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.textBoxDescription = new System.Windows.Forms.TextBox();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.lvCredits = new System.Windows.Forms.ListView();
+			this.chCreditSectionTitle = new System.Windows.Forms.ColumnHeader();
+			this.chCreditSectionName = new System.Windows.Forms.ColumnHeader();
 			this.tableLayoutPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
+			this.tbs.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			//
 			// tableLayoutPanel
@@ -50,8 +59,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
 			this.tableLayoutPanel.Controls.Add(this.labelCopyright, 1, 2);
 			this.tableLayoutPanel.Controls.Add(this.labelCompanyName, 1, 3);
-			this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 4);
 			this.tableLayoutPanel.Controls.Add(this.okButton, 1, 5);
+			this.tableLayoutPanel.Controls.Add(this.tbs, 1, 4);
 			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -125,20 +134,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.labelCompanyName.Text = "Company Name";
 			this.labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			//
-			// textBoxDescription
-			//
-			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBoxDescription.Location = new System.Drawing.Point(143, 107);
-			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.textBoxDescription.Multiline = true;
-			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBoxDescription.Size = new System.Drawing.Size(271, 126);
-			this.textBoxDescription.TabIndex = 23;
-			this.textBoxDescription.TabStop = false;
-			this.textBoxDescription.Text = "Description";
-			//
 			// okButton
 			//
 			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -148,7 +143,78 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 24;
 			this.okButton.Text = "&OK";
-			this.okButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			//
+			// tbs
+			//
+			this.tbs.Controls.Add(this.tabPage1);
+			this.tbs.Controls.Add(this.tabPage2);
+			this.tbs.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tbs.Location = new System.Drawing.Point(140, 107);
+			this.tbs.Multiline = true;
+			this.tbs.Name = "tbs";
+			this.tbs.SelectedIndex = 0;
+			this.tbs.Size = new System.Drawing.Size(274, 126);
+			this.tbs.TabIndex = 25;
+			//
+			// tabPage1
+			//
+			this.tabPage1.Controls.Add(this.textBoxDescription);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(266, 100);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Description";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			//
+			// textBoxDescription
+			//
+			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBoxDescription.Location = new System.Drawing.Point(3, 3);
+			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+			this.textBoxDescription.Multiline = true;
+			this.textBoxDescription.Name = "textBoxDescription";
+			this.textBoxDescription.ReadOnly = true;
+			this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.textBoxDescription.Size = new System.Drawing.Size(260, 94);
+			this.textBoxDescription.TabIndex = 24;
+			this.textBoxDescription.TabStop = false;
+			this.textBoxDescription.Text = "Description";
+			//
+			// tabPage2
+			//
+			this.tabPage2.Controls.Add(this.lvCredits);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(266, 100);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Credits";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			//
+			// lvCredits
+			//
+			this.lvCredits.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.chCreditSectionTitle,
+			this.chCreditSectionName});
+			this.lvCredits.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lvCredits.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.lvCredits.Location = new System.Drawing.Point(3, 3);
+			this.lvCredits.Name = "lvCredits";
+			this.lvCredits.Size = new System.Drawing.Size(260, 94);
+			this.lvCredits.TabIndex = 0;
+			this.lvCredits.UseCompatibleStateImageBehavior = false;
+			this.lvCredits.View = System.Windows.Forms.View.Details;
+			//
+			// chCreditSectionTitle
+			//
+			this.chCreditSectionTitle.Text = "Section";
+			this.chCreditSectionTitle.Width = 81;
+			//
+			// chCreditSectionName
+			//
+			this.chCreditSectionName.Text = "Name";
+			this.chCreditSectionName.Width = 172;
 			//
 			// AboutBox1
 			//
@@ -160,15 +226,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "AboutBox1";
+			this.Name = "AboutDialog";
 			this.Padding = new System.Windows.Forms.Padding(9);
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "AboutBox1";
+			this.Text = "About {0}";
 			this.tableLayoutPanel.ResumeLayout(false);
-			this.tableLayoutPanel.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
+			this.tbs.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
+			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -181,7 +250,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs.Internal.Abou
 		private System.Windows.Forms.Label labelVersion;
 		private System.Windows.Forms.Label labelCopyright;
 		private System.Windows.Forms.Label labelCompanyName;
-		private System.Windows.Forms.TextBox textBoxDescription;
 		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.TabControl tbs;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TextBox textBoxDescription;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.ListView lvCredits;
+		private System.Windows.Forms.ColumnHeader chCreditSectionTitle;
+		private System.Windows.Forms.ColumnHeader chCreditSectionName;
 	}
 }

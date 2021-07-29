@@ -20,6 +20,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Dialogs
 		protected override WindowsFormsNativeDialog CreateDialogInternal(Dialog dialog, List<Button> buttons)
 		{
 			Internal.AboutDialog.AboutDialog dlg = new Internal.AboutDialog.AboutDialog();
+			dlg.Dialog = (MBS.Framework.UserInterface.Dialogs.AboutDialog)dialog;
 			return new WindowsFormsNativeDialog(null, dlg);
 		}
 	}

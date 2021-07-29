@@ -9,7 +9,14 @@ namespace MBS.Framework.UserInterface.Dialogs
 			public class CreditSectionCollection
 				: System.Collections.ObjectModel.Collection<CreditSection>
 			{
-
+				public CreditSection Add(string title, string[] names)
+				{
+					CreditSection cs = new CreditSection();
+					cs.Title = title;
+					cs.Names.AddRange(names);
+					Add(cs);
+					return cs;
+				}
 			}
 
 			public string Title { get; set; } = null;

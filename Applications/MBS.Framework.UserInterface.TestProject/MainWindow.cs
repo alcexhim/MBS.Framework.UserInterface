@@ -366,7 +366,18 @@ namespace MBS.Framework.UserInterface.TestProject
 						dlg.Copyright = "Copyright (c) 1997-2016 Mike Becker's Software";
 						dlg.Comments = "Provides a way to test various elements of the Universal Widget Toolkit on various operating systems.";
 						dlg.LicenseType = LicenseType.GPL30;
+						if (System.IO.File.Exists("LICENSE.txt"))
+						{
+							dlg.LicenseText = System.IO.File.ReadAllText("LICENSE.txt");
+						}
 						dlg.Website = "http://www.alce.io/uwt";
+
+						dlg.Authors.Add("Michael Becker");
+						dlg.Artists.Add("Gillian K 'Triseptor' Haddon");
+						dlg.Artists.Add("Asa Takeda");
+						dlg.Documenters.Add("Janusz Pelc");
+						dlg.TranslatorCredits = "A. B. Sidi";
+						dlg.AdditionalCreditSections.Add("Dedicated to", new string[] { "Bill Wicks" });
 						dlg.ShowDialog();
 					})
 				})

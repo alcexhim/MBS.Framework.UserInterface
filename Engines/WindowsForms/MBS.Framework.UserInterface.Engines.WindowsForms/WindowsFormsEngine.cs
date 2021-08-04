@@ -134,8 +134,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-			case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
-			case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
+				case Orientation.Horizontal: return System.Windows.Forms.Orientation.Horizontal;
+				case Orientation.Vertical: return System.Windows.Forms.Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -143,8 +143,8 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (orientation)
 			{
-			case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
-			case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
+				case System.Windows.Forms.Orientation.Horizontal: return Orientation.Horizontal;
+				case System.Windows.Forms.Orientation.Vertical: return Orientation.Vertical;
 			}
 			throw new NotSupportedException();
 		}
@@ -672,9 +672,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-			case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
-			case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
-			default: throw new PlatformNotSupportedException();
+				case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
+				case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
+				default: throw new PlatformNotSupportedException();
 			}
 		}
 
@@ -1026,9 +1026,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 			switch (headerStyle)
 			{
-			case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
-			case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
+				case ColumnHeaderStyle.Clickable: return System.Windows.Forms.ColumnHeaderStyle.Clickable;
+				case ColumnHeaderStyle.Nonclickable: return System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+				case ColumnHeaderStyle.None: return System.Windows.Forms.ColumnHeaderStyle.None;
 			}
 			throw new NotSupportedException();
 		}

@@ -746,11 +746,14 @@ namespace MBS.Framework.UserInterface
 		{
 			if (e.FirstRun)
 			{
-				ShowSplashScreen();
-				((UIApplication)Application.Instance).DoEvents();
-
+				// WARNING: Order matters! This thread MUST be started BEFORE
+				// calling ShowSplashScreen(); otherwise the application
+				// freezes when run using the Windows Forms engine.
 				System.Threading.Thread t = new System.Threading.Thread(t_threadStart);
 				t.Start();
+
+				ShowSplashScreen();
+				((UIApplication)Application.Instance).DoEvents();
 
 				// FIXME: calling DoEvents is required for splash screen to display properly, but... displaying a message dialog during this time causes a crash
 				while (t.IsAlive)

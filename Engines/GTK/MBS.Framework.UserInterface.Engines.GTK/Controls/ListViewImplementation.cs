@@ -1047,13 +1047,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 			ListViewControl lv = (Control as ListViewControl);
 
-			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+			Internal.GTK.Structures.GtkTreeIter iter = (Engine as GTKEngine).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hModel = GetHandleForTreeModel(lv.Model);
 			IntPtr hTreeView = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
-			IntPtr path = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path(hModel, ref iter);
-			IntPtr hColumn = GetHandleForTreeViewColumn(column);
 
-			IntPtr hRenderer = GetHandleForCellRenderer(renderer);
+			IntPtr path = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path(hModel, ref iter);
+			IntPtr hColumn = IntPtr.Zero;
+			if (column != null)
+				hColumn = GetHandleForTreeViewColumn(column);
+
+			IntPtr hRenderer = IntPtr.Zero;
+			if (renderer != null)
+				hRenderer = GetHandleForCellRenderer(renderer);
 
 			Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_cursor_on_cell(hTreeView, path, hColumn, hRenderer, edit);
 		}

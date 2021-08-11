@@ -176,10 +176,8 @@
     <Compile Include="ControlStyleClass.cs" />
     <Compile Include="CommandDisplayMode.cs" />
     <Compile Include="Controls\Ribbon\RibbonCommandItem.cs" />
-    <Compile Include="Controls\StackSidebar.cs" />
     <Compile Include="Dialogs\SettingsDialog.cs" />
     <Compile Include="ApplicationSettingsProvider.cs" />
-    <Compile Include="Controls\StackSidebarPanel.cs" />
     <Compile Include="Controls\FileBrowser\FileBrowserControl.cs" />
     <Compile Include="Controls\FileBrowser\FileBrowserMode.cs" />
     <Compile Include="Controls\ComboBox.cs" />
@@ -304,6 +302,7 @@
     <Compile Include="WindowTypeHint.cs" />
     <Compile Include="CellEditingEvent.cs" />
     <Compile Include="CellEditedEvent.cs" />
+    <Compile Include="TabContainerTabStyle.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

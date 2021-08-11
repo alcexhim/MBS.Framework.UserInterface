@@ -36,7 +36,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 		private ListViewControl tv = null;
 		private SplitContainer vpaned = null;
 
-		private StackSidebar sidebar = null;
+		private TabContainer sidebar = null;
 
 		public string[] SelectedPath { get; set; } = null;
 
@@ -101,12 +101,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 					}
 				}
 			} else {
-				foreach (StackSidebarPanel panel in sidebar.Items) {
-					Container ct = (panel.Control as Container);
-					if (ct == null)
-						continue;
-
-					foreach (Control ctl in ct.Controls) {
+				foreach (TabPage panel in sidebar.TabPages) {
+					foreach (Control ctl in panel.Controls) {
 						SaveSettingForControl (ctl);
 					}
 				}
@@ -185,8 +181,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 		}
 		private void CreateGNOMELayout()
 		{
-			sidebar = new StackSidebar ();
-			sidebar.Style.Classes.Add ("view");
+			sidebar = new TabContainer ();
+			sidebar.TabStyle = TabContainerTabStyle.Sidebar;
+			// sidebar.Style.Classes.Add ("view");
 
 			Controls.Add (sidebar, new BoxLayout.Constraints (true, true));
 		}
@@ -349,11 +346,12 @@ namespace MBS.Framework.UserInterface.Dialogs
 					{
 						if (grp.Path != null && grp.Path.Length > 0)
 						{
-							StackSidebarPanel ctp = new StackSidebarPanel();
+							TabPage ctp = new TabPage();
+							ctp.Layout = new BoxLayout(Orientation.Vertical);
 							ctSettingsGroup.Name = String.Join(":", grp.Path);
 							ctSettingsGroup.Text = grp.Path[grp.Path.Length - 1];
-							ctp.Control = ctSettingsGroupWrapper;
-							sidebar.Items.Add(ctp);
+							ctp.Controls.Add(ctSettingsGroupWrapper, new BoxLayout.Constraints(true, true));
+							sidebar.TabPages.Add(ctp);
 						}
 					}
 

@@ -50,6 +50,8 @@ namespace MBS.Framework.UserInterface.Controls
 			SelectedTabChanged?.Invoke(this, e);
 		}
 
+		public TabContainerTabStyle TabStyle { get; set; } = TabContainerTabStyle.Default;
+
 		private TabPage.TabPageCollection mvarTabPages = null;
 		public TabPage.TabPageCollection TabPages { get { return mvarTabPages; } }
 

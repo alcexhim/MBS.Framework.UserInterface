@@ -64,7 +64,6 @@
     <Compile Include="Controls\PopupWindowImplementation.cs" />
     <Compile Include="Controls\RibbonControlImplementation.cs" />
     <Compile Include="Controls\SplitContainerImplementation.cs" />
-    <Compile Include="Controls\StackSidebarImplementation.cs" />
     <Compile Include="Controls\SyntaxTextBoxImplementation.cs" />
     <Compile Include="Controls\TabContainerImplementation.cs" />
     <Compile Include="Controls\TextBoxImplementation.cs" />
@@ -275,6 +274,7 @@
     <None Include="MBS.Framework.UserInterface.Engines.GTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Controls\StackSidebarImplementation.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

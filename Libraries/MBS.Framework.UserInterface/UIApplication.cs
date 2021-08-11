@@ -231,11 +231,23 @@ namespace MBS.Framework.UserInterface
 		public void UpdateSplashScreenStatus(string value)
 		{
 			// TODO: implement this
+			if (splasher == null)
+			{
+				Console.WriteLine("UpdateSplashScreenStatus: splasher is null");
+				Console.WriteLine(value);
+				return;
+			}
 			splasher.SetStatus(value);
 		}
 		public void UpdateSplashScreenStatus(string value, int progressValue, int progressMinimum = 0, int progressMaximum = 100)
 		{
 			// TODO: implement this
+			if (splasher == null)
+			{
+				Console.WriteLine("UpdateSplashScreenStatus: splasher is null");
+				Console.WriteLine(String.Format("{0} % : {1}", Math.Round((double)progressValue / (progressMaximum - progressMinimum) * 100), value));
+				return;
+			}
 			splasher.SetStatus(value, progressValue, progressMinimum, progressMaximum);
 		}
 

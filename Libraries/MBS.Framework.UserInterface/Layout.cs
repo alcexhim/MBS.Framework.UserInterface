@@ -17,6 +17,8 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public bool IgnoreControlPadding { get { return mvarIgnoreControlPadding; } set { mvarIgnoreControlPadding = value; } }
 
+		public bool Scrollable { get; set; } = false;
+
 		private Dictionary<Control, Constraints> _controlConstraints = new Dictionary<Control, Constraints>();
 
 		public void SetControlConstraints(Control ctl, Constraints constraints)

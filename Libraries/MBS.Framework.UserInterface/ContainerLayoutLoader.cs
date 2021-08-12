@@ -166,11 +166,29 @@ namespace MBS.Framework.UserInterface
 					textSet = true;
 				}
 
-				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid" });
+				bool scrollableLayout = false;
+				AdjustmentScrollType scrollTypeH = AdjustmentScrollType.Automatic;
+				AdjustmentScrollType scrollTypeV = AdjustmentScrollType.Automatic;
+
+				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid", "GtkScrolledWindow" });
 				if (itemBox == null)
 				{
 					Console.WriteLine("warning: layout designer did not specify a container; using GtkBox");
 					itemBox = item;
+				}
+				else if (itemBox.ClassName == "GtkScrolledWindow")
+				{
+					scrollTypeH = ScrollBarPolicyToAdjustmentScrollType(itemBox.Properties["hscrollbar-policy"]?.Value);
+					scrollTypeV = ScrollBarPolicyToAdjustmentScrollType(itemBox.Properties["vscrollbar-policy"]?.Value);
+
+					if (itemBox.Items.Count == 1 && itemBox.Items[0].ClassName == "GtkViewport")
+					{
+						if (itemBox.Items[0].Items.Count == 1)
+						{
+							itemBox = itemBox.Items[0].Items[0];
+							scrollableLayout = true;
+						}
+					}
 				}
 
 				LayoutItem itemHeaderBar = item.Items.FirstOfClassName(new string[] { "GtkHeaderBar" });
@@ -182,6 +200,9 @@ namespace MBS.Framework.UserInterface
 					(container as Window).DocumentFileName = subtitle;
 				}
 				RecursiveLoadContainer(layout, itemBox, container);
+				container.Layout.Scrollable = scrollableLayout;
+				container.HorizontalAdjustment.ScrollType = scrollTypeH;
+				container.VerticalAdjustment.ScrollType = scrollTypeV;
 
 				LayoutItemProperty pDefaultWidth = item.Properties["default_width"];
 				LayoutItemProperty pDefaultHeight = item.Properties["default_height"];
@@ -203,6 +224,18 @@ namespace MBS.Framework.UserInterface
 					}
 				}
 			}
+		}
+
+		private AdjustmentScrollType ScrollBarPolicyToAdjustmentScrollType(string value)
+		{
+			switch (value?.ToLower())
+			{
+				case "always": return AdjustmentScrollType.Always;
+				case "automatic": return AdjustmentScrollType.Automatic;
+				case "external": return AdjustmentScrollType.External;
+				case "never": return AdjustmentScrollType.Never;
+			}
+			return AdjustmentScrollType.Automatic;
 		}
 
 		private struct GtkAdjustment

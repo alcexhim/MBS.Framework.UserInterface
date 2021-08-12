@@ -165,6 +165,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 			vpaned = new SplitContainer(Orientation.Vertical);
 			vpaned.Panel1.Layout = new Layouts.BoxLayout(Orientation.Horizontal);
 			vpaned.Panel2.Layout = new Layouts.BoxLayout(Orientation.Horizontal);
+
+			vpaned.Panel2.Layout.Scrollable = true;
 			vpaned.Panel2.VerticalAdjustment.ScrollType = AdjustmentScrollType.Always;
 
 			vpaned.SplitterPosition = 140;

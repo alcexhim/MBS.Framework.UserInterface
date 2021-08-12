@@ -233,6 +233,7 @@
     <Compile Include="Internal\GTK\Methods\GtkCellEditable.cs" />
     <Compile Include="Internal\X11\Structures.cs" />
     <Compile Include="Internal\X11\Methods.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkViewport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

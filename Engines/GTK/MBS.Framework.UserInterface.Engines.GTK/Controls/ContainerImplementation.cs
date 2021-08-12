@@ -208,32 +208,43 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 
-			IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
-			Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
+			if (layout.Scrollable)
+			{
+				IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
 
-			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
-			switch (container.HorizontalAdjustment.ScrollType)
-			{
-				case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
-				case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
-				case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
-				case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
-			}
-			switch (container.VerticalAdjustment.ScrollType)
-			{
-				case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
-				case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
-				case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
-				case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
-			}
-			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hContainerWrapper, policyH, policyV);
+				Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+				switch (container.HorizontalAdjustment.ScrollType)
+				{
+					case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
+					case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+					case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
+					case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
+				}
+				switch (container.VerticalAdjustment.ScrollType)
+				{
+					case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
+					case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+					case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
+					case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
+				}
+				Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hContainerWrapper, policyH, policyV);
 
-			return new GTKNativeControl(hContainerWrapper, new KeyValuePair<string, IntPtr>[]
+				return new GTKNativeControl(hContainerWrapper, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("Container", hContainer),
+					new KeyValuePair<string, IntPtr>("ScrolledWindow", hContainerWrapper)
+				});
+			}
+			else
 			{
-				new KeyValuePair<string, IntPtr>("Container", hContainer),
-				new KeyValuePair<string, IntPtr>("ScrolledWindow", hContainerWrapper)
-			});
+				return new GTKNativeControl(hContainer, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("Container", hContainer),
+					new KeyValuePair<string, IntPtr>("ScrolledWindow", IntPtr.Zero)
+				});
+			}
 		}
 
 		public void InsertChildControl(Control child)

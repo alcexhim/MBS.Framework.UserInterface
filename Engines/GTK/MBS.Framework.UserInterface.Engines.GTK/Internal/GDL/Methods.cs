@@ -47,7 +47,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDL
 		public static extern void gdl_dock_item_unbind(IntPtr item);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_item_hide_item(IntPtr /*GdlDockItem*/ item);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_object_set_name(IntPtr /*GdlDockObject*/ item, string value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_master_remove(IntPtr /*GdlDockMaster*/ master, IntPtr /*GdlDockObject*/ obj);
+
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_object_set_long_name(IntPtr /*GdlDockObject*/ item, string value);
 

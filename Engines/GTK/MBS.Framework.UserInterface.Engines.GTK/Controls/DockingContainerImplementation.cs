@@ -58,7 +58,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		public void RemoveDockingItem(DockingItem item)
 		{
 			IntPtr handle = _HandlesForDockingItem[item];
-			Internal.GDL.Methods.gdl_dock_item_unbind(handle);
+
+			Internal.GDL.Methods.gdl_dock_item_hide_item(handle);
+
+			IntPtr hMaster = Internal.GDL.Methods.gdl_dock_object_get_master(mvarDockHandle);
+			Internal.GDL.Methods.gdl_dock_master_remove(hMaster, handle);
 		}
 
 		private DockingItem mvarCurrentItem = null;

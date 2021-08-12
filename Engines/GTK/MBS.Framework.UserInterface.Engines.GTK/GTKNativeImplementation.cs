@@ -519,7 +519,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			IntPtr hDpyGdk = Internal.GDK.Methods.gdk_window_get_display(hWndGdk);
 			IntPtr hDpyX11 = Internal.GDK.Methods.gdk_x11_display_get_xdisplay(hDpyGdk);
 			IntPtr hWndX11 = Internal.GDK.Methods.gdk_x11_window_get_xid(hWndGdk);
-			Internal.X11.Methods.XSetClassHint(hDpyX11, hWndX11, classHints);
+			if (hWndX11 != IntPtr.Zero)
+			{
+				Internal.X11.Methods.XSetClassHint(hDpyX11, hWndX11, classHints);
+			}
+			else
+			{
+				Console.WriteLine("uwt: gtk: SetWmClass FAILED - not running under X11");
+			}
 
 			Marshal.FreeCoTaskMem(a.res_name);
 			Marshal.FreeCoTaskMem(a.res_class);

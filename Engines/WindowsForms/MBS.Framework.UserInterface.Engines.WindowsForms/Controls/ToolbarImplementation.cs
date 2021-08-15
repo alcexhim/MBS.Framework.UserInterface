@@ -76,15 +76,18 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 									Console.WriteLine("stock icon image '{0}' not found for theme '{1}'", stockTypeID, "Default");
 								}
 							}
-							else if (tsb.IconName != null)
+							else if (tsb.Image != null)
 							{
-								string filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, tsb.IconName));
+								/*
+								string filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", Theming.Theme.CurrentTheme.Name, tsb.Image));
 								if (filename == null)
 								{
-									filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", tsb.IconName));
+									filename = ((UIApplication)Application.Instance).ExpandRelativePath(String.Format("~/Themes/{0}/Images/StockIcons/{1}.png", "Default", tsb.Image));
 								}
 								if (filename != null)
 									iconWidget = System.Drawing.Image.FromFile(filename);
+								*/
+								iconWidget = ((WindowsFormsNativeImage)tsb.Image).Handle;
 							}
 							if (iconWidget != null)
 							{

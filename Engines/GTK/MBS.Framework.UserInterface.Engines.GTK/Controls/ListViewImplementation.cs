@@ -49,6 +49,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			gtk_cell_renderer_text_editing_started_d = new Action<IntPtr, IntPtr, string, IntPtr>(gtk_cell_renderer_text_editing_started);
 			gtk_cell_renderer_text_edited_d = new Action<IntPtr, string, string, IntPtr>(gtk_cell_renderer_text_edited);
+
+			gtk_cell_renderer_toggle_editing_started_d = new Action<IntPtr, IntPtr, string, IntPtr>(gtk_cell_renderer_toggle_editing_started);
+			gtk_cell_renderer_toggle_toggled_d = new Action<IntPtr, string, IntPtr>(gtk_cell_renderer_toggle_toggled);
 		}
 
 		private void SetSelectionModeInternal(IntPtr handle, ListViewControl tv, SelectionMode value)
@@ -205,7 +208,43 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		private Action<IntPtr, string, IntPtr> gtk_cell_renderer_toggle_toggled_d = null;
 		private void gtk_cell_renderer_toggle_toggled(IntPtr /*GtkCellRendererToggle*/ renderer, string path, IntPtr user_data)
 		{
+			ListViewControl lv = (Control as ListViewControl);
+			if (lv.Model == null)
+				return;
 
+			IntPtr hTreeModel = GetHandleForTreeModel(lv.Model);
+			IntPtr hPath = Internal.GTK.Methods.GtkTreePath.gtk_tree_path_new_from_string(path);
+			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
+
+			TreeModelRow row = (Engine as GTKEngine).GetTreeModelRowForGtkTreeIter(iter);
+			int columnIndex = user_data.ToInt32();
+			if (columnIndex < row.RowColumns.Count)
+			{
+				TreeModelRowColumn rc = row.RowColumns[user_data.ToInt32()];
+				if (row != null)
+				{
+					object oldvalue = rc.Value;
+					if (rc.Value is bool)
+					{
+						TreeModelRowColumnEditingEventArgs ee = new TreeModelRowColumnEditingEventArgs(row, rc, rc.Value, !((bool)rc.Value));
+						OnRowColumnEditing(ee);
+						if (!ee.Cancel)
+						{
+							rc.Value = (bool)ee.NewValue;
+							// we don't simply  `if (cancel) return;`  here because we need to free the tree path
+							OnRowColumnEdited(new TreeModelRowColumnEditedEventArgs(row, rc, oldvalue, rc.Value));
+						}
+					}
+					else
+					{
+						Console.Error.WriteLine("uwt: gtk: ListViewImplementation: GtkCellRendererToggle column is not of type Boolean");
+					}
+				}
+			}
+
+			// we created it ourselves (new_from_string), so we have to free it ourselves
+			Internal.GTK.Methods.GtkTreePath.gtk_tree_path_free(hPath);
 		}
 
 		private Action<IntPtr, string, string, IntPtr> gtk_cell_renderer_text_edited_d = null;
@@ -250,6 +289,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				IntPtr hRenderer = IntPtr.Zero;
 				if (renderer is CellRendererText)
 				{
+					int columnIndex = container.Model.Columns.IndexOf(renderer.GetColumnForProperty(CellRendererProperty.Text));
+
 					CellRendererText tvct = (renderer as CellRendererText);
 					hRenderer = Internal.GTK.Methods.GtkCellRendererText.gtk_cell_renderer_text_new();
 
@@ -260,8 +301,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 						if (parent.ControlImplementation is ListViewImplementation)
 						{
-							Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_editing_started_d, IntPtr.Zero);
-							Internal.GObject.Methods.g_signal_connect(hRenderer, "edited", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_edited_d, IntPtr.Zero);
+							Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_editing_started_d, new IntPtr(columnIndex));
+							Internal.GObject.Methods.g_signal_connect(hRenderer, "edited", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_text_edited_d, new IntPtr(columnIndex));
 						}
 						RegisterCellRendererForColumn(container, hRenderer);
 					}
@@ -294,19 +335,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 				else if (renderer is CellRendererToggle)
 				{
+					TreeModelColumn column = renderer.GetColumnForProperty(CellRendererProperty.Active);
+					int columnIndex = container.Model.Columns.IndexOf(column);
+
 					hRenderer = Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_new();
-					Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(hRenderer, true);
+					Internal.GTK.Methods.GtkCellRendererToggle.gtk_cell_renderer_toggle_set_activatable(hRenderer, ((CellRendererToggle)renderer).Editable );
 
 					if (parent.ControlImplementation is ListViewImplementation)
 					{
-						Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_editing_started_d, IntPtr.Zero);
-						Internal.GObject.Methods.g_signal_connect(hRenderer, "toggled", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_toggled_d, IntPtr.Zero);
+						Internal.GObject.Methods.g_signal_connect(hRenderer, "editing_started", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_editing_started_d, new IntPtr(columnIndex));
+						Internal.GObject.Methods.g_signal_connect(hRenderer, "toggled", (parent.ControlImplementation as ListViewImplementation).gtk_cell_renderer_toggle_toggled_d, new IntPtr(columnIndex));
 					}
 					// Internal.GObject.Methods.g_signal_connect(renderer, "edited", gtk_cell_renderer_edited_d, new IntPtr(tv.Model.Columns.IndexOf(c)));
 					RegisterCellRendererForColumn(container, hRenderer);
 
 					Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_pack_start(hParent, hRenderer, true);
-					// Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, renderer, "active", columnIndex);
+
+					// FIXME: we shouldn't use hParent here; it will not work if the value column is different from the container column.
+					// the hParent is the column which contains the CellRenderer, but the column which stores the value for the
+					// CellRenderer might be different. it sounds stupid but we really need the handle to the GetColumnForProperty column above.
+					Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hParent, hRenderer, "active", columnIndex);
+
+					Internal.GLib.Structures.Value valTextColumn = new Internal.GLib.Structures.Value(columnIndex);
+					Internal.GObject.Methods.g_object_set_property(hRenderer, "active_column", ref valTextColumn);
 				}
 
 				if (hRenderer != IntPtr.Zero)
@@ -454,9 +505,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					OnRowColumnEditing(ee);
 					if (!ee.Cancel)
 					{
+						object oldvalue = rc.Value;
 						// we don't simply  `if (cancel) return;`  here because we need to free the tree path
-						rc.Value = new_text;
-						OnRowColumnEdited(new TreeModelRowColumnEditedEventArgs(row, rc, rc.Value, new_text));
+						rc.Value = ee.NewValue;
+						OnRowColumnEdited(new TreeModelRowColumnEditedEventArgs(row, rc, oldvalue, new_text));
 					}
 				}
 			}

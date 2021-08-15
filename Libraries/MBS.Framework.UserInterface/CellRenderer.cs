@@ -131,8 +131,8 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
-		public CellRendererToggle(TreeModelColumn textColumn)
-			: base(new CellRendererColumn[] { new CellRendererColumn(CellRendererProperty.Text, textColumn) })
+		public CellRendererToggle(TreeModelColumn activeColumn)
+			: base(new CellRendererColumn[] { new CellRendererColumn(CellRendererProperty.Active, activeColumn) })
 		{
 
 		}

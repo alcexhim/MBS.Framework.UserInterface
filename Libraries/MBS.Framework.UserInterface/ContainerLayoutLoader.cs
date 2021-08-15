@@ -890,6 +890,24 @@ namespace MBS.Framework.UserInterface
 						}
 						break;
 					}
+					case "GtkCellRendererToggle":
+					{
+						if (item3.Attributes["active"] != null)
+						{
+							int colindex = Int32.Parse(item3.Attributes["active"].Value);
+							renderer = new CellRendererToggle(model?.Columns[colindex]);
+						}
+
+						if (item3.Properties["activatable"] != null)
+						{
+							renderer.Editable = (item3.Properties["activatable"].Value != "False");
+						}
+						else
+						{
+							renderer.Editable = true;
+						}
+						break;
+					}
 				}
 				if (renderer != null)
 				{

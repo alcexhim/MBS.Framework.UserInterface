@@ -24,6 +24,7 @@ namespace MBS.Framework.UserInterface
 	public enum CellRendererProperty
 	{
 		Text,
-		Image
+		Image,
+		Active
 	}
 }

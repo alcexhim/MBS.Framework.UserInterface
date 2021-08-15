@@ -160,6 +160,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				IntPtr hVAdjustment = Internal.GTK.Methods.GtkAdjustment.gtk_adjustment_new(0, 0, 100, 1, 10, 10);
 
 				IntPtr hScrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hHAdjustment, hVAdjustment);
+
+				if (ctl.BorderStyle == ControlBorderStyle.None)
+				{
+					// do nothing
+				}
+				else if (ctl.BorderStyle == ControlBorderStyle.Default)
+				{
+					// on GTK, default is do nothing
+				}
+				else
+				{
+					// GTK does not distinguish between FixedSingle and Fixed3D (that I know of)
+					IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hScrolledWindow);
+					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleCtx, "frame");
+				}
+
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hScrolledWindow, handle);
 				return new GTKNativeControl(hScrolledWindow, new KeyValuePair<string, IntPtr>[]
 				{

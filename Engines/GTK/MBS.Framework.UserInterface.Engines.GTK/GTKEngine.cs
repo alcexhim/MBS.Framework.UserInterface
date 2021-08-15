@@ -663,10 +663,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			RegisterStockType(StockType.Cut, "gtk-cut");
 			RegisterStockType(StockType.Delete, "gtk-delete");
 			RegisterStockType(StockType.DialogAuthentication, "gtk-dialog-authentication");
-			RegisterStockType(StockType.DialogInfo, "gtk-dialog-info");
-			RegisterStockType(StockType.DialogWarning, "gtk-dialog-warning");
-			RegisterStockType(StockType.DialogError, "gtk-dialog-error");
-			RegisterStockType(StockType.DialogQuestion, "gtk-dialog-question");
+			RegisterStockType(StockType.DialogInfo, "dialog-information");
+			RegisterStockType(StockType.DialogWarning, "dialog-warning");
+			RegisterStockType(StockType.DialogError, "dialog-error");
+			RegisterStockType(StockType.DialogQuestion, "dialog-question");
 			RegisterStockType(StockType.Directory, "gtk-directory");
 			RegisterStockType(StockType.Discard, "gtk-discard");
 			RegisterStockType(StockType.Disconnect, "gtk-disconnect");
@@ -2106,7 +2106,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", String.Format("{0}/{1}", Application.Instance.ShortName, topic.Name));
+					Process.Start("yelp", String.Format("help:{0}/{1}", Application.Instance.ShortName, topic.Name));
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)
@@ -2117,7 +2117,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			{
 				try
 				{
-					Process.Start("yelp", Application.Instance.ShortName);
+					Process.Start("yelp", String.Format("help:{0}", Application.Instance.ShortName));
 					return true;
 				}
 				catch (System.ComponentModel.Win32Exception ex)

@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using MBS.Framework.UserInterface.Drawing;
+
 namespace MBS.Framework.UserInterface.Controls
 {
 	public class ToolbarItemSeparator
@@ -51,6 +53,7 @@ namespace MBS.Framework.UserInterface.Controls
 		public ToolbarItemIconSize IconSize { get ; set; } = ToolbarItemIconSize.Default;
 		public ToolbarItemDisplayStyle DisplayStyle { get; set; } = ToolbarItemDisplayStyle.Default;
 		public bool CheckOnClick { get; set; } = false;
+		public bool Checked { get; set; } = false;
 	}
 	public abstract class ToolbarItem : ISupportsExtraData
 	{
@@ -95,7 +98,7 @@ namespace MBS.Framework.UserInterface.Controls
 		public string Name { get; set; } = String.Empty;
 		public string Title { get; set; } = String.Empty;
 		public StockType StockType { get; set; } = StockType.None;
-		public string IconName { get; set; } = null;
+		public Image Image { get; set; } = null;
 
 		private bool _Enabled = true;
 		public bool Enabled { get { return _Enabled; } set { _Enabled = value; (Application.Instance as UIApplication).Engine.SetToolbarItemEnabled(this, value); } }

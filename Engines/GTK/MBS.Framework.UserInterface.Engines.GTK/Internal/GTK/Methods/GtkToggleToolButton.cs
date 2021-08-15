@@ -27,5 +27,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_toggle_tool_button_new();
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_toggle_tool_button_set_active(IntPtr /*GtkToggleToolButton*/ button, bool is_active);
 	}
 }

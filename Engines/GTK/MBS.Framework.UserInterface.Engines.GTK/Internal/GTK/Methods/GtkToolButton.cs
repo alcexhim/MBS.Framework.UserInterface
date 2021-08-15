@@ -35,5 +35,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, string label);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_tool_button_set_label(IntPtr /*GtkToolButton*/ button, IntPtr label);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_tool_button_set_icon_widget(IntPtr /*GtkToolButton*/ button, IntPtr iconWidget);
 	}
 }

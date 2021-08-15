@@ -94,55 +94,82 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				if (item is ToolbarItemButton)
 				{
 					ToolbarItemButton tsb = (item as ToolbarItemButton);
+
+					IntPtr iconWidget = IntPtr.Zero;
+					string stockTypeID = Engine.StockTypeToString(tsb.StockType);
+
+					string title = null;
+					switch (tsb.DisplayStyle)
+					{
+						case ToolbarItemDisplayStyle.Default:
+						case ToolbarItemDisplayStyle.Image:
+						case ToolbarItemDisplayStyle.ImageAndText:
+						{
+							if (tsb.StockType != StockType.None)
+							{
+								iconWidget = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(stockTypeID);
+
+								int size = -1;
+								if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Large)
+								{
+									size = 32;
+								}
+								else if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Small)
+								{
+									size = 16;
+								}
+								Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(iconWidget, size);
+							}
+							else if (tsb.Image != null)
+							{
+								GDKPixbufImage hImage = (tsb.Image as GDKPixbufImage);
+								if (hImage != null)
+								{
+									iconWidget = Internal.GTK.Methods.GtkImage.gtk_image_new_from_pixbuf(hImage.Handle);
+									if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Large)
+									{
+										Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(iconWidget, 32);
+									}
+									else if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Small)
+									{
+										Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(iconWidget, 16);
+									}
+								}
+							}
+							break;
+						}
+					}
+					switch (tsb.DisplayStyle)
+					{
+						case ToolbarItemDisplayStyle.Text:
+						case ToolbarItemDisplayStyle.ImageAndText:
+						{
+							title = tsb.Title;
+							if (tsb.StockType != StockType.None) {
+								Internal.GTK.Structures.GtkStockItem stock = new Internal.GTK.Structures.GtkStockItem ();
+								bool hasStock = Internal.GTK.Methods.GtkStock.gtk_stock_lookup (stockTypeID, ref stock);
+								if (hasStock) {
+									// fill info from GtkStockItem struct
+									title = Marshal.PtrToStringAuto (stock.label);
+								}
+							}
+							break;
+						}
+					}
+
 					if (tsb.CheckOnClick)
 					{
 						hItem = Internal.GTK.Methods.GtkToggleToolButton.gtk_toggle_tool_button_new();  // IntPtr.Zero, item.Title);
+
+						if (iconWidget != IntPtr.Zero)
+						{
+							Internal.GTK.Methods.GtkToolButton.gtk_tool_button_set_icon_widget(hItem, iconWidget);
+						}
+						Internal.GTK.Methods.GtkToolButton.gtk_tool_button_set_label(hItem, title);
+						Internal.GTK.Methods.GtkToggleToolButton.gtk_toggle_tool_button_set_active(hItem, ((ToolbarItemButton)item).Checked);
 					}
 					else
 					{
-						IntPtr iconWidget = IntPtr.Zero;
-						string stockTypeID = Engine.StockTypeToString(tsb.StockType);
-
-						string title = null;
-						switch (tsb.DisplayStyle)
-						{
-							case ToolbarItemDisplayStyle.Default:
-							case ToolbarItemDisplayStyle.Image:
-							case ToolbarItemDisplayStyle.ImageAndText:
-							{
-								if (tsb.StockType != StockType.None)
-								{
-									iconWidget = Internal.GTK.Methods.GtkImage.gtk_image_new_from_icon_name(stockTypeID);
-
-									int size = -1;
-									if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Large) {
-										size = 32;
-									} else if ((item as ToolbarItemButton).IconSize == ToolbarItemIconSize.Small) {
-										size = 16;
-									}
-									Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size (iconWidget, size);
-								}
-								break;
-							}
-						}
-						switch (tsb.DisplayStyle)
-						{
-							case ToolbarItemDisplayStyle.Text:
-							case ToolbarItemDisplayStyle.ImageAndText:
-							{
-								title = tsb.Title;
-								if (tsb.StockType != StockType.None) {
-									Internal.GTK.Structures.GtkStockItem stock = new Internal.GTK.Structures.GtkStockItem ();
-									bool hasStock = Internal.GTK.Methods.GtkStock.gtk_stock_lookup (stockTypeID, ref stock);
-									if (hasStock) {
-										// fill info from GtkStockItem struct
-										title = Marshal.PtrToStringAuto (stock.label);
-									}
-								}
-								break;
-							}
-						}
-
 						if (title != null) {
 							title = title.Replace ("_", String.Empty);
 							hItem = Internal.GTK.Methods.GtkToolButton.gtk_tool_button_new(iconWidget, title);
@@ -156,6 +183,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					}
 					if (hItem != IntPtr.Zero)
 					{
+						Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(hItem, tsb.Title);
+
 						RegisterToolbarItemHandle(item, hItem);
 					}
 				}

@@ -434,8 +434,10 @@ namespace MBS.Framework.UserInterface
 					break;
 				}
 				case "GtkButton":
+				case "GtkToggleButton":
 				{
 					ctl = new Button();
+					((Button)ctl).CheckOnClick = item.ClassName.Equals("GtkToggleButton");
 					if (item.StyleClasses.Contains("suggested-action"))
 					{
 						(ctl as Button).StylePreset = CommandStylePreset.Suggested;

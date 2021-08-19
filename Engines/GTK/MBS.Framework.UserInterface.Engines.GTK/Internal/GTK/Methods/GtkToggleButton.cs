@@ -26,6 +26,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 	internal class GtkToggleButton
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkToggleButton*/ gtk_toggle_button_new();
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_toggle_button_set_active(IntPtr /*GtkToggleButton*/ button, bool is_active);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_toggle_button_get_active(IntPtr /*GtkToggleButton*/ button);

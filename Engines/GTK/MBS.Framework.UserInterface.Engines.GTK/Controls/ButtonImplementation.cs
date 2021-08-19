@@ -47,7 +47,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Button ctl = (control as Button);
 			Contract.Assert(ctl != null);
 
-			IntPtr handle = Internal.GTK.Methods.GtkButton.gtk_button_new();
+			IntPtr handle = IntPtr.Zero;
+			if (ctl.CheckOnClick)
+			{
+				handle = Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_new();
+			}
+			else
+			{
+				handle = Internal.GTK.Methods.GtkButton.gtk_button_new();
+			}
 			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
 			{
 			}
@@ -171,6 +179,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Constants.GtkPositionType value2 = (Engine as GTKEngine).RelativePositionToGtkPositionType(value);
 			Internal.GTK.Methods.GtkButton.gtk_button_set_image_position (handle, value2);
+		}
+
+		public bool GetChecked()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			return Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_get_active(handle);
+		}
+		public void SetChecked(bool value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active(handle, value);
 		}
 	}
 }

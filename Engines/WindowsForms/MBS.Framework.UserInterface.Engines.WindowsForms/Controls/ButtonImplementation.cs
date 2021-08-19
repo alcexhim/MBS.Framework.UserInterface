@@ -87,7 +87,15 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Button button = (control as Button);
-			System.Windows.Forms.Button btn = new System.Windows.Forms.Button();
+			System.Windows.Forms.ButtonBase btn = null;
+			if (button.CheckOnClick)
+			{
+				btn = new System.Windows.Forms.CheckBox();
+			}
+			else
+			{
+				btn = new System.Windows.Forms.Button();
+			}
 
 			if (button.StockType != StockType.None)
 			{
@@ -101,10 +109,30 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			btn.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
 			btn.MinimumSize = new System.Drawing.Size(75, 23);
 			btn.AutoSize = true;
-			btn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+
+			if (btn is System.Windows.Forms.Button)
+			{
+				(btn as System.Windows.Forms.Button).AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			}
 
 			WindowsFormsNativeControl nc = new WindowsFormsNativeControl(btn);
 			return nc;
+		}
+
+		public bool GetChecked()
+		{
+			if (((Button)Control).CheckOnClick)
+			{
+				return ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.CheckBox).Checked;
+			}
+			return false;
+		}
+		public void SetChecked(bool value)
+		{
+			if (((Button)Control).CheckOnClick)
+			{
+				((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.CheckBox).Checked = value;
+			}
 		}
 	}
 }

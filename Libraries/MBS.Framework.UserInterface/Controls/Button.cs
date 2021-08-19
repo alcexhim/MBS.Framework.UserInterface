@@ -18,6 +18,9 @@ namespace MBS.Framework.UserInterface.Controls
 		{
 			void SetImagePosition(RelativePosition value);
 			RelativePosition GetImagePosition();
+
+			bool GetChecked();
+			void SetChecked(bool value);
 		}
 	}
 	public class Button : SystemControl
@@ -89,6 +92,8 @@ namespace MBS.Framework.UserInterface.Controls
 
 		public MBS.Framework.UserInterface.Drawing.Image Image { get; set; } = null;
 
+		public bool CheckOnClick { get; set; } = false;
+
 		private bool mvarAlwaysShowImage = false;
 		public bool AlwaysShowImage {  get { return mvarAlwaysShowImage;  } set { mvarAlwaysShowImage = value; } }
 
@@ -136,5 +141,24 @@ namespace MBS.Framework.UserInterface.Controls
 		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
 
 		public CommandStylePreset StylePreset { get; set; } = CommandStylePreset.None;
+
+		private bool _Checked = false;
+		public bool Checked
+		{
+			get
+			{
+				Native.IButtonControlImplementation impl = (ControlImplementation as Native.IButtonControlImplementation);
+				if (impl != null)
+				{
+					_Checked = impl.GetChecked();
+				}
+				return _Checked;
+			}
+			set
+			{
+				_Checked = value;
+				(ControlImplementation as Native.IButtonControlImplementation)?.SetChecked(value);
+			}
+		}
 	}
 }

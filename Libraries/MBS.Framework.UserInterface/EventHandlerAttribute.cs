@@ -21,6 +21,7 @@
 using System;
 namespace MBS.Framework.UserInterface
 {
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class EventHandlerAttribute : Attribute
 	{
 		public string ControlName { get; private set; }

@@ -1030,5 +1030,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		{
 			throw new NotImplementedException();
 		}
+
+		public bool GetEnableDragSelection()
+		{
+			return true;
+		}
+
+		public void SetEnableDragSelection(bool value)
+		{
+			Console.WriteLine("uwt: wf: on WindowsForms, DragSelection is always enabled when MultiSelect is enabled");
+		}
+
+		public bool IsColumnCreated(ListViewColumn column)
+		{
+			return true;
+		}
 	}
 }

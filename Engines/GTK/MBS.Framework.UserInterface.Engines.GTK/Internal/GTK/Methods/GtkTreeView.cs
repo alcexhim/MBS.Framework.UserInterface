@@ -84,5 +84,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 									 IntPtr /*GtkTreeViewColumn*/ focus_column,
 									 IntPtr /*GtkCellRenderer*/ focus_cell,
 									 bool start_editing);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_get_rubber_banding(IntPtr /*GtkTreeView*/ tree_view);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_tree_view_set_rubber_banding(IntPtr /*GtkTreeView*/ tree_view, bool enable);
 	}
 }

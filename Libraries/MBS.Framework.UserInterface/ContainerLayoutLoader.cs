@@ -693,6 +693,8 @@ namespace MBS.Framework.UserInterface
 						}
 					}
 
+					(ctl as ListViewControl).EnableDragSelection = GetValueForPropertyCompat<bool>(item, "rubber-banding");
+
 					foreach (LayoutItem item2 in item.Items)
 					{
 						if (item2.ClassName == "GtkTreeViewColumn")
@@ -864,6 +866,38 @@ namespace MBS.Framework.UserInterface
 				Console.Error.WriteLine("uwt: ContainerLayout: control class '" + item.ClassName + "' not handled");
 			}
 			return ctl;
+		}
+
+		private T GetValueForPropertyCompat<T>(LayoutItem item, string propertyName, T defaultValue = default(T))
+		{
+			string withDashes = propertyName.Replace('_', '-');
+			string withUnderline = propertyName.Replace('-', '_');
+
+			LayoutItemProperty propWithDashes = item.Properties[withDashes];
+			LayoutItemProperty propWithUnderline = item.Properties[withUnderline];
+
+			string value = null;
+			if (propWithDashes != null)
+			{
+				value = propWithDashes.Value;
+			}
+			else if (propWithUnderline != null)
+			{
+				value = propWithUnderline.Value;
+			}
+
+			if (value != null)
+			{
+				if (typeof(T) == typeof(bool))
+				{
+					return (T)(object)Boolean.Parse(value);
+				}
+				else if (typeof(T) == typeof(string))
+				{
+					return (T)(object)value; // eww
+				}
+			}
+			return defaultValue;
 		}
 
 		private List<CellRenderer> LoadCellRenderers(LayoutItem item2, TreeModel model)

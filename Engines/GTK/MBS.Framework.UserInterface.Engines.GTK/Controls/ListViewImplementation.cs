@@ -460,6 +460,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			_ColumnHandles[column] = handle;
 			_HandleColumns[handle] = column;
 		}
+		private void UnregisterTreeViewColumn(ListViewColumn column, IntPtr handle)
+		{
+			_ColumnHandles.Remove(column);
+			_HandleColumns.Remove(handle);
+		}
 
 		public bool IsColumnResizable(ListViewColumn column)
 		{
@@ -543,7 +548,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						// this fixes a regression where certain treeviews (perhaps from containerlayout-generated UI) end up having duplicated columns
 						while (Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_n_columns(handle) > 0)
 						{
-							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_remove_column(handle, Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_column(handle, 0));
+							IntPtr hColumn = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_column(handle, 0);
+							Internal.GTK.Methods.GtkTreeView.gtk_tree_view_remove_column(handle, hColumn);
+
+							UnregisterTreeViewColumn(GetTreeViewColumnForHandle(hColumn), hColumn);
 						}
 
 						foreach (ListViewColumn tvc in tv.Columns)
@@ -568,11 +576,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 								Internal.GTK.Methods.GtkTreeView.gtk_tree_view_insert_column(handle, hColumn, -1);
 
-								RegisterTreeViewColumn(tvc, hColumn);
-
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_sort_column_id(hColumn, columnIndex);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_resizable(hColumn, tvc.Resizable);
 								Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_set_reorderable(hColumn, tvc.Reorderable);
+
+								RegisterTreeViewColumn(tvc, hColumn);
 
 								// SetColumnEditable(tvc, tvc.Editable);
 							}
@@ -592,6 +600,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				}
 			}
 			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (handle);
+		}
+
+		public bool IsColumnCreated(ListViewColumn column)
+		{
+			return _ColumnHandles.ContainsKey(column);
 		}
 
 		private string GetNameForCellRendererProperty(CellRendererProperty property)
@@ -654,16 +667,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			tv.SelectedRows.ItemRequested += SelectedRows_ItemRequested;
 			tv.SelectedRows.Cleared += SelectedRows_Cleared;
 
-			switch (ImplementedAs (tv)) {
-			case ImplementedAsType.TreeView: {
-					handle = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new ();
+			switch (ImplementedAs(tv))
+			{
+				case ImplementedAsType.TreeView:
+				{
+					handle = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_new();
 
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_visible (handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
-					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_clickable (handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_visible(handle, (tv.HeaderStyle != ColumnHeaderStyle.None));
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_headers_clickable(handle, (tv.HeaderStyle == ColumnHeaderStyle.Clickable));
+
+					Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_rubber_banding(handle, tv.EnableDragSelection);
 					break;
 				}
-			case ImplementedAsType.IconView: {
-					handle = Internal.GTK.Methods.GtkIconView.gtk_icon_view_new ();
+				case ImplementedAsType.IconView:
+				{
+					handle = Internal.GTK.Methods.GtkIconView.gtk_icon_view_new();
 					break;
 				}
 			}
@@ -1113,6 +1131,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				hRenderer = GetHandleForCellRenderer(renderer);
 
 			Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_cursor_on_cell(hTreeView, path, hColumn, hRenderer, edit);
+		}
+
+		public bool GetEnableDragSelection()
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			return Internal.GTK.Methods.GtkTreeView.gtk_tree_view_get_rubber_banding(handle);
+		}
+
+		public void SetEnableDragSelection(bool value)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
+			Internal.GTK.Methods.GtkTreeView.gtk_tree_view_set_rubber_banding(handle, value);
 		}
 	}
 }

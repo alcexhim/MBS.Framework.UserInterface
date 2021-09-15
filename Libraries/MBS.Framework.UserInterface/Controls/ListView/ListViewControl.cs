@@ -21,6 +21,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			bool IsColumnReorderable(ListViewColumn column);
 			void SetColumnReorderable(ListViewColumn column, bool value);
 
+			bool IsColumnCreated(ListViewColumn column);
 			bool IsColumnResizable(ListViewColumn column);
 			void SetColumnResizable(ListViewColumn column, bool value);
 			void SetCellRendererEditable(CellRenderer renderer, bool value);
@@ -28,6 +29,9 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			bool GetSingleClickActivation();
 			void SetSingleClickActivation(bool value);
 			void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit);
+
+			bool GetEnableDragSelection();
+			void SetEnableDragSelection(bool value);
 		}
 	}
 
@@ -37,6 +41,23 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		{
 			this.SelectedRows = new TreeModelRow.TreeModelSelectedRowCollection(this);
 			mvarColumns = new ListViewColumn.ListViewColumnCollection(this);
+		}
+
+		private bool mvarEnableDragSelection = false;
+		public bool EnableDragSelection
+		{
+			get
+			{
+				if (IsCreated)
+					mvarEnableDragSelection = (ControlImplementation as Native.IListViewNativeImplementation).GetEnableDragSelection();
+				return mvarEnableDragSelection;
+			}
+			set
+			{
+				if (IsCreated)
+					(ControlImplementation as Native.IListViewNativeImplementation).SetEnableDragSelection(value);
+				mvarEnableDragSelection = value;
+			}
 		}
 
 		private SelectionMode mvarSelectionMode = SelectionMode.Single;

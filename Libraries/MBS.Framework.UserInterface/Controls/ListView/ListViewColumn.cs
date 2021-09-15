@@ -66,23 +66,17 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			get
 			{
 
-				if (Parent != null)
+				if (Parent != null && Parent.IsCreated && (((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnCreated(this)).GetValueOrDefault(false)))
 				{
-					if (Parent.IsCreated)
-					{
-						_Resizable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnResizable(this)).GetValueOrDefault(_Resizable);
-					}
+					_Resizable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnResizable(this)).GetValueOrDefault(_Resizable);
 				}
 				return _Resizable;
 			}
 			set
 			{
-				if (Parent != null)
+				if (Parent != null && Parent.IsCreated && (((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnCreated(this)).GetValueOrDefault(false)))
 				{
-					if (Parent.IsCreated)
-					{
-						(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnResizable(this, value);
-					}
+					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnResizable(this, value);
 				}
 				_Resizable = value;
 			}
@@ -93,23 +87,17 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		{
 			get
 			{
-				if (Parent != null)
+				if (Parent != null && Parent.IsCreated && (((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnCreated(this)).GetValueOrDefault(false)))
 				{
-					if (Parent.IsCreated)
-					{
-						_Reorderable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnReorderable(this)).GetValueOrDefault(_Reorderable);
-					}
+					_Reorderable = ((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnReorderable(this)).GetValueOrDefault(_Reorderable);
 				}
 				return _Reorderable;
 			}
 			set
 			{
-				if (Parent != null)
+				if (Parent != null && Parent.IsCreated && (((Parent.ControlImplementation as Native.IListViewNativeImplementation)?.IsColumnCreated(this)).GetValueOrDefault(false)))
 				{
-					if (Parent.IsCreated)
-					{
-						(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnReorderable(this, value);
-					}
+					(Parent.ControlImplementation as Native.IListViewNativeImplementation)?.SetColumnReorderable(this, value);
 				}
 				_Reorderable = value;
 			}

@@ -22,7 +22,12 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls.Internal.Tre
 			base.CreateHandle();
 
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-				SetWindowTheme(this.Handle, "explorer", null);
+			{
+				if (Environment.OSVersion.Version.Major >= 6)
+				{
+					SetWindowTheme(this.Handle, "explorer", null);
+				}
+			}
 
 			base.SetStyle(ControlStyles.UserPaint, true);
 		}

@@ -733,7 +733,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		private void ReloadContextMenu()
+		public void ReloadContextMenu()
 		{
 			Command cmd = ((UIApplication)Application.Instance).FindCommand(_ContextMenuCommandID);
 			if (cmd == null)
@@ -841,6 +841,17 @@ namespace MBS.Framework.UserInterface
 		public ControlStyle Style { get { return mvarStyle; } }
 
 		public bool Focused { get { return (ControlImplementation?.HasFocus()).GetValueOrDefault(); } }
+
+		public event EventHandler SettingsChanged;
+
+		/// <summary>
+		/// Event raised when the Settings dialog is accepted.
+		/// </summary>
+		/// <param name="e">E.</param>
+		protected virtual void OnSettingsChanged(EventArgs e)
+		{
+			SettingsChanged?.Invoke(this, e);
+		}
 
 		private Dictionary<string, object> _ExtraData = new Dictionary<string, object>();
 		public T GetExtraData<T>(string key, T defaultValue = default(T))

@@ -108,6 +108,15 @@ namespace MBS.Framework.UserInterface
 				return;
 			SetMenuItemVisibilityInternal(item, visible);
 		}
+
+		internal void BroadcastSettingsChangedEvent()
+		{
+			foreach (KeyValuePair<Control, NativeControl> kvp in handlesByControl)
+			{
+				InvokeMethod(kvp.Key, "OnSettingsChanged", new object[] { EventArgs.Empty });
+			}
+		}
+
 		protected abstract void SetMenuItemEnabledInternal(MenuItem item, bool enabled);
 		internal void SetMenuItemEnabled(MenuItem item, bool enabled)
 		{
@@ -539,6 +548,7 @@ namespace MBS.Framework.UserInterface
 				// find the appropriate parent window
 				parent = GetFocusedToplevelWindow();
 			}
+			dialog.Parent = parent;
 
 			InvokeMethod(dialog, "OnCreating", EventArgs.Empty);
 			return ShowDialogInternal(dialog, parent);
@@ -680,22 +690,9 @@ namespace MBS.Framework.UserInterface
 			}
 
 			NativeTreeModel handle = CreateTreeModelInternal(model);
-			((DefaultTreeModel)model).TreeModelChanged += Model_TreeModelChanged;
 
 			RegisterTreeModel(model, handle);
 			return handle;
-		}
-
-		void Model_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
-		{
-			if (sender is DefaultTreeModel)
-			{
-				UpdateTreeModel((sender as DefaultTreeModel), e);
-			}
-			else if (sender is TreeModelRow.TreeModelRowCollection)
-			{
-				UpdateTreeModel((sender as TreeModelRow.TreeModelRowCollection).Model, e);
-			}
 		}
 
 		protected abstract void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e);

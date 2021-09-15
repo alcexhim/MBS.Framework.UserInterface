@@ -113,6 +113,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 				provider.SaveSettings();
 			}
 
+			((UIApplication)Application.Instance).Engine.BroadcastSettingsChangedEvent();
+
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -815,6 +817,8 @@ namespace MBS.Framework.UserInterface.Dialogs
 			csp.SettingsGroups.Add(group);
 			dlg.SettingsProviders.Add(csp);
 
+			dlg.Text = String.Format("Add {0}", o.SingularItemTitle == null ? "Item" : o.SingularItemTitle);
+
 			if (dlg.ShowDialog() == DialogResult.OK)
 			{
 				List<TreeModelRowColumn> list = new List<TreeModelRowColumn>();
@@ -840,21 +844,25 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 			CustomSettingsProvider csp = new CustomSettingsProvider();
 
-			SettingsGroup group = clv.ListView.SelectedRows[0].GetExtraData<SettingsGroup>("group");
-			csp.SettingsGroups.Add(group);
-			dlg.SettingsProviders.Add(csp);
-
-			if (dlg.ShowDialog() == DialogResult.OK)
+			if (clv.ListView.SelectedRows.Count == 1)
 			{
-				/*
-				List<TreeModelRowColumn> list = new List<TreeModelRowColumn>();
-				for (int i = 0; i < o.Settings.Count; i++)
+
+				SettingsGroup group = clv.ListView.SelectedRows[0].GetExtraData<SettingsGroup>("group");
+				csp.SettingsGroups.Add(group);
+				dlg.SettingsProviders.Add(csp);
+
+				if (dlg.ShowDialog() == DialogResult.OK)
 				{
-					object val = o.Settings[i].GetValue();
-					list.Add(new TreeModelRowColumn(clv.ListView.Model.Columns[i], val));
+					/*
+					List<TreeModelRowColumn> list = new List<TreeModelRowColumn>();
+					for (int i = 0; i < o.Settings.Count; i++)
+					{
+						object val = o.Settings[i].GetValue();
+						list.Add(new TreeModelRowColumn(clv.ListView.Model.Columns[i], val));
+					}
+					clv.ListView.Model.Rows.Add(new TreeModelRow(list.ToArray()));
+					*/
 				}
-				clv.ListView.Model.Rows.Add(new TreeModelRow(list.ToArray()));
-				*/
 			}
 		}
 
@@ -937,7 +945,23 @@ namespace MBS.Framework.UserInterface.Dialogs
 				ct1.SetExtraData<CheckBox>("checkbox", control as CheckBox);
 			}
 
+			if (opt.Prefix != null)
+			{
+				Label lblSuffix = new Label();
+				lblSuffix.Padding = new Padding(8);
+				lblSuffix.Text = opt.Prefix;
+				ct1.Controls.Add(lblSuffix, new BoxLayout.Constraints(false, false));
+			}
+
 			ct1.Controls.Add(control, new BoxLayout.Constraints(false, false));
+
+			if (opt.Suffix != null)
+			{
+				Label lblSuffix = new Label();
+				lblSuffix.Padding = new Padding(8);
+				lblSuffix.Text = opt.Suffix;
+				ct1.Controls.Add(lblSuffix, new BoxLayout.Constraints(false, false));
+			}
 			control.VerticalAlignment = VerticalAlignment.Middle;
 
 			ct.Controls.Add(ct1);

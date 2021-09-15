@@ -20,5 +20,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkContainer.gtk_container_add(h, ncContainer.Handle);
 			return new GTKNativeControl(h);
 		}
+
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			base.SetControlTextInternal(control, text);
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkFrame.gtk_frame_set_label(handle, text);
+		}
 	}
 }

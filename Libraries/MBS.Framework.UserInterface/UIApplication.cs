@@ -884,7 +884,7 @@ namespace MBS.Framework.UserInterface
 					}
 				}
 			}
-			base.OnContextRemoved(e);
+			base.OnContextAdded(e);
 		}
 
 		protected override void OnContextRemoved(ContextChangedEventArgs e)
@@ -898,12 +898,16 @@ namespace MBS.Framework.UserInterface
 						w.MenuBar.Items.Remove(mi);
 					}
 				}
+				_listContextMenuItems[e.Context].Clear();
 			}
-			_listContextMenuItems[e.Context].Clear();
 
-			foreach (Command cmd in _listContextCommands[e.Context])
+			if (_listContextCommands.ContainsKey(e.Context))
 			{
-				Commands.Remove(cmd);
+				foreach (Command cmd in _listContextCommands[e.Context])
+				{
+					Commands.Remove(cmd);
+				}
+				_listContextCommands[e.Context].Clear();
 			}
 		}
 		public CommandItem.CommandItemCollection QuickAccessToolbarItems { get; } = new CommandItem.CommandItemCollection();

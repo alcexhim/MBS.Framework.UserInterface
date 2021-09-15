@@ -24,7 +24,8 @@ using UniversalEditor.ObjectModels.Markup;
 namespace MBS.Framework.UserInterface
 {
 	public class CommandItemLoader
-	{public static CommandItem FromMarkup(MarkupTagElement tag)
+	{
+		public static CommandItem FromMarkup(MarkupTagElement tag)
 		{
 			CommandItem item = null;
 

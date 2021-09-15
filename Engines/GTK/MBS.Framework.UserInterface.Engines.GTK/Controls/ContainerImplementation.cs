@@ -211,7 +211,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (layout.Scrollable)
 			{
 				IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
 
 				Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;

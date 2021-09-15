@@ -486,26 +486,40 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 			return check;
 		}
+
+		internal Internal.GDK.Structures.GdkRGBA ColorToGDKRGBA(Color color)
+		{
+			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
+			rgba.red = color.R;
+			rgba.green = color.G;
+			rgba.blue = color.B;
+			rgba.alpha = color.A;
+			return rgba;
+		}
+
 		protected override int StartInternal(Window waitForClose)
 		{
+			string[] argv = System.Environment.GetCommandLineArgs();
+			int argc = argv.Length;
+
 			if (ApplicationHandle != IntPtr.Zero)
 			{
-				string[] argv = System.Environment.GetCommandLineArgs();
-				int argc = argv.Length;
-
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "query_end", gc_Application_QueryEnd, IntPtr.Zero);
-
-				_exitCode = Internal.GIO.Methods.g_application_run(ApplicationHandle, argc, argv);
-
-				Internal.GObject.Methods.g_object_unref(ApplicationHandle);
 			}
-
 			if (waitForClose != null)
 			{
 				waitForClose.Closed += WaitForClose_Closed;
+			}
+
+			if (ApplicationHandle != IntPtr.Zero)
+			{
+				// moved down here to allow for WaitForClose event
+				_exitCode = Internal.GIO.Methods.g_application_run(ApplicationHandle, argc, argv);
+
+				Internal.GObject.Methods.g_object_unref(ApplicationHandle);
 			}
 			return _exitCode;
 		}
@@ -1049,6 +1063,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 						if (nc1 != null)
 							Internal.GTK.Methods.GtkWidget.gtk_widget_hide(nc1.Handle);
 					}
+					else
+					{
+						GTKNativeControl nc1 = (children[i].ControlImplementation?.Handle as GTKNativeControl);
+						if (nc1 != null)
+							Internal.GTK.Methods.GtkWidget.gtk_widget_show(nc1.Handle);
+					}
 				}
 			}
 		}
@@ -1412,6 +1432,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				{
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_accel_path(hMenuFile, accelPath);
 				}
+
+				// FIXME: calling gtk_widget_show (either directly, or from gtk_widget_show_all) on some cases freezes with stack overflow
 				RegisterMenuItemHandle(menuItem, new GTKNativeControl(hMenuFile));
 				return hMenuFile;
 			}
@@ -1738,16 +1760,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 					RecursiveTreeStoreInsertRow(dtm, row, hTreeStore, out hIter, null, dtm.Rows.Count - 1);
 				}
-
-				dtm.TreeModelChanged += Dtm_TreeModelChanged;
 			}
 
 			return new GTKNativeTreeModel(hTreeStore);
-		}
-
-		void Dtm_TreeModelChanged(object sender, TreeModelChangedEventArgs e)
-		{
-			UpdateTreeModel((sender as TreeModel), e);
 		}
 
 		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)

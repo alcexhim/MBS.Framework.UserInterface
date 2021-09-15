@@ -162,6 +162,8 @@ namespace MBS.Framework.UserInterface
 						tagSetting.Attributes.Add("value", value.ToString());
 					}
 					tagGroup.Elements.Add(tagSetting);
+
+					((UIApplication)Application.Instance).SetSetting(setting.ID, value);
 				}
 				tagSettings.Elements.Add(tagGroup);
 			}

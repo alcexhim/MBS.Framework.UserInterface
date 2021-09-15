@@ -319,6 +319,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 				{
 					val = new Value(value as GDKPixbufImage);
 				}
+				else if (value is Internal.GDK.Structures.GdkRGBA)
+				{
+					val = new Value((Internal.GDK.Structures.GdkRGBA)value);
+				}
 				else
 				{
 					val = new Value(value.ToString());
@@ -439,6 +443,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GLib
 			{
 				this = new Value(GType.Object);
 				GObject.Methods.g_value_set_object(ref this, val.Handle);
+			}
+
+			public Value(Internal.GDK.Structures.GdkRGBA val)
+			{
+				this = new Value(Internal.GDK.Methods.gdk_rgba_get_type());
+
+				// FIXME: how do we know when we should free this HGlobal?
+				IntPtr hVal = Marshal.AllocHGlobal(Marshal.SizeOf(val));
+				Marshal.StructureToPtr(val, hVal, true);
+
+				GObject.Methods.g_value_set_boxed(ref this, hVal);
 			}
 			/*
 			public Value(Opaque val, string type_name)

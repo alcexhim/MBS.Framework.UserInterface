@@ -502,6 +502,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GObject
 			GLib.Structures.Value val = GLib.Structures.Value.FromObject(value);
 			g_object_set_property(obj, property_name, ref val);
 		}
+		/// <summary>
+		/// Convenience method for setting a <see cref="Boolean" /> value on a GObject.
+		/// </summary>
+		/// <param name="obj">Object.</param>
+		/// <param name="property_name">Property name.</param>
+		/// <param name="value">If set to <c>true</c> value.</param>
+		public static void g_object_set_property(IntPtr /*GObject*/ obj, string property_name, Internal.GDK.Structures.GdkRGBA value)
+		{
+			GLib.Structures.Value val = GLib.Structures.Value.FromObject(value);
+			g_object_set_property(obj, property_name, ref val);
+		}
 
 		[DllImport(LIBRARY_FILENAME, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void g_object_get_property(IntPtr /*GObject*/ obj, string property_name, ref GLib.Structures.Value value);

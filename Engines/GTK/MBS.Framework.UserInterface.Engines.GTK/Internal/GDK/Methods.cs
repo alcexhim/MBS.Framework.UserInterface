@@ -90,5 +90,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GDK
 		public static extern IntPtr gdk_x11_window_get_xid(IntPtr /*GdkWindow*/ window); // GTK3 only, GTK2 use gdk_x11_drawable_get_xid
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr gdk_x11_display_get_xdisplay(IntPtr /*GdkDisplay*/ display);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern GType gdk_rgba_get_type();
 	}
 }

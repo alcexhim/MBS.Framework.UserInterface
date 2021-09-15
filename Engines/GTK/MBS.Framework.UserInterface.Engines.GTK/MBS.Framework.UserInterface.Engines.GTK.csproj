@@ -234,6 +234,8 @@
     <Compile Include="Internal\X11\Structures.cs" />
     <Compile Include="Internal\X11\Methods.cs" />
     <Compile Include="Internal\GTK\Methods\GtkViewport.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkTextTag.cs" />
+    <Compile Include="Internal\GTK\Methods\GtkSearchEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

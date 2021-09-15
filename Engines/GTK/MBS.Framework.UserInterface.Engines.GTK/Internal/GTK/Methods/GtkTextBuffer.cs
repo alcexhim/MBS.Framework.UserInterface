@@ -59,5 +59,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_text_buffer_get_selection_bounds(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern IntPtr /*GtkTextTagTable*/ gtk_text_buffer_get_tag_table(IntPtr /*GtkTextBuffer*/ buffer);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_apply_tag(IntPtr /*GtkTextBuffer*/ buffer, IntPtr /*GtkTextTag*/ tag, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
 	}
 }

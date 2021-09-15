@@ -1,10 +1,10 @@
 //
-//  GtkTextTagTable.cs
+//  GtkSearchEntry.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,14 +23,9 @@ using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
-	internal class GtkTextTagTable
+	internal static class GtkSearchEntry
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern IntPtr gtk_text_tag_table_new();
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_text_tag_table_add(IntPtr /*GtkTextTagTable*/ table, IntPtr /*GtkTextTag*/ tag);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_text_tag_table_remove(IntPtr /*GtkTextTagTable*/ table, IntPtr /*GtkTextTag*/ tag);
+		public static extern IntPtr /*GtkSearchEntry*/ gtk_search_entry_new();
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;
 using MBS.Framework.UserInterface.Drawing;
@@ -126,8 +126,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			else
 			{
-				handle = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
-				Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
+				if (ctl.UsageHint == TextBoxUsageHint.Search)
+				{
+					handle = Internal.GTK.Methods.GtkSearchEntry.gtk_search_entry_new();
+					Internal.GObject.Methods.g_signal_connect(handle, "search-changed", TextBox_Changed_Handler);
+				}
+				else
+				{
+					handle = Internal.GTK.Methods.GtkEntry.gtk_entry_new();
+					Internal.GObject.Methods.g_signal_connect(handle, "changed", TextBox_Changed_Handler);
+				}
 			}
 
 			IntPtr /*GtkEntryCompletion*/ hCompletion = Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_new();
@@ -504,6 +512,108 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle();
 			Internal.GTK.Methods.GtkTextView.gtk_text_view_get_iter_location(handle, ref iter, ref rect);
 			return new Framework.Drawing.Rectangle(rect.x, rect.y, rect.width, rect.height);
+		}
+
+		private MBS.Framework.Collections.Generic.HandleDictionary<TextBoxStyleDefinition> _StyleDefinitions = new Collections.Generic.HandleDictionary<TextBoxStyleDefinition>();
+
+		public void ClearStyleDefinitions()
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			IntPtr hTagTable = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_tag_table(hBuffer);
+		}
+
+		public void AddStyleDefinition(TextBoxStyleDefinition item)
+		{
+			IntPtr hTextBox = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			if (hTextBox == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBox' is NULL");
+			}
+
+			IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			IntPtr hTagTable = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_tag_table(hBuffer);
+			IntPtr hTag = Internal.GTK.Methods.GtkTextTag.gtk_text_tag_new(item.Name);
+
+			if (item.BackgroundColor != Color.Empty)
+			{
+				Internal.GObject.Methods.g_object_set_property(hTag, "background-rgba", (Engine as GTKEngine).ColorToGDKRGBA(item.BackgroundColor));
+				Internal.GObject.Methods.g_object_set_property(hTag, "background-set", true);
+			}
+			if (item.ForegroundColor != Color.Empty)
+			{
+				Internal.GObject.Methods.g_object_set_property(hTag, "foreground-rgba", (Engine as GTKEngine).ColorToGDKRGBA(item.ForegroundColor));
+				Internal.GObject.Methods.g_object_set_property(hTag, "foreground-set", true);
+			}
+
+			Internal.GObject.Methods.g_object_set_property(hTag, "editable-set", true);
+			Internal.GObject.Methods.g_object_set_property(hTag, "editable", item.Editable);
+
+			_StyleDefinitions.Add(hTag, item);
+			Internal.GTK.Methods.GtkTextTagTable.gtk_text_tag_table_add(hTagTable, hTag);
+		}
+
+		public void RemoveStyleDefinition(TextBoxStyleDefinition item)
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			IntPtr hTagTable = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_tag_table(hBuffer);
+			Internal.GTK.Methods.GtkTextTagTable.gtk_text_tag_table_remove(hTagTable, _StyleDefinitions.GetHandle(item));
+			_StyleDefinitions.Remove(item);
+		}
+
+		public void ClearStyleAreas()
+		{
+
+		}
+
+		public void AddStyleArea(TextBoxStyleArea item)
+		{
+			IntPtr hTextBox = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			if (hTextBox == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBox' is NULL");
+			}
+
+			IntPtr hBuffer = Internal.GTK.Methods.GtkTextView.gtk_text_view_get_buffer(hTextBox);
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			IntPtr hTag = _StyleDefinitions.GetHandle(item.Style);
+			if (hTag == IntPtr.Zero)
+				return;
+
+			Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter(), iterEnd = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_offset(hBuffer, ref iterStart, item.Start);
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_offset(hBuffer, ref iterEnd, item.Start + item.Length);
+
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_apply_tag(hBuffer, hTag, ref iterStart, ref iterEnd);
+		}
+
+		public void RemoveStyleArea(TextBoxStyleArea item)
+		{
+			IntPtr hBuffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			if (hBuffer == IntPtr.Zero)
+			{
+				Console.Error.WriteLine("uwt: SyntaxTextBox: named handle 'TextBuffer' is NULL");
+			}
+
+			throw new NotImplementedException();
 		}
 	}
 }

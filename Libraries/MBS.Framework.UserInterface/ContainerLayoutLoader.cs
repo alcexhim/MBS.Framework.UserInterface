@@ -154,7 +154,7 @@ namespace MBS.Framework.UserInterface
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 
 				if (item.ClassName == "GtkListStore" || item.ClassName == "GtkTreeStore"
-					|| item.ClassName == "GtkAdjustment")
+					|| item.ClassName == "GtkAdjustment" || item.ClassName == "GtkImage")
 				{
 					continue;
 				}
@@ -476,6 +476,10 @@ namespace MBS.Framework.UserInterface
 					if (item.ClassName == "GtkTextView")
 					{
 						(ctl as TextBox).Multiline = true;
+					}
+					else if (item.ClassName == "GtkSearchEntry")
+					{
+						(ctl as TextBox).UsageHint = TextBoxUsageHint.Search;
 					}
 
 					if (item.Properties["editable"] != null)

@@ -58,15 +58,7 @@
     <Compile Include="Printing\WindowsFormsPrinter.cs" />
     <Compile Include="WindowsFormsNativeTreeModel.cs" />
     <Compile Include="WindowsFormsClipboard.cs" />
-    <Compile Include="Internal\Linux\GTK\Methods.cs" />
-    <Compile Include="Internal\Linux\GLib\Constants.cs" />
-    <Compile Include="Internal\Linux\GLib\Delegates.cs" />
-    <Compile Include="Internal\Linux\GLib\Methods.cs" />
-    <Compile Include="Internal\Linux\GLib\Structures.cs" />
-    <Compile Include="Internal\Linux\Marshaller.cs" />
-    <Compile Include="Internal\Linux\GObject\Methods.cs" />
     <Compile Include="Internal\IntPtrEqualityComparer.cs" />
-    <Compile Include="Internal\Linux\GTKNativeControl.cs" />
     <Compile Include="Win32NativeControl.cs" />
     <Compile Include="Internal\Windows\Delegates.cs" />
     <Compile Include="Internal\Windows\Methods.cs" />

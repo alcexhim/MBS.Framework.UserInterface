@@ -631,48 +631,11 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		}
 
 		private List<Window> _GetToplevelWindowsRetval = null;
-		private Window[] GTK_GetToplevelWindowsInternal()
-		{
-			if (_GetToplevelWindowsRetval != null)
-			{
-				// should not happen
-				throw new InvalidOperationException();
-			}
-
-			_GetToplevelWindowsRetval = new List<Window>();
-			IntPtr hList = Internal.Linux.GTK.Methods.gtk_window_list_toplevels();
-			Internal.Linux.GLib.Methods.g_list_foreach(hList, GTK_AddToList, IntPtr.Zero);
-
-			Window[] retval = _GetToplevelWindowsRetval.ToArray();
-			Internal.Linux.GLib.Methods.g_list_free(hList);
-
-			_GetToplevelWindowsRetval = null;
-			return retval;
-		}
-		private void /*GFunc*/ GTK_AddToList(IntPtr data, IntPtr user_data)
-		{
-			if (_GetToplevelWindowsRetval == null)
-			{
-				throw new InvalidOperationException("_AddToList called before initializing the list");
-			}
-
-			Control ctl = null; // GetControlByHandle(data);
-			Window window = (ctl as Window);
-
-			if (window == null)
-			{
-				window = new Window();
-				RegisterControlHandle(window, new Internal.Linux.GTKNativeControl(data));
-			}
-
-			_GetToplevelWindowsRetval.Add(window);
-		}
 
 		protected override Window[] GetToplevelWindowsInternal()
 		{
 			switch (Environment.OSVersion.Platform)
 			{
-				case PlatformID.Unix: return GTK_GetToplevelWindowsInternal();
 				case PlatformID.Win32NT: return W32_GetToplevelWindowsInternal();
 				default: throw new PlatformNotSupportedException();
 			}

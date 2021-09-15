@@ -43,7 +43,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Dialogs
 			Internal.GObject.Methods.g_object_get(Internal.GTK.Methods.GtkSettings.gtk_settings_get_default(), "gtk-dialogs-use-header", ref use_header, IntPtr.Zero);
 
 			IntPtr handle = Internal.GObject.Methods.g_object_new(Internal.GTK.Methods.GtkDialog.gtk_dialog_get_type(), "use-header-bar", use_header, IntPtr.Zero);
-			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dialog.Text, IntPtr.Zero, Internal.GTK.Constants.GtkDialogFlags.Modal, null);
+			// IntPtr handle = Internal.GTK.Methods.GtkDialog.gtk_dialog_new_with_buttons(dialog.Text, parentHandle, Internal.GTK.Constants.GtkDialogFlags.Modal | Internal.GTK.Constants.GtkDialogFlags.DestroyWithParent, null);
 
 			IntPtr hText = Marshal.StringToHGlobalAuto(dialog.Text);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_title(handle, hText);

@@ -117,5 +117,29 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 				case HorizontalAlignment.Right: ((Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.TextBox).TextAlign = System.Windows.Forms.HorizontalAlignment.Right; return;
 			}
 		}
+
+		public void ClearStyleDefinitions()
+		{
+		}
+
+		public void AddStyleDefinition(TextBoxStyleDefinition item)
+		{
+		}
+
+		public void RemoveStyleDefinition(TextBoxStyleDefinition item)
+		{
+		}
+
+		public void ClearStyleAreas()
+		{
+		}
+
+		public void AddStyleArea(TextBoxStyleArea item)
+		{
+		}
+
+		public void RemoveStyleArea(TextBoxStyleArea item)
+		{
+		}
 	}
 }

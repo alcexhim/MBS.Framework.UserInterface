@@ -102,12 +102,12 @@ namespace MBS.Framework.UserInterface.Controls
 		private RelativePosition mvarImagePosition = RelativePosition.Default;
 		public RelativePosition ImagePosition {
 			get {
-				if ((ControlImplementation as Native.IButtonControlImplementation) != null) {
+				if (IsCreated && (ControlImplementation as Native.IButtonControlImplementation) != null) {
 					mvarImagePosition = (ControlImplementation as Native.IButtonControlImplementation).GetImagePosition ();
 				}
 				return mvarImagePosition; }
 			set {
-				if ((ControlImplementation as Native.IButtonControlImplementation) != null) {
+				if (IsCreated && (ControlImplementation as Native.IButtonControlImplementation) != null) {
 					(ControlImplementation as Native.IButtonControlImplementation).SetImagePosition (value);
 				}
 				mvarImagePosition = value;

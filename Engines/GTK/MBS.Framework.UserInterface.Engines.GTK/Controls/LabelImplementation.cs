@@ -110,17 +110,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			{
 				case HorizontalAlignment.Center:
 				{
-					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.5);
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.5f);
 					break;
 				}
 				case HorizontalAlignment.Left:
 				{
-					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.0);
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 0.0f);
 					break;
 				}
 				case HorizontalAlignment.Right:
 				{
-					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 1.0);
+					Internal.GTK.Methods.GtkLabel.gtk_label_set_xalign(handle, 1.0f);
 					break;
 				}
 			}

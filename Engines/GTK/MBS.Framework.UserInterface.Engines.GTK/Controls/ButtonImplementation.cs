@@ -125,6 +125,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 				if (hImageView != IntPtr.Zero)
 				{
+					if (ctl.ImageSize != Framework.Drawing.Dimension2D.Empty)
+					{
+						Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(hImageView, (int) ctl.ImageSize.Width);
+					}
 					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImageView);
 				}
 			}

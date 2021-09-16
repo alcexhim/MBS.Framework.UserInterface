@@ -19,11 +19,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Controls.Ribbon
 {
 	public class RibbonTabGroup
 	{
+		public RibbonTabGroup()
+		{
+		}
+		public RibbonTabGroup(string title, RibbonCommandItem[] ribbonCommandItem)
+		{
+			this.Title = title;
+			this.Items.AddRange(ribbonCommandItem);
+		}
+
 		public class RibbonTabGroupCollection
 			: System.Collections.ObjectModel.Collection<RibbonTabGroup>
 		{

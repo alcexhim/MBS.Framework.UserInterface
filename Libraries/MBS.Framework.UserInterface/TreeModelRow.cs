@@ -240,7 +240,7 @@ namespace MBS.Framework.UserInterface
 		private TreeModelRowColumn.TreeModelRowColumnCollection mvarRowColumns = null;
 		public TreeModelRowColumn.TreeModelRowColumnCollection RowColumns { get { return mvarRowColumns; } }
 
-		public TreeModelRow(TreeModelRowColumn[] rowColumns = null)
+		public TreeModelRow(TreeModelRowColumn[] rowColumns = null, TreeModelRow[] childRows = null)
 		{
 			this.Rows.CollectionChanged += Rows_CollectionChanged;
 			mvarRowColumns = new TreeModelRowColumn.TreeModelRowColumnCollection(this);
@@ -249,6 +249,13 @@ namespace MBS.Framework.UserInterface
 				foreach (TreeModelRowColumn rc in rowColumns)
 				{
 					mvarRowColumns.Add(rc);
+				}
+			}
+			if (childRows != null)
+			{
+				foreach (TreeModelRow row in childRows)
+				{
+					Rows.Add(row);
 				}
 			}
 		}

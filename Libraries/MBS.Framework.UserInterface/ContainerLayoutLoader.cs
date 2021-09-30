@@ -627,6 +627,16 @@ namespace MBS.Framework.UserInterface
 				case "GtkNotebook":
 				{
 					ctl = new TabContainer();
+
+					string tab_pos = this.GetValueForPropertyCompat<string>(item, "tab-pos", String.Empty);
+					switch (tab_pos.ToLower())
+					{
+						case "left": ((TabContainer)ctl).TabPosition = TabPosition.Left; break;
+						case "right": ((TabContainer)ctl).TabPosition = TabPosition.Right; break;
+						case "bottom": ((TabContainer)ctl).TabPosition = TabPosition.Bottom; break;
+						default: ((TabContainer)ctl).TabPosition = TabPosition.Top; break;
+					}
+
 					for (int i = 0; i < item.Items.Count; i += 2)
 					{
 						LayoutItem itemContent = item.Items[i];

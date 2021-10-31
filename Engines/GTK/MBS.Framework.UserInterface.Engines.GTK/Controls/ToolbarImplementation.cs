@@ -23,12 +23,30 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
 	[ControlImplementation(typeof(MBS.Framework.UserInterface.Controls.Toolbar))]
 	public class ToolbarImplementation : GTKNativeImplementation
 	{
+		internal class InternalGripper : CustomControl
+		{
+			public InternalGripper()
+			{
+				HorizontalAdjustment.ScrollType = AdjustmentScrollType.Never;
+				VerticalAdjustment.ScrollType = AdjustmentScrollType.Never;
+				MinimumSize = new Dimension2D(24, 0);
+			}
+			protected override void OnPaint(PaintEventArgs e)
+			{
+				base.OnPaint(e);
+
+				e.Graphics.DrawRectangle(new Pen(Color.FromRGBAByte(255, 255, 0)), new Rectangle(0, 0, 24, 0));
+			}
+		}
+
 		private Internal.GObject.Delegates.GCallbackV1I gc_clicked_handler = null;
 		public ToolbarImplementation(Engine engine, Control control)
 			: base(engine, control)

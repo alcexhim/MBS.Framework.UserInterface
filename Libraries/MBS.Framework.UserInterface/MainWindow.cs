@@ -77,7 +77,15 @@ namespace MBS.Framework.UserInterface
 						}
 						else if (cmd.ImageFileName != null)
 						{
-							button.Image = Image.FromName(cmd.ImageFileName, 16);
+							string fullPath = ((UIApplication)Application.Instance).ExpandRelativePath(cmd.ImageFileName);
+							if (fullPath == null)
+							{
+								button.Image = Image.FromName(cmd.ImageFileName, 16);
+							}
+							else
+							{
+								button.Image = Image.FromFile(cmd.ImageFileName);
+							}
 						}
 						button.TooltipText = cmd.Title.Replace("_", String.Empty);
 					}

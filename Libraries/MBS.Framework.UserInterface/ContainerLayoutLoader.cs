@@ -170,7 +170,7 @@ namespace MBS.Framework.UserInterface
 				AdjustmentScrollType scrollTypeH = AdjustmentScrollType.Automatic;
 				AdjustmentScrollType scrollTypeV = AdjustmentScrollType.Automatic;
 
-				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid", "GtkScrolledWindow" });
+				LayoutItem itemBox = item.Items.FirstOfClassName(new string[] { "GtkBox", "GtkGrid", "GtkScrolledWindow", "GtkStack" });
 				if (itemBox == null)
 				{
 					Console.WriteLine("warning: layout designer did not specify a container; using GtkBox");
@@ -198,7 +198,14 @@ namespace MBS.Framework.UserInterface
 					string subtitle = itemHeaderBar.Properties["subtitle"]?.Value ?? String.Empty;
 					(container as Window).Text = title;
 					(container as Window).DocumentFileName = subtitle;
+
+					foreach (LayoutItem headerBarItem in itemHeaderBar.Items)
+					{
+						Control ctlHeaderItem = RecursiveLoadControl(layout, headerBarItem);
+						(container as Window).TitleBarControls.Add(ctlHeaderItem);
+					}
 				}
+
 				RecursiveLoadContainer(layout, itemBox, container);
 				container.Layout.Scrollable = scrollableLayout;
 				container.HorizontalAdjustment.ScrollType = scrollTypeH;
@@ -759,11 +766,8 @@ namespace MBS.Framework.UserInterface
 					break;
 				}
 				case "GtkBox":
-				{
-					ctl = new Container();
-					RecursiveLoadContainer(layout, item, (ctl as Container));
-					break;
-				}
+				case "GtkListBox":
+				case "GtkStack":
 				case "GtkGrid":
 				{
 					ctl = new Container();
@@ -815,6 +819,15 @@ namespace MBS.Framework.UserInterface
 							}
 						}
 					}
+					break;
+				}
+				case "GtkStackSwitcher":
+				{
+					string stackId = item.Properties["stack"]?.Value;
+					Control ctlStack = this.container.GetControlByID(stackId);
+
+						// FIXME: how the hell do we do this
+					ctl = null;
 					break;
 				}
 			}
@@ -1152,6 +1165,27 @@ namespace MBS.Framework.UserInterface
 					}
 					break;
 				}
+				case "GtkListBox":
+				{
+					// layout is a ListLayout
+					container.Layout = new ListLayout();
+					break;
+				}
+				case "GtkStack":
+				{
+					// layout is a StackLayout
+					container.Layout = new StackLayout();
+
+					if (item.Properties["row_homogeneous"] != null)
+					{
+						(container.Layout as GridLayout).RowHomogeneous = (item.Properties["row_homogeneous"].Value == "True");
+					}
+					if (item.Properties["column_homogeneous"] != null)
+					{
+						(container.Layout as GridLayout).ColumnHomogeneous = (item.Properties["column_homogeneous"].Value == "True");
+					}
+					break;
+				}
 			}
 
 			foreach (LayoutItem item2 in item.Items)
@@ -1234,6 +1268,12 @@ namespace MBS.Framework.UserInterface
 						if (propHeight != null) Int32.TryParse(propHeight.Value, out height_attach);
 
 						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new GridLayout.Constraints(top_attach, left_attach, height_attach, width_attach));
+					}
+					else if (container.Layout is StackLayout)
+					{
+						string name = item2.PackingProperties["name"]?.Value;
+						string title = item2.PackingProperties["title"]?.Value;
+						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new StackLayout.Constraints(name, title));
 					}
 
 					LayoutItemProperty propHExpand = item2.Properties["hexpand"];

@@ -198,6 +198,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Engine.UnregisterControlHandle(ctls[i]);
 			}
 		}
+		public void RemoveChildControl(Control child)
+		{
+			IntPtr hContainer = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle);
+
+			Engine.UnregisterControlHandle(child);
+		}
 
 		public void SetControlConstraints(Control control, Constraints constraints)
 		{

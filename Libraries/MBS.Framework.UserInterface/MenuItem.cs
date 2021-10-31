@@ -148,7 +148,10 @@ namespace MBS.Framework.UserInterface
 				for (int i = 0; i < gci.Items.Count; i++)
 				{
 					MenuItem[] mis = LoadMenuItem(gci.Items[i], onclick);
-					list.AddRange(mis);
+					if (mis != null)
+					{
+						list.AddRange(mis);
+					}
 				}
 				return list.ToArray();
 			}

@@ -25,6 +25,7 @@ namespace MBS.Framework.UserInterface
 	{
 		void InsertChildControl(Control control);
 		void ClearChildControls();
+		void RemoveChildControl(Control control);
 		void SetControlConstraints(Control control, Constraints constraints);
 	}
 }

@@ -185,34 +185,7 @@ namespace MBS.Framework.UserInterface
 
 		private void InitializeCommandBar(MarkupTagElement tag)
 		{
-			MarkupAttribute attID = tag.Attributes["ID"];
-			if (attID == null) return;
-
-			CommandBar cb = new CommandBar();
-			cb.ID = attID.Value;
-
-			MarkupAttribute attTitle = tag.Attributes["Title"];
-			if (attTitle != null)
-			{
-				cb.Title = attTitle.Value;
-			}
-			else
-			{
-				cb.Title = cb.ID;
-			}
-
-			MarkupTagElement tagItems = tag.Elements["Items"] as MarkupTagElement;
-			if (tagItems != null)
-			{
-				foreach (MarkupElement elItem in tagItems.Elements)
-				{
-					MarkupTagElement tagItem = (elItem as MarkupTagElement);
-					if (tagItem == null) continue;
-
-					InitializeCommandBarItem(tagItem, null, cb);
-				}
-			}
-
+			CommandBar cb = CommandBarLoader.LoadCommandBarXML(tag);
 			mvarCommandBars.Add(cb);
 		}
 
@@ -818,6 +791,7 @@ namespace MBS.Framework.UserInterface
 
 		private Dictionary<Context, List<MenuItem>> _listContextMenuItems = new Dictionary<Context, System.Collections.Generic.List<MenuItem>>();
 		private Dictionary<Context, List<Command>> _listContextCommands = new Dictionary<Context, List<Command>>();
+		private Dictionary<Context, List<CommandBar>> _listContextCommandBars = new Dictionary<Context, List<CommandBar>>();
 
 		protected override void OnContextAdded(ContextChangedEventArgs e)
 		{
@@ -828,6 +802,10 @@ namespace MBS.Framework.UserInterface
 			if (!_listContextCommands.ContainsKey(e.Context))
 			{
 				_listContextCommands[e.Context] = new List<Command>();
+			}
+			if (!_listContextCommandBars.ContainsKey(e.Context))
+			{
+				_listContextCommandBars[e.Context] = new List<CommandBar>();
 			}
 
 			foreach (Command cmd in e.Context.Commands)
@@ -883,6 +861,15 @@ namespace MBS.Framework.UserInterface
 						}
 					}
 				}
+
+				foreach (CommandBar cb in ((UIContext)e.Context).CommandBars)
+				{
+					foreach (Window w in ((UIApplication)Application.Instance).Windows)
+					{
+						w.CommandBars.Add(cb);
+						_listContextCommandBars[e.Context].Add(cb);
+					}
+				}
 			}
 			base.OnContextAdded(e);
 		}
@@ -908,6 +895,14 @@ namespace MBS.Framework.UserInterface
 					Commands.Remove(cmd);
 				}
 				_listContextCommands[e.Context].Clear();
+			}
+
+			foreach (CommandBar cb in _listContextCommandBars[e.Context])
+			{
+				foreach (Window w in ((UIApplication)Application.Instance).Windows)
+				{
+					w.CommandBars.Remove(cb);
+				}
 			}
 		}
 		public CommandItem.CommandItemCollection QuickAccessToolbarItems { get; } = new CommandItem.CommandItemCollection();

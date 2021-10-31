@@ -1,10 +1,10 @@
 //
-//  UIContext.cs
+//  SVGStyle.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2020 Mike Becker's Software
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,16 +19,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface
+using MBS.Framework.Collections.Generic;
+
+namespace MBS.Framework.UserInterface.Drawing.Drawing2D.SVG
 {
-	public class UIContext : Context
+	public class SVGStyle
 	{
-		public UIContext(Guid id, string name) : base(id, name)
+		public class SVGStyleCollection
+			: System.Collections.ObjectModel.Collection<SVGStyle>
 		{
+
 		}
 
-		public CommandItem.CommandItemCollection MenuItems { get; } = new CommandItem.CommandItemCollection();
-		public CommandBar.CommandBarCollection CommandBars { get; } = new CommandBar.CommandBarCollection();
-		public KeyBinding.KeyBindingCollection KeyBindings { get; } = new KeyBinding.KeyBindingCollection();
+		public string Name { get; set; } = null;
+		public SVGStyleProperty.SVGStylePropertyCollection Properties { get; } = new SVGStyleProperty.SVGStylePropertyCollection();
+
+		public SVGStyle(SVGStyleProperty[] properties)
+		{
+			Name = null;
+			Properties.AddRange(properties);
+		}
+		public SVGStyle(string name, SVGStyleProperty[] properties)
+		{
+			Name = name;
+			Properties.AddRange(properties);
+		}
 	}
 }

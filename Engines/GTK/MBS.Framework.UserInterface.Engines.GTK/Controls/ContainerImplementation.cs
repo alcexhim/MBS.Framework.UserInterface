@@ -66,15 +66,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					}
 				}
 			}
-			else if (layout is Layouts.AbsoluteLayout)
+			else if (layout is AbsoluteLayout)
 			{
-				Layouts.AbsoluteLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.AbsoluteLayout.Constraints);
+				AbsoluteLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.AbsoluteLayout.Constraints);
 				if (constraints == null) constraints = new Layouts.AbsoluteLayout.Constraints(0, 0, 0, 0);
 				Internal.GTK.Methods.GtkFixed.gtk_fixed_put(hContainer, ctlHandle, constraints.X, constraints.Y);
 			}
-			else if (layout is Layouts.GridLayout)
+			else if (layout is GridLayout)
 			{
-				Layouts.GridLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.GridLayout.Constraints);
+				GridLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.GridLayout.Constraints);
 				if (constraints != null)
 				{
 					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
@@ -112,6 +112,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, hListBoxRow);
+			}
+			else if (layout is StackLayout)
+			{
+				StackLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as StackLayout.Constraints);
+				Internal.GTK.Methods.GtkStack.gtk_stack_add_titled(hContainer, ctlHandle, constraints.Name, constraints.Title);
+			}
+			else if (layout is FlowLayout)
+			{
+				FlowLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as FlowLayout.Constraints);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
 			}
 			else
 			{
@@ -178,7 +188,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else if (layout is Layouts.FlowLayout)
 			{
 				hContainer = Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_new();
-				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.None);
+				switch (((FlowLayout)layout).SelectionMode)
+				{
+					case SelectionMode.Browse:
+					{
+						Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.Browse);
+						break;
+					}
+					case SelectionMode.Multiple:
+					{
+						Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.Multiple);
+						break;
+					}
+					case SelectionMode.Single:
+					{
+						Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.Single);
+						break;
+					}
+					default:
+					{
+						Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_set_selection_mode(hContainer, Internal.GTK.Constants.GtkSelectionMode.None);
+						break;
+					}
+				}
 			}
 			else if (layout is Layouts.ListLayout)
 			{
@@ -191,6 +223,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hContainer), "frame");
 				}
+			}
+			else if (layout is StackLayout)
+			{
+				hContainer = Internal.GTK.Methods.GtkStack.gtk_stack_new();
 			}
 
 			if (hContainer != IntPtr.Zero)
@@ -265,6 +301,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			for (int i = 0; i < ctls.Length; i++)
 			{
 				Engine.UnregisterControlHandle(ctls[i]);
+			}
+		}
+		public void RemoveChildControl(Control child)
+		{
+			IntPtr hContainer = ((GTKNativeControl)Handle).Handle;
+			Layout layout = (Control as Container).Layout;
+			if (layout is FlowLayout)
+			{
+				IntPtr hControl = ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle;
+				IntPtr hControlParent = Internal.GTK.Methods.GtkWidget.gtk_widget_get_parent(hControl);
+
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, hControlParent);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle);
 			}
 		}
 		public void SetControlConstraints(Control control, Constraints constraints)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Native;
@@ -74,32 +75,37 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_label_text(hNotebook, hPage, text);
 		}
 
+		private IntPtr CreateTabPageContainer(TabPage page)
+		{
+			ContainerImplementation tabControlContainerImplementation = new ContainerImplementation(Engine, page);
+			tabControlContainerImplementation.CreateControl(page);
+
+			IntPtr hContainer = (tabControlContainerImplementation.Handle as GTKNativeControl).Handle;
+			return hContainer;
+		}
+
 		public void NotebookAppendPage(TabContainer ctl, IntPtr handle, TabPage page, int indexAfter = -1)
 		{
-			Container tabControlContainer = new Container();
-			tabControlContainer.Layout = new BoxLayout(Orientation.Horizontal, 0);
-			tabControlContainer.BeforeContextMenu += lblTabText_BeforeContextMenu;
+			Container tabTitleContainer = new Container();
 
 			Label lblTabText = new Label(page.Text);
 			// lblTabText.BeforeContextMenu += lblTabText_BeforeContextMenu;
 			lblTabText.WordWrap = WordWrapMode.Never;
 
-			tabControlContainer.Controls.Add(lblTabText, new BoxLayout.Constraints(true, true, 0));
+			tabTitleContainer.Controls.Add(lblTabText, new BoxLayout.Constraints(true, true, 0));
 
-			System.Reflection.FieldInfo fiParent = tabControlContainer.GetType().BaseType.GetField("mvarParent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-			fiParent.SetValue(tabControlContainer, page);
+			System.Reflection.FieldInfo fiParent = tabTitleContainer.GetType().BaseType.GetField("mvarParent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			fiParent.SetValue(tabTitleContainer, page);
 
 			foreach (Control ctlTabButton in ctl.TabTitleControls)
 			{
-				tabControlContainer.Controls.Add(ctlTabButton, new BoxLayout.Constraints(false, false));
+				tabTitleContainer.Controls.Add(ctlTabButton, new BoxLayout.Constraints(false, false));
 			}
 
-			Engine.CreateControl(tabControlContainer);
-			IntPtr hTabLabel = (Engine.GetHandleForControl(tabControlContainer) as GTKNativeControl).Handle;
+			Engine.CreateControl(tabTitleContainer);
+			IntPtr hTabLabel = (Engine.GetHandleForControl(tabTitleContainer) as GTKNativeControl).Handle;
 
-			ContainerImplementation cimpl = new ContainerImplementation(Engine, page);
-			cimpl.CreateControl(page);
-			IntPtr container = (cimpl.Handle as GTKNativeControl).Handle;
+			IntPtr container = CreateTabPageContainer(page);
 
 			string rndgroupname = ctl.GroupName;
 			if (rndgroupname == null)
@@ -310,21 +316,52 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			TabContainer ctl = (control as TabContainer);
-			IntPtr handle = Internal.GTK.Methods.GtkNotebook.gtk_notebook_new();
-
-			foreach (TabPage tabPage in ctl.TabPages)
+			if (ctl.TabStyle == TabContainerTabStyle.Sidebar)
 			{
-				NotebookAppendPage(ctl, handle, tabPage);
+				IntPtr handle = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
+
+				IntPtr hStackSidebar = Internal.GTK.Methods.GtkStackSidebar.gtk_stack_sidebar_new();
+				IntPtr hStack = Internal.GTK.Methods.GtkStack.gtk_stack_new();
+
+				foreach (TabPage tab in ctl.TabPages)
+				{
+					IntPtr hChild = CreateTabPageContainer(tab);
+					Internal.GTK.Methods.GtkStack.gtk_stack_add_titled(hStack, hChild, tab.Name, tab.Text);
+				}
+
+				Internal.GTK.Methods.GtkStackSidebar.gtk_stack_sidebar_set_stack(hStackSidebar, hStack);
+
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(handle, hStackSidebar, false, false, 0);
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(handle, hStack, true, true, 0);
+
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hStackSidebar);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hStack);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(handle);
+
+				return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("hStack", hStack),
+					new KeyValuePair<string, IntPtr>("hStackSidebar", hStackSidebar)
+				});
 			}
+			else
+			{
+				IntPtr handle = Internal.GTK.Methods.GtkNotebook.gtk_notebook_new();
 
-			Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_pos(handle, TabPositionToGtkPositionType(ctl.TabPosition));
+				foreach (TabPage tabPage in ctl.TabPages)
+				{
+					NotebookAppendPage(ctl, handle, tabPage);
+				}
 
-			Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
-			Internal.GObject.Methods.g_signal_connect(handle, "page_reordered", page_reordered_d, IntPtr.Zero);
-			Internal.GObject.Methods.g_signal_connect(handle, "change_current_page", change_current_tab_d, IntPtr.Zero);
-			Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_tab_pos(handle, TabPositionToGtkPositionType(ctl.TabPosition));
 
-			return new GTKNativeControl(handle);
+				Internal.GObject.Methods.g_signal_connect(handle, "create_window", create_window_d, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(handle, "page_reordered", page_reordered_d, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(handle, "change_current_page", change_current_tab_d, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
+
+				return new GTKNativeControl(handle);
+			}
 		}
 	}
 }

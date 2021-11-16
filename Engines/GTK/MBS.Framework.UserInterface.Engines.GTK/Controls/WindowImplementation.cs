@@ -171,6 +171,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		protected override void SetControlTextInternal(Control control, string text)
 		{
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
+			// FIXME: crashes sometimes??? in UniversalEditor when an unsaved new document is open and the start page is open
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_title((Engine.GetHandleForControl(control) as GTKNativeControl).Handle, hTitle);
 		}
 

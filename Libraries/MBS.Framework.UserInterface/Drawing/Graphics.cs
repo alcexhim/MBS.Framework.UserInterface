@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing.Drawing2D.SVG;
 using MBS.Framework.UserInterface.ObjectModels.Theming;
 using MBS.Framework.UserInterface.ObjectModels.Theming.RenderingActions;
 using MBS.Framework.UserInterface.Theming;
@@ -26,6 +27,14 @@ namespace MBS.Framework.UserInterface.Drawing
 			return ((UIApplication)Application.Instance).Engine.CreateGraphics(image);
 		}
 
+		private void DrawSVGImage(SVGImage image)
+		{
+			foreach (SVGItem item in image.Items)
+			{
+				item.Render(this);
+			}
+		}
+
 		protected abstract void DrawImageInternal(Image image, double x, double y, double width, double height);
 		public void DrawImage(Image image, double x, double y)
 		{
@@ -34,6 +43,12 @@ namespace MBS.Framework.UserInterface.Drawing
 		public void DrawImage(Image image, double x, double y, double width, double height)
 		{
 			DpiScale(ref x, ref y, ref width, ref height);
+
+			if (image is SVGImage)
+			{
+				DrawSVGImage((SVGImage)image);
+				return;
+			}
 			DrawImageInternal(image, x, y, width, height);
 		}
 

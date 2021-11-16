@@ -59,11 +59,20 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		private System.Windows.Forms.StatusStrip sb = null;
 		private System.Windows.Forms.MenuStrip mb = null;
 
+		private class WinForm : System.Windows.Forms.Form
+		{
+			internal Internal.CommandBars.ToolBarManager tbm = null;
+			public WinForm()
+			{
+				tbm = new Internal.CommandBars.ToolBarManager(this, this);
+			}
+		}
+
 		protected override NativeControl CreateControlInternal (Control control)
 		{
 			Window window = (control as Window);
 
-			System.Windows.Forms.Form form = new System.Windows.Forms.Form ();
+			WinForm form = new WinForm();
 
 			if (window.Decorated)
 			{
@@ -87,8 +96,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			form.FormClosed += Form_FormClosed;
 			form.Shown += form_Shown;
 
-			Internal.CommandBars.ToolBarManager tbm = new Internal.CommandBars.ToolBarManager(form, form);
-
 			// System.Windows.Forms.ToolStripContainer tsc = new System.Windows.Forms.ToolStripContainer();
 			// tsc.Dock = System.Windows.Forms.DockStyle.Fill;
 
@@ -106,23 +113,13 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			}
 
 			if (mb.Items.Count > 0 && window.MenuBar.Visible && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
-				tbm.AddControl(mb);
+				form.tbm.AddControl(mb);
 
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
 				foreach (CommandBar cb in ((UIApplication)Application.Instance).CommandBars)
 				{
-					Toolbar tbCommandBar = window.LoadCommandBar(cb);
-					if (!tbCommandBar.IsCreated)
-					{
-						Engine.CreateControl(tbCommandBar);
-					}
-					System.Windows.Forms.ToolStrip ts = ((tbCommandBar.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ToolStrip);
-					ts.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-					ts.Text = cb.Title;
-
-					// tsc.TopToolStripPanel.Controls.Add(ts);
-					tbm.AddControl(ts);
+					InsertCommandBarEx(form, 0, cb);
 				}
 			}
 
@@ -307,6 +304,36 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		public void SetFullScreen(bool value)
 		{
 
+		}
+
+		public void InsertCommandBar(int index, CommandBar toolbar)
+		{
+			WinForm form = (WinForm) ((WindowsFormsNativeControl)Handle).Handle;
+			InsertCommandBarEx(form, index, toolbar);
+		}
+		private void InsertCommandBarEx(WinForm form, int index, CommandBar toolbar)
+		{
+			Toolbar tbCommandBar = CommandBarLoader.LoadCommandBar(toolbar);
+			if (!tbCommandBar.IsCreated)
+			{
+				Engine.CreateControl(tbCommandBar);
+			}
+			System.Windows.Forms.ToolStrip ts = ((tbCommandBar.ControlImplementation.Handle as WindowsFormsNativeControl).Handle as System.Windows.Forms.ToolStrip);
+			ts.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			ts.Text = toolbar.Title;
+
+			// tsc.TopToolStripPanel.Controls.Add(ts);
+			form.tbm.AddControl(ts);
+		}
+
+		public void ClearCommandBars()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void RemoveCommandBar(CommandBar toolbar)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

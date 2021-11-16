@@ -72,6 +72,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			if (ctl == null) throw new InvalidOperationException();
 
 			IntPtr handle = Internal.GTK.Methods.GtkGlArea.gtk_gl_area_new();
+			Internal.GTK.Methods.GtkGlArea.gtk_gl_area_set_auto_render(handle, true);
 
 			Internal.GObject.Methods.g_signal_connect(handle, "render",  (Internal.GTK.Delegates.GtkGlAreaRenderFunc)Canvas_Render);
 			return new GTKNativeControl(handle);

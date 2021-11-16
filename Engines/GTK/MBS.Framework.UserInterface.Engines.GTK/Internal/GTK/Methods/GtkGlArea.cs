@@ -33,5 +33,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		public static extern void gtk_gl_area_attach_buffers(IntPtr /*GtkWidget*/ area);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GError*/ gtk_gl_area_get_error(IntPtr /*GtkWidget*/ area);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_gl_area_set_auto_render(IntPtr /*GtkGLArea*/ handle, bool auto_render);
 	}
 }

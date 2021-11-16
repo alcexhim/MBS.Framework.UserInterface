@@ -56,9 +56,9 @@ namespace MBS.Framework.UserInterface
 			}
 			protected override void RemoveItem(int index)
 			{
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.RemoveChildControl(_parent, this[index]);
 				this[index].Parent = null;
 				base.RemoveItem(index);
-				// if (_parent != null) Application.Engine.UpdateControlCollection(_parent);
 			}
 			protected override void SetItem(int index, Control item)
 			{

@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Controls;
+using MBS.Framework.Collections.Generic;
+using MBS.Framework.UserInterface.Layouts;
 
 namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 {
@@ -196,6 +198,54 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return true;
 		}
 
+		private Container toolbarContainer = null;
+
+		private HandleDictionary<CommandBar, Container> dictToolbar = new HandleDictionary<CommandBar, Container>();
+		public void InsertCommandBar(int index, CommandBar cb)
+		{
+			Toolbar tb = CommandBarLoader.LoadCommandBar(cb);
+
+			Container cbGripper = new Container(new BoxLayout(Orientation.Horizontal));
+			// cbGripper.Controls.Add(new ToolbarImplementation.InternalGripper(), new BoxLayout.Constraints(false, false));
+			cbGripper.Controls.Add(tb, new BoxLayout.Constraints(true, true));
+
+			toolbarContainer.Controls.Add(cbGripper, new FlowLayout.Constraints());
+
+			dictToolbar.Add(cbGripper, cb);
+			/*
+			GTKNativeControl ncToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl);
+			if (ncToolbar == null)
+			{
+				Engine.CreateControl(tb);
+				ncToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl);
+				if (ncToolbar == null)
+				{
+					throw new Exception();
+				}
+			}
+
+			IntPtr hToolbar = ncToolbar.Handle;
+			dictToolbar.Add(hToolbar, cb);
+
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(hToolbarContainer, hToolbar);
+			*/
+		}
+		public void RemoveCommandBar(CommandBar cb)
+		{
+			if (!dictToolbar.Contains(cb))
+			{
+				Console.Error.WriteLine("uwt: attempted to remove nonexistent toolbar");
+				return;
+			}
+
+			Container cbGripper = dictToolbar.GetHandle(cb);
+			toolbarContainer.Controls.Remove(cbGripper);
+			dictToolbar.Remove(cb);
+		}
+		public void ClearCommandBars()
+		{
+		}
+
 		// [System.Diagnostics.DebuggerNonUserCode()]
 		protected override NativeControl CreateControlInternal(Control control)
 		{
@@ -254,6 +304,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			#endregion
 
+			toolbarContainer = new Container(new FlowLayout());
+
+			Engine.CreateControl(toolbarContainer);
+			GTKNativeControl ncToolbarContainer = (GTKNativeControl)Engine.GetHandleForControl(toolbarContainer);
+			IntPtr hToolbarContainer = ncToolbarContainer.Handle;
+
+			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hToolbarContainer, false, true, 0);
+
 			if (control is MainWindow)
 			{
 				#region Toolbars
@@ -261,25 +319,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					for (int i = 0; i < ((UIApplication)Application.Instance).CommandBars.Count; i++)
 					{
-						Toolbar tb = window.LoadCommandBar(((UIApplication)Application.Instance).CommandBars[i]);
-						Engine.CreateControl(tb);
-
-						IntPtr hToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl).Handle;
-						bool showGrip = false; // tb.GripStyle == GripStyle.Visible;
-
-						if (showGrip)
-						{
-							IntPtr hGripBox = Internal.GTK.Methods.GtkHandleBox.gtk_handle_box_new();
-							Internal.GTK.Methods.GtkContainer.gtk_container_add(hGripBox, hToolbar);
-
-							Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hGripBox, false, true, 0);
-
-							Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hGripBox);
-						}
-						else
-						{
-							Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hToolbar, false, true, 0);
-						}
+						InsertCommandBar(0, ((UIApplication)Application.Instance).CommandBars[i]);
 					}
 				}
 				#endregion
@@ -316,7 +356,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
-					// Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
+					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 
 					IntPtr hBBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hBBox), "linked");

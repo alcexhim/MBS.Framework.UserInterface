@@ -9,6 +9,12 @@ namespace MBS.Framework.UserInterface.Layouts
 {
 	public class FlowLayout : Layout
 	{
+		public class Constraints : UserInterface.Constraints
+		{
+		}
+
+		public SelectionMode SelectionMode { get; set; }
+
 		private Dictionary<Control, int> mvarControlPriorities = new Dictionary<Control, int>();
 		private Dictionary<Control, Rectangle> mvarControlBounds = new Dictionary<Control, Rectangle>();
 

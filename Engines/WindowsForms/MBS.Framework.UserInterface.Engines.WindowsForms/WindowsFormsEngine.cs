@@ -1118,5 +1118,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			}
 		}
 
+		protected override void RemoveChildControlInternal(IControlContainer parent, Control control)
+		{
+			WindowsFormsNativeControl ncControl = (WindowsFormsNativeControl) GetHandleForControl(control);
+			ncControl.Handle.Parent.Controls.Remove(ncControl.Handle);
+		}
 	}
 }

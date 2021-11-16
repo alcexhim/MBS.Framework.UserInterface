@@ -1164,13 +1164,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			return DialogResult.OK;
 		}
 
-		protected override void InsertChildControlInternal(IControlContainer parent, Control item)
+		protected override void InsertChildControlInternal(IControlContainer parent, Control control)
 		{
-			(parent.ControlImplementation as IControlContainerImplementation).InsertChildControl(item);
+			(parent.ControlImplementation as IControlContainerImplementation).InsertChildControl(control);
 		}
 		protected override void ClearChildControlsInternal(IControlContainer parent)
 		{
 			(parent.ControlImplementation as IControlContainerImplementation).ClearChildControls();
+		}
+		protected override void RemoveChildControlInternal(IControlContainer parent, Control control)
+		{
+			(parent.ControlImplementation as IControlContainerImplementation).RemoveChildControl(control);
 		}
 
 		#region Common Dialog

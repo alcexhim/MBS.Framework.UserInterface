@@ -303,6 +303,16 @@
     <Compile Include="CellEditingEvent.cs" />
     <Compile Include="CellEditedEvent.cs" />
     <Compile Include="TabContainerTabStyle.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\SVGImage.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\SVGItem.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\Items\SVGItemLine.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\Items\SVGItemPath.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\SVGPoint.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\SVGStyle.cs" />
+    <Compile Include="Drawing\Drawing2D\SVG\SVGStyleProperty.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Layouts\StackLayout.cs" />
+    <Compile Include="CommandBarLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -350,6 +360,8 @@
     <Folder Include="Internal\Controls\" />
     <Folder Include="Internal\Controls\KeyboardSettings\" />
     <Folder Include="Controls\SyntaxTextBox\" />
+    <Folder Include="Drawing\Drawing2D\SVG\" />
+    <Folder Include="Drawing\Drawing2D\SVG\Items\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />

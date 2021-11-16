@@ -1,10 +1,10 @@
 //
-//  UIContext.cs
+//  SVGPoint.cs
 //
 //  Author:
 //       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2020 Mike Becker's Software
+//  Copyright (c) 2021 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,16 +19,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface
+using MBS.Framework.Drawing;
+
+namespace MBS.Framework.UserInterface.Drawing.Drawing2D.SVG
 {
-	public class UIContext : Context
+	public class SVGPoint
 	{
-		public UIContext(Guid id, string name) : base(id, name)
+		public class SVGPointCollection
+			: System.Collections.ObjectModel.Collection<SVGPoint>
 		{
+
 		}
 
-		public CommandItem.CommandItemCollection MenuItems { get; } = new CommandItem.CommandItemCollection();
-		public CommandBar.CommandBarCollection CommandBars { get; } = new CommandBar.CommandBarCollection();
-		public KeyBinding.KeyBindingCollection KeyBindings { get; } = new KeyBinding.KeyBindingCollection();
+		public Measurement X { get; set; }
+		public Measurement Y { get; set; }
 	}
 }

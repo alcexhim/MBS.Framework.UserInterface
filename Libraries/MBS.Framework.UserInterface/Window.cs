@@ -31,6 +31,10 @@ namespace MBS.Framework.UserInterface
 
 			bool IsFullScreen();
 			void SetFullScreen(bool value);
+
+			void InsertCommandBar(int index, CommandBar toolbar);
+			void ClearCommandBars();
+			void RemoveCommandBar(CommandBar toolbar);
 		}
 	}
 	public class Window : Container
@@ -38,96 +42,14 @@ namespace MBS.Framework.UserInterface
 		private RibbonControl mvarRibbon = new RibbonControl();
 		public RibbonControl Ribbon { get { return mvarRibbon; } }
 
+		public CommandBar.CommandBarCollection CommandBars { get; private set; } = null;
+
 		public bool Modal { get; set; } = false;
-
-		private void tsbCommand_Click(object sender, EventArgs e)
-		{
-			ToolbarItemButton tsb = (sender as ToolbarItemButton);
-			CommandReferenceCommandItem crci = tsb.GetExtraData<CommandReferenceCommandItem>("crci");
-			Command cmd = ((UIApplication)Application.Instance).Commands[crci.CommandID];
-			cmd.Execute();
-		}
-
-		public ToolbarItem[] LoadCommandBarItem(CommandItem ci)
-		{
-			System.Diagnostics.Contracts.Contract.Assert(ci != null);
-
-			if (ci is SeparatorCommandItem)
-			{
-				return new ToolbarItem[] { new ToolbarItemSeparator() };
-			}
-			else if (ci is CommandReferenceCommandItem)
-			{
-				CommandReferenceCommandItem crci = (ci as CommandReferenceCommandItem);
-				Command cmd = ((UIApplication)Application.Instance).Commands[crci.CommandID];
-				if (cmd == null) return null;
-
-				ToolbarItemButton tsb = new ToolbarItemButton(cmd.ID, (StockType)cmd.StockType);
-				tsb.SetExtraData<CommandReferenceCommandItem>("crci", crci);
-				tsb.Click += tsbCommand_Click;
-				tsb.Title = cmd.Title;
-				return new ToolbarItem[] { tsb };
-			}
-			else if (ci is GroupCommandItem)
-			{
-				GroupCommandItem gci = (ci as GroupCommandItem);
-				List<ToolbarItem> list = new List<ToolbarItem>();
-				for (int i = 0; i < gci.Items.Count; i++)
-				{
-					ToolbarItem[] items = LoadCommandBarItem(gci.Items[i]);
-					list.AddRange(items);
-				}
-				return list.ToArray();
-			}
-			throw new NotImplementedException(String.Format("type of CommandItem '{0}' not implemented", ci.GetType()));
-		}
-
-		private static Dictionary<CommandBar, List<Toolbar>> _ToolbarsForCommandBar = new Dictionary<CommandBar, List<Toolbar>>();
-		private static bool RegisterCommandBar(CommandBar cb, Toolbar tb)
-		{
-			if (!_ToolbarsForCommandBar.ContainsKey(cb))
-			{
-				_ToolbarsForCommandBar[cb] = new List<Toolbar>();
-			}
-			if (_ToolbarsForCommandBar[cb].Contains(tb))
-				return false;
-
-			_ToolbarsForCommandBar[cb].Add(tb);
-			return true;
-		}
-
-		private static Toolbar[] ToolbarsForCommandBar(CommandBar cb)
-		{
-			if (!_ToolbarsForCommandBar.ContainsKey(cb))
-				return null;
-			return _ToolbarsForCommandBar[cb].ToArray();
-		}
-
-		public Toolbar LoadCommandBar(CommandBar cb)
-		{
-			Toolbar tb = new Toolbar();
-			for (int i = 0; i < cb.Items.Count; i++)
-			{
-				ToolbarItem[] items = LoadCommandBarItem(cb.Items[i]);
-				if (items != null && items.Length > 0)
-				{
-					for (int j = 0; j < items.Length; j++)
-					{
-						tb.Items.Add(items[j]);
-						if (cb.Items[i] is CommandReferenceCommandItem && tb.Items[j] is ToolbarItemButton)
-						{
-							((UIApplication)Application.Instance).AssociateCommandWithNativeObject(Application.Instance.FindCommand((cb.Items[i] as CommandReferenceCommandItem).CommandID), items[j] as ToolbarItemButton);
-						}
-					}
-				}
-			}
-			RegisterCommandBar(cb, tb);
-			return tb;
-		}
 
 		internal protected override void OnCreating(EventArgs e)
 		{
-			switch (CommandDisplayMode) {
+			switch (CommandDisplayMode)
+			{
 				case CommandDisplayMode.Ribbon:
 				case CommandDisplayMode.Both:
 				{
@@ -157,6 +79,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public Button.ButtonCollection TitleBarButtons { get; private set; } = null;
+		public Control.ControlCollection TitleBarControls { get; private set; } = null;
 
 		public CommandDisplayMode CommandDisplayMode { get; set; } = CommandDisplayMode.CommandBar;
 
@@ -167,6 +90,8 @@ namespace MBS.Framework.UserInterface
 			StatusBar = new StatusBar(this);
 			MenuBar = new Menu(this);
 			TitleBarButtons = new Button.ButtonCollection(this);
+			TitleBarControls = new ControlCollection(this);
+			CommandBars = new CommandBar.CommandBarCollection(this);
 
 			((UIApplication)Application.Instance).AddWindow(this);
 		}
@@ -207,13 +132,13 @@ namespace MBS.Framework.UserInterface
 		public event EventHandler Activate;
 		protected virtual void OnActivate(EventArgs e)
 		{
-			if (Activate != null) Activate (this, e);
+			if (Activate != null) Activate(this, e);
 		}
 
 		public event EventHandler Deactivate;
 		protected virtual void OnDeactivate(EventArgs e)
 		{
-			if (Deactivate != null) Deactivate (this, e);
+			if (Deactivate != null) Deactivate(this, e);
 		}
 
 		public event WindowClosingEventHandler Closing;

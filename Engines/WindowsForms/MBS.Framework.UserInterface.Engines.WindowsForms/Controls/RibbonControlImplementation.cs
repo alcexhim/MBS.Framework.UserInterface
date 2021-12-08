@@ -27,7 +27,7 @@ using MBS.Framework.Drawing;
 
 using MBS.Framework.UserInterface.Controls.Ribbon.Native;
 
-namespace MBS.Framework.UserInterface.Engines.GTK.Controls
+namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 {
 	[ControlImplementation(typeof(RibbonControl))]
 	public class RibbonControlImplementation : CustomImplementation, IRibbonControlImplementation

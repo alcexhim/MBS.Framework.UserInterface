@@ -755,6 +755,7 @@ namespace MBS.Framework.UserInterface
 		{
 			InitializeXMLConfiguration();
 
+			System.Threading.Thread.Sleep(100);
 			HideSplashScreen();
 		}
 

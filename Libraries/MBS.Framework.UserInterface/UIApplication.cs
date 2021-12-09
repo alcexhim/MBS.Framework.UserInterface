@@ -679,13 +679,13 @@ namespace MBS.Framework.UserInterface
 		}
 
 		public EventHandler BeforeConfigurationLoaded;
-		private void OnBeforeConfigurationLoaded(EventArgs e)
+		protected virtual void OnBeforeConfigurationLoaded(EventArgs e)
 		{
 			BeforeConfigurationLoaded?.Invoke(this, e);
 		}
 
 		public EventHandler AfterConfigurationLoaded;
-		private void OnAfterConfigurationLoaded(EventArgs e)
+		protected virtual void OnAfterConfigurationLoaded(EventArgs e)
 		{
 			AfterConfigurationLoaded?.Invoke(this, e);
 		}

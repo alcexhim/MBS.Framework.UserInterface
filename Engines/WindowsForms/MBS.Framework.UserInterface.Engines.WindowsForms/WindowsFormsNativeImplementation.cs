@@ -31,6 +31,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				(Handle as WindowsFormsNativeControl).Handle.Invalidate(new System.Drawing.Rectangle(x, y, width, height));
 		}
 
+		protected override void InitializeControlPropertiesInternal(NativeControl handle)
+		{
+		}
+
 		protected override void DestroyInternal()
 		{
 			if (Control is Dialog)

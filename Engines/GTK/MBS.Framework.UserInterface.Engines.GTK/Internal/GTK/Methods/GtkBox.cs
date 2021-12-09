@@ -65,12 +65,40 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_box_set_spacing(IntPtr box, int value);
 
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_box_pack_start")]
+		private static extern void _gtk_box_pack_start(IntPtr box, IntPtr child, bool expand, bool fill, int padding);
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_box_pack_start(IntPtr box, IntPtr child, bool expand, bool fill, int padding);
+		public static extern void gtk_box_append(IntPtr box, IntPtr child);
+
+		public static void gtk_box_pack_start(IntPtr box, IntPtr child, bool expand, bool fill, int padding)
+		{
+			if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V4)
+			{
+				gtk_box_append(box, child);
+			}
+			else
+			{
+				_gtk_box_pack_start(box, child, expand, fill, padding);
+			}
+		}
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_box_pack_end(IntPtr box, IntPtr child, bool expand, bool fill, int padding);
 
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_box_set_child_packing(IntPtr /*GtkBox*/ box, IntPtr /*GtkWidget*/ child, bool expand, bool fill, int padding, Constants.GtkPackType pack_type);
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_box_set_child_packing")]
+		public static extern void _gtk_box_set_child_packing(IntPtr /*GtkBox*/ box, IntPtr /*GtkWidget*/ child, bool expand, bool fill, int padding, Constants.GtkPackType pack_type);
+
+		public static void gtk_box_set_child_packing(IntPtr /*GtkBox*/ box, IntPtr /*GtkWidget*/ child, bool expand, bool fill, int padding, Constants.GtkPackType pack_type)
+		{
+			if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V4)
+			{
+				// stub
+			}
+			else
+			{
+				_gtk_box_set_child_packing(box, child, expand, fill, padding, pack_type);
+			}
+		}
 	}
 }

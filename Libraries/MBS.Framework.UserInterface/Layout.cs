@@ -21,14 +21,14 @@ namespace MBS.Framework.UserInterface
 
 		private Dictionary<Control, Constraints> _controlConstraints = new Dictionary<Control, Constraints>();
 
-		public void SetControlConstraints(Control ctl, Constraints constraints)
+		public void SetControlConstraints(Control.ControlCollection collection, Control ctl, Constraints constraints)
 		{
 			_controlConstraints [ctl] = constraints;
 
 			if (ctl.Parent != null)
 			{
 				if (ctl.Parent.IsCreated)
-					(ctl.Parent.ControlImplementation as IControlContainerImplementation)?.SetControlConstraints(ctl, constraints);
+					(ctl.Parent.ControlImplementation as IControlContainerImplementation)?.SetControlConstraints(collection, ctl, constraints);
 			}
 		}
 		public Constraints GetControlConstraints(Control ctl)

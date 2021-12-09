@@ -104,5 +104,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_type_hint(IntPtr /*GdkWindow*/ handle, GDK.Constants.GdkWindowTypeHint value);
+
+
+		// GTK4 crap
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_set_child(IntPtr handle, IntPtr hWindowContainer);
 	}
 }

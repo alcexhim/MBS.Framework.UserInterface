@@ -41,7 +41,7 @@ namespace MBS.Framework.UserInterface
 
 			protected override void ClearItems()
 			{
-				if (_parent != null) ((UIApplication)Application.Instance).Engine.ClearChildControls(_parent);
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.ClearChildControls(_parent, this);
 				foreach (Control ctl in this)
 				{
 					ctl.Parent = null;
@@ -52,11 +52,11 @@ namespace MBS.Framework.UserInterface
 			{
 				base.InsertItem(index, item);
 				item.Parent = _parent;
-				if (_parent != null) ((UIApplication)Application.Instance).Engine.InsertChildControl(_parent, item);
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.InsertChildControl(_parent, this, item);
 			}
 			protected override void RemoveItem(int index)
 			{
-				if (_parent != null) ((UIApplication)Application.Instance).Engine.RemoveChildControl(_parent, this[index]);
+				if (_parent != null) ((UIApplication)Application.Instance).Engine.RemoveChildControl(_parent, this, this[index]);
 				this[index].Parent = null;
 				base.RemoveItem(index);
 			}
@@ -70,11 +70,11 @@ namespace MBS.Framework.UserInterface
 
 			public void Add(Control item, Constraints constraints)
 			{
+				Add(item);
 				if (constraints != null)
 				{
-					_parent.Layout?.SetControlConstraints(item, constraints);
+					_parent.Layout?.SetControlConstraints(this, item, constraints);
 				}
-				Add(item);
 			}
 		}
 
@@ -338,7 +338,11 @@ namespace MBS.Framework.UserInterface
 			}
 			internal set {
 				mvarParent = value;
-				((UIApplication)Application.Instance).Engine.UpdateControlLayout (this);
+				if (mvarParent != null)
+				{
+					// if parent is null, control is being removed; don't update layout
+					((UIApplication)Application.Instance).Engine.UpdateControlLayout(this);
+				}
 			}
 		}
 

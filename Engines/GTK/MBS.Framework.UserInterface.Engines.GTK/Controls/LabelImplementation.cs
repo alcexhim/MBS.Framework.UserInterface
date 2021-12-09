@@ -130,8 +130,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Internal.GTK.Methods.GtkLabel.gtk_label_set_use_markup(handle, ctl.UseMarkup);
 
-			IntPtr hEventBox = Internal.GTK.Methods.GtkEventBox.gtk_event_box_new();
-			Internal.GTK.Methods.GtkContainer.gtk_container_add(hEventBox, handle);
+			IntPtr hEventBox = IntPtr.Zero;
+			if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
+			{
+				hEventBox = Internal.GTK.Methods.GtkEventBox.gtk_event_box_new();
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hEventBox, handle);
+			}
+			else
+			{
+				hEventBox = handle;
+			}
+
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(handle);
 
 			return new GTKNativeControl(hEventBox, new KeyValuePair<string, IntPtr>[]
 			{

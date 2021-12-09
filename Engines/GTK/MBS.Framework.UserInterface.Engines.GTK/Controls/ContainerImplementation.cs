@@ -108,10 +108,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 			else if (layout is ListLayout)
 			{
-				IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
-				hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, hListBoxRow);
+				// IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
+				// hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
+				// Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
+				Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, ctlHandle);
 			}
 			else if (layout is StackLayout)
 			{
@@ -121,11 +121,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			else if (layout is FlowLayout)
 			{
 				FlowLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as FlowLayout.Constraints);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
+				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_insert(hContainer, ctlHandle);
 			}
 			else
 			{
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
+				throw new NotImplementedException(); // Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainer, ctlHandle);
 			}
 		}
 
@@ -234,6 +234,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				mvarContainerHandle = hContainer;
 				handlesByLayout[layout] = hContainer;
 
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
+
 				foreach (Control ctl in container.Controls)
 				{
 					bool ret = ctl.IsCreated;
@@ -282,11 +284,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			}
 		}
 
-		public void InsertChildControl(Control child)
+		public void InsertChildControl(Control.ControlCollection collection, Control child)
 		{
-			ApplyLayout((Handle as GTKNativeControl).GetNamedHandle("Container"), child, (Control as Container).Layout);
+			if (Control is Window && collection == ((Window)Control).StatusBar.Controls)
+			{
+				// HACK HACK HACK
+				((WindowImplementation)this).InsertStatusBarControl(child);
+			}
+			else
+			{
+				ApplyLayout((Handle as GTKNativeControl).GetNamedHandle("Container"), child, (Control as Container).Layout);
+			}
 		}
-		public void ClearChildControls()
+		public void ClearChildControls(Control.ControlCollection collection)
 		{
 			Control[] ctls = (Control as IControlContainer).GetAllControls();
 
@@ -298,12 +308,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, widget);
 			}, IntPtr.Zero);
 
+			// FIXME: this seems like it should be here but will cause crash later on when looking up control handle
 			for (int i = 0; i < ctls.Length; i++)
 			{
 				Engine.UnregisterControlHandle(ctls[i]);
 			}
 		}
-		public void RemoveChildControl(Control child)
+		public void RemoveChildControl(Control.ControlCollection collection, Control child)
 		{
 			IntPtr hContainer = ((GTKNativeControl)Handle).Handle;
 			Layout layout = (Control as Container).Layout;
@@ -319,9 +330,106 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle);
 			}
 		}
-		public void SetControlConstraints(Control control, Constraints constraints)
+		public void SetControlConstraints(Control.ControlCollection collection, Control control, Constraints cstr)
 		{
-			Console.WriteLine("Changing control constraints in a Container not supported YET");
+			if (collection == (Control.ParentWindow)?.StatusBar?.Controls)
+			{
+				((WindowImplementation)Control.ParentWindow.ControlImplementation).SetStatusBarControlConstraints(control, cstr);
+			}
+			else
+			{
+				GTKNativeControl hnc = (Engine.GetHandleForControl(control) as GTKNativeControl);
+				IntPtr ctlHandle = hnc.Handle;
+
+				IntPtr hContainer = (Engine.GetHandleForControl((Control)control.Parent) as GTKNativeControl).Handle;
+				Layout layout = ((Container)control.Parent).Layout;
+
+				if (cstr != null)
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, cstr.HorizontalExpand);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, cstr.VerticalExpand);
+
+					if (layout is BoxLayout)
+					{
+						BoxLayout.Constraints constraints = (cstr as BoxLayout.Constraints);
+						if (constraints == null) constraints = new BoxLayout.Constraints();
+
+						int padding = constraints.Padding == 0 ? control.Padding.All : constraints.Padding;
+
+						switch (constraints.PackType)
+						{
+							case BoxLayout.PackType.Start:
+							{
+								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing(hContainer, ctlHandle, constraints.Expand, constraints.Fill, padding, Internal.GTK.Constants.GtkPackType.Start);
+								break;
+							}
+							case BoxLayout.PackType.End:
+							{
+								Internal.GTK.Methods.GtkBox.gtk_box_set_child_packing(hContainer, ctlHandle, constraints.Expand, constraints.Fill, padding, Internal.GTK.Constants.GtkPackType.End);
+								break;
+							}
+						}
+					}
+					else if (layout is AbsoluteLayout)
+					{
+						AbsoluteLayout.Constraints constraints = (cstr as Layouts.AbsoluteLayout.Constraints);
+						if (constraints == null) constraints = new Layouts.AbsoluteLayout.Constraints(0, 0, 0, 0);
+						Internal.GTK.Methods.GtkFixed.gtk_fixed_move(hContainer, ctlHandle, constraints.X, constraints.Y);
+					}
+					else if (layout is GridLayout)
+					{
+						GridLayout.Constraints constraints = (cstr as Layouts.GridLayout.Constraints);
+						if (constraints != null)
+						{
+							// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
+							if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
+							{
+								Internal.GTK.Methods.GtkTable.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
+							}
+							else
+							{
+								Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
+								// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
+
+								if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
+								{
+									Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, true);
+								}
+								else
+								{
+									Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(ctlHandle, false);
+								}
+								if ((constraints.Expand & ExpandMode.Vertical) == ExpandMode.Vertical)
+								{
+									Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, true);
+								}
+								else
+								{
+									Internal.GTK.Methods.GtkWidget.gtk_widget_set_vexpand(ctlHandle, false);
+								}
+							}
+						}
+					}
+					else if (layout is ListLayout)
+					{
+						// nothing to do
+					}
+					else if (layout is StackLayout)
+					{
+						StackLayout.Constraints constraints = (cstr as StackLayout.Constraints);
+						// intentionally left blank as there are no StackLayout constraints
+					}
+					else if (layout is FlowLayout)
+					{
+						FlowLayout.Constraints constraints = (cstr as FlowLayout.Constraints);
+						// intentionally left blank as there are no FlowLayout constraints
+					}
+					else
+					{
+						// intentionally left blank as there is nothing to do
+					}
+				}
+			}
 		}
 	}
 }

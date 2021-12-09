@@ -27,7 +27,10 @@ namespace MBS.Framework.UserInterface
 		internal StatusBar(Window parent)
 		{
 			Parent = parent;
+			Controls = new Control.ControlCollection(parent);
 		}
+
+		public Control.ControlCollection Controls { get; private set; } = null;
 
 		private bool mvarVisible = true;
 		public bool Visible { get { return mvarVisible; } set { mvarVisible = value; (Parent.ControlImplementation as Native.IWindowNativeImplementation)?.SetStatusBarVisible(value); } }

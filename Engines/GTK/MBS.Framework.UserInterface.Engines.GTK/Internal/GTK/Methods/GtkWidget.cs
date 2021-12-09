@@ -41,8 +41,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show(IntPtr widget);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_widget_show_all(IntPtr widget);
+
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_widget_show_all")]
+		public static extern void _gtk_widget_show_all(IntPtr widget);
+
+		public static void gtk_widget_show_all(IntPtr widget)
+		{
+			if (Gtk.LIBRARY_FILENAME == Gtk.LIBRARY_FILENAME_V4)
+			{
+				// show_all has been removed in GTK4
+				gtk_widget_show(widget);
+			}
+			else
+			{
+				_gtk_widget_show_all(widget);
+			}
+		}
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_widget_show_now(IntPtr widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]

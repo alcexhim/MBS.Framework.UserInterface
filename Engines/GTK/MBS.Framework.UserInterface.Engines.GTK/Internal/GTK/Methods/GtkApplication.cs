@@ -25,7 +25,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Internal.GTK.Methods
 {
 	internal class GtkApplication
 	{
-		[DllImport(Gtk.LIBRARY_FILENAME_V3, EntryPoint = "gtk_application_new")]
+		[DllImport(Gtk.LIBRARY_FILENAME, EntryPoint = "gtk_application_new")]
 		private static extern IntPtr gtk_application_new_v3(string application_id, Internal.GIO.Constants.GApplicationFlags flags);
 
 		public static IntPtr gtk_application_new(string application_id, Internal.GIO.Constants.GApplicationFlags flags)

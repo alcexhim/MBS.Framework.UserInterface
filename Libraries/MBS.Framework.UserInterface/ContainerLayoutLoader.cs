@@ -154,7 +154,8 @@ namespace MBS.Framework.UserInterface
 				if (id != null && (item.ID != null && item.ID != id)) continue;
 
 				if (item.ClassName == "GtkListStore" || item.ClassName == "GtkTreeStore"
-					|| item.ClassName == "GtkAdjustment" || item.ClassName == "GtkImage")
+					|| item.ClassName == "GtkAdjustment" || item.ClassName == "GtkImage"
+					|| item.ClassName == "GtkTextBuffer")
 				{
 					continue;
 				}
@@ -682,6 +683,11 @@ namespace MBS.Framework.UserInterface
 				case "GtkTreeSelection":
 				{
 					// intentionally ignored
+					break;
+				}
+				case "GtkProgressBar":
+				{
+					ctl = new ProgressBar();
 					break;
 				}
 				case "GtkIconView":
@@ -1226,7 +1232,7 @@ namespace MBS.Framework.UserInterface
 					if (container.Layout == null)
 					{
 						container.Layout = new BoxLayout(Orientation.Vertical);
-						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(true, true));
+						container.Layout.SetControlConstraints(container.Controls, control, new BoxLayout.Constraints(true, true));
 					}
 					else if (container.Layout is BoxLayout)
 					{
@@ -1247,7 +1253,7 @@ namespace MBS.Framework.UserInterface
 						}
 
 						int padding = 0;
-						container.Layout.SetControlConstraints(control, new BoxLayout.Constraints(expand, fill, padding, packType));
+						container.Layout.SetControlConstraints(container.Controls, control, new BoxLayout.Constraints(expand, fill, padding, packType));
 					}
 					else if (container.Layout is GridLayout)
 					{
@@ -1267,13 +1273,13 @@ namespace MBS.Framework.UserInterface
 						int height_attach = 1;
 						if (propHeight != null) Int32.TryParse(propHeight.Value, out height_attach);
 
-						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new GridLayout.Constraints(top_attach, left_attach, height_attach, width_attach));
+						container.Layout.SetControlConstraints(container.Controls, control, new GridLayout.Constraints(top_attach, left_attach, height_attach, width_attach));
 					}
 					else if (container.Layout is StackLayout)
 					{
 						string name = item2.PackingProperties["name"]?.Value;
 						string title = item2.PackingProperties["title"]?.Value;
-						container.Layout.SetControlConstraints(container.Controls[container.Controls.Count - 1], new StackLayout.Constraints(name, title));
+						container.Layout.SetControlConstraints(container.Controls, control, new StackLayout.Constraints(name, title));
 					}
 
 					LayoutItemProperty propHExpand = item2.Properties["hexpand"];

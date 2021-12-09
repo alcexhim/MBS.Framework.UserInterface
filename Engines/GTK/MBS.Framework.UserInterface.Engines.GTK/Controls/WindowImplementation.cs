@@ -199,6 +199,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		}
 
 		private Container toolbarContainer = null;
+		private Container statusbarContainer = null;
 
 		private HandleDictionary<CommandBar, Container> dictToolbar = new HandleDictionary<CommandBar, Container>();
 		public void InsertCommandBar(int index, CommandBar cb)
@@ -246,6 +247,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 		{
 		}
 
+		internal void InsertStatusBarControl(Control ctl)
+		{
+			statusbarContainer.Controls.Add(ctl);
+		}
+		internal void SetStatusBarControlConstraints(Control ctl, Constraints constraints)
+		{
+			statusbarContainer.Layout?.SetControlConstraints(statusbarContainer.Controls, ctl, constraints);
+		}
+
 		// [System.Diagnostics.DebuggerNonUserCode()]
 		protected override NativeControl CreateControlInternal(Control control)
 		{
@@ -265,46 +275,58 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)window.Bounds.Width, (int)window.Bounds.Height);
 			}
 
-			IntPtr hWindowContainer = Internal.GTK.Methods.GtkBox.gtk_vbox_new(false, 2);
+			IntPtr hWindowContainer = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Vertical, false, 2);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show(hWindowContainer);
 
 			#region Menu Bar
-			IntPtr hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
-
-			if (window.MenuBar.Items.Count > 0)
+			IntPtr hMenuBar = IntPtr.Zero;
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
 			{
-				if (hDefaultAccelGroup == IntPtr.Zero)
-				{
-					hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
-				}
-				Internal.GTK.Methods.GtkWindow.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
-
-				// create the menu bar
-				switch (window.CommandDisplayMode)
-				{
-					case CommandDisplayMode.CommandBar:
-					case CommandDisplayMode.Both:
-					{
-						foreach (MenuItem menuItem in window.MenuBar.Items)
-						{
-							InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
-						}
-						break;
-					}
-				}
-			}
-
-			if (window.MenuBar.Items.Count > 0 && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
-			{
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenuBar);
+				// removed
 			}
 			else
 			{
-				Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMenuBar);
+				hMenuBar = Internal.GTK.Methods.GtkMenuBar.gtk_menu_bar_new();
+
+				if (window.MenuBar.Items.Count > 0)
+				{
+					if (hDefaultAccelGroup == IntPtr.Zero)
+					{
+						hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+					}
+					Internal.GTK.Methods.GtkWindow.gtk_window_add_accel_group(handle, hDefaultAccelGroup);
+
+					// create the menu bar
+					switch (window.CommandDisplayMode)
+					{
+					case CommandDisplayMode.CommandBar:
+					case CommandDisplayMode.Both:
+						{
+							foreach (MenuItem menuItem in window.MenuBar.Items)
+							{
+								InitMenuItem(menuItem, hMenuBar, "<ApplicationFramework>");
+							}
+							break;
+						}
+					}
+				}
+
+				if (window.MenuBar.Items.Count > 0 && (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both))
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenuBar);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_hide(hMenuBar);
+				}
+				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			}
-			Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hMenuBar, false, true, 0);
 			#endregion
 
 			toolbarContainer = new Container(new FlowLayout());
+
+			statusbarContainer = new Container(new BoxLayout(Orientation.Horizontal));
+			((BoxLayout)statusbarContainer.Layout).Spacing = 8;
 
 			Engine.CreateControl(toolbarContainer);
 			GTKNativeControl ncToolbarContainer = (GTKNativeControl)Engine.GetHandleForControl(toolbarContainer);
@@ -325,7 +347,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				#endregion
 			}
 
-			IntPtr hStatusBar = IntPtr.Zero;
 			IntPtr hHeaderBar = IntPtr.Zero;
 
 			if (hContainer != IntPtr.Zero)
@@ -333,7 +354,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hWindowContainer, hContainer, true, true, 0);
 			}
 
-			Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hWindowContainer);
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
+			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_set_child(handle, hWindowContainer);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hWindowContainer);
+			}
 
 			Internal.GObject.Methods.g_signal_connect_after(handle, "show", gc_Window_Activate);
 
@@ -342,9 +370,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)window.Size.Width, (int)window.Size.Height);
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_decorated(handle, window.Decorated);
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_focus_on_map(handle, true);
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
+			{
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_set_focus_on_map(handle, true); // removed in GTK4
+			}
 			Internal.GTK.Methods.GtkWindow.gtk_window_set_icon_name(handle, window.IconName);
-			Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_subtitle(handle, window.DocumentFileName);
+
+			// Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_subtitle(handle, window.DocumentFileName); // removed in GTK4
 
 			if (window.Decorated)
 			{
@@ -354,8 +389,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				else
 				{
 					hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
-					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
-					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
+					// Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
+					// Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 
 					IntPtr hBBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
@@ -384,23 +419,50 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hBBox);
 				}
 
-				hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();
-				Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hStatusBar, false, true, 0);
+				// hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();
+				// Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hStatusBar, false, true, 0);
+				Engine.CreateControl(statusbarContainer);
+
+				IntPtr hStatusBar = (Engine.GetHandleForControl(statusbarContainer) as GTKNativeControl).Handle;
+
+				// HACK HACK HACK
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_start(hStatusBar, 8);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_end(hStatusBar, 8);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_top(hStatusBar, 8);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_bottom(hStatusBar, 8);
+
+				if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
+				{
+					Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hWindowContainer, hStatusBar, false, true, 0);
+				}
+				else
+				{
+					Internal.GTK.Methods.GtkBox.gtk_box_append(hWindowContainer, hStatusBar);
+				}
 			}
-			switch (window.StartPosition)
+
+			try
 			{
-				case WindowStartPosition.Center:
+				switch (window.StartPosition)
 				{
-					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
-					break;
-				}
-				case WindowStartPosition.Manual:
-				{
-					Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.None);
-					Internal.GTK.Methods.GtkWindow.gtk_window_move(handle, (int)window.Location.X, (int)window.Location.Y);
-					break;
+					case WindowStartPosition.Center:
+					{
+						Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.Center);
+						break;
+					}
+					case WindowStartPosition.Manual:
+					{
+						Internal.GTK.Methods.GtkWindow.gtk_window_set_position(handle, Internal.GTK.Constants.GtkWindowPosition.None);
+						Internal.GTK.Methods.GtkWindow.gtk_window_move(handle, (int)window.Location.X, (int)window.Location.Y);
+						break;
+					}
 				}
 			}
+			catch (EntryPointNotFoundException ex)
+			{
+				// start position does not work under wayland and has been removed from GTK4
+			}
+
 			/*
 			if (window.CommandDisplayMode == CommandDisplayMode.CommandBar || window.CommandDisplayMode == CommandDisplayMode.Both)
 			{
@@ -418,7 +480,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			return new GTKNativeControl(handle, new KeyValuePair<string, IntPtr>[]
 			{
 				new KeyValuePair<string, IntPtr>("MenuBar", hMenuBar),
-				new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar),
+				// new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar),
 				new KeyValuePair<string, IntPtr>("HeaderBar", hHeaderBar)
 			});
 		}
@@ -430,6 +492,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				// size has been set by code and window has not yet been resized
 				return _Size;
 			}
+
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
+			{
+				return _Size;
+			}
+
 			int w = 0, h = 0;
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkWindow.gtk_window_get_size(handle, ref w, ref h);
@@ -449,7 +517,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			base.OnCreated(e);
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+
+			if (Control.Size != null)
+			{
+				Internal.GTK.Methods.GtkWindow.gtk_window_set_default_size(handle, (int)Control.Size.Width, (int)Control.Size.Height);
+			}
 		}
 
 		protected override void OnResized(ResizedEventArgs e)

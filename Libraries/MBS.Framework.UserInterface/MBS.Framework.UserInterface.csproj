@@ -313,6 +313,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Layouts\StackLayout.cs" />
     <Compile Include="CommandBarLoader.cs" />
+    <Compile Include="Dialogs\ProgressDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

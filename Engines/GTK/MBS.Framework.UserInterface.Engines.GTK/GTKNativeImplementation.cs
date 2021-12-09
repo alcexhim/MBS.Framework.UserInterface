@@ -76,7 +76,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			else
 			{
 				IntPtr handle = (Handle as GTKNativeControl).Handle;
-				Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
+				if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
+				{
+					Internal.GTK.Methods.GtkWidget.gtk_widget_destroy(handle);
+				}
+				else
+				{
+					// FIXME: ecannot destroy widget in GTK4???
+				}
 			}
 		}
 
@@ -86,7 +93,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 		}
 		internal virtual void RegisterDropTargetGTK(IntPtr handle, Internal.GDK.Constants.GdkModifierType modifiers, Internal.GTK.Structures.GtkTargetEntry[] targets, Internal.GDK.Constants.GdkDragAction actions)
 		{
-			Internal.GTK.Methods.GtkDragDest.gtk_drag_dest_set(handle, Internal.GTK.Constants.GtkDestDefaults.All, targets, targets.Length, actions);
+			if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
+			{
+				Internal.GTK.Methods.GtkDragDest.gtk_drag_dest_set(handle, Internal.GTK.Constants.GtkDestDefaults.All, targets, targets.Length, actions);
+			}
+			else
+			{
+				Console.Error.WriteLine("gtk_drag_dest_set  -- removed in GTK4!");
+			}
 		}
 		protected override void RegisterDropTargetInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
@@ -119,15 +133,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			}
 		}
 
+
 		protected override void OnCreated (EventArgs e)
 		{
 			base.OnCreated (e);
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(handle, Control.TooltipText);
 
-			if (Control.Size != Dimension2D.Empty)
+			if (Control.Size != Dimension2D.Empty && Control.Size != null)
 			{
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)Control.Size.Width, (int)Control.Size.Height);
 			}
@@ -454,7 +467,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				return;
 			}
 
-			Internal.GTK.Methods.GtkWindow.gtk_window_set_type_hint(widget, WindowTypeHintToGdkWindowTypeHint(Control.TypeHint));
+			// Internal.GTK.Methods.GtkWindow.gtk_window_set_type_hint(widget, WindowTypeHintToGdkWindowTypeHint(Control.TypeHint));
 
 			OnRealize(EventArgs.Empty);
 		}
@@ -616,6 +629,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			KeyEventArgs ee = GTKEngine.GdkEventKeyToKeyEventArgs(e);
 			OnKeyUp (ee);
 			return ee.Cancel;
+		}
+
+		protected override void InitializeControlPropertiesInternal(NativeControl native)
+		{
+			IntPtr handle = (native as GTKNativeControl).Handle;
+
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, Control.Enabled);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_set_tooltip_text(handle, Control.TooltipText);
 		}
 
 		protected override void UpdateControlLayoutInternal()
@@ -788,6 +809,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 
 		protected override string GetTooltipTextInternal()
 		{
+			return string.Empty;
 			return Internal.GTK.Methods.GtkWidget.gtk_widget_get_tooltip_text((Handle as GTKNativeControl).Handle);
 		}
 		protected override void SetTooltipTextInternal(string value)

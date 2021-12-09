@@ -110,5 +110,10 @@ namespace MBS.Framework.UserInterface
 		{
 			// FIXME: not implemented
 		}
+
+		protected override void InitializeControlPropertiesInternal(NativeControl handle)
+		{
+			// intentionally not implemented
+		}
 	}
 }

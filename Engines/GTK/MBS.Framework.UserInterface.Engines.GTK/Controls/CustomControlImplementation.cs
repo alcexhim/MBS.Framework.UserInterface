@@ -16,7 +16,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 
 		protected override NativeControl CreateControlInternal(Control control)
 		{
-			IntPtr handle = Internal.GTK.Methods.GtkLayout.gtk_layout_new(IntPtr.Zero, IntPtr.Zero);
+			IntPtr handle = IntPtr.Zero;
+			try
+			{
+				handle =Internal.GTK.Methods.GtkLayout.gtk_layout_new(IntPtr.Zero, IntPtr.Zero);
+			}
+			catch (EntryPointNotFoundException ex)
+			{
+				handle = Internal.GTK.Methods.GtkDrawingArea.gtk_drawing_area_new();
+				return new GTKNativeControl(handle);
+			}
 
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
@@ -41,7 +50,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			IntPtr scrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hadj, vadj);
 
 			// Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(scrolledWindow, Internal.GTK.Constants.GtkPolicyType.Always, Internal.GTK.Constants.GtkPolicyType.Always);
-			Internal.GTK.Methods.GtkContainer.gtk_container_add(scrolledWindow, handle);
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
+			{
+				Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_child(scrolledWindow, handle);
+			}
+			else
+			{
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(scrolledWindow, handle);
+			}
 
 			return new GTKNativeControl(scrolledWindow, new KeyValuePair<string, IntPtr>[]
 			{
@@ -177,11 +193,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Internal.GTK.Methods.GtkLayout.gtk_layout_put(handle, c, cc.X, cc.Y);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(c, cc.Width, cc.Height);
 		}
-		public void InsertChildControl(Control child)
+		public void InsertChildControl(Control.ControlCollection collection, Control child)
 		{
 			_InsertChildControl(child, (Handle as GTKNativeControl).Handle);
 		}
-		public void ClearChildControls()
+		public void ClearChildControls(Control.ControlCollection collection)
 		{
 			Control[] ctls = (Control as IControlContainer).GetAllControls();
 
@@ -198,7 +214,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				Engine.UnregisterControlHandle(ctls[i]);
 			}
 		}
-		public void RemoveChildControl(Control child)
+		public void RemoveChildControl(Control.ControlCollection collection, Control child)
 		{
 			IntPtr hContainer = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle);
@@ -206,7 +222,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 			Engine.UnregisterControlHandle(child);
 		}
 
-		public void SetControlConstraints(Control control, Constraints constraints)
+		public void SetControlConstraints(Control.ControlCollection collection, Control control, Constraints constraints)
 		{
 			if (!Control.IsCreated) return;
 

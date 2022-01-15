@@ -38,6 +38,7 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 		{
 			string text = this.Text;
 
+			// asw.lv.Model.Rows.Clear();
 			if (text.EndsWith("public "))
 			{
 				asw.lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(asw.lv.Model.Columns[0], "class") }));
@@ -58,6 +59,10 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 			{
 
 			}
+			else if (e.Key == KeyboardKey.Space)
+			{
+				AcceptASW();
+			}
 			else if (e.Key == KeyboardKey.Enter)
 			{
 				AcceptASW();
@@ -69,9 +74,21 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 			}
 			else if (e.Key == KeyboardKey.ArrowUp)
 			{
+				if (asw.Visible)
+				{
+					asw.SelectPrevious();
+					e.Cancel = true;
+					return;
+				}
 			}
 			else if (e.Key == KeyboardKey.ArrowDown)
 			{
+				if (asw.Visible)
+				{
+					asw.SelectNext();
+					e.Cancel = true;
+					return;
+				}
 			}
 			else
 			{
@@ -114,7 +131,14 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 					string v = asw.lv.SelectedRows[0].RowColumns[0].Value?.ToString();
 					if (v != null)
 					{
-						Text += v;
+						// FIXME: assumes cursor position is at end of line
+						string pretext = String.Empty;
+						int i = Text.LastIndexOf(' ') + 1;
+						if (i > 0)
+						{
+							pretext = Text.Substring(0, i);
+						}
+						Text = pretext + v;
 					}
 				}
 

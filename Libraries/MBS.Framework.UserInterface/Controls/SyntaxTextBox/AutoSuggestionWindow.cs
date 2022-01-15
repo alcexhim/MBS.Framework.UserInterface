@@ -49,5 +49,13 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 			lv.Size = new MBS.Framework.Drawing.Dimension2D(400, 200);
 		}
 
+		public void SelectPrevious()
+		{
+			lv.SelectedIndex--;
+		}
+		public void SelectNext()
+		{
+			lv.SelectedIndex++;
+		}
 	}
 }

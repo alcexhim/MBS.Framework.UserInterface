@@ -527,6 +527,20 @@ namespace MBS.Framework.UserInterface
 				case "FileSetting":
 				{
 					s = new FileSetting(attSettingName?.Value, attSettingTitle?.Value);
+
+					MarkupAttribute attType = tag.Attributes["Type"];
+					if (attType != null)
+					{
+						if (attType.Value.ToLower() == "folder")
+						{
+							((FileSetting)s).Mode = FileSettingMode.SelectFolder;
+						}
+						else
+						{
+						}
+					}
+
+					((FileSetting)s).FileNameFilter = tag.Attributes["FileNameFilter"]?.Value;
 					if (attDefaultValue != null)
 						s.DefaultValue = attDefaultValue.Value;
 					break;

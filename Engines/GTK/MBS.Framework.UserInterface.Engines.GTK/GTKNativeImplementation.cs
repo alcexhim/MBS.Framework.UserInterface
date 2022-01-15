@@ -582,7 +582,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				return false;
 			}
 
-			OnGotFocus(EventArgs.Empty);
+			EventArgs ee = EventArgs.Empty;
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if ((eh.EventType & EventFilterType.GotFocus) == EventFilterType.GotFocus)
+				{
+					if (eh.Process(ref ee, EventFilterType.GotFocus))
+						return true;
+				}
+			}
+			OnGotFocus(ee);
 			return false;
 		}
 
@@ -594,7 +603,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 				return false;
 			}
 
-			OnLostFocus (EventArgs.Empty);
+			EventArgs ee = EventArgs.Empty;
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if ((eh.EventType & EventFilterType.LostFocus) == EventFilterType.LostFocus)
+				{
+					if (eh.Process(ref ee, EventFilterType.LostFocus))
+						return true;
+				}
+			}
+			OnLostFocus (ee);
 			return false;
 		}
 
@@ -611,7 +629,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
 
 			KeyEventArgs ee = GTKEngine.GdkEventKeyToKeyEventArgs(e);
-			OnKeyDown (ee);
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if (eh is EventFilter<KeyEventArgs> && (eh.EventType & EventFilterType.KeyDown) == EventFilterType.KeyDown)
+				{
+					if (((EventFilter<KeyEventArgs>)eh).Process(ref ee, EventFilterType.KeyDown))
+						return true;
+				}
+			}
+			OnKeyDown(ee);
 			return ee.Cancel;
 		}
 		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
@@ -627,6 +653,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
 
 			KeyEventArgs ee = GTKEngine.GdkEventKeyToKeyEventArgs(e);
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if (eh is EventFilter<KeyEventArgs> && (eh.EventType & EventFilterType.KeyUp) == EventFilterType.KeyUp)
+				{
+					if (((EventFilter<KeyEventArgs>)eh).Process(ref ee, EventFilterType.KeyUp))
+						return true;
+				}
+			}
 			OnKeyUp (ee);
 			return ee.Cancel;
 		}
@@ -703,10 +737,28 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			MouseEventArgs ee = GTKEngine.GdkEventButtonToMouseEventArgs(e);
 			if (e.type == MBS.Framework.UserInterface.Engines.GTK.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
 				_mouse_double_click = true;
+				return false;
+			}
+			else
+			{
+				_mouse_double_click = false;
 			}
 
 			_mousedown_buttons = ee.Buttons;
-			OnMouseDown(ee);
+
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if (eh is EventFilter<MouseEventArgs> && (eh.EventType & EventFilterType.MouseDown) == EventFilterType.MouseDown)
+				{
+					if (((EventFilter<MouseEventArgs>)eh).Process(ref ee, EventFilterType.MouseDown))
+						return true;
+				}
+			}
+			if (!_mouse_double_click)
+			{
+				OnMouseDown(ee);
+			}
+
 			if (ee.Handled) return true;
 
 			if (ee.Buttons == MouseButtons.Secondary && !SubclassHandlesContextMenu)
@@ -770,6 +822,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			MouseEventArgs ee = GTKEngine.GdkEventMotionToMouseEventArgs(e);
 			ee = new MouseEventArgs(ee.X, ee.Y, _mousedown_buttons, ee.ModifierKeys);
 
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if (eh is EventFilter<MouseEventArgs> && (eh.EventType & EventFilterType.MouseMove) == EventFilterType.MouseMove)
+				{
+					if (((EventFilter<MouseEventArgs>)eh).Process(ref ee, EventFilterType.MouseMove))
+						return true;
+				}
+			}
 			OnMouseMove(ee);
 
 			if (ee.Handled) return true;
@@ -789,6 +849,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTKEngine.GdkEventButtonToMouseEventArgs(e);
 
+			foreach (EventFilter eh in Application.Instance.EventFilters)
+			{
+				if (eh is EventFilter<MouseEventArgs> && (eh.EventType & EventFilterType.MouseUp) == EventFilterType.MouseUp)
+				{
+					if (((EventFilter<MouseEventArgs>)eh).Process(ref ee, EventFilterType.MouseUp))
+						return true;
+				}
+			}
 			OnMouseUp(ee);
 
 			if (ee.Buttons == MouseButtons.Primary) {

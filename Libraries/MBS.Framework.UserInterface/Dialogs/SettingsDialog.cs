@@ -740,6 +740,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 				NumericTextBox txt = new NumericTextBox();
 				txt.Minimum = (double)o.MinimumValue.GetValueOrDefault(decimal.MinValue);
 				txt.Maximum = (double)o.MaximumValue.GetValueOrDefault(decimal.MaxValue);
+				txt.DecimalPlaces = o.DecimalPlaces;
 				txt.Value = o.GetValue<double>();
 				control = txt;
 			}

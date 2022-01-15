@@ -223,6 +223,7 @@
     <Content Include="Themes\Windows Classic\Theme.xml" />
     <Content Include="Dialogs\SettingsDialog.glade" />
     <Content Include="Dialogs\SettingsProfileDialog.glade" />
+    <Content Include="Dialogs\ProgressDialog.glade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Office2007\Images\Icons\16x16\" />

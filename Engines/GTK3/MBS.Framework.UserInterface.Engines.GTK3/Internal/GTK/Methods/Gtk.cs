@@ -27,6 +27,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 	{
 		public const string LIBRARY_FILENAME_V2 = "gtk-x11-2.0";
 		public const string LIBRARY_FILENAME_V3 = "gtk-3";
+		public const string LIBRARY_FILENAME_V4 = "gtk-4";
 
 		// using GTK3 seems to sacrifice theming support, whine whine
 		public const string LIBRARY_FILENAME = LIBRARY_FILENAME_V3;

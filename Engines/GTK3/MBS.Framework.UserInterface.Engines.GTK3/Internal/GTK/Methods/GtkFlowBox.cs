@@ -28,5 +28,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		public static extern IntPtr gtk_flow_box_new();
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr gtk_flow_box_set_selection_mode(IntPtr /*GtkFlowBox*/ flow_box, Constants.GtkSelectionMode mode);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_flow_box_insert(IntPtr hContainer, IntPtr ctlHandle, int position = -1);
 	}
 }

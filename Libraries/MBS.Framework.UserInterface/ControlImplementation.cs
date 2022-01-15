@@ -218,6 +218,8 @@ namespace MBS.Framework.UserInterface
 			NativeControl handle = CreateControlInternal (control);
 			if (handle == null) throw new InvalidOperationException ();
 
+			InitializeControlProperties(handle);
+
 			mvarHandle = handle;
 			OnCreated (EventArgs.Empty);
 			return handle;
@@ -450,6 +452,12 @@ namespace MBS.Framework.UserInterface
 		public bool HasFocus()
 		{
 			return HasFocusInternal();
+		}
+
+		protected abstract void InitializeControlPropertiesInternal(NativeControl handle);
+		internal void InitializeControlProperties(NativeControl handle)
+		{
+			InitializeControlPropertiesInternal(handle);
 		}
 	}
 	public class ControlImplementationAttribute : Attribute

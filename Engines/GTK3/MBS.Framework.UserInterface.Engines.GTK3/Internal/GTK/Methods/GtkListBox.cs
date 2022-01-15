@@ -12,5 +12,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_list_box_set_selection_mode(IntPtr /*GtkListBox*/ box, Constants.GtkSelectionMode mode);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_list_box_insert(IntPtr hContainer, IntPtr hListBoxRow, int position = -1);
 	}
 }

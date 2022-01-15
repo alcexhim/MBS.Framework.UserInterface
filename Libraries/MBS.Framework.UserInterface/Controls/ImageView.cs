@@ -56,6 +56,9 @@ namespace MBS.Framework.UserInterface.Controls
 			if (Image == null)
 				return;
 
+			if (Image.Width == -1 || Image.Height == -1)
+				return;
+
 			if (AutoSize)
 			{
 				Size = Image.Size;

@@ -1049,21 +1049,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			return false;
 		}
 
-		protected override void ClearChildControlsInternal(IControlContainer parent)
-		{
-			// FIXME: this may not work if we are using a custom control or something that does not get handled by WindowsFormsNativeControl
-			WindowsFormsNativeControl wfncParent = (GetHandleForControl((Container)parent) as WindowsFormsNativeControl);
-			wfncParent.Handle.Controls.Clear();
-		}
-
-		protected override void InsertChildControlInternal(IControlContainer parent, Control control)
-		{
-			// FIXME: this may not work if we are using a custom control or something that does not get handled by WindowsFormsNativeControl
-			WindowsFormsNativeControl wfncParent = (GetHandleForControl((Container)parent) as WindowsFormsNativeControl);
-			WindowsFormsNativeControl wfncChild = (GetHandleForControl(control) as WindowsFormsNativeControl);
-			wfncParent.Handle.Controls.Add(wfncChild.Handle);
-		}
-
 		private Dictionary<Timer, TimerImplementation> _Timer_Implementations = new Dictionary<Timer, TimerImplementation>();
 		protected override void Timer_StopInternal(Timer timer)
 		{
@@ -1116,12 +1101,6 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 				case SystemSound.Hand: System.Media.SystemSounds.Hand.Play(); break;
 				case SystemSound.Question: System.Media.SystemSounds.Question.Play(); break;
 			}
-		}
-
-		protected override void RemoveChildControlInternal(IControlContainer parent, Control control)
-		{
-			WindowsFormsNativeControl ncControl = (WindowsFormsNativeControl) GetHandleForControl(control);
-			ncControl.Handle.Parent.Controls.Remove(ncControl.Handle);
 		}
 	}
 }

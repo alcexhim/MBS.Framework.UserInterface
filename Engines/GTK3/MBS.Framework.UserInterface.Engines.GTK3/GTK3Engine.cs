@@ -151,7 +151,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		protected override Image LoadImageByName(string name, int size)
 		{
 			IntPtr hError = IntPtr.Zero;
-			IntPtr hTheme = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_get_default();
+			IntPtr hTheme = IntPtr.Zero;
+			try
+			{
+				hTheme = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_get_default();
+			}
+			catch (EntryPointNotFoundException ex)
+			{
+				return null;
+			}
 			IntPtr hPixbuf = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_load_icon(hTheme, name, size, Constants.GtkIconLookupFlags.None, ref hError);
 			return new GDKPixbufImage(hPixbuf);
 		}
@@ -571,8 +579,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 		protected override void SetToolbarItemEnabledInternal(ToolbarItem item, bool enabled)
 		{
-			IntPtr hToolbarItem = (GetHandleForToolbarItem(item) as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hToolbarItem, enabled);
+			if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
+			{
+				IntPtr hToolbarItem = (GetHandleForToolbarItem(item) as GTKNativeControl).Handle;
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hToolbarItem, enabled);
+			}
+			else
+			{
+				// toolbar removed in GTK4, just use regular control
+			}
 		}
 
 		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
@@ -665,6 +680,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			RegisterStockType(StockType.Add, "gtk-add");
 			RegisterStockType(StockType.Apply, "gtk-apply");
 			RegisterStockType(StockType.Bold, "gtk-bold");
+			RegisterStockType(StockType.Bookmarks, "user-bookmarks");
 			RegisterStockType(StockType.Cancel, "gtk-cancel");
 			RegisterStockType(StockType.CapsLockWarning, "gtk-caps-lock-warning");
 			RegisterStockType(StockType.CDROM, "gtk-cdrom");
@@ -966,7 +982,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		protected override void UpdateControlLayoutInternal(Control control)
 		{
-			IntPtr hCtrl = (GetHandleForControl(control) as GTKNativeControl).Handle;
+			GTKNativeControl nc = (GetHandleForControl(control) as GTKNativeControl);
+			Contract.Requires(nc != null);
+
+			IntPtr hCtrl = nc.Handle;
 			IControlContainer parent = (control.Parent as IControlContainer);
 			if (parent != null && parent.Layout != null) {
 				Constraints constraints = parent.Layout.GetControlConstraints(control);
@@ -990,7 +1009,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 							if (handlesByLayout.ContainsKey(parent.Layout)) {
 								hLayout = handlesByLayout[parent.Layout];
 							} else {
-								hLayout = Internal.GTK.Methods.GtkBox.gtk_hbox_new(true, 0);
+								hLayout = Internal.GTK.Methods.GtkBox.gtk_box_new(Constants.GtkOrientation.Horizontal, true, 0);
 							}
 
 							int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
@@ -1164,19 +1183,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return DialogResult.OK;
 		}
 
-		protected override void InsertChildControlInternal(IControlContainer parent, Control control)
-		{
-			(parent.ControlImplementation as IControlContainerImplementation).InsertChildControl(control);
-		}
-		protected override void ClearChildControlsInternal(IControlContainer parent)
-		{
-			(parent.ControlImplementation as IControlContainerImplementation).ClearChildControls();
-		}
-		protected override void RemoveChildControlInternal(IControlContainer parent, Control control)
-		{
-			(parent.ControlImplementation as IControlContainerImplementation).RemoveChildControl(control);
-		}
-
 		#region Common Dialog
 		public IntPtr CommonDialog_GetParentHandle(Dialog dlg)
 		{
@@ -1337,6 +1343,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		protected override void UpdateControlPropertiesInternal(Control control, NativeControl native)
 		{
 			IntPtr handle = (native as GTKNativeControl).Handle;
+
 			if (control is Button)
 			{
 				Button button = (control as Button);
@@ -1359,30 +1366,37 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				}
 
 				Internal.GTK.Methods.GtkButton.gtk_button_set_use_underline(handle, true);
-				Internal.GTK.Methods.GtkButton.gtk_button_set_focus_on_click(handle, true);
-
-				switch (button.BorderStyle)
+				if (Internal.GTK.Methods.Gtk.gtk_get_major_version() < 4)
 				{
-					case ButtonBorderStyle.None:
+					Internal.GTK.Methods.GtkButton.gtk_button_set_focus_on_click(handle, true);
+
+					switch (button.BorderStyle)
 					{
-						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
-						break;
-					}
-					case ButtonBorderStyle.Half:
-					{
-						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
-						break;
-					}
-					case ButtonBorderStyle.Normal:
-					{
-						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
-						break;
+						case ButtonBorderStyle.None:
+						{
+							Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
+							break;
+						}
+						case ButtonBorderStyle.Half:
+						{
+							Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
+							break;
+						}
+						case ButtonBorderStyle.Normal:
+						{
+							Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
+							break;
+						}
 					}
 				}
 			}
 
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(handle, control.Enabled);
-			Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)control.Size.Width, (int)control.Size.Height);
+
+			if (control.Size != null)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)control.Size.Width, (int)control.Size.Height);
+			}
 		}
 
 		private static IntPtr hDefaultAccelGroup = IntPtr.Zero;
@@ -1670,9 +1684,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		protected override void DoEventsInternal()
 		{
-			while (Internal.GTK.Methods.Gtk.gtk_events_pending())
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
 			{
-				Internal.GTK.Methods.Gtk.gtk_main_iteration();
+			}
+			else
+			{
+				while (Internal.GTK.Methods.Gtk.gtk_events_pending())
+				{
+					Internal.GTK.Methods.Gtk.gtk_main_iteration();
+				}
 			}
 		}
 

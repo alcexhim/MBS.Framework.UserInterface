@@ -26,8 +26,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 	internal class GtkContainer
 	{
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_container_add(IntPtr container, IntPtr widget);
-		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_container_set_border_width(IntPtr container, int width);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern IntPtr /*GtkWidget*/ gtk_container_get_focus_child(IntPtr container);
@@ -39,5 +37,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		public static extern void gtk_container_remove(IntPtr /*GtkContainer*/ container, IntPtr /*GtkWidget*/ widget);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_container_forall(IntPtr /*GtkContainer*/ container, Action<IntPtr /*GtkWidget*/, IntPtr> /*GtkCallback*/ callback, IntPtr callback_data);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_container_add(IntPtr /*GtkContainer*/ container, IntPtr handle);
 	}
 }

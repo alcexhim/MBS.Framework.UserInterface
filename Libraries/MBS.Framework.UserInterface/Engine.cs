@@ -159,7 +159,11 @@ namespace MBS.Framework.UserInterface
 		{
 			if (item == null)
 				return null;
-			return handlesByToolbarItem[item];
+
+			if (handlesByToolbarItem.ContainsKey(item))
+				return handlesByToolbarItem[item];
+
+			return null;
 		}
 		public void RegisterToolbarItemHandle(ToolbarItem item, NativeControl handle)
 		{
@@ -220,8 +224,7 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		protected abstract void InsertChildControlInternal(IControlContainer parent, Control control);
-		internal void InsertChildControl(IControlContainer parent, Control control)
+		internal void InsertChildControl(IControlContainer parent, Control.ControlCollection collection, Control control)
 		{
 			if (!parent.IsCreated) return;
 
@@ -231,19 +234,17 @@ namespace MBS.Framework.UserInterface
 			if (!control.IsCreated) //return;
 				CreateControl(control);
 
-			InsertChildControlInternal(parent, control);
+			(parent.ControlImplementation as IControlContainerImplementation).InsertChildControl(collection, control);
 		}
-		protected abstract void ClearChildControlsInternal(IControlContainer parent);
-		internal void ClearChildControls(IControlContainer parent)
+		internal void ClearChildControls(IControlContainer parent, Control.ControlCollection collection)
 		{
 			if (!parent.IsCreated) return;
-			ClearChildControlsInternal(parent);
+			(parent.ControlImplementation as IControlContainerImplementation).ClearChildControls(collection);
 		}
-		protected abstract void RemoveChildControlInternal(IControlContainer parent, Control control);
-		internal void RemoveChildControl(IControlContainer parent, Control control)
+		internal void RemoveChildControl(IControlContainer parent, Control.ControlCollection collection, Control control)
 		{
 			if (!parent.IsCreated) return;
-			RemoveChildControlInternal(parent, control);
+			(parent.ControlImplementation as IControlContainerImplementation).RemoveChildControl(collection, control);
 		}
 
 		public void RegisterControlHandle(Control control, NativeControl handle, bool fDeleteOld = false)

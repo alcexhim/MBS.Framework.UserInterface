@@ -61,24 +61,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			else
 			{
-				Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
+				// Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
 			}
-			switch (ctl.BorderStyle)
+			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
 			{
-				case ButtonBorderStyle.None:
+
+			}
+			else
+			{
+				switch (ctl.BorderStyle)
 				{
-					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
-					break;
-				}
-				case ButtonBorderStyle.Half:
-				{
-					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
-					break;
-				}
-				case ButtonBorderStyle.Normal:
-				{
-					Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
-					break;
+					case ButtonBorderStyle.None:
+					{
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.None);
+						break;
+					}
+					case ButtonBorderStyle.Half:
+					{
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Half);
+						break;
+					}
+					case ButtonBorderStyle.Normal:
+					{
+						Internal.GTK.Methods.GtkButton.gtk_button_set_relief(handle, Internal.GTK.Constants.GtkReliefStyle.Normal);
+						break;
+					}
 				}
 			}
 
@@ -163,7 +170,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 
 			// we do this to support older versions of Gtk+ that may not handle gtk_widget_set_focus_on_click
-			Internal.GTK.Methods.GtkButton.gtk_button_set_focus_on_click (handle, ctl.FocusOnClick);
+			// Internal.GTK.Methods.GtkButton.gtk_button_set_focus_on_click (handle, ctl.FocusOnClick);
 
 			return new GTKNativeControl(handle);
 		}

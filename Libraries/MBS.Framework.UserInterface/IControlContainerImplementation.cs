@@ -23,9 +23,9 @@ namespace MBS.Framework.UserInterface
 {
 	public interface IControlContainerImplementation
 	{
-		void InsertChildControl(Control control);
-		void ClearChildControls();
-		void RemoveChildControl(Control control);
-		void SetControlConstraints(Control control, Constraints constraints);
+		void InsertChildControl(Control.ControlCollection collection, Control control);
+		void ClearChildControls(Control.ControlCollection collection);
+		void RemoveChildControl(Control.ControlCollection collection, Control control);
+		void SetControlConstraints(Control.ControlCollection collection, Control control, Constraints constraints);
 	}
 }

@@ -8,7 +8,7 @@ using MBS.Framework.UserInterface.Layouts;
 namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 {
 	[ControlImplementation(typeof(Container))]
-	public class ContainerImplementation : WindowsFormsNativeImplementation
+	public class ContainerImplementation : WindowsFormsNativeImplementation, IControlContainerImplementation
 	{
 		public ContainerImplementation(Engine engine, Container control) : base(engine, control)
 		{
@@ -273,6 +273,32 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 		protected override void SetTooltipTextInternal(string value)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public void InsertChildControl(Control.ControlCollection collection, Control control)
+		{
+			// FIXME: this may not work if we are using a custom control or something that does not get handled by WindowsFormsNativeControl
+			WindowsFormsNativeControl wfncParent = (Engine.GetHandleForControl((Container)Control) as WindowsFormsNativeControl);
+			WindowsFormsNativeControl wfncChild = (Engine.GetHandleForControl(control) as WindowsFormsNativeControl);
+			wfncParent.Handle.Controls.Add(wfncChild.Handle);
+		}
+
+		public void ClearChildControls(Control.ControlCollection collection)
+		{
+			// FIXME: this may not work if we are using a custom control or something that does not get handled by WindowsFormsNativeControl
+			WindowsFormsNativeControl wfncParent = (Engine.GetHandleForControl((Container)Control) as WindowsFormsNativeControl);
+			wfncParent.Handle.Controls.Clear();
+		}
+
+		public void RemoveChildControl(Control.ControlCollection collection, Control control)
+		{
+			WindowsFormsNativeControl ncControl = (WindowsFormsNativeControl)Engine.GetHandleForControl(control);
+			ncControl.Handle.Parent.Controls.Remove(ncControl.Handle);
+		}
+
+		public void SetControlConstraints(Control.ControlCollection collection, Control control, Constraints constraints)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

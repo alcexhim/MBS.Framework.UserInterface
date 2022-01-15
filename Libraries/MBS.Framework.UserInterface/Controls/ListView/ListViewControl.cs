@@ -43,6 +43,36 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			mvarColumns = new ListViewColumn.ListViewColumnCollection(this);
 		}
 
+		private int _selectedIndex = -1;
+		public int SelectedIndex
+		{
+			get
+			{
+				if (Model != null)
+				{
+					if (SelectedRows.Count > 0)
+					{
+						return Model.Rows.IndexOf(SelectedRows[0]);
+					}
+					return -1;
+				}
+				return _selectedIndex;
+			}
+			set
+			{
+				_selectedIndex = value;
+				if (Model != null)
+				{
+					SelectedRows.Clear();
+
+					if (value >= 0 && value < Model.Rows.Count)
+					{
+						SelectedRows.Add(Model.Rows[value]);
+					}
+				}
+			}
+		}
+
 		private bool mvarEnableDragSelection = false;
 		public bool EnableDragSelection
 		{

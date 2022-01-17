@@ -299,8 +299,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 					// create the menu bar
 					switch (window.CommandDisplayMode)
 					{
-					case CommandDisplayMode.CommandBar:
-					case CommandDisplayMode.Both:
+						case CommandDisplayMode.CommandBar:
+						case CommandDisplayMode.Both:
 						{
 							foreach (MenuItem menuItem in window.MenuBar.Items)
 							{
@@ -390,12 +390,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 				{
 					hHeaderBar = Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_new();
 					// Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_title(hHeaderBar, window.Text);
-					// Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
+					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_set_show_close_button(hHeaderBar, true);
+
 					Internal.GTK.Methods.GtkWindow.gtk_window_set_titlebar(handle, hHeaderBar);
 
 					IntPtr hBBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
 					Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(hBBox), "linked");
 
+					IntPtr hCBox = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal);
 					for (int i = 0; i < window.TitleBarButtons.Count; i++)
 					{
 						Button button = window.TitleBarButtons[i];
@@ -416,7 +418,26 @@ namespace MBS.Framework.UserInterface.Engines.GTK.Controls
 						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hBBox, hButton, false, false, 0);
 					}
 
+					for (int i = 0; i < window.TitleBarControls.Count; i++)
+					{
+						Engine.CreateControl(window.TitleBarControls[i]);
+
+						IntPtr hButton = (Engine.GetHandleForControl(window.TitleBarControls[i]) as GTKNativeControl).Handle;
+
+						/*
+						if (button.HorizontalAlignment == HorizontalAlignment.Left || button.HorizontalAlignment == HorizontalAlignment.Default)
+						{
+							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hButton);
+						}
+						else if (button.HorizontalAlignment == HorizontalAlignment.Right)
+						{
+							Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_end(hHeaderBar, hButton);
+						}
+						*/
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hCBox, hButton, false, false, 0);
+					}
 					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_start(hHeaderBar, hBBox);
+					Internal.GTK.Methods.GtkHeaderBar.gtk_header_bar_pack_end(hHeaderBar, hCBox);
 				}
 
 				// hStatusBar = Internal.GTK.Methods.GtkStatusBar.gtk_statusbar_new();

@@ -527,6 +527,20 @@ namespace MBS.Framework.UserInterface
 				case "FileSetting":
 				{
 					s = new FileSetting(attSettingName?.Value, attSettingTitle?.Value);
+
+					MarkupAttribute attType = tag.Attributes["Type"];
+					if (attType != null)
+					{
+						if (attType.Value.ToLower() == "folder")
+						{
+							((FileSetting)s).Mode = FileSettingMode.SelectFolder;
+						}
+						else
+						{
+						}
+					}
+
+					((FileSetting)s).FileNameFilter = tag.Attributes["FileNameFilter"]?.Value;
 					if (attDefaultValue != null)
 						s.DefaultValue = attDefaultValue.Value;
 					break;
@@ -714,6 +728,7 @@ namespace MBS.Framework.UserInterface
 		}
 		internal void HideSplashScreen()
 		{
+			System.Threading.Thread.Sleep(500);
 			while (splasher == null)
 			{
 				// System.Threading.Thread.Sleep(500);
@@ -868,8 +883,8 @@ namespace MBS.Framework.UserInterface
 					foreach (Window w in ((UIApplication)Application.Instance).Windows)
 					{
 						w.CommandBars.Add(cb);
-						_listContextCommandBars[e.Context].Add(cb);
 					}
+					_listContextCommandBars[e.Context].Add(cb);
 				}
 			}
 			base.OnContextAdded(e);
@@ -1003,6 +1018,12 @@ namespace MBS.Framework.UserInterface
 			Engine[] engines = Engine.Get();
 			if (engines.Length > 0) mvarEngine = engines[0];
 
+			if (mvarEngine == null)
+			{
+				Console.WriteLine("Working directory: {0}", System.Environment.CurrentDirectory);
+				throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
+			}
+
 			string sv = System.Reflection.Assembly.GetEntryAssembly().Location;
 			if (sv.StartsWith("/")) sv = sv.Substring(1);
 
@@ -1021,8 +1042,6 @@ namespace MBS.Framework.UserInterface
 				Feature feature = (Feature)pis[i].GetValue(null, null);
 				Features.Add(feature);
 			}
-
-			if (mvarEngine == null) throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
 
 			Console.WriteLine("Using engine {0}", mvarEngine.GetType().FullName);
 			mvarEngine.Initialize();
@@ -1164,32 +1183,6 @@ namespace MBS.Framework.UserInterface
 		public void DoEvents()
 		{
 			mvarEngine?.DoEvents();
-		}
-
-		private Dictionary<Guid, object> _settings = new Dictionary<Guid, object>();
-		public T GetSetting<T>(Guid id, T defaultValue = default(T))
-		{
-			object value = GetSetting(id, (object)defaultValue);
-			if (value is T)
-			{
-				return (T)value;
-			}
-			else if (value is string && ((string)value).TryParse(typeof(T), out object val))
-			{
-				return (T)val;
-			}
-
-			return defaultValue;
-		}
-		public object GetSetting(Guid id, object defaultValue = null)
-		{
-			if (_settings.ContainsKey(id))
-				return _settings[id];
-			return defaultValue;
-		}
-		public void SetSetting<T>(Guid id, T value)
-		{
-			_settings[id] = value;
 		}
 
 		public Process Launch(Uri uri)

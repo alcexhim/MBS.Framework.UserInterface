@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 
+using MBS.Framework.UserInterface.Controls.ListView;
+using MBS.Framework.UserInterface.Input.Keyboard;
+using MBS.Framework.UserInterface.Layouts;
+
 namespace MBS.Framework.UserInterface.Controls.Docking
 {
 	namespace Native
@@ -79,6 +83,128 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public DockingContainerControl()
 		{
 			mvarItems = new DockingItem.DockingItemCollection(this);
+		}
+
+		private class WindowListPopupWindow : Window
+		{
+			private ListViewControl lvWindows;
+			private DefaultTreeModel tmWindows;
+
+			private DockingContainerControl dccParent = null;
+			public WindowListPopupWindow(DockingContainerControl dcc)
+			{
+				dccParent = dcc;
+
+				Layout = new BoxLayout(Orientation.Vertical);
+				Size = new Framework.Drawing.Dimension2D(500, 200);
+
+				tmWindows = new DefaultTreeModel(new Type[] { typeof(string) });
+
+				lvWindows = new ListViewControl();
+				lvWindows.Columns.Add(new ListViewColumn("Window", new CellRenderer[] { new CellRendererText(tmWindows.Columns[0]) }));
+				lvWindows.HeaderStyle = ColumnHeaderStyle.None;
+				lvWindows.Model = tmWindows;
+				Controls.Add(lvWindows, new BoxLayout.Constraints(true, true));
+			}
+
+			private int i = -1;
+			public void Next()
+			{
+				Console.WriteLine("__wwC -> next()");
+
+				i++;
+				if (i >= lvWindows.Model.Rows.Count)
+				{
+					i = 0;
+				}
+
+				if (i >= 0 && i < lvWindows.Model.Rows.Count)
+				{
+					lvWindows.Select(lvWindows.Model.Rows[i]);
+				}
+			}
+			public void Prev()
+			{
+				Console.WriteLine("__wwC -> prev()");
+
+				i--;
+				if (i < 0)
+				{
+					i = lvWindows.Model.Rows.Count - 1;
+				}
+
+				if (i >= 0 && i < lvWindows.Model.Rows.Count)
+				{
+					lvWindows.Select(lvWindows.Model.Rows[i]);
+				}
+			}
+
+			public DockingItem GetSelectedItem()
+			{
+				if (lvWindows.SelectedRows.Count == 1)
+				{
+					return lvWindows.SelectedRows[0].GetExtraData<DockingItem>("item");
+				}
+				return null;
+			}
+
+			protected internal override void OnKeyDown(KeyEventArgs e)
+			{
+				base.OnKeyDown(e);
+
+				if (e.Key == KeyboardKey.Tab && (e.ModifierKeys & KeyboardModifierKey.Alt) == KeyboardModifierKey.Alt)
+				{
+					Console.WriteLine("switching window");
+				}
+			}
+
+			protected internal override void OnShown(EventArgs e)
+			{
+				base.OnShown(e);
+
+				Console.WriteLine("dcc: showing window list");
+
+				tmWindows.Rows.Clear();
+				foreach (DockingItem item in dccParent.Items)
+				{
+					if (item.Placement == DockingItemPlacement.Center)
+					{
+						TreeModelRow row = new TreeModelRow(new TreeModelRowColumn[]
+						{
+							new TreeModelRowColumn(tmWindows.Columns[0], item.Title)
+						});
+						row.SetExtraData<DockingItem>("item", item);
+						tmWindows.Rows.Add(row);
+					}
+				}
+			}
+		}
+		private WindowListPopupWindow __wwC = null;
+
+		public void ShowWindowListPopup()
+		{
+			if (__wwC == null)
+			{
+				__wwC = new WindowListPopupWindow(this);
+			}
+			__wwC.Show();
+			__wwC.Next();
+		}
+		public void HideWindowListPopup()
+		{
+			if (__wwC != null)
+			{
+				Console.WriteLine("dcc: hiding window list");
+
+				DockingItem item = __wwC.GetSelectedItem();
+				this.CurrentItem = item;
+
+				__wwC.Hide();
+			}
+		}
+		public void ShowWindowListPopupDialog()
+		{
+			Console.WriteLine("dcc: showing window list (modal)");
 		}
 	}
 }

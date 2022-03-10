@@ -142,6 +142,12 @@ namespace MBS.Framework.UserInterface.Drawing
 			FillRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
+		protected abstract void RotateInternal(double angle);
+		private double _Rotation = 0.0;
+		public double Rotation { get { return _Rotation; } set { _Rotation = value; RotateInternal(value); } }
+
+		public Vector2D RotationCenterpoint { get; set; } = Vector2D.Empty;
+
 		private Rectangle NormalizeRectangle(Rectangle input)
 		{
 			double x = input.X;

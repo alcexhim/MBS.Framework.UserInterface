@@ -81,6 +81,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		}
 		public void SetCurrentItem(DockingItem item)
 		{
+			Internal.GDL.Methods.gdl_dock_object_present(_HandlesForDockingItem[item], IntPtr.Zero);
 		}
 
 		private Internal.GDL.Constants.GdlDockItemBehavior UwtDockItemBehaviorToGtkDockItemBehavior(DockingItemBehavior value)

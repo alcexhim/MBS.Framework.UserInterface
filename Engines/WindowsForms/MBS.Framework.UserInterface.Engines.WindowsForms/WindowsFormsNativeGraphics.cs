@@ -159,5 +159,10 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 			// FIXME: this does not apply to certain controls (e.g. text boxes) which draw their focus differently than buttons, etc.
 			System.Windows.Forms.ControlPaint.DrawFocusRectangle(Handle, new System.Drawing.Rectangle((int)x, (int)y, (int)width, (int)height));
 		}
+
+		protected override void RotateInternal(double angle)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

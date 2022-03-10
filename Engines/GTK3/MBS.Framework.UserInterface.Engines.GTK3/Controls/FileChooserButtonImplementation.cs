@@ -106,7 +106,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			Button fallbackButton = new Button();
 			fallbackButton.AlwaysShowImage = true;
-			fallbackButton.Image = UserInterface.Drawing.Image.FromName("gtk-file", 8);
+			if (fca == Internal.GTK.Constants.GtkFileChooserAction.CreateFolder || fca == Internal.GTK.Constants.GtkFileChooserAction.SelectFolder)
+			{
+				fallbackButton.Image = UserInterface.Drawing.Image.FromStock(StockType.Folder, 8);
+			}
+			else
+			{
+				fallbackButton.Image = UserInterface.Drawing.Image.FromStock(StockType.File, 8);
+			}
 			fallbackButton.TooltipText = "Browse";
 			fallbackButton.Click += FallbackButton_Click;
 			fallbackContainer.Controls.Add(fallbackButton, new Layouts.BoxLayout.Constraints(false, false));

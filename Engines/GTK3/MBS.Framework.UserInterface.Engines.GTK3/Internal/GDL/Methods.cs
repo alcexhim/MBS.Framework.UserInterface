@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDL
 {
-	public static class Methods
+	internal static class Methods
 	{
 		private const string LIBRARY_FILENAME = "libgdl-3";
 
@@ -60,6 +60,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDL
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdl_dock_object_dock(IntPtr /*GdlDockObject*/ hobject, IntPtr /*GdlDockObject*/ requestor, Constants.GdlDockPlacement position, IntPtr other_data);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_object_present(IntPtr hobject, IntPtr child);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdl_dock_item_show_item(IntPtr /*GdlDockItem*/ item);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdlDockMaster*/ gdl_dock_object_get_master(IntPtr /*GdlDockObject*/ hobject);

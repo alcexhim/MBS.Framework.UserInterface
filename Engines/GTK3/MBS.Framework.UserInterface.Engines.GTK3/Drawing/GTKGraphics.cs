@@ -19,6 +19,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			mvarCairoContext = cairoContext;
 		}
 
+		protected override void RotateInternal(double angle)
+		{
+			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, RotationCenterpoint.X, RotationCenterpoint.Y);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_rotate(mvarCairoContext, angle);
+			CheckStatus();
+
+			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, -RotationCenterpoint.X, -RotationCenterpoint.Y);
+			CheckStatus();
+		}
+
 		private void SelectPath(Vector2D[] points)
 		{
 			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, points[0].X, points[0].Y);

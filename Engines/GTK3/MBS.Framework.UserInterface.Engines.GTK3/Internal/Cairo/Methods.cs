@@ -176,5 +176,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo
 		public static extern void cairo_save(IntPtr /*cairo_t*/ cr);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void cairo_restore(IntPtr /*cairo_t*/ cr);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_rotate(IntPtr /*cairo_t*/ cr, double angle);
 	}
 }

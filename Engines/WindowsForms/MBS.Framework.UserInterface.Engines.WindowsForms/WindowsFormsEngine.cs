@@ -1013,16 +1013,7 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms
 		{
 		}
 
-		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
-		{
-			return new WindowsFormsNativeTreeModel();
-		}
-
-		protected override void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model)
-		{
-			if (!IsTreeModelCreated(model))
-				return; // handled by RecursiveTreeStoreInsertRow
-		}
+		public override TreeModelManager TreeModelManager => new WindowsFormsTreeModelManager();
 
 		private static WindowsFormsClipboard _Clipboard = null;
 		protected override Clipboard GetDefaultClipboardInternal()

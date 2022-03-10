@@ -141,7 +141,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr /*GtkEntryCompletion*/ hCompletion = Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_new();
 			Internal.GTK.Methods.GtkEntry.gtk_entry_set_completion(handle, hCompletion);
 
-			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_model(hCompletion, (Engine.CreateTreeModel(ctl.CompletionModel) as GTKNativeTreeModel).Handle);
+			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_model(hCompletion, (Engine.TreeModelManager.CreateTreeModel(ctl.CompletionModel) as GTKNativeTreeModel).Handle);
 			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_text_column(hCompletion, 0);
 
 

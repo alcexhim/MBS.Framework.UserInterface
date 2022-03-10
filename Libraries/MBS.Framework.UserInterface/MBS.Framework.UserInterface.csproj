@@ -314,6 +314,7 @@
     <Compile Include="Layouts\StackLayout.cs" />
     <Compile Include="CommandBarLoader.cs" />
     <Compile Include="Dialogs\ProgressDialog.cs" />
+    <Compile Include="TreeModelManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

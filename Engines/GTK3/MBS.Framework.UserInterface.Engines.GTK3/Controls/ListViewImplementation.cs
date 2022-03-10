@@ -129,7 +129,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				bool retIter = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 				if (retIter)
 				{
-					row = (Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(iter);
+					row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 				}
 			}
 			return new ListViewHitTestInfo(row, column);
@@ -217,7 +217,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 
-			TreeModelRow row = (Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(iter);
+			TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 			int columnIndex = user_data.ToInt32();
 			if (columnIndex < row.RowColumns.Count)
 			{
@@ -260,7 +260,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter_from_string(hTreeStore, ref hIter, path);
 			if (ret)
 			{
-				TreeModelRow row = (Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(hIter);
+				TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(hIter);
 
 				int columnIndex = tmc.Model.Columns.IndexOf(rend.GetColumnForProperty(CellRendererProperty.Text));
 
@@ -324,7 +324,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 					{
 						hRenderer = Internal.GTK.Methods.GtkCellRendererCombo.gtk_cell_renderer_combo_new();
 
-						NativeTreeModel nTreeModel = ((UIApplication)Application.Instance).Engine.CreateTreeModel(cr.Model);
+						NativeTreeModel nTreeModel = ((UIApplication)Application.Instance).Engine.TreeModelManager.CreateTreeModel(cr.Model);
 						IntPtr hModel = (nTreeModel as GTKNativeTreeModel).Handle;
 
 						Internal.GObject.Methods.g_object_set_property(hRenderer, "model", hModel);
@@ -433,7 +433,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			TreeModel tm = (rc.Parent.ParentControl as ListViewControl).Model;
 			GTKNativeTreeModel ntm = Engine.GetHandleForTreeModel(tm) as GTKNativeTreeModel;
-			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTK3Engine).GetGtkTreeIterForTreeModelRow(rc.Parent);
+			Internal.GTK.Structures.GtkTreeIter hIter = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(rc.Parent);
 
 			IntPtr hTreeStore = ntm.Handle;
 
@@ -499,7 +499,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hPath);
 
-			TreeModelRow row = (Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(iter);
+			TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 			int columnIndex = user_data.ToInt32();
 			if (columnIndex < row.RowColumns.Count)
 			{
@@ -537,7 +537,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			if (tv.Model != null)
 			{
-				GTKNativeTreeModel ntm = Engine.CreateTreeModel(tv.Model) as GTKNativeTreeModel;
+				GTKNativeTreeModel ntm = Engine.TreeModelManager.CreateTreeModel(tv.Model) as GTKNativeTreeModel;
 				IntPtr hTreeStore = ntm.Handle;
 
 				switch (ImplementedAs(tv))
@@ -762,7 +762,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				if (e.Index == -1 && e.Count == 1 && e.Item != null)
 				{
 					// we are adding a new row to the selected collection
-					Internal.GTK.Structures.GtkTreeIter iter = engine.GetGtkTreeIterForTreeModelRow(e.Item);
+					Internal.GTK.Structures.GtkTreeIter iter = (engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(e.Item);
 					switch (ImplementedAs(coll.Parent))
 					{
 						case ImplementedAsType.TreeView:
@@ -788,7 +788,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 						bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 						if (ret)
 						{
-							TreeModelRow row = engine.GetTreeModelRowForGtkTreeIter(iter);
+							TreeModelRow row = (engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 							e.Item = row;
 						}
 					}
@@ -803,7 +803,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 							bool ret = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hTreeModel, ref iter, hTreePath);
 							if (ret)
 							{
-								TreeModelRow row = engine.GetTreeModelRowForGtkTreeIter(iter);
+								TreeModelRow row = (engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 								if (row == e.Item)
 								{
 									found = true;
@@ -925,7 +925,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
 
 			Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_iter(hModel, ref iter, path);
-			TreeModelRow row = (lv.ControlImplementation.Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(iter);
+			TreeModelRow row = (lv.ControlImplementation.Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(iter);
 
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
 		}
@@ -1040,7 +1040,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr hTreeView = GetHandleForControl (lv);
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
 
-			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine as GTK3Engine).GetGtkTreeIterForTreeModelRow(row);
+			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
 			bool value = Internal.GTK.Methods.GtkTreeView.gtk_tree_view_row_expanded (hTreeView, hRowPath);
@@ -1055,7 +1055,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr hTreeView = GetHandleForControl (lv);
 			IntPtr hTreeModel = GetHandleForTreeModel (lv.Model);
 
-			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine as GTK3Engine).GetGtkTreeIterForTreeModelRow(row);
+			Internal.GTK.Structures.GtkTreeIter hIterRow = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hRowPath = Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_path (hTreeModel, ref hIterRow);
 
 			if (expanded) {
@@ -1117,7 +1117,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			ListViewControl lv = (Control as ListViewControl);
 
-			Internal.GTK.Structures.GtkTreeIter iter = (Engine as GTK3Engine).GetGtkTreeIterForTreeModelRow(row);
+			Internal.GTK.Structures.GtkTreeIter iter = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(row);
 			IntPtr hModel = GetHandleForTreeModel(lv.Model);
 			IntPtr hTreeView = (Handle as GTKNativeControl).GetNamedHandle("TreeView");
 

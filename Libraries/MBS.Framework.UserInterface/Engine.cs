@@ -59,12 +59,6 @@ namespace MBS.Framework.UserInterface
 			_SystemColors[color] = value;
 		}
 
-		protected abstract void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model);
-		internal void CreateTreeModelRow(TreeModelRow row, TreeModel model)
-		{
-			CreateTreeModelRowInternal(row, model);
-		}
-
 		protected abstract void UpdateSystemColorsInternal();
 		public void UpdateSystemColors()
 		{
@@ -683,24 +677,7 @@ namespace MBS.Framework.UserInterface
 			_HandleForTreeModel[tm] = handle;
 		}
 
-		protected abstract NativeTreeModel CreateTreeModelInternal(TreeModel model);
-		public NativeTreeModel CreateTreeModel(TreeModel model)
-		{
-			Contract.Requires(model != null);
-			Contract.Ensures(Contract.Result<NativeTreeModel>() != null);
-
-			if (IsTreeModelCreated(model))
-			{
-				// TODO: unregister handle
-				_HandleForTreeModel.Remove(model);
-				// return _HandleForTreeModel[model]; // this fks up additional columns tweaking
-			}
-
-			NativeTreeModel handle = CreateTreeModelInternal(model);
-
-			RegisterTreeModel(model, handle);
-			return handle;
-		}
+		public abstract TreeModelManager TreeModelManager { get; }
 
 		protected abstract void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e);
 		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)

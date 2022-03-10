@@ -24,4 +24,10 @@ namespace MBS.Framework.UserInterface
 	public abstract class NativeTreeModel
 	{
 	}
+	public abstract class NativeTreeModel<THandle> : NativeHandle<THandle>
+	{
+		public NativeTreeModel(THandle handle) : base(handle)
+		{
+		}
+	}
 }

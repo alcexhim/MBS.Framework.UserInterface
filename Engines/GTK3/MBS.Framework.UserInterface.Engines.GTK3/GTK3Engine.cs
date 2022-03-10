@@ -27,6 +27,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Unix ? 1 : -1);
 
+		public override TreeModelManager TreeModelManager { get; } = new GTK3TreeModelManager();
+
 		private GTKSystemSettings _SystemSettings = new GTKSystemSettings();
 		public override SystemSettings SystemSettings => _SystemSettings;
 
@@ -1743,55 +1745,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return RelativePosition.Default;
 		}
 
-		protected override NativeTreeModel CreateTreeModelInternal(TreeModel model)
-		{
-			List<IntPtr> listColumnTypes = new List<IntPtr>();
-			if (model != null)
-			{
-				foreach (TreeModelColumn c in model.Columns)
-				{
-					IntPtr ptr = Internal.GLib.Constants.GType.FromType(c.DataType);
-					if (ptr == IntPtr.Zero) continue;
-
-					listColumnTypes.Add(ptr);
-				}
-			}
-
-			if (listColumnTypes.Count <= 0)
-			{
-				Console.WriteLine("uwt ERROR: you did not specify any columns for the ListView!!!");
-				listColumnTypes.Add(Internal.GLib.Constants.GType.FromType(typeof(string)));
-			}
-
-			IntPtr[] columnTypes = listColumnTypes.ToArray();
-			IntPtr hTreeStore = Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_newv(columnTypes.Length, columnTypes);
-
-			HandleGtkTreeIterCompareFunc_d = new Delegates.GtkTreeIterCompareFunc(HandleGtkTreeIterCompareFunc);
-			HandleGClosureNotify_d = new Internal.GObject.Delegates.GClosureNotify(HandleGClosureNotify);
-			for (int i = 0; i < columnTypes.Length; i++)
-			{
-				Internal.GTK.Methods.GtkTreeSortable.gtk_tree_sortable_set_sort_func(hTreeStore, i, HandleGtkTreeIterCompareFunc_d, new IntPtr(i), HandleGClosureNotify_d);
-			}
-
-			DefaultTreeModel dtm = (model as DefaultTreeModel);
-			if (dtm != null)
-			{
-				Internal.GTK.Structures.GtkTreeIter hIter = new Internal.GTK.Structures.GtkTreeIter();
-				foreach (TreeModelRow row in dtm.Rows)
-				{
-					if (_GtkTreeIterForTreeModelRow.ContainsKey(row))
-						continue;
-
-					RecursiveTreeStoreInsertRow(dtm, row, hTreeStore, out hIter, null, dtm.Rows.Count - 1);
-				}
-			}
-
-			return new GTKNativeTreeModel(hTreeStore);
-		}
-
 		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)
 		{
-			IntPtr hTreeModel = (GetHandleForTreeModel(tm) as GTKNativeTreeModel).Handle;
+			IntPtr hTreeModel = ((GetHandleForTreeModel(tm) as GTKNativeTreeModel)?.Handle).GetValueOrDefault(IntPtr.Zero);
 			if (hTreeModel == IntPtr.Zero)
 			{
 				// we do not have a treemodel handle yet
@@ -1809,11 +1765,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 						// as written we currently cannot do this...
 						// int itemsCount = Internal.GTK.Methods.Methods.gtk_tree_store_
-						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine as GTK3Engine).IsTreeModelRowRegistered(e.ParentRow))
+						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine.TreeModelManager as GTK3TreeModelManager).IsTreeModelRowRegistered(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = GetGtkTreeIterForTreeModelRow(e.ParentRow);
-							RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
+							Internal.GTK.Structures.GtkTreeIter iterParent = (TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(e.ParentRow);
+							(TreeModelManager as GTK3TreeModelManager).RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
 						}
 						else
 						{
@@ -1828,7 +1784,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				{
 					foreach (TreeModelRow row in e.Rows)
 					{
-						Internal.GTK.Structures.GtkTreeIter iter = GetGtkTreeIterForTreeModelRow(row);
+						Internal.GTK.Structures.GtkTreeIter iter = (TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(row);
 						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
 						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
 					}
@@ -1843,154 +1799,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 
 
-		void HandleGClosureNotify(IntPtr data, IntPtr closure)
-		{
-		}
-
-		Internal.GObject.Delegates.GClosureNotify HandleGClosureNotify_d = null;
-		Internal.GTK.Delegates.GtkTreeIterCompareFunc HandleGtkTreeIterCompareFunc_d = null;
-
-		int HandleGtkTreeIterCompareFunc(IntPtr model, ref Structures.GtkTreeIter a, ref Structures.GtkTreeIter b, IntPtr user_data)
-		{
-			// user_data isn't actually a pointer, it's just an int wrapped in a ptr (bad? :P )
-			int columnIndex = user_data.ToInt32();
-
-			TreeModel tm = TreeModelFromHandle(new GTKNativeTreeModel(model));
-			if (tm == null)
-				return -1;
-
-			TreeModelRow rowA = GetTreeModelRowForGtkTreeIter(a.user_data);
-			TreeModelRow rowB = GetTreeModelRowForGtkTreeIter(b.user_data);
-			if (rowA == null || rowB == null)
-			{
-				return -1;
-			}
-
-			TreeModelRowCompareEventArgs ee = new TreeModelRowCompareEventArgs(rowA, rowB, columnIndex);
-			InvokeMethod(tm, "OnRowCompare", ee);
-			if (ee.Handled)
-				return ee.Value;
-
-			if (columnIndex >= 0 && columnIndex < rowA.RowColumns.Count && columnIndex < rowB.RowColumns.Count)
-			{
-				if (rowA.RowColumns[columnIndex].RawValue is IComparable)
-				{
-					return (rowA.RowColumns[columnIndex].RawValue as IComparable).CompareTo(rowB.RowColumns[columnIndex].RawValue);
-				}
-				else if (rowB.RowColumns[columnIndex].RawValue is IComparable)
-				{
-					return (rowB.RowColumns[columnIndex].RawValue as IComparable).CompareTo(rowA.RowColumns[columnIndex].RawValue);
-				}
-			}
-			return -1;
-		}
-
-
-		private Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter> _GtkTreeIterForTreeModelRow = new Dictionary<TreeModelRow, Internal.GTK.Structures.GtkTreeIter>();
-		private Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow> _TreeModelRowForGtkTreeIter = new Dictionary<Internal.GTK.Structures.GtkTreeIter, TreeModelRow>();
-		private Dictionary<IntPtr, TreeModelRow> _TreeModelRowForGtkTreeIterU = new Dictionary<IntPtr, TreeModelRow>();
-
-		protected override void CreateTreeModelRowInternal(TreeModelRow row, TreeModel model)
-		{
-			if (!IsTreeModelCreated(model))
-				return; // handled by RecursiveTreeStoreInsertRow
-
-			Structures.GtkTreeIter hIter = new Structures.GtkTreeIter();
-			IntPtr hTreeModel = (GetHandleForTreeModel(model) as GTKNativeTreeModel).Handle;
-			RecursiveTreeStoreInsertRow(model, row, hTreeModel, out hIter, null, (model as DefaultTreeModel).Rows.Count - 1);
-		}
-
-		internal void RegisterGtkTreeIter(TreeModelRow row, Internal.GTK.Structures.GtkTreeIter hIter)
-		{
-			_GtkTreeIterForTreeModelRow[row] = hIter;
-			_TreeModelRowForGtkTreeIter[hIter] = row;
-			_TreeModelRowForGtkTreeIterU[hIter.user_data] = row;
-		}
-		internal void UnregisterGtkTreeIter(Structures.GtkTreeIter iter)
-		{
-			if (_TreeModelRowForGtkTreeIter.ContainsKey(iter))
-			{
-				_GtkTreeIterForTreeModelRow.Remove(_TreeModelRowForGtkTreeIter[iter]);
-			}
-			else
-			{
-				Console.WriteLine("attempted to unregister invalid GtkTreeIter for TreeModel");
-			}
-			_TreeModelRowForGtkTreeIter.Remove(iter);
-		}
-		internal TreeModelRow GetTreeModelRowForGtkTreeIter(Internal.GTK.Structures.GtkTreeIter hIter)
-		{
-			if (_TreeModelRowForGtkTreeIter.ContainsKey(hIter))
-				return _TreeModelRowForGtkTreeIter[hIter];
-			return null;
-		}
-		internal TreeModelRow GetTreeModelRowForGtkTreeIter(IntPtr user_data)
-		{
-			if (_TreeModelRowForGtkTreeIterU.ContainsKey(user_data))
-				return _TreeModelRowForGtkTreeIterU[user_data];
-			return null;
-		}
-		internal Internal.GTK.Structures.GtkTreeIter GetGtkTreeIterForTreeModelRow(TreeModelRow row)
-		{
-			return _GtkTreeIterForTreeModelRow[row];
-		}
-		internal bool IsTreeModelRowRegistered(TreeModelRow row)
-		{
-			return _GtkTreeIterForTreeModelRow.ContainsKey(row);
-		}
-
-		private void RecursiveTreeStoreInsertRow(TreeModel tm, TreeModelRow row, IntPtr hTreeStore, out Internal.GTK.Structures.GtkTreeIter hIter, Internal.GTK.Structures.GtkTreeIter? parent, int position, bool append = false)
-		{
-			if (parent == null)
-			{
-				if (append)
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, IntPtr.Zero);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, position);
-				}
-			}
-			else
-			{
-				Internal.GTK.Structures.GtkTreeIter hIterParent = parent.Value;
-				if (append)
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_append(hTreeStore, out hIter, ref hIterParent);
-				}
-				else
-				{
-					Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_insert(hTreeStore, out hIter, ref hIterParent, position);
-				}
-			}
-
-			RegisterGtkTreeIter(row, hIter);
-
-			foreach (TreeModelRowColumn rc in row.RowColumns)
-			{
-				// since "Marshalling of type object is not implemented"
-				// (mono/metadata/marshal.c:6507) we have to do it ourselves
-
-
-				Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
-
-				// Internal.GTK.Methods.Methods.gtk_tree_store_insert(hTreeStore, out hIter, IntPtr.Zero, 0);
-				Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
-
-				// this can only be good, right...?
-				// val.Dispose();
-
-				// I thought this caused "malloc() : smallbin doubly linked list corrupted" error, but apparently it doesn't...?
-				// back to square one...
-			}
-
-			foreach (TreeModelRow row2 in row.Rows)
-			{
-				Internal.GTK.Structures.GtkTreeIter hIter2 = new Internal.GTK.Structures.GtkTreeIter();
-				RecursiveTreeStoreInsertRow(tm, row2, hTreeStore, out hIter2, hIter, row.Rows.Count - 1);
-			}
-		}
 
 		private Clipboard _DefaultClipboard = null;
 		protected override Clipboard GetDefaultClipboardInternal()

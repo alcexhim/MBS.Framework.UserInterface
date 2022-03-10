@@ -237,6 +237,7 @@
     <Compile Include="Internal\GTK\Methods\GtkViewport.cs" />
     <Compile Include="Internal\GTK\Methods\GtkTextTag.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSearchEntry.cs" />
+    <Compile Include="GTK3TreeModelManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -261,17 +262,17 @@
       <Project>{2D4737E6-6D95-408A-90DB-8DFF38147E85}</Project>
       <Name>UniversalEditor.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
-      <Project>{00266B21-35C9-4A7F-A6BA-D54D7FDCC25C}</Project>
-      <Name>MBS.Framework</Name>
+    <ProjectReference Include="..\..\..\..\MBS.Framework.Rendering\Libraries\MBS.Framework.Rendering\MBS.Framework.Rendering.csproj">
+      <Project>{2A0B4A53-8A3A-478D-80A7-B6FF20B38317}</Project>
+      <Name>MBS.Framework.Rendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Libraries\MBS.Framework.UserInterface\MBS.Framework.UserInterface.csproj">
       <Project>{29E1C1BB-3EA5-4062-B62F-85EEC703FE07}</Project>
       <Name>MBS.Framework.UserInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\MBS.Framework.Rendering\Libraries\MBS.Framework.Rendering\MBS.Framework.Rendering.csproj">
-      <Project>{2A0B4A53-8A3A-478D-80A7-B6FF20B38317}</Project>
-      <Name>MBS.Framework.Rendering</Name>
+    <ProjectReference Include="..\..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
+      <Project>{00266B21-35C9-4A7F-A6BA-D54D7FDCC25C}</Project>
+      <Name>MBS.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

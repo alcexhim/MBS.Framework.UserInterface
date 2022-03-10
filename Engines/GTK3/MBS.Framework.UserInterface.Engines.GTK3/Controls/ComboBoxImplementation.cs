@@ -93,7 +93,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
 
-			GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(value) as GTKNativeTreeModel);
+			GTKNativeTreeModel ncTreeModel = (Engine.TreeModelManager.CreateTreeModel(value) as GTKNativeTreeModel);
 			IntPtr hTreeModel = ncTreeModel.Handle;
 			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
 			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);
@@ -117,7 +117,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			bool ret = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_active_iter(handle, ref hIter);
 			if (ret)
 			{
-				TreeModelRow row = (Engine as GTK3Engine).GetTreeModelRowForGtkTreeIter(hIter);
+				TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(hIter);
 				return row;
 			}
 			return null;
@@ -125,7 +125,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		private void _SetSelectedItem(IntPtr handle, TreeModelRow value)
 		{
-			Internal.GTK.Structures.GtkTreeIter hIter = (Engine as GTK3Engine).GetGtkTreeIterForTreeModelRow(value);
+			Internal.GTK.Structures.GtkTreeIter hIter = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(value);
 			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_active_iter(handle, ref hIter);
 		}
 
@@ -180,7 +180,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr hTreeModel = IntPtr.Zero;
 			if (ctl.Model != null)
 			{
-				GTKNativeTreeModel ncTreeModel = (Engine.CreateTreeModel(ctl.Model) as GTKNativeTreeModel);
+				GTKNativeTreeModel ncTreeModel = (Engine.TreeModelManager.CreateTreeModel(ctl.Model) as GTKNativeTreeModel);
 				hTreeModel = ncTreeModel.Handle;
 				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_model(handle, hTreeModel);
 				Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_entry_text_column(handle, 0);

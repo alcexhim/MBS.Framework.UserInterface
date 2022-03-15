@@ -657,38 +657,12 @@ namespace MBS.Framework.UserInterface
 		}
 		#endregion
 
-
-		private Dictionary<NativeTreeModel, TreeModel> _TreeModelForHandle = new Dictionary<NativeTreeModel, TreeModel>();
-		private Dictionary<TreeModel, NativeTreeModel> _HandleForTreeModel = new Dictionary<TreeModel, NativeTreeModel>();
-		public TreeModel TreeModelFromHandle(NativeTreeModel handle)
-		{
-			if (_TreeModelForHandle.ContainsKey(handle)) return _TreeModelForHandle[handle];
-			return null;
-		}
-		public NativeTreeModel GetHandleForTreeModel(TreeModel tm)
-		{
-			if (tm != null && _HandleForTreeModel.ContainsKey(tm)) return _HandleForTreeModel[tm];
-			return null;
-		}
-
-		private void RegisterTreeModel(TreeModel tm, NativeTreeModel handle)
-		{
-			_TreeModelForHandle[handle] = tm;
-			_HandleForTreeModel[tm] = handle;
-		}
-
 		public abstract TreeModelManager TreeModelManager { get; }
 
 		protected abstract void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e);
 		public void UpdateTreeModel(TreeModel tm, TreeModelChangedEventArgs e)
 		{
 			UpdateTreeModelInternal(tm, e);
-		}
-
-		[DebuggerNonUserCode]
-		public bool IsTreeModelCreated(TreeModel model)
-		{
-			return _HandleForTreeModel.ContainsKey(model);
 		}
 
 		protected abstract bool ShowHelpInternal(HelpTopic topic);

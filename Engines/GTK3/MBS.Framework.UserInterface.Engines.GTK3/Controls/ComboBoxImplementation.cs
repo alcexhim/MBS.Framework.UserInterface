@@ -85,7 +85,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
 			IntPtr hTreeModel = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_model(handle);
 
-			TreeModel tm = Engine.TreeModelFromHandle(new GTKNativeTreeModel(hTreeModel));
+			TreeModel tm = Engine.TreeModelManager.GetTreeModelForHandle(new GTKNativeTreeModel(hTreeModel));
 			return tm;
 		}
 
@@ -117,7 +117,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			bool ret = Internal.GTK.Methods.GtkComboBox.gtk_combo_box_get_active_iter(handle, ref hIter);
 			if (ret)
 			{
-				TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForGtkTreeIter(hIter);
+				TreeModelRow row = Engine.TreeModelManager.GetTreeModelRowForHandle<Internal.GTK.Structures.GtkTreeIter>(hIter);
 				return row;
 			}
 			return null;
@@ -125,7 +125,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		private void _SetSelectedItem(IntPtr handle, TreeModelRow value)
 		{
-			Internal.GTK.Structures.GtkTreeIter hIter = (Engine.TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(value);
+			Internal.GTK.Structures.GtkTreeIter hIter = Engine.TreeModelManager.GetHandleForTreeModelRow<Internal.GTK.Structures.GtkTreeIter>(value);
 			Internal.GTK.Methods.GtkComboBox.gtk_combo_box_set_active_iter(handle, ref hIter);
 		}
 

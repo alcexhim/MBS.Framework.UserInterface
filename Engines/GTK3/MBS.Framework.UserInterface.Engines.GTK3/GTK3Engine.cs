@@ -1747,7 +1747,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)
 		{
-			IntPtr hTreeModel = ((GetHandleForTreeModel(tm) as GTKNativeTreeModel)?.Handle).GetValueOrDefault(IntPtr.Zero);
+			IntPtr hTreeModel = ((GTKNativeTreeModel)TreeModelManager.GetHandleForTreeModel(tm)).Handle;
 			if (hTreeModel == IntPtr.Zero)
 			{
 				// we do not have a treemodel handle yet
@@ -1757,7 +1757,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			{
 				case TreeModelChangedAction.Add:
 				{
-					Internal.GTK.Structures.GtkTreeIter iter = new Internal.GTK.Structures.GtkTreeIter();
+					NativeHandle iter = null;
 
 					for (int i = 0; i < e.Rows.Count; i++)
 					{
@@ -1768,8 +1768,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						if (e.ParentRow != null && (((UIApplication)Application.Instance).Engine.TreeModelManager as GTK3TreeModelManager).IsTreeModelRowRegistered(e.ParentRow))
 						{
 							// fixed 2019-07-16 16:44 by beckermj
-							Internal.GTK.Structures.GtkTreeIter iterParent = (TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(e.ParentRow);
-							(TreeModelManager as GTK3TreeModelManager).RecursiveTreeStoreInsertRow(tm, row, hTreeModel, out iter, iterParent, 0, true);
+							NativeHandle iterParent = TreeModelManager.GetHandleForTreeModelRow(e.ParentRow);
+							TreeModelManager.InsertTreeModelRow(tm, row, out iter, 0, true);
 						}
 						else
 						{
@@ -1784,7 +1784,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				{
 					foreach (TreeModelRow row in e.Rows)
 					{
-						Internal.GTK.Structures.GtkTreeIter iter = (TreeModelManager as GTK3TreeModelManager).GetGtkTreeIterForTreeModelRow(row);
+						Internal.GTK.Structures.GtkTreeIter iter = (TreeModelManager as GTK3TreeModelManager).GetHandleForTreeModelRow<Internal.GTK.Structures.GtkTreeIter>(row);
 						Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_remove(hTreeModel, ref iter);
 						// (Engine as GTKEngine).UnregisterGtkTreeIter(iter);
 					}

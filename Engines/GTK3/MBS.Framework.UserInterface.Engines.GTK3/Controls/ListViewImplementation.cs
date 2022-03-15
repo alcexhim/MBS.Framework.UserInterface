@@ -386,7 +386,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				ListViewHitTestInfo lvhi = tv.HitTest(e.X, e.Y);
 				if (lvhi?.Row == null) return;
 
-				lvhi.Row.Expanded = !lvhi.Row.Expanded;
+				tv.SetExpanded(lvhi.Row, !tv.IsExpanded(lvhi.Row));
 			}
 		}
 		private TreeModelRow prevSelectedRow = null;
@@ -427,18 +427,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		public void UpdateTreeModel ()
 		{
 			UpdateTreeModel ((Handle as GTKNativeControl).GetNamedHandle("TreeView"));
-		}
-
-		public void UpdateTreeModelColumn(TreeModelRowColumn rc)
-		{
-			TreeModel tm = (rc.Parent.ParentControl as ListViewControl).Model;
-			GTKNativeTreeModel ntm = Engine.TreeModelManager.GetHandleForTreeModel(tm) as GTKNativeTreeModel;
-			Internal.GTK.Structures.GtkTreeIter hIter = Engine.TreeModelManager.GetHandleForTreeModelRow<Internal.GTK.Structures.GtkTreeIter>(rc.Parent);
-
-			IntPtr hTreeStore = ntm.Handle;
-
-			Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
-			Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
 		}
 
 		private Dictionary<ListViewColumn, IntPtr> _ColumnHandles = new Dictionary<ListViewColumn, IntPtr>();
@@ -930,29 +918,35 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			lv.OnRowActivated(new ListViewRowActivatedEventArgs(row));
 		}
 
-		protected override void OnKeyDown (KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			base.OnKeyDown (e);
+			base.OnKeyDown(e);
 
 			ListViewControl lv = Control as ListViewControl;
 			if (lv == null) return;
 
 			if (lv.SelectedRows.Count != 1) return;
 
-			if (e.Key == KeyboardKey.ArrowRight) {
-				lv.SelectedRows [0].Expanded = true;
+			if (e.Key == KeyboardKey.ArrowRight)
+			{
+				lv.SetExpanded(lv.SelectedRows[0], true);
 				e.Cancel = true;
 			}
-			else if (e.Key == KeyboardKey.ArrowLeft) {
-				if (!lv.SelectedRows [0].Expanded) {
+			else if (e.Key == KeyboardKey.ArrowLeft)
+			{
+				if (!lv.IsExpanded(lv.SelectedRows[0]))
+				{
 					// we're already closed, so move selection up to our parent
-					TreeModelRow rowCurrent = lv.SelectedRows [0];
-					if (rowCurrent.ParentRow != null) {
-						lv.SelectedRows.Clear ();
-						lv.SelectedRows.Add (rowCurrent.ParentRow);
+					TreeModelRow rowCurrent = lv.SelectedRows[0];
+					if (rowCurrent.ParentRow != null)
+					{
+						lv.SelectedRows.Clear();
+						lv.SelectedRows.Add(rowCurrent.ParentRow);
 					}
-				} else {
-					lv.SelectedRows [0].Expanded = false;
+				}
+				else
+				{
+					lv.SetExpanded(lv.SelectedRows[0], false);
 				}
 				e.Cancel = true;
 			}

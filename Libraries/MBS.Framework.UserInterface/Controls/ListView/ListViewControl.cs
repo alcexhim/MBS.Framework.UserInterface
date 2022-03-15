@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.Controls.ListView
@@ -10,8 +11,6 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		{
 			void UpdateTreeModel();
 			void UpdateTreeModel(NativeControl handle, TreeModelChangedEventArgs e);
-
-			void UpdateTreeModelColumn(TreeModelRowColumn rc);
 
 			SelectionMode GetSelectionMode();
 			void SetSelectionMode(SelectionMode value);
@@ -113,15 +112,6 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 			}
 		}
 
-		private void RecursiveSetControlParent(TreeModelRow row)
-		{
-			row.ParentControl = this;
-			foreach (TreeModelRow row2 in row.Rows)
-			{
-				RecursiveSetControlParent(row2);
-			}
-		}
-
 		private DefaultTreeModel mvarModel = null;
 		public DefaultTreeModel Model
 		{
@@ -132,10 +122,6 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 				if (mvarModel != null)
 				{
 					mvarModel.TreeModelChanged += MvarModel_TreeModelChanged;
-					foreach (TreeModelRow row in mvarModel.Rows)
-					{
-						RecursiveSetControlParent(row);
-					}
 				}
 				(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel();
 			}
@@ -187,18 +173,6 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		{
 			OnTreeModelChanged(sender, e);
 
-			switch (e.Action)
-			{
-				case TreeModelChangedAction.Add:
-				{
-					foreach (TreeModelRow row in e.Rows)
-					{
-						row.ParentControl = this;
-					}
-					break;
-				}
-			}
-
 			(ControlImplementation as Native.IListViewNativeImplementation)?.UpdateTreeModel(ControlImplementation.Handle, e);
 		}
 
@@ -216,6 +190,79 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		/// </summary>
 		/// <value><c>true</c> if container rows should be sorted first; otherwise, <c>false</c>.</value>
 		public bool SortContainerRowsFirst { get; set; } = false;
+
+		private Dictionary<TreeModelRow, bool> _IsExpanded = new Dictionary<TreeModelRow, bool>();
+
+		private bool mvarExpanded = false;
+		public bool IsExpanded(TreeModelRow row)
+		{
+			if (!IsCreated)
+			{
+				if (!_IsExpanded.ContainsKey(row))
+					_IsExpanded[row] = false;
+				return _IsExpanded[row];
+			}
+			_IsExpanded[row] = ((ControlImplementation as UserInterface.Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(row)).GetValueOrDefault(false);
+			return _IsExpanded[row];
+		}
+
+		public void SetExpanded(TreeModelRow row, bool expanded)
+		{
+			if (ControlImplementation == null)
+			{
+				Console.Error.WriteLine("uwt: TreeModelRow: NativeImplementation is NULL");
+			}
+			(ControlImplementation as UserInterface.Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded(row, expanded);
+			_IsExpanded[row] = expanded;
+		}
+
+		public void ExpandAll(TreeModelRow row = null)
+		{
+			if (row != null)
+			{
+				SetExpanded(row, true);
+				foreach (TreeModelRow row2 in row.Rows)
+				{
+					ExpandAll(row2);
+				}
+			}
+			else
+			{
+				foreach (TreeModelRow row2 in Model.Rows)
+				{
+					ExpandAll(row2);
+				}
+			}
+		}
+		public void CollapseAll(TreeModelRow row = null)
+		{
+			if (row != null)
+			{
+				SetExpanded(row, false);
+				foreach (TreeModelRow row2 in row.Rows)
+				{
+					CollapseAll(row2);
+				}
+			}
+			else
+			{
+				foreach (TreeModelRow row2 in Model.Rows)
+				{
+					CollapseAll(row2);
+				}
+			}
+		}
+
+
+		public void EnsureVisible(TreeModelRow row)
+		{
+			TreeModelRow parentRow = row;
+			while (parentRow != null)
+			{
+				SetExpanded(parentRow, true);
+				parentRow = parentRow.ParentRow;
+			}
+		}
 
 		private bool _SingleClickActivation = false;
 		public bool SingleClickActivation

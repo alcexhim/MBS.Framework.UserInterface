@@ -37,6 +37,13 @@ namespace MBS.Framework.UserInterface
 			this.Rows.CollectionChanged += (sender, e) =>
 			{
 				TreeModelChangedEventArgs ee = null;
+				if (!((UIApplication)Application.Instance).Engine.TreeModelManager.IsTreeModelCreated(this))
+				{
+					((UIApplication)Application.Instance).Engine.TreeModelManager.CreateTreeModel(this);
+					// exit early to prevent TreeModelManager from attempting to add duplicate rows in the switch statement a few lines down
+					// TreeModelManager.CreateTreeModel automatically adds all existing rows to the underlying native tree model
+					return;
+				}
 
 				switch (e.Action)
 				{
@@ -181,22 +188,6 @@ namespace MBS.Framework.UserInterface
 					return ret;
 			}
 			return null;
-		}
-
-		public void ExpandAll()
-		{
-			for (int i = 0; i < Rows.Count; i++)
-			{
-				Rows[i].ExpandAll();
-			}
-		}
-
-		public void CollapseAll()
-		{
-			for (int i = 0; i < Rows.Count; i++)
-			{
-				Rows[i].CollapseAll();
-			}
 		}
 	}
 }

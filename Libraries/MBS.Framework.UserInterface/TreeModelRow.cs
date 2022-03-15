@@ -120,7 +120,7 @@ namespace MBS.Framework.UserInterface
 
 		internal void UpdateColumnValue(TreeModelRowColumn rc)
 		{
-			(ParentControl?.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModelColumn(rc);
+			((UIApplication)Application.Instance).Engine.TreeModelManager.UpdateTreeModelColumn(rc);
 		}
 
 		public class TreeModelRowCollection
@@ -218,23 +218,6 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		public void ExpandAll()
-		{
-			Expanded = true;
-			for (int i = 0; i < Rows.Count; i++)
-			{
-				Rows[i].ExpandAll();
-			}
-		}
-		public void CollapseAll()
-		{
-			Expanded = false;
-			for (int i = 0; i < Rows.Count; i++)
-			{
-				Rows[i].CollapseAll();
-			}
-		}
-
 		public TreeModelRow.TreeModelRowCollection Rows { get; } = new TreeModelRowCollection();
 
 		private TreeModelRowColumn.TreeModelRowColumnCollection mvarRowColumns = null;
@@ -260,20 +243,9 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		private Control _ParentControl = null;
-		public Control ParentControl
-		{
-			get { return _ParentControl; }
-			internal set
-			{
-				_ParentControl = value;
-				for (int i = 0; i < this.Rows.Count; i++)
-				{
-					this.Rows[i].ParentControl = value;
-				}
-			}
-		}
+		public TreeModel ParentModel { get; internal set; } = null;
 		public TreeModelRow ParentRow { get; private set; }
+
 		public string Name { get; set; }
 
 		void Rows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -286,12 +258,11 @@ namespace MBS.Framework.UserInterface
 					foreach (TreeModelRow row in e.NewItems)
 					{
 						row.ParentRow = this;
-						row.ParentControl = this.ParentControl;
 						list.Add(row);
 					}
-					if (ParentControl != null)
+					if (ParentModel != null)
 					{
-						(ParentControl.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
+						((UIApplication)Application.Instance).Engine.UpdateTreeModel(ParentModel, new TreeModelChangedEventArgs(TreeModelChangedAction.Add, list.ToArray(), this));
 					}
 					break;
 				}
@@ -301,41 +272,14 @@ namespace MBS.Framework.UserInterface
 					foreach (TreeModelRow row in e.NewItems)
 					{
 						row.ParentRow = this;
-						row.ParentControl = this.ParentControl;
 						list.Add(row);
 					}
-					if (ParentControl != null)
+					if (ParentModel != null)
 					{
-						(ParentControl.ControlImplementation as Controls.ListView.Native.IListViewNativeImplementation)?.UpdateTreeModel(ParentControl.ControlImplementation.Handle, new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, list.ToArray(), this));
+						((UIApplication)Application.Instance).Engine.UpdateTreeModel(ParentModel, new TreeModelChangedEventArgs(TreeModelChangedAction.Remove, list.ToArray(), this));
 					}
 					break;
 				}
-			}
-		}
-
-		private bool mvarExpanded = false;
-		public bool Expanded
-		{
-			get
-			{
-				if (ParentControl?.IsCreated == false)
-					return mvarExpanded;
-
-				mvarExpanded = ((ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.IsRowExpanded(this)).GetValueOrDefault(false);
-				return mvarExpanded;
-			}
-			set
-			{
-				if (ParentControl == null)
-				{
-					Console.Error.WriteLine("uwt: TreeModelRow: parent control is NULL");
-				}
-				else if (ParentControl.ControlImplementation == null)
-				{
-					Console.Error.WriteLine("uwt: TreeModelRow: NativeImplementation is NULL");
-				}
-				(ParentControl?.ControlImplementation as Native.ITreeModelRowCollectionNativeImplementation)?.SetRowExpanded(this, value);
-				mvarExpanded = value;
 			}
 		}
 
@@ -372,16 +316,6 @@ namespace MBS.Framework.UserInterface
 		public void SetExtraData(string key, object value)
 		{
 			SetExtraData<object>(key, value);
-		}
-
-		public void EnsureVisible()
-		{
-			TreeModelRow parentRow = ParentRow;
-			while (parentRow != null)
-			{
-				parentRow.Expanded = true;
-				parentRow = parentRow.ParentRow;
-			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.Contracts;
 using MBS.Framework.Collections.Generic;
 
@@ -50,6 +50,8 @@ namespace MBS.Framework.UserInterface
 
 			if (IsTreeModelCreated(model))
 			{
+				return GetHandleForTreeModel(model);
+
 				// TODO: unregister handle
 				UnregisterTreeModel(model);
 				// return _HandleForTreeModel[model]; // this fks up additional columns tweaking
@@ -106,6 +108,12 @@ namespace MBS.Framework.UserInterface
 			return GetTreeModelRowForHandle((NativeHandle)(new NativeHandle<T>(nativeHandle)));
 		}
 
+		protected abstract void UpdateTreeModelColumnInternal(TreeModelRowColumn rc);
+		public void UpdateTreeModelColumn(TreeModelRowColumn rc)
+		{
+			UpdateTreeModelColumnInternal(rc);
+		}
+
 		public bool IsTreeModelRowRegistered(TreeModelRow row)
 		{
 			return _TreeModelRowHandles.Contains(row);
@@ -114,6 +122,8 @@ namespace MBS.Framework.UserInterface
 		protected abstract void InsertTreeModelRowInternal(TreeModel tm, TreeModelRow row, out NativeHandle rowHandle, int position, bool append);
 		public void InsertTreeModelRow(TreeModel tm, TreeModelRow row, out NativeHandle rowHandle, int position = 0, bool append = true)
 		{
+			row.ParentModel = tm;
+
 			InsertTreeModelRowInternal(tm, row, out rowHandle, position, append);
 			_TreeModelRowHandles.Add(rowHandle, row);
 

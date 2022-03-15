@@ -3,7 +3,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK
 {
 	internal static class Structures
 	{
-		public struct GtkTreeIter
+		public struct GtkTreeIter : IEquatable<GtkTreeIter>
 		{
 			public int stamp;
 			public IntPtr user_data;
@@ -11,6 +11,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK
 			public IntPtr user_data3;
 
 			public static readonly GtkTreeIter Empty = new GtkTreeIter();
+
+			public bool Equals(GtkTreeIter other)
+			{
+				return this.stamp == other.stamp && this.user_data == other.user_data && this.user_data2 == other.user_data2 && this.user_data3 == other.user_data3;
+			}
 		}
 		public struct GtkTargetEntry
 		{

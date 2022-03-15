@@ -1,4 +1,4 @@
-﻿//
+//
 //  GTK3TreeModelManager.cs
 //
 //  Author:
@@ -105,6 +105,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return -1;
 		}
 
+		protected override void UpdateTreeModelColumnInternal(TreeModelRowColumn rc)
+		{
+			TreeModel tm = rc.Parent.ParentModel;
+			IntPtr hTreeStore = (GetHandleForTreeModel(tm) as GTKNativeTreeModel).Handle;
+			Internal.GTK.Structures.GtkTreeIter hIter = GetHandleForTreeModelRow<Internal.GTK.Structures.GtkTreeIter>(rc.Parent);
+
+			Internal.GLib.Structures.Value val = Internal.GLib.Structures.Value.FromObject(rc.Value);
+			Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, tm.Columns.IndexOf(rc.Column), ref val);
+		}
 
 		protected override void InsertTreeModelRowInternal(TreeModel tm, TreeModelRow row, out NativeHandle rowHandle, int position, bool append)
 		{

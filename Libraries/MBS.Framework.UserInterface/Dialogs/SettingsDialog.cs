@@ -406,7 +406,7 @@ namespace MBS.Framework.UserInterface.Dialogs
 			if (row.GetExtraData<SettingsGroup>("group") == group)
 			{
 				// at least on gtk, must be called BEFORE adding to selected row https://stackoverflow.com/questions/11543716
-				row.EnsureVisible();
+				tv.EnsureVisible(row);
 
 				tv.SelectedRows.Clear();
 				tv.SelectedRows.Add(row);

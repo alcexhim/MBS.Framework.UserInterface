@@ -23,9 +23,9 @@ using System.Collections.Generic;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3
 {
-	public class GTKCommandLine : CommandLine
+	public class GTKCommandLineParser : CommandLineParser
 	{
-		internal GTKCommandLine(string[] arguments) : base(arguments)
+		protected override void ParseInternal(string[] arguments)
 		{
 			bool processFileList = false;
 			for (int i = 0; i < Application.Instance.CommandLine.Options.Count; i++)
@@ -87,12 +87,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 					else
 					{
 						Console.WriteLine("uwt: warning: specified argument '{0}' not found; assuming filename", arguments[i]);
-						FileNames.Add(arguments[i]);
+						Application.Instance.CommandLine.FileNames.Add(arguments[i]);
 					}
 				}
 				else
 				{
-					FileNames.Add(arguments[i]);
+					Application.Instance.CommandLine.FileNames.Add(arguments[i]);
 				}
 			}
 		}

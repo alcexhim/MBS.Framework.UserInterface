@@ -1131,7 +1131,6 @@ namespace MBS.Framework.UserInterface
 
 		public UIApplication()
 		{
-			CommandLine = new DefaultCommandLine();
 			Inhibitors = new Inhibitor.InhibitorCollection(this);
 		}
 

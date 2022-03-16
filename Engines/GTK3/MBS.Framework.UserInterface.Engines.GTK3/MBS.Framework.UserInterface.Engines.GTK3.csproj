@@ -45,7 +45,7 @@
     <Compile Include="CairoImage.cs" />
     <Compile Include="GDKPixbufImage.cs" />
     <Compile Include="GTKClipboard.cs" />
-    <Compile Include="GTKCommandLine.cs" />
+    <Compile Include="GTKCommandLineParser.cs" />
     <Compile Include="GTKCursorInfo.cs" />
     <Compile Include="GTK3Engine.cs" />
     <Compile Include="GTKNativeImplementation.cs" />

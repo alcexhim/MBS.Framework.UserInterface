@@ -69,6 +69,41 @@ namespace MBS.Framework.UserInterface
 		{
 		}
 
+		protected virtual CommandLineParser CreateCommandLineParser()
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Parses the command line from the given arguments and identifies
+		/// the application activation type if specified on the command line.
+		/// </summary>
+		/// <param name="arguments">Arguments.</param>
+		/// <param name="activationType">Activation type.</param>
+		protected void ParseCommandLine(string[] arguments, out ApplicationActivationType activationType)
+		{
+			if (Application.Instance.CommandLine.Parser == null)
+			{
+				Application.Instance.CommandLine.Parser = CreateCommandLineParser();
+			}
+			Application.Instance.CommandLine.Parser.Parse(arguments);
+
+			activationType = ApplicationActivationType.CommandLineLaunch;
+
+			CommandLineOption activationTypeOption = Application.Instance.CommandLine.Options["activation-type"];
+			if (activationTypeOption != null)
+			{
+				if (Enum.TryParse<ApplicationActivationType>(activationTypeOption.Value?.ToString(), out ApplicationActivationType type))
+				{
+					activationType = type;
+				}
+				else
+				{
+					Console.WriteLine("uwt: warning: unrecognized value '{0}' for ApplicationActivationType", activationTypeOption.Value);
+				}
+			}
+		}
+
 		public Color GetSystemColor(SystemColor color)
 		{
 			UpdateSystemColors();

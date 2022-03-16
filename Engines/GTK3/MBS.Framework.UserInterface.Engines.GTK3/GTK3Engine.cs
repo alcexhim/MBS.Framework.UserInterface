@@ -1,4 +1,4 @@
- using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -26,6 +26,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 	public class GTK3Engine : Engine
 	{
 		protected override int Priority => (System.Environment.OSVersion.Platform == PlatformID.Unix ? 1 : -1);
+
+		protected override CommandLineParser CreateCommandLineParser()
+		{
+			return new GTKCommandLineParser();
+		}
 
 		public override TreeModelManager TreeModelManager { get; } = new GTK3TreeModelManager();
 
@@ -200,7 +205,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			get
 			{
-				if (_Version == null) {
+				if (_Version == null)
+				{
 					uint major = Internal.GTK.Methods.Gtk.gtk_get_major_version();
 					uint minor = Internal.GTK.Methods.Gtk.gtk_get_minor_version();
 					uint micro = Internal.GTK.Methods.Gtk.gtk_get_micro_version();
@@ -289,32 +295,32 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			switch (key)
 			{
-			case KeyboardKey.A: return (uint)'A';
-			case KeyboardKey.B: return (uint)'B';
-			case KeyboardKey.C: return (uint)'C';
-			case KeyboardKey.D: return (uint)'D';
-			case KeyboardKey.E: return (uint)'E';
-			case KeyboardKey.F: return (uint)'F';
-			case KeyboardKey.G: return (uint)'G';
-			case KeyboardKey.H: return (uint)'H';
-			case KeyboardKey.I: return (uint)'I';
-			case KeyboardKey.J: return (uint)'J';
-			case KeyboardKey.K: return (uint)'K';
-			case KeyboardKey.L: return (uint)'L';
-			case KeyboardKey.M: return (uint)'M';
-			case KeyboardKey.N: return (uint)'N';
-			case KeyboardKey.O: return (uint)'O';
-			case KeyboardKey.P: return (uint)'P';
-			case KeyboardKey.Q: return (uint)'Q';
-			case KeyboardKey.R: return (uint)'R';
-			case KeyboardKey.S: return (uint)'S';
-			case KeyboardKey.T: return (uint)'T';
-			case KeyboardKey.U: return (uint)'U';
-			case KeyboardKey.V: return (uint)'V';
-			case KeyboardKey.W: return (uint)'W';
-			case KeyboardKey.X: return (uint)'X';
-			case KeyboardKey.Y: return (uint)'Y';
-			case KeyboardKey.Z: return (uint)'Z';
+				case KeyboardKey.A: return (uint)'A';
+				case KeyboardKey.B: return (uint)'B';
+				case KeyboardKey.C: return (uint)'C';
+				case KeyboardKey.D: return (uint)'D';
+				case KeyboardKey.E: return (uint)'E';
+				case KeyboardKey.F: return (uint)'F';
+				case KeyboardKey.G: return (uint)'G';
+				case KeyboardKey.H: return (uint)'H';
+				case KeyboardKey.I: return (uint)'I';
+				case KeyboardKey.J: return (uint)'J';
+				case KeyboardKey.K: return (uint)'K';
+				case KeyboardKey.L: return (uint)'L';
+				case KeyboardKey.M: return (uint)'M';
+				case KeyboardKey.N: return (uint)'N';
+				case KeyboardKey.O: return (uint)'O';
+				case KeyboardKey.P: return (uint)'P';
+				case KeyboardKey.Q: return (uint)'Q';
+				case KeyboardKey.R: return (uint)'R';
+				case KeyboardKey.S: return (uint)'S';
+				case KeyboardKey.T: return (uint)'T';
+				case KeyboardKey.U: return (uint)'U';
+				case KeyboardKey.V: return (uint)'V';
+				case KeyboardKey.W: return (uint)'W';
+				case KeyboardKey.X: return (uint)'X';
+				case KeyboardKey.Y: return (uint)'Y';
+				case KeyboardKey.Z: return (uint)'Z';
 			}
 			return 0;
 		}
@@ -640,13 +646,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private static bool _firstRun = true;
 		private int Application_CommandLine(IntPtr handle, IntPtr commandLine, IntPtr data)
 		{
-			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs(_firstRun);
-
 			int argc = 0;
 			IntPtr hwpp = Internal.GIO.Methods.g_application_command_line_get_arguments(commandLine, ref argc);
 
 			string[] arguments = PtrToStringArray(hwpp, argc);
-			e.CommandLine = new GTKCommandLine(arguments);
+
+			ParseCommandLine(arguments, out ApplicationActivationType activationType);
+			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs(_firstRun, activationType, Application.Instance.CommandLine);
 
 			_firstRun = false;
 			InvokeMethod(Application.Instance, "OnActivated", new object[] { e });
@@ -894,7 +900,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				case 65307: key = KeyboardKey.Escape; break;
 				case 65288: key = KeyboardKey.Back; break;
 
-				// idk why shift+tab is handled as a different keycode
+			// idk why shift+tab is handled as a different keycode
 				case 65056: key = KeyboardKey.Tab; modifierKeys |= KeyboardModifierKey.Shift; break;
 				case 65289: key = KeyboardKey.Tab; break;
 
@@ -908,7 +914,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 				case 65509: key = KeyboardKey.CapsLock; break;
 				case 269025048: key = KeyboardKey.BrowserHome; break;
-				default:
+			default:
 				{
 					if (keyval >= 48 && keyval <= 57)
 					{
@@ -972,9 +978,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		public Control GetControlByHandle(IntPtr handle)
 		{
-			foreach (KeyValuePair<NativeControl, Control> kvp in controlsByHandle) {
-				if (kvp.Key is GTKNativeControl) {
-					if ((kvp.Key as GTKNativeControl).ContainsHandle(handle)) {
+			foreach (KeyValuePair<NativeControl, Control> kvp in controlsByHandle)
+			{
+				if (kvp.Key is GTKNativeControl)
+				{
+					if ((kvp.Key as GTKNativeControl).ContainsHandle(handle))
+					{
 						return kvp.Value;
 					}
 				}
@@ -989,28 +998,38 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 			IntPtr hCtrl = nc.Handle;
 			IControlContainer parent = (control.Parent as IControlContainer);
-			if (parent != null && parent.Layout != null) {
+			if (parent != null && parent.Layout != null)
+			{
 				Constraints constraints = parent.Layout.GetControlConstraints(control);
-				if (constraints != null) {
-					if (parent.Layout is Layouts.BoxLayout) {
+				if (constraints != null)
+				{
+					if (parent.Layout is Layouts.BoxLayout)
+					{
 						Layouts.BoxLayout.Constraints cs = (constraints as Layouts.BoxLayout.Constraints);
-						if (cs != null) {
+						if (cs != null)
+						{
 							Internal.GTK.Constants.GtkPackType packType = Internal.GTK.Constants.GtkPackType.Start;
-							switch (cs.PackType) {
-							case Layouts.BoxLayout.PackType.Start: {
+							switch (cs.PackType)
+							{
+								case Layouts.BoxLayout.PackType.Start:
+								{
 									packType = Internal.GTK.Constants.GtkPackType.Start;
 									break;
 								}
-							case Layouts.BoxLayout.PackType.End: {
+								case Layouts.BoxLayout.PackType.End:
+								{
 									packType = Internal.GTK.Constants.GtkPackType.End;
 									break;
 								}
 							}
 
 							IntPtr hLayout = IntPtr.Zero;
-							if (handlesByLayout.ContainsKey(parent.Layout)) {
+							if (handlesByLayout.ContainsKey(parent.Layout))
+							{
 								hLayout = handlesByLayout[parent.Layout];
-							} else {
+							}
+							else
+							{
 								hLayout = Internal.GTK.Methods.GtkBox.gtk_box_new(Constants.GtkOrientation.Horizontal, true, 0);
 							}
 
@@ -1046,7 +1065,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			if (handle != null)
 			{
 
-				if (handle is CustomNativeControl) {
+				if (handle is CustomNativeControl)
+				{
 					Control ctl = (handle as CustomNativeControl).Handle;
 					handle = CreateControlInternal(ctl);
 				}
@@ -1322,21 +1342,26 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private void RecursiveShowChildControls(Container container)
 		{
-			if (handlesByLayout.ContainsKey(container.Layout)) {
-				IntPtr hLayout = handlesByLayout [container.Layout];
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show (hLayout);
+			if (handlesByLayout.ContainsKey(container.Layout))
+			{
+				IntPtr hLayout = handlesByLayout[container.Layout];
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hLayout);
 			}
-			foreach (Control ctl in container.Controls) {
-				if (ctl is Container) {
-					if (handlesByLayout.ContainsKey((ctl as Container).Layout)) {
-						IntPtr hLayout = handlesByLayout [(ctl as Container).Layout];
-						Internal.GTK.Methods.GtkWidget.gtk_widget_show (hLayout);
+			foreach (Control ctl in container.Controls)
+			{
+				if (ctl is Container)
+				{
+					if (handlesByLayout.ContainsKey((ctl as Container).Layout))
+					{
+						IntPtr hLayout = handlesByLayout[(ctl as Container).Layout];
+						Internal.GTK.Methods.GtkWidget.gtk_widget_show(hLayout);
 					}
-					RecursiveShowChildControls (ctl as Container);
+					RecursiveShowChildControls(ctl as Container);
 				}
-				if (ctl.Visible) {
+				if (ctl.Visible)
+				{
 					IntPtr hCtl = (GetHandleForControl(ctl) as GTKNativeControl).Handle;
-					Internal.GTK.Methods.GtkWidget.gtk_widget_show (hCtl);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_show(hCtl);
 				}
 			}
 		}
@@ -1363,7 +1388,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 				if (button.StockType != StockType.None)
 				{
-					control.ControlImplementation.SetControlText (control, StockTypeToString ((StockType)button.StockType));
+					control.ControlImplementation.SetControlText(control, StockTypeToString((StockType)button.StockType));
 					Internal.GTK.Methods.GtkButton.gtk_button_set_use_stock(handle, true);
 				}
 
@@ -1700,7 +1725,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		internal Internal.GTK.Constants.GtkFileChooserAction FileBrowserModeToGtkFileChooserAction(FileBrowserMode value)
 		{
-			switch (value) {
+			switch (value)
+			{
 				case FileBrowserMode.Open:
 				{
 					return Internal.GTK.Constants.GtkFileChooserAction.Open;
@@ -1718,7 +1744,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 					return Internal.GTK.Constants.GtkFileChooserAction.SelectFolder;
 				}
 			}
-			throw new ArgumentException ();
+			throw new ArgumentException();
 		}
 
 		internal Internal.GTK.Constants.GtkPositionType RelativePositionToGtkPositionType(RelativePosition value)
@@ -1913,7 +1939,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			if (mvarCursorsInitialized) return;
 
-			for (int i = 0;  i < cursorInfo.Length;  i++)
+			for (int i = 0; i < cursorInfo.Length; i++)
 			{
 				GTKCursorInfo info = cursorInfo[i];
 				IntPtr hCursor = Internal.GDK.Methods.gdk_cursor_new_from_name(display, info.Name);

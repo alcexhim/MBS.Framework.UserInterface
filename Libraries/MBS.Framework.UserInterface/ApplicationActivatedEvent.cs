@@ -25,13 +25,16 @@ namespace MBS.Framework.UserInterface
 {
 	public class ApplicationActivatedEventArgs : EventArgs
 	{
-		public bool FirstRun { get; private set; } = true;
-		public CommandLine CommandLine { get; set; } = null;
+		public bool FirstRun { get; } = true;
+		public CommandLine CommandLine { get; } = null;
 		public int ExitCode { get; set; } = 0;
+		public ApplicationActivationType ActivationType { get; } = ApplicationActivationType.Launch;
 
-		public ApplicationActivatedEventArgs(bool firstRun = true)
+		public ApplicationActivatedEventArgs(bool firstRun, ApplicationActivationType activationType, CommandLine commandLine)
 		{
 			FirstRun = firstRun;
+			ActivationType = activationType;
+			CommandLine = commandLine;
 		}
 	}
 	public delegate void ApplicationActivatedEventHandler(object sender, ApplicationActivatedEventArgs e);

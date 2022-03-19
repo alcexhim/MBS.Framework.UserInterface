@@ -103,7 +103,7 @@ namespace MBS.Framework.UserInterface
 				Guid groupID = new Guid(tagGroup.Attributes["id"].Value);
 				Guid settingID = new Guid(attID.Value);
 
-				SettingsGroups[groupID].Settings[settingID].SetValue(value);
+				SettingsGroups[groupID].Settings[settingID]?.SetValue(value);
 				((UIApplication)Application.Instance).SetSetting(settingID, value);
 			}
 		}

@@ -263,11 +263,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				TreeModelRow row = (Engine.TreeModelManager as GTK3TreeModelManager).GetTreeModelRowForHandle(hIter);
 
 				int columnIndex = tmc.Model.Columns.IndexOf(rend.GetColumnForProperty(CellRendererProperty.Text));
+				TreeModelColumn column = tmc.Model.Columns[columnIndex]; /*rend.Columns[user_data.ToInt32()].Column*/
 
 				Internal.GLib.Structures.Value oldval = new Internal.GLib.Structures.Value();
 				Internal.GTK.Methods.GtkTreeModel.gtk_tree_model_get_value(hTreeStore, ref hIter, columnIndex, ref oldval);
 
-				CellEditingEventArgs ce = new CellEditingEventArgs(row, rend.Columns[user_data.ToInt32()].Column, oldval.Val, new_text);
+				CellEditingEventArgs ce = new CellEditingEventArgs(row, column, oldval.Val, new_text);
 				OnCellEditing(ce);
 
 				if (ce.Cancel)
@@ -275,7 +276,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 					return;
 				}
 
-				OnCellEdited(new CellEditedEventArgs(row, rend.Columns[user_data.ToInt32()].Column, oldval.Val, new_text));
+				OnCellEdited(new CellEditedEventArgs(row, column, oldval.Val, new_text));
 
 				Internal.GTK.Methods.GtkTreeStore.gtk_tree_store_set_value(hTreeStore, ref hIter, columnIndex, ref val);
 			}

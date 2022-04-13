@@ -14,6 +14,12 @@ namespace MBS.Framework.UserInterface.Drawing
 	{
 		public Rectangle ClipRectangle { get; private set; }
 
+		protected abstract TextMeasurement MeasureTextInternal(string text, Font font);
+		public TextMeasurement MeasureText(string text, Font font)
+		{
+			return MeasureTextInternal(text, font);
+		}
+
 		public Graphics()
 		{
 		}

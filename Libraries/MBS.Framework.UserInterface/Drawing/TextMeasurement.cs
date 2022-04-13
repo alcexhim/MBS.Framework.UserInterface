@@ -1,10 +1,10 @@
 //
-//  Structures.cs
+//  TextMeasurement.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2022 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,29 +19,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo
+using MBS.Framework.Drawing;
+
+namespace MBS.Framework.UserInterface.Drawing
 {
-	internal static class Structures
+	public class TextMeasurement
 	{
-		public struct cairo_glyph_t
+		public Dimension2D Size { get; private set; } = Dimension2D.Empty;
+		public Vector2D Bearing { get; private set; } = Vector2D.Empty;
+		public Vector2D Advance { get; private set; } = Vector2D.Empty;
+
+		public TextMeasurement(double width, double height, double xBearing, double yBearing, double xAdvance, double yAdvance)
 		{
-			public uint index;
-			public double x;
-			public double y;
-		}
-		public struct cairo_rectangle_int_t
-		{
-			public int x, y;
-			public int width, height;
-		}
-		public struct cairo_text_extents_t
-		{
-			public double x_bearing;
-			public double y_bearing;
-			public double width;
-			public double height;
-			public double x_advance;
-			public double y_advance;
+			Size = new Dimension2D(width, height);
+			Bearing = new Vector2D(xBearing, yBearing);
+			Advance = new Vector2D(xAdvance, yAdvance);
 		}
 	}
 }

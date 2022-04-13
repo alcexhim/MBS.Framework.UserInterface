@@ -1,10 +1,10 @@
 //
-//  Structures.cs
+//  IGraphNodeContainer.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2022 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,29 +19,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo
+namespace MBS.Framework.UserInterface.Controls.GraphView
 {
-	internal static class Structures
+	public interface IGraphNodeContainer
 	{
-		public struct cairo_glyph_t
-		{
-			public uint index;
-			public double x;
-			public double y;
-		}
-		public struct cairo_rectangle_int_t
-		{
-			public int x, y;
-			public int width, height;
-		}
-		public struct cairo_text_extents_t
-		{
-			public double x_bearing;
-			public double y_bearing;
-			public double width;
-			public double height;
-			public double x_advance;
-			public double y_advance;
-		}
+		GraphNode.GraphNodeCollection Nodes { get; }
 	}
 }

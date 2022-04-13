@@ -316,6 +316,10 @@
     <Compile Include="Dialogs\ProgressDialog.cs" />
     <Compile Include="TreeModelManager.cs" />
     <Compile Include="ApplicationActivationType.cs" />
+    <Compile Include="Drawing\TextMeasurement.cs" />
+    <Compile Include="Controls\GraphView\GraphViewControl.cs" />
+    <Compile Include="Controls\GraphView\GraphNode.cs" />
+    <Compile Include="Controls\GraphView\IGraphNodeContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">
@@ -365,6 +369,7 @@
     <Folder Include="Controls\SyntaxTextBox\" />
     <Folder Include="Drawing\Drawing2D\SVG\" />
     <Folder Include="Drawing\Drawing2D\SVG\Items\" />
+    <Folder Include="Controls\GraphView\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SettingsProviders\CommandBarSettingsProvider.xml" />

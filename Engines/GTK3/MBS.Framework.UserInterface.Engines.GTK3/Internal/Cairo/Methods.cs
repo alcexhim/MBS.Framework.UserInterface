@@ -7,6 +7,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo
 	{
 		const string LIBRARY_FILENAME = "cairo";
 
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_glyph_extents(IntPtr /*cairo_t*/ cr, Structures.cairo_glyph_t[] glyphs, int num_glyphs, ref Structures.cairo_text_extents_t extents);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void cairo_text_extents(IntPtr /*cairo_t*/ cr, string text, ref Structures.cairo_text_extents_t extents);
+
 		/// <summary>
 		///  Creates a new cairo_t with all graphics state parameters set to default values and with target as a target surface. The target surface should be constructed with a backend-specific function such as cairo_image_surface_create() (or any other cairo_backend_surface_create() variant).
 		/// </summary>

@@ -19,6 +19,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			mvarCairoContext = cairoContext;
 		}
 
+		protected override TextMeasurement MeasureTextInternal(string text, Font font)
+		{
+			Internal.Cairo.Structures.cairo_text_extents_t extents = new Internal.Cairo.Structures.cairo_text_extents_t();
+			Internal.Cairo.Methods.cairo_text_extents(mvarCairoContext, text, ref extents);
+			return new TextMeasurement(extents.width, extents.height, extents.x_bearing, extents.y_bearing, extents.x_advance, extents.y_advance);
+		}
+
 		protected override void RotateInternal(double angle)
 		{
 			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, RotationCenterpoint.X, RotationCenterpoint.Y);
@@ -101,11 +108,26 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 		protected override void DrawTextInternal(string value, Font font, Vector2D location, Dimension2D size, Brush brush, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
 			SelectBrush(brush);
+			SelectFont(ref font);
 
-			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, location.X, location.Y);
+			double x = location.X;
+			double y_orig = location.Y + font.Size.GetValueOrDefault(11);
+			double y = y_orig;
+
+			TextMeasurement textMeasurement = MeasureText(value, font);
+
+			// FIXME: use cairo_glyph_extents to measure the string
+			if (horizontalAlignment == HorizontalAlignment.Center)
+			{
+				x = location.X + ((size.Width - textMeasurement.Size.Width) / 2);
+			}
+			if (verticalAlignment == VerticalAlignment.Middle)
+			{
+				y = y_orig + ((size.Height - textMeasurement.Size.Height) / 2);
+			}
+
+			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, x, y);
 			CheckStatus();
-
-			SelectFont(font);
 
 			// this is for RENDERING text - textually
 			Internal.Cairo.Methods.cairo_show_text(mvarCairoContext, value);
@@ -123,7 +145,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			// there IS a difference - textually-rendered text is selectable when rendering PDFs; graphically-drawn text is not
 		}
 
-		private void SelectFont(Font font)
+		private void SelectFont(ref Font font)
 		{
 			if (font == null)
 				font = Font.FromFamily("Sans", 10);

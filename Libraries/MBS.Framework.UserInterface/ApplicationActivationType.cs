@@ -46,6 +46,11 @@ namespace MBS.Framework.UserInterface
 	public enum ApplicationActivationType
 	{
 		/// <summary>
+		/// The activation type was not specified.
+		/// </summary>
+		Unspecified = -1,
+
+		/// <summary>
 		/// The user wants to manage appointments that are provided by the
 		/// app.
 		/// </summary>

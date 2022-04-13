@@ -2,24 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using MBS.Framework.Collections.Generic;
+using System.Runtime.InteropServices;
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.UserInterface.Controls.Docking;
-using MBS.Framework.UserInterface.Dialogs;
+using MBS.Framework.UserInterface.Controls.FileBrowser;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Drawing;
-
-using MBS.Framework.UserInterface.Input.Keyboard;
-using MBS.Framework.UserInterface.Input.Mouse;
-
-using MBS.Framework.Drawing;
-using System.Runtime.InteropServices;
-using MBS.Framework.UserInterface.Controls.FileBrowser;
-using MBS.Framework.UserInterface.Printing;
-using MBS.Framework.UserInterface.Engines.GTK3.Printing;
 using MBS.Framework.UserInterface.Engines.GTK3.Drawing;
 using MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK;
-using System.Text;
+using MBS.Framework.UserInterface.Engines.GTK3.Printing;
+using MBS.Framework.UserInterface.Input.Keyboard;
+using MBS.Framework.UserInterface.Input.Mouse;
+using MBS.Framework.UserInterface.Printing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3
 {
@@ -523,6 +518,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "activate", gc_Application_Activate, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "startup", gc_Application_Startup, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "command_line", gc_Application_CommandLine, IntPtr.Zero);
+				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "open", gc_Application_Open, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(ApplicationHandle, "query_end", gc_Application_QueryEnd, IntPtr.Zero);
 			}
 			if (waitForClose != null)
@@ -602,7 +598,39 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;
 		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
+		private Action<IntPtr, IntPtr, int, string, IntPtr> gc_Application_Open = null;
 		private Internal.GObject.Delegates.GCallback gc_Application_QueryEnd = null;
+
+		protected bool _OpenFiles { get; private set; } = false;
+		private void Application_Open(IntPtr application, IntPtr files, int n_files, string hint, IntPtr user_data)
+		{
+			Console.WriteLine("Application_OpenFiles");
+			_OpenFiles = true;
+
+
+			int argc = 0;
+			// IntPtr hwpp = Internal.GIO.Methods.g_application_command_line_get_arguments(commandLine, ref argc);
+
+			string[] arguments = new string[0]; // PtrToStringArray(hwpp, argc);
+
+			ParseCommandLine(arguments, out ApplicationActivationType activationType);
+			if (activationType == ApplicationActivationType.Unspecified)
+			{
+				if (_OpenFiles)
+				{
+					activationType = ApplicationActivationType.File;
+				}
+				else
+				{
+					activationType = ApplicationActivationType.CommandLineLaunch;
+				}
+			}
+			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs(_firstRun, activationType, Application.Instance.CommandLine);
+
+			_firstRun = false;
+			InvokeMethod(Application.Instance, "OnActivated", new object[] { e });
+			// return e.ExitCode;
+		}
 
 		private void Application_Startup(IntPtr application, IntPtr user_data)
 		{
@@ -652,6 +680,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			string[] arguments = PtrToStringArray(hwpp, argc);
 
 			ParseCommandLine(arguments, out ApplicationActivationType activationType);
+			if (activationType == ApplicationActivationType.Unspecified)
+			{
+				if (_OpenFiles)
+				{
+					activationType = ApplicationActivationType.File;
+				}
+				else
+				{
+					activationType = ApplicationActivationType.CommandLineLaunch;
+				}
+			}
 			ApplicationActivatedEventArgs e = new ApplicationActivatedEventArgs(_firstRun, activationType, Application.Instance.CommandLine);
 
 			_firstRun = false;

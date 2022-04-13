@@ -88,7 +88,7 @@ namespace MBS.Framework.UserInterface
 			}
 			Application.Instance.CommandLine.Parser.Parse(arguments);
 
-			activationType = ApplicationActivationType.CommandLineLaunch;
+			activationType = ApplicationActivationType.Unspecified;
 
 			CommandLineOption activationTypeOption = Application.Instance.CommandLine.Options["activation-type"];
 			if (activationTypeOption != null)

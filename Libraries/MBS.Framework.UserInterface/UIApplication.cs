@@ -965,8 +965,6 @@ namespace MBS.Framework.UserInterface
 
 		private void OnApplicationExited(EventArgs e)
 		{
-			SaveSettings();
-
 			if (ApplicationExited != null) ApplicationExited(null, e);
 		}
 
@@ -1171,6 +1169,8 @@ namespace MBS.Framework.UserInterface
 		protected override void OnStopping(CancelEventArgs e)
 		{
 			base.OnStopping(e);
+
+			SaveSettings();
 
 			if (mvarEngine == null)
 			{

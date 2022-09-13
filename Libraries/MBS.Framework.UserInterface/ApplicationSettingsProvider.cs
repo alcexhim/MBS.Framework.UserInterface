@@ -71,10 +71,30 @@ namespace MBS.Framework.UserInterface
 				MarkupTagElement tagSettings = (mom.FindElementUsingSchema("urn:net.alcetech.schemas.MBS.Framework.UserInterface.Settings", "settings") as MarkupTagElement);
 				if (tagSettings == null) return;
 
-				foreach (MarkupElement elGroup in tagSettings.Elements)
+				foreach (MarkupElement elSetting in tagSettings.Elements)
 				{
-					MarkupTagElement tagGroup = (elGroup as MarkupTagElement);
-					LoadGroup(tagGroup);
+					MarkupTagElement tagSetting = (elSetting as MarkupTagElement);
+					if (tagSetting == null)
+						continue;
+
+					MarkupAttribute attID = tagSetting.Attributes["id"];
+					if (attID == null)
+						continue;
+
+					object value = null;
+
+					MarkupAttribute attValue = tagSetting.Attributes["value"];
+					if (attValue != null)
+						value = attValue.Value;
+
+					Guid settingID = new Guid(attID.Value);
+
+					Setting setting = FindSetting(settingID);
+					if (setting != null)
+					{
+						setting.SetValue(value);
+						((UIApplication)Application.Instance).SetSetting(setting.ID, value);
+					}
 				}
 			}
 			catch (System.IO.DirectoryNotFoundException ex)
@@ -82,34 +102,20 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		private void LoadGroup(MarkupTagElement tagGroup)
-		{
-			foreach (MarkupElement elSetting in tagGroup.Elements)
-			{
-				MarkupTagElement tagSetting = (elSetting as MarkupTagElement);
-				if (tagSetting == null)
-					continue;
-
-				MarkupAttribute attID = tagSetting.Attributes["id"];
-				if (attID == null)
-					continue;
-
-				object value = null;
-
-				MarkupAttribute attValue = tagSetting.Attributes["value"];
-				if (attValue != null)
-					value = attValue.Value;
-
-				Guid groupID = new Guid(tagGroup.Attributes["id"].Value);
-				Guid settingID = new Guid(attID.Value);
-
-				SettingsGroups[groupID].Settings[settingID]?.SetValue(value);
-				((UIApplication)Application.Instance).SetSetting(settingID, value);
-			}
-		}
-
 		protected override void SaveSettingsInternal()
 		{
+			if (Application.Instance.Stopping)
+			{
+				// update the Settings values from the application
+				foreach (SettingsGroup grp in SettingsGroups)
+				{
+					foreach (Setting s in grp.Settings)
+					{
+						s.SetValue((Application.Instance as UIApplication).GetSetting(s.ID));
+					}
+				}
+			}
+
 			string settingsDir = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			settingsDir += System.IO.Path.DirectorySeparatorChar.ToString() + "settings";
 
@@ -140,37 +146,42 @@ namespace MBS.Framework.UserInterface
 				if (group.Settings.Count == 0)
 					continue;
 
-				MarkupTagElement tagGroup = new MarkupTagElement();
-				tagGroup.FullName = "group";
-				if (group.ID != Guid.Empty)
-				{
-					tagGroup.Attributes.Add("id", group.ID.ToString("B"));
-				}
-				// tagGroup.Attributes.Add("name", String.Join(":", group.Path).Replace(" ", "_"));
-
 				foreach (Setting setting in group.Settings)
 				{
-					MarkupTagElement tagSetting = new MarkupTagElement();
-					tagSetting.FullName = "setting";
-					if (setting.ID == Guid.Empty)
-						continue;
-
-					tagSetting.Attributes.Add("id", setting.ID.ToString("B"));
-					object value = setting.GetValue();
-					if (value != null)
-					{
-						tagSetting.Attributes.Add("value", value.ToString());
-					}
-					tagGroup.Elements.Add(tagSetting);
-
-					((UIApplication)Application.Instance).SetSetting(setting.ID, value);
+					SaveSettingsRecursive(setting, tagSettings);
 				}
-				tagSettings.Elements.Add(tagGroup);
 			}
 
 			mom.Elements.Add(tagSettings);
 
 			Document.Save(mom, xdf, fa);
+		}
+
+		private void SaveSettingsRecursive(Setting setting, MarkupTagElement tagGroup)
+		{
+			if (setting is Settings.GroupSetting)
+			{
+				foreach (Setting setting2 in ((Settings.GroupSetting)setting).Options)
+				{
+					SaveSettingsRecursive(setting2, tagGroup);
+				}
+			}
+
+			MarkupTagElement tagSetting = new MarkupTagElement();
+			tagSetting.FullName = "setting";
+			if (setting.ID == Guid.Empty)
+				return;
+
+			tagSetting.Attributes.Add("id", setting.ID.ToString("B"));
+			object value = setting.GetValue();
+
+			if (value != null)
+			{
+				tagSetting.Attributes.Add("value", value.ToString());
+			}
+			tagGroup.Elements.Add(tagSetting);
+
+			((UIApplication)Application.Instance).SetSetting(setting.ID, value);
 		}
 	}
 }

@@ -320,6 +320,9 @@ namespace MBS.Framework.UserInterface.Dialogs
 					if (grps.Contains(grp))
 						continue;
 
+					if (grp.Path == null)
+						continue;
+
 					grps.Add(grp);
 
 					Container ctSettingsGroupWrapper = new Container();
@@ -618,30 +621,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 
 		private System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer> optionGroupContainers = new System.Collections.Generic.Dictionary<SettingsGroup, IControlContainer>();
 
-		private void txt_Changed(object sender, EventArgs e)
-		{
-			Control ctl = (sender as Control);
-			Setting setting = ctl.GetExtraData<Setting>("setting");
-
-			if (ctl is TextBox)
-			{
-				setting.SetValue((ctl as TextBox).Text);
-			}
-			else if (ctl is FileChooserButton)
-			{
-				setting.SetValue((ctl as FileChooserButton).SelectedFileName);
-			}
-		}
-		private void chk_Changed(object sender, EventArgs e)
-		{
-			Control ctl = (sender as Control);
-			Setting setting = ctl.GetExtraData<Setting>("setting");
-			if (ctl is CheckBox)
-			{
-				setting.SetValue<bool>((ctl as CheckBox).Checked);
-			}
-		}
-
 		private void LoadOption(Setting opt, int iRow, ref Control label, ref Control control)
 		{
 
@@ -667,7 +646,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 					txt.SelectedFileName = o.GetValue<string>();
 					txt.SetExtraData<Setting>("setting", o);
 					txt.RequireExistingFile = (opt as FileSetting).RequireExistingFile;
-					txt.Changed += txt_Changed;
 					control = txt;
 				}
 				else
@@ -675,7 +653,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 					TextBox txt = new TextBox();
 					txt.Text = o.GetValue<string>();
 					txt.SetExtraData<Setting>("setting", o);
-					txt.Changed += txt_Changed;
 					control = txt;
 				}
 			}
@@ -687,7 +664,6 @@ namespace MBS.Framework.UserInterface.Dialogs
 				chk.DisplayStyle = CheckBoxDisplayStyle.Switch;
 				chk.Checked = o.GetValue<bool>();
 				chk.SetExtraData<Setting>("setting", o);
-				chk.Changed += chk_Changed;
 				// chk.Text = o.Title;
 				// ct.Controls.Add(chk, new GridLayout.Constraints(iRow, 0, 1, 2, ExpandMode.Horizontal));
 				control = chk;

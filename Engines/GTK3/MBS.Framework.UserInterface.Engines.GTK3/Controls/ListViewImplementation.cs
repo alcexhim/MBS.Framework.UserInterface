@@ -559,7 +559,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 								{
 									for (int j = 0; j < tvc.Renderers[i].Columns.Count; j++)
 									{
-										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, hRenderers[i], GetNameForCellRendererProperty(tvc.Renderers[i].Columns[j].Property), tv.Model.Columns.IndexOf(tvc.Renderers[i].Columns[j].Column));
+										int propertyValueIndex = tv.Model.Columns.IndexOf(tvc.Renderers[i].Columns[j].Column);
+										Internal.GTK.Methods.GtkTreeViewColumn.gtk_tree_view_column_add_attribute(hColumn, hRenderers[i], GetNameForCellRendererProperty(tvc.Renderers[i].Columns[j].Property), propertyValueIndex);
 									}
 								}
 

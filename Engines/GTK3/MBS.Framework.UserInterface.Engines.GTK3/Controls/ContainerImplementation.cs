@@ -17,12 +17,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		private void _hListBox_row_activated(IntPtr listbox, IntPtr row)
 		{
 			Control ctlChild = (Engine as GTK3Engine).GetControlByHandle(row);
-			Console.WriteLine("activating row {0} for child {1}", row, (ctlChild as Container).Controls[0].Text);
+			if (ctlChild != null)
+			{
+				Console.WriteLine("activating row {0} for child {1}", row, (ctlChild as Container).Controls[0].Text);
 
-			// FIXME: for some reason the SettingsDialog gets confused, perhaps by GetControlByHandle function
-			// FIXME: also there is some really weird voodoo going on, second time SettingsDialog EVERYTHING is screwed up
-			// ............ resulting in crash if we try to derefeerence ^^^ Text
-			// InvokeMethod(ctlChild, "OnClick", new object[] { EventArgs.Empty });
+				// FIXME: for some reason the SettingsDialog gets confused, perhaps by GetControlByHandle function
+				// FIXME: also there is some really weird voodoo going on, second time SettingsDialog EVERYTHING is screwed up
+				// ............ resulting in crash if we try to derefeerence ^^^ Text
+				// InvokeMethod(ctlChild, "OnClick", new object[] { EventArgs.Empty });
+			}
+			else
+			{
+				Console.Error.WriteLine("uwt error: row {0} has no associated child control", row);
+			}
 		}
 
 		private Dictionary<Layout, IntPtr> handlesByLayout = new Dictionary<Layout, IntPtr>();
@@ -108,10 +115,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			else if (layout is ListLayout)
 			{
-				// IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
-				// hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
-				// Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
-				Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, ctlHandle);
+				IntPtr hListBoxRow = Internal.GTK.Methods.GtkListBox.gtk_list_box_row_new();
+				hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
+				// Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, ctlHandle);
+				Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, hListBoxRow);
 			}
 			else if (layout is StackLayout)
 			{

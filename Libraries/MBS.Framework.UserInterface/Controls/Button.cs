@@ -160,5 +160,7 @@ namespace MBS.Framework.UserInterface.Controls
 				(ControlImplementation as Native.IButtonControlImplementation)?.SetChecked(value);
 			}
 		}
+
+		public Padding ImageMargin { get; set; } = Padding.Empty;
 	}
 }

@@ -112,6 +112,7 @@ namespace MBS.Framework.UserInterface
 			if (!found)
 			{
 				_localRefs[item.ID] = func(item);
+				_localRefsItems[item.ID] = item;
 			}
 		}
 
@@ -460,8 +461,18 @@ namespace MBS.Framework.UserInterface
 					}
 					if (item.Properties["image"] != null)
 					{
+						LayoutItem igitem = _localRefsItems[item.Properties["image"].Value];
+
+						int marginStart = GetValueForPropertyCompat(igitem, "margin-start", 0);
+						int marginEnd = GetValueForPropertyCompat(igitem, "margin-end", 0);
+						int marginTop = GetValueForPropertyCompat(igitem, "margin-top", 0);
+						int marginBottom = GetValueForPropertyCompat(igitem, "margin-bottom", 0);
+						(ctl as Button).ImageMargin = new Padding(marginTop, marginBottom, marginStart, marginEnd);
+
 						(ctl as Button).Image = (GetPropertyOrLocalRef(item.Properties["image"].Value) as Image);
 					}
+					(ctl as Button).AlwaysShowImage = GetValueForPropertyCompat(item, "always-show-image", false);
+
 					if ((item.Properties["use_stock"] != null) && (item.Properties["use_stock"].Value.Equals("True")))
 					{
 						(ctl as Button).StockType = (StockType)((UIApplication)Application.Instance).Engine.StockTypeFromString(item.Properties["label"].Value);
@@ -869,10 +880,10 @@ namespace MBS.Framework.UserInterface
 					ctl.MinimumSize = new Dimension2D(width_request, height_request);
 
 					int margin_left = 0, margin_right = 0, margin_top = 0, margin_bottom = 0;
-					margin_top = Int32.Parse(item.Properties["margin_top"]?.Value ?? "0");
-					margin_bottom = Int32.Parse(item.Properties["margin_bottom"]?.Value ?? "0");
-					margin_left = Int32.Parse(item.Properties["margin_left"]?.Value ?? "0");
-					margin_right = Int32.Parse(item.Properties["margin_right"]?.Value ?? "0");
+					margin_top = GetValueForPropertyCompat(item, "margin-top", 0);
+					margin_bottom = GetValueForPropertyCompat(item, "margin-bottom", 0);
+					margin_left = GetValueForPropertyCompat(item, "margin-left", 0);
+					margin_right = GetValueForPropertyCompat(item, "margin-right", 0);
 					ctl.Margin = new Padding(margin_top, margin_bottom, margin_left, margin_right);
 
 					if (item.Properties["halign"] != null)
@@ -924,6 +935,11 @@ namespace MBS.Framework.UserInterface
 				else if (typeof(T) == typeof(string))
 				{
 					return (T)(object)value; // eww
+				}
+				else
+				{
+					if (value.TryParse<T>(out T val))
+						return val;
 				}
 			}
 			return defaultValue;
@@ -999,10 +1015,10 @@ namespace MBS.Framework.UserInterface
 				switch (sizePreset)
 				{
 					case 6: // dialog
-						{
-							size = 48;
-							break;
-						}
+					{
+						size = 48;
+						break;
+					}
 				}
 			}
 			if (item.Properties["icon_name"] != null)
@@ -1102,6 +1118,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 		private Dictionary<string, object> _localRefs = new Dictionary<string, object>();
+		private Dictionary<string, LayoutItem> _localRefsItems = new Dictionary<string, LayoutItem>();
 
 		private void RecursiveLoadContainer(LayoutObjectModel layout, LayoutItem item, Container container)
 		{

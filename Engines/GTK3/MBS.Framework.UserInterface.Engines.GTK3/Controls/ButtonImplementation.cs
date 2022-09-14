@@ -61,7 +61,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			else
 			{
-				// Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
+				Internal.GTK.Methods.GtkButton.gtk_button_set_always_show_image(handle, ctl.AlwaysShowImage);
 			}
 			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
 			{
@@ -137,6 +137,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 						Internal.GTK.Methods.GtkImage.gtk_image_set_pixel_size(hImageView, (int) ctl.ImageSize.Width);
 					}
 					Internal.GTK.Methods.GtkButton.gtk_button_set_image(handle, hImageView);
+
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_start(hImageView, ctl.ImageMargin.Left);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_top(hImageView, ctl.ImageMargin.Top);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_bottom(hImageView, ctl.ImageMargin.Bottom);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_margin_end(hImageView, ctl.ImageMargin.Right);
 				}
 			}
 

@@ -92,7 +92,6 @@
     <Compile Include="PaintEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemFonts.cs" />
-    <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="MenuItem.cs" />
     <Compile Include="CommandMenuItem.cs" />
@@ -376,5 +375,9 @@
     <EmbeddedResource Include="SettingsProviders\Default.xml" />
     <EmbeddedResource Include="Internal\Controls\KeyboardSettings\KeyboardSettingsControl.glade" />
     <EmbeddedResource Include="Internal\Controls\KeyboardSettings\KeyboardSettingsChangeBindingDialog.glade" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Theming\GraphicsExtensions.cs" />
+    <None Include="Theming\ThemeManager.cs" />
   </ItemGroup>
 </Project>

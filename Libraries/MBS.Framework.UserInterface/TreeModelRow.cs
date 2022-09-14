@@ -252,7 +252,7 @@ namespace MBS.Framework.UserInterface
 		{
 			switch (e.Action)
 			{
-			case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+				case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
 				{
 					List<TreeModelRow> list = new List<TreeModelRow>();
 					foreach (TreeModelRow row in e.NewItems)
@@ -266,10 +266,10 @@ namespace MBS.Framework.UserInterface
 					}
 					break;
 				}
-			case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+				case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
 				{
 					List<TreeModelRow> list = new List<TreeModelRow>();
-					foreach (TreeModelRow row in e.NewItems)
+					foreach (TreeModelRow row in e.OldItems /*e.NewItems*/)
 					{
 						row.ParentRow = this;
 						list.Add(row);

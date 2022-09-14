@@ -23,7 +23,7 @@ using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface.Dialogs
 {
-	[ContainerLayout("~/Dialogs/ProgressDialog.glade")]
+	[ContainerLayout("~/Dialogs/ProgressWindow.glade")]
 	public class ProgressDialog : Window
 	{
 		private Label lblStatus1;

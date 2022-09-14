@@ -50,6 +50,7 @@ namespace MBS.Framework.UserInterface
 
 			if (IsTreeModelCreated(model))
 			{
+				// FIXME: this is probably really bad for memory management but ... see below wrt fking up additional columns
 				return GetHandleForTreeModel(model);
 
 				// TODO: unregister handle

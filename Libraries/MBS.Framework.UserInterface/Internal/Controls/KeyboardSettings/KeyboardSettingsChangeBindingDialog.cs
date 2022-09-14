@@ -73,6 +73,8 @@ namespace MBS.Framework.UserInterface.Internal.Controls.KeyboardSettings
 			_ModifierKeys = e.ModifierKeys;
 			_MouseButtons = MouseButtons.None;
 			e.Cancel = true;
+
+			cmdOK.Enabled = true;
 		}
 		[EventHandler(nameof(img), nameof(Control.MouseDown))]
 		private void img_MouseDown(object sender, MouseEventArgs e)
@@ -82,6 +84,8 @@ namespace MBS.Framework.UserInterface.Internal.Controls.KeyboardSettings
 			_ModifierKeys = e.ModifierKeys;
 			_MouseButtons = e.Buttons;
 			e.Cancel = true;
+
+			cmdOK.Enabled = true;
 		}
 	}
 }

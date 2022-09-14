@@ -219,7 +219,6 @@
     <Compile Include="TabContainerSelectedTabChangedEvent.cs" />
     <Compile Include="TabContextMenuEvent.cs" />
     <Compile Include="TabPosition.cs" />
-    <Compile Include="Language.cs" />
     <Compile Include="CommandBar.cs" />
     <Compile Include="ApplicationMainMenu.cs" />
     <Compile Include="SplashScreenWindow.cs" />

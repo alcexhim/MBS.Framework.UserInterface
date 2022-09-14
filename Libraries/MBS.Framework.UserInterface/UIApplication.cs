@@ -163,18 +163,6 @@ namespace MBS.Framework.UserInterface
 		private MarkupObjectModel mvarRawMarkup = new MarkupObjectModel();
 		public MarkupObjectModel RawMarkup { get { return mvarRawMarkup; } }
 
-		private Language mvarDefaultLanguage = null;
-		/// <summary>
-		/// The default <see cref="Language"/> used to display translatable text in this application.
-		/// </summary>
-		public Language DefaultLanguage { get { return mvarDefaultLanguage; } set { mvarDefaultLanguage = value; } }
-
-		private Language.LanguageCollection mvarLanguages = new Language.LanguageCollection();
-		/// <summary>
-		/// The languages defined for this application. Translations can be added through XML files in the ~/Languages folder.
-		/// </summary>
-		public Language.LanguageCollection Languages { get { return mvarLanguages; } }
-
 		private CommandBar.CommandBarCollection mvarCommandBars = new CommandBar.CommandBarCollection();
 		/// <summary>
 		/// The command bars loaded in this application, which can each hold multiple <see cref="CommandItem"/>s.
@@ -358,21 +346,21 @@ namespace MBS.Framework.UserInterface
 				MarkupAttribute attDefaultLanguageID = tagLanguages.Attributes["DefaultLanguageID"];
 				if (attDefaultLanguageID != null)
 				{
-					mvarDefaultLanguage = mvarLanguages[attDefaultLanguageID.Value];
+					DefaultLanguage = Languages[attDefaultLanguageID.Value];
 				}
 			}
 
 			UpdateSplashScreenStatus("Setting language");
 
-			if (mvarDefaultLanguage == null)
+			if (DefaultLanguage == null)
 			{
-				mvarDefaultLanguage = new Language();
+				DefaultLanguage = new Language();
 			}
 			else
 			{
 				foreach (Command cmd in ((UIApplication)Application.Instance).Commands)
 				{
-					cmd.Title = mvarDefaultLanguage.GetCommandTitle(cmd.ID, cmd.ID);
+					cmd.Title = DefaultLanguage.GetCommandTitle(cmd.ID, cmd.ID);
 				}
 			}
 			#endregion
@@ -635,12 +623,12 @@ namespace MBS.Framework.UserInterface
 			MarkupAttribute attID = tag.Attributes["ID"];
 			if (attID == null) return;
 
-			Language lang = mvarLanguages[attID.Value];
+			Language lang = Languages[attID.Value];
 			if (lang == null)
 			{
 				lang = new Language();
 				lang.ID = attID.Value;
-				mvarLanguages.Add(lang);
+				Languages.Add(lang);
 			}
 
 			MarkupAttribute attTitle = tag.Attributes["Title"];

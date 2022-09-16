@@ -35,7 +35,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 	{
 		public GTKNativeImplementation(Engine engine, Control control) : base(engine, control)
 		{
-			InitializeEventHandlers();
 		}
 
 		protected override bool IsControlVisibleInternal()
@@ -263,56 +262,62 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 
 		#region Event Handlers
+
 		// converting these into standalone fields solved a HUGE (and esoteric) crash in handling keyboard events...
-		private Internal.GObject.Delegates.GCallbackV1I gc_show_handler = null;
-		private Internal.GObject.Delegates.GCallback gc_realize_handler = null;
-		private Internal.GObject.Delegates.GCallback gc_unrealize_handler = null;
-		private Internal.GObject.Delegates.GCallback gc_map_handler = null;
-		private Internal.GObject.Delegates.GCallbackV3I gc_map_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_press_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_button_release_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_focus_in_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_focus_out_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_press_event_handler = null;
-		private Internal.GTK.Delegates.GtkWidgetEvent gc_key_release_event_handler = null;
+		// however, the crash comes back under esoteric circumstances as they're still instance fields and subject to the GC...
+		// so we made them static again :)
 
-		private Internal.GTK.Delegates.GtkDragEvent gc_drag_begin_handler = null;
-		private Internal.GTK.Delegates.GtkDragEvent gc_drag_data_delete_handler = null;
-		private Internal.GTK.Delegates.GtkDragDataGetEvent gc_drag_data_get_handler = null;
+		private static Action<IntPtr> gc_show_handler = null;
+		private static Action<IntPtr, IntPtr> gc_realize_handler = null;
+		private static Action<IntPtr, IntPtr> gc_unrealize_handler = null;
+		private static Action<IntPtr, IntPtr> gc_map_handler = null;
+		private static Action<IntPtr, IntPtr, IntPtr> gc_map_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_button_press_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_button_release_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_focus_in_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_focus_out_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_key_press_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_key_release_event_handler = null;
 
-		private Func<IntPtr, IntPtr, bool> gc_destroy_event_handler = null;
-		private bool gc_destroy_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
+		private static Internal.GTK.Delegates.GtkDragEvent gc_drag_begin_handler = null;
+		private static Internal.GTK.Delegates.GtkDragEvent gc_drag_data_delete_handler = null;
+		private static Internal.GTK.Delegates.GtkDragDataGetEvent gc_drag_data_get_handler = null;
+
+		private static Func<IntPtr, IntPtr, bool> gc_destroy_event_handler = null;
+		private static bool gc_destroy_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
 		{
 			// destroy all handles associated with widget
-			Control ctl = (Engine as GTK3Engine).GetControlByHandle(widget);
-			Engine.UnregisterControlHandle(ctl);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+			impl.Engine.UnregisterControlHandle(impl.Control);
 			return false;
 		}
-		private Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
-		private bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
+		private static Func<IntPtr, IntPtr, bool> gc_delete_event_handler = null;
+		private static bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
 		{
 			// destroy all handles associated with widget
-			Control ctl = (Engine as GTK3Engine).GetControlByHandle(widget);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 			// Engine.UnregisterControlHandle(ctl);
 			// moved to WindowImplementation
 			return false;
 		}
 
-		private void InitializeEventHandlers()
+		static GTKNativeImplementation()
 		{
-			gc_realize_handler = new Internal.GObject.Delegates.GCallback(gc_realize);
-			gc_unrealize_handler = new Internal.GObject.Delegates.GCallback(gc_unrealize);
-			gc_map_handler = new Internal.GObject.Delegates.GCallback(gc_map);
-			gc_map_event_handler = new Internal.GObject.Delegates.GCallbackV3I(gc_map_event);
-			gc_show_handler = new Internal.GObject.Delegates.GCallbackV1I(gc_show);
-			gc_button_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_press_event);
-			gc_button_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_release_event);
 			gc_motion_notify_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_motion_notify_event);
-			gc_focus_in_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_in_event);
-			gc_focus_out_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_out_event);
 			gc_key_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_press_event);
 			gc_key_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_release_event);
+			gc_button_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_press_event);
+			gc_button_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_release_event);
+
+
+			gc_realize_handler = new Action<IntPtr, IntPtr>(gc_realize);
+			gc_unrealize_handler = new Action<IntPtr, IntPtr>(gc_unrealize);
+			gc_map_handler = new Action<IntPtr, IntPtr>(gc_map);
+			gc_map_event_handler = new Action<IntPtr, IntPtr, IntPtr>(gc_map_event);
+			gc_show_handler = new Action<IntPtr>(gc_show);
+			gc_focus_in_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_in_event);
+			gc_focus_out_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_focus_out_event);
 			gc_drag_begin_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_begin);
 			gc_drag_data_delete_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_data_delete);
 			gc_drag_data_get_handler = new Internal.GTK.Delegates.GtkDragDataGetEvent(gc_drag_data_get);
@@ -321,14 +326,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			gc_configure_event_handler = new Func<IntPtr, IntPtr, IntPtr, bool>(gc_configure_event);
 		}
 
-		private Func<IntPtr, IntPtr, IntPtr, bool> gc_configure_event_handler = null;
-		private bool gc_configure_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEvent*/ evt, IntPtr user_data)
+		private static Func<IntPtr, IntPtr, IntPtr, bool> gc_configure_event_handler = null;
+		private static bool gc_configure_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEvent*/ evt, IntPtr user_data)
 		{
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
 			Internal.GDK.Structures.GdkEventConfigure e = (Internal.GDK.Structures.GdkEventConfigure)System.Runtime.InteropServices.Marshal.PtrToStructure(evt, typeof(Internal.GDK.Structures.GdkEventConfigure));
 
-			Control ctl = (Engine as GTK3Engine).GetControlByHandle(widget);
+			Control ctl = impl.Control;
 			if (ctl != null)
 			{
 				if (ctl.ControlImplementation != null)
@@ -406,33 +413,32 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return fakeHandle.EventHandle;
 		}
 
-		private void gc_show(IntPtr /*GtkWidget*/ widget)
+		private static void gc_show(IntPtr /*GtkWidget*/ widget)
 		{
-			if (this == null) return;
-
-			OnShown(EventArgs.Empty);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+			impl.OnShown(EventArgs.Empty);
 		}
 
-		private void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
+		private static void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			if (this == null) return;
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			DragEventArgs e = new DragEventArgs();
-			OnDragBegin (e);
+			impl.OnDragBegin(e);
 		}
-		private void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
+		private static void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			if (this == null) return;
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			EventArgs e = new EventArgs();
-			OnDragDataDelete (e);
+			impl.OnDragDataDelete(e);
 		}
-		private void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
+		private static void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
-			if (this == null) return;
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
-			OnDragDropDataRequest (e);
+			impl.OnDragDropDataRequest(e);
 			if (e.Cancel) return;
 
 			if (e.Data is string)
@@ -459,17 +465,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			}
 		}
 
-		private void gc_realize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
+		private static void gc_realize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_realize: ControlImplementation is NULL");
-				return;
-			}
-
 			// Internal.GTK.Methods.GtkWindow.gtk_window_set_type_hint(widget, WindowTypeHintToGdkWindowTypeHint(Control.TypeHint));
 
-			OnRealize(EventArgs.Empty);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+			impl.OnRealize(EventArgs.Empty);
 		}
 
 		private static Constants.GdkWindowTypeHint WindowTypeHintToGdkWindowTypeHint(WindowTypeHint typeHint)
@@ -494,25 +495,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return Constants.GdkWindowTypeHint.Normal;
 		}
 
-		private void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
+		private static void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_unrealize: ControlImplementation is NULL");
-				return;
-			}
-
-			OnUnrealize(EventArgs.Empty);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+			impl.OnUnrealize(EventArgs.Empty);
 		}
-		private void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
+		private static void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_map: ControlImplementation is NULL");
-				return;
-			}
-
-			OnMapping(EventArgs.Empty);
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+			impl.OnMapping(EventArgs.Empty);
 		}
 
 
@@ -547,18 +538,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			Marshal.FreeCoTaskMem(classHints);
 		}
 
-		private void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
+		private static void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_map_event: ControlImplementation is NULL");
-				return;
-			}
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
-			if (Control.WindowName != null || Control.WindowClass != null)
+			if (impl.Control.WindowName != null || impl.Control.WindowClass != null)
 			{
-				string windowName = Control.WindowName;
-				string windowClass = Control.WindowClass;
+				string windowName = impl.Control.WindowName;
+				string windowClass = impl.Control.WindowClass;
 
 				if (windowName == null)
 				{
@@ -571,16 +558,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				SetWmClass(windowName, windowClass, widget);
 			}
 
-			OnMapped(EventArgs.Empty);
+			impl.OnMapped(EventArgs.Empty);
 		}
 
-		private bool gc_focus_in_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_focus_in_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_focus_in_event: ControlImplementation is NULL");
-				return false;
-			}
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			EventArgs ee = EventArgs.Empty;
 			foreach (EventFilter eh in Application.Instance.EventFilters)
@@ -591,17 +574,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			OnGotFocus(ee);
+			impl.OnGotFocus(ee);
 			return false;
 		}
 
-		private bool gc_focus_out_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_focus_out_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			if (this == null)
-			{
-				Console.WriteLine("uwt: gtk: ERROR: gc_focus_out_event: ControlImplementation is NULL");
-				return false;
-			}
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			EventArgs ee = EventArgs.Empty;
 			foreach (EventFilter eh in Application.Instance.EventFilters)
@@ -612,17 +591,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			OnLostFocus (ee);
+			impl.OnLostFocus(ee);
 			return false;
 		}
 
-		private bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+
+			/*
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_key_press_event: ControlImplementation is NULL");
 				return false;
 			}
+			*/
 
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
@@ -637,32 +620,42 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			OnKeyDown(ee);
+			impl.OnKeyDown(ee);
 			return ee.Cancel;
 		}
-		private bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_key_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			/*
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_key_release_event: ControlImplementation is NULL");
 				return false;
 			}
+			*/
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
-			Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
-
-			KeyEventArgs ee = GTK3Engine.GdkEventKeyToKeyEventArgs(e);
-			foreach (EventFilter eh in Application.Instance.EventFilters)
+			KeyEventArgs ee = null;
+			if (hEventArgs != IntPtr.Zero)
 			{
-				if (eh is EventFilter<KeyEventArgs> && (eh.EventType & EventFilterType.KeyUp) == EventFilterType.KeyUp)
+				Internal.GDK.Structures.GdkEventKey e = (Internal.GDK.Structures.GdkEventKey)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventKey));
+
+				ee = GTK3Engine.GdkEventKeyToKeyEventArgs(e);
+				foreach (EventFilter eh in Application.Instance.EventFilters)
 				{
-					if (((EventFilter<KeyEventArgs>)eh).Process(ref ee, EventFilterType.KeyUp))
-						return true;
+					if (eh is EventFilter<KeyEventArgs> && (eh.EventType & EventFilterType.KeyUp) == EventFilterType.KeyUp)
+					{
+						if (((EventFilter<KeyEventArgs>)eh).Process(ref ee, EventFilterType.KeyUp))
+							return true;
+					}
 				}
 			}
-			
-			OnKeyUp(ee);
+			else
+			{
+				// wat?
+			}
+			impl.OnKeyUp(ee);
 			return ee.Cancel;
 		}
 
@@ -726,26 +719,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private MouseButtons _mousedown_buttons = MouseButtons.None;
 		private bool _mouse_double_click = false;
-		private bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
+
+			/*
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_button_press_event: ControlImplementation is NULL");
 				return false;
 			}
-
+			*/
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTK3Engine.GdkEventButtonToMouseEventArgs(e);
 			if (e.type == MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK.Constants.GdkEventType.DoubleButtonPress) {
-				_mouse_double_click = true;
+				impl._mouse_double_click = true;
 				return false;
 			}
 			else
 			{
-				_mouse_double_click = false;
+				impl._mouse_double_click = false;
 			}
 
-			_mousedown_buttons = ee.Buttons;
+			impl._mousedown_buttons = ee.Buttons;
 
 			foreach (EventFilter eh in Application.Instance.EventFilters)
 			{
@@ -755,31 +751,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			if (!_mouse_double_click)
+			if (!impl._mouse_double_click)
 			{
-				OnMouseDown(ee);
+				impl.OnMouseDown(ee);
 			}
 
 			if (ee.Handled) return true;
 
-			if (ee.Buttons == MouseButtons.Secondary && !SubclassHandlesContextMenu)
+			if (ee.Buttons == MouseButtons.Secondary && !impl.SubclassHandlesContextMenu)
 			{
 				// default implementation - display a context menu if we have one set
 				// moved this up here to give us a chance to add a context menu if we don't have one associated yet
-				OnBeforeContextMenu(ee);
+				impl.OnBeforeContextMenu(ee);
 
-				if (Control.ContextMenu != null)
+				if (impl.Control.ContextMenu != null)
 				{
-					IntPtr hMenu = (Engine as GTK3Engine).BuildMenu(Control.ContextMenu);
+					IntPtr hMenu = (impl.Engine as GTK3Engine).BuildMenu(impl.Control.ContextMenu);
 
-					foreach (MenuItem mi in Control.ContextMenu.Items)
+					foreach (MenuItem mi in impl.Control.ContextMenu.Items)
 					{
-						RecursiveApplyMenuItemVisibility(mi);
+						impl.RecursiveApplyMenuItemVisibility(mi);
 					}
 					Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenu);
 					Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_pointer(hMenu, IntPtr.Zero);
 
-					OnAfterContextMenu(ee);
+					impl.OnAfterContextMenu(ee);
 				}
 			}
 
@@ -810,18 +806,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			}
 		}
 
-		private bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		protected static GTKNativeImplementation GetControlImplementationForWidget(IntPtr widget)
 		{
+			return ((GTKNativeImplementation)((GTK3Engine)((UIApplication)Application.Instance).Engine).GetControlByHandle(widget).ControlImplementation);
+		}
+
+		private static bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		{
+			/*
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_motion_notify_event: ControlImplementation is NULL");
 				return false;
 			}
-
+			*/
 			Internal.GDK.Structures.GdkEventMotion e = (Internal.GDK.Structures.GdkEventMotion)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventMotion));
 
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 			MouseEventArgs ee = GTK3Engine.GdkEventMotionToMouseEventArgs(e);
-			ee = new MouseEventArgs(ee.X, ee.Y, _mousedown_buttons, ee.ModifierKeys);
+			ee = new MouseEventArgs(ee.X, ee.Y, impl._mousedown_buttons, ee.ModifierKeys);
 
 			foreach (EventFilter eh in Application.Instance.EventFilters)
 			{
@@ -831,22 +834,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			OnMouseMove(ee);
+			impl.OnMouseMove(ee);
 
 			if (ee.Handled) return true;
 
 			// TRUE to stop other handlers from being invoked for the event. FALSE to propagate the event further.
 			return false;
 		}
-		private bool gc_button_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
+		private static bool gc_button_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
+			/*
 			if (this == null)
 			{
 				Console.WriteLine("uwt: gtk: ERROR: gc_button_release_event: ControlImplementation is NULL");
 				return false;
 			}
+			*/
+			GTKNativeImplementation impl = GetControlImplementationForWidget(widget);
 
-			_mousedown_buttons = MouseButtons.None;
+			impl._mousedown_buttons = MouseButtons.None;
 			Internal.GDK.Structures.GdkEventButton e = (Internal.GDK.Structures.GdkEventButton)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventButton));
 			MouseEventArgs ee = GTK3Engine.GdkEventButtonToMouseEventArgs(e);
 
@@ -858,14 +864,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						return true;
 				}
 			}
-			OnMouseUp(ee);
+			impl.OnMouseUp(ee);
 
 			if (ee.Buttons == MouseButtons.Primary) {
-				if (_mouse_double_click) {
-					OnMouseDoubleClick (ee);
-					_mouse_double_click = false;
+				if (impl._mouse_double_click) {
+					impl.OnMouseDoubleClick(ee);
+					impl._mouse_double_click = false;
 				} else {
-					OnClick (ee);
+					impl.OnClick(ee);
 				}
 			}
 
@@ -1016,9 +1022,31 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			}
 		}
 
-		protected override void UpdateControlFontInternal(Font font)
+		private static Random rnd = new Random(327148909);
+
+		protected override void UpdateControlFontInternal(NativeControl hh, Font font)
 		{
-			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			if (font == null)
+				return;
+
+			IntPtr handle = (hh as GTKNativeControl).GetNamedHandle("TextBox");
+
+			IntPtr hStyleContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);
+
+			IntPtr hProvider = Internal.GTK.Methods.GtkCss.gtk_css_provider_new();
+			IntPtr hError = IntPtr.Zero;
+
+			int fxid = rnd.Next(123456, 987654); // ew
+			string css = String.Format(".fx_{0} {{ font: {1}; }}", fxid, font.ToCssString());
+			string fxnm = String.Format("fx_{0}", fxid);
+
+			Internal.GTK.Methods.GtkCss.gtk_css_provider_load_from_data(hProvider, css, css.Length, ref hError);
+
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_provider(hStyleContext, hProvider, Internal.GTK.Constants.GtkStyleProviderPriority.Application);
+
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_add_class(hStyleContext, fxnm);
+
+			/*
 			IntPtr hPangoContext = Internal.GTK.Methods.GtkWidget.gtk_widget_get_pango_context(handle);
 			IntPtr hFontDesc = Internal.Pango.Methods.pango_context_get_font_description(hPangoContext);
 			if (font.FamilyName != null)
@@ -1027,6 +1055,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				Internal.Pango.Methods.pango_font_description_set_size(hFontDesc, (int)(font.Size * Internal.Pango.Constants.PangoScale));
 			if (font.Weight != null)
 				Internal.Pango.Methods.pango_font_description_set_weight(hFontDesc, (int)font.Weight);
+			*/
 		}
 
 		protected override HorizontalAlignment GetHorizontalAlignmentInternal()

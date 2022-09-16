@@ -109,7 +109,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 			font.Italic = isItalic;
 			font.FamilyName = strFontFamily;
 			font.FaceName = strFontFace;
-			font.Size = ((double)fontSize / 1024);
+			font.Size = new Framework.Drawing.Measurement((double)(fontSize / 1024), Framework.Drawing.MeasurementUnit.Point);
 			return font;
 		}
 	}

@@ -32,6 +32,9 @@ namespace MBS.Framework.UserInterface.Controls
 			void ClearStyleAreas();
 			void AddStyleArea(TextBoxStyleArea item);
 			void RemoveStyleArea(TextBoxStyleArea item);
+
+			int GetCharIndexFromPosition(Vector2D pt);
+			int GetFirstCharIndexOfCurrentLine();
 		}
 	}
 	public class TextBoxStyleDefinition

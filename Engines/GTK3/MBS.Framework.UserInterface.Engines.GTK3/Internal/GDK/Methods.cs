@@ -93,5 +93,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern GType gdk_rgba_get_type();
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_window_set_events(IntPtr /*GdkWindow*/ window, Constants.GdkEventMask mask);
 	}
 }

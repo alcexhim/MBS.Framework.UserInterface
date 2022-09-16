@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface.Drawing
 {
@@ -13,8 +14,8 @@ namespace MBS.Framework.UserInterface.Drawing
 		private string mvarFaceName = null;
 		public string FaceName { get { return mvarFaceName; } set { mvarFaceName = value; } }
 
-		private double? mvarSize = null;
-		public double? Size { get { return mvarSize; } set { mvarSize = value; } }
+		private Measurement mvarSize = Measurement.Empty;
+		public Measurement Size { get { return mvarSize; } set { mvarSize = value; } }
 
 		private bool mvarItalic = false;
 		public bool Italic { get { return mvarItalic; } set { mvarItalic = value; } }
@@ -22,7 +23,7 @@ namespace MBS.Framework.UserInterface.Drawing
 		private double? mvarWeight = null;
 		public double? Weight { get { return mvarWeight; } set { mvarWeight = value; } }
 
-		public static Font FromFamily(string familyName, double size, double? weight = null)
+		public static Font FromFamily(string familyName, Measurement size, double? weight = null)
 		{
 			Font font = new Font();
 			font.FaceName = familyName;
@@ -31,7 +32,7 @@ namespace MBS.Framework.UserInterface.Drawing
 			font.Weight = weight;
 			return font;
 		}
-		public static Font FromFont(Font font, double size, double? weight = null)
+		public static Font FromFont(Font font, Measurement size, double? weight = null)
 		{
 			Font font2 = new Font();
 			font2.FaceName = font.FaceName;
@@ -57,18 +58,18 @@ namespace MBS.Framework.UserInterface.Drawing
 		{
 			string[] pieces = value.Split(new char[] { ' ' });
 			string name = null, style = null;
-			int size = 10;
+			Measurement size = new Measurement(10, MeasurementUnit.Point);
 
 			if (pieces.Length >= 3)
 			{
 				name = pieces[0];
 				style = pieces[1];
-				size = Int32.Parse(pieces[2]);
+				size = Measurement.Parse(pieces[2]);
 			}
 			else if (pieces.Length == 2)
 			{
 				name = pieces[0];
-				size = Int32.Parse(pieces[1]);
+				size = Measurement.Parse(pieces[1]);
 			}
 			return Font.FromFamily(name, size, FontWeightFromStyle(style));
 		}
@@ -91,6 +92,11 @@ namespace MBS.Framework.UserInterface.Drawing
 				case null: return FontWeights.Normal;
 			}
 			return null;
+		}
+
+		public string ToCssString()
+		{
+			return String.Format("{0} \"{1}\"", Size, FamilyName);
 		}
 	}
 }

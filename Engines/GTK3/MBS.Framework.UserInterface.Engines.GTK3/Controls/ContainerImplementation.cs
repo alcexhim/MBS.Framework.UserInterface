@@ -10,13 +10,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		public ContainerImplementation(Engine engine, Container control)
 			: base(engine, control)
 		{
+
+		}
+
+		static ContainerImplementation()
+		{
 			_hListBox_row_activated_d = new Action<IntPtr, IntPtr>(_hListBox_row_activated);
 		}
 
-		private Action<IntPtr, IntPtr> _hListBox_row_activated_d;
-		private void _hListBox_row_activated(IntPtr listbox, IntPtr row)
+		private static Action<IntPtr, IntPtr> _hListBox_row_activated_d;
+		private static void _hListBox_row_activated(IntPtr listbox, IntPtr row)
 		{
-			Control ctlChild = (Engine as GTK3Engine).GetControlByHandle(row);
+			Control ctlChild = (((UIApplication)Application.Instance).Engine as GTK3Engine).GetControlByHandle(row);
 			if (ctlChild != null)
 			{
 				Console.WriteLine("activating row {0} for child {1}", row, (ctlChild as Container).Controls[0].Text);
@@ -36,9 +41,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		private IntPtr mvarContainerHandle = IntPtr.Zero;
 
-		internal void ApplyLayout(IntPtr hContainer, Control ctl, Layout layout)
+		internal static void ApplyLayout(IntPtr hLayout, Control ctl, Layout layout)
 		{
-			GTKNativeControl hnc = (Engine.GetHandleForControl(ctl) as GTKNativeControl);
+			GTKNativeControl hnc = (((UIApplication)Application.Instance).Engine.GetHandleForControl(ctl) as GTKNativeControl);
 			IntPtr ctlHandle = hnc.Handle;
 
 			Constraints cstr = layout.GetControlConstraints(ctl);
@@ -51,8 +56,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			if (layout is BoxLayout)
 			{
 				BoxLayout box = (layout as BoxLayout);
-				Internal.GTK.Methods.GtkBox.gtk_box_set_spacing(hContainer, box.Spacing);
-				Internal.GTK.Methods.GtkBox.gtk_box_set_homogeneous(hContainer, box.Homogeneous);
+				Internal.GTK.Methods.GtkBox.gtk_box_set_spacing(hLayout, box.Spacing);
+				Internal.GTK.Methods.GtkBox.gtk_box_set_homogeneous(hLayout, box.Homogeneous);
 
 				BoxLayout.Constraints c = (box.GetControlConstraints(ctl) as BoxLayout.Constraints);
 				if (c == null) c = new BoxLayout.Constraints();
@@ -63,12 +68,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				{
 					case BoxLayout.PackType.Start:
 					{
-						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hContainer, ctlHandle, c.Expand, c.Fill, padding);
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_start(hLayout, ctlHandle, c.Expand, c.Fill, padding);
 						break;
 					}
 					case BoxLayout.PackType.End:
 					{
-						Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hContainer, ctlHandle, c.Expand, c.Fill, padding);
+						Internal.GTK.Methods.GtkBox.gtk_box_pack_end(hLayout, ctlHandle, c.Expand, c.Fill, padding);
 						break;
 					}
 				}
@@ -77,7 +82,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			{
 				AbsoluteLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as Layouts.AbsoluteLayout.Constraints);
 				if (constraints == null) constraints = new Layouts.AbsoluteLayout.Constraints(0, 0, 0, 0);
-				Internal.GTK.Methods.GtkFixed.gtk_fixed_put(hContainer, ctlHandle, constraints.X, constraints.Y);
+				Internal.GTK.Methods.GtkFixed.gtk_fixed_put(hLayout, ctlHandle, constraints.X, constraints.Y);
 			}
 			else if (layout is GridLayout)
 			{
@@ -87,11 +92,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 					// GtkTable has been deprecated. Use GtkGrid instead. It provides the same capabilities as GtkTable for arranging widgets in a rectangular grid, but does support height-for-width geometry management.
 					if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V2)
 					{
-						Internal.GTK.Methods.GtkTable.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
+						Internal.GTK.Methods.GtkTable.gtk_table_attach(hLayout, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 					}
 					else
 					{
-						Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hContainer, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
+						Internal.GTK.Methods.GtkGrid.gtk_grid_attach(hLayout, ctlHandle, constraints.Column, constraints.Row, constraints.ColumnSpan, constraints.RowSpan);
 						// Internal.GTK.Methods.Methods.gtk_table_attach(hContainer, ctlHandle, (uint)constraints.Column, (uint)(constraints.Column + constraints.ColumnSpan), (uint)constraints.Row, (uint)(constraints.Row + constraints.RowSpan), Internal.GTK.Constants.GtkAttachOptions.Expand, Internal.GTK.Constants.GtkAttachOptions.Fill, 0, 0);
 
 						if ((constraints.Expand & ExpandMode.Horizontal) == ExpandMode.Horizontal)
@@ -119,17 +124,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				hnc.SetNamedHandle("ListBoxRow", hListBoxRow);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(hListBoxRow, ctlHandle);
 				// Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, ctlHandle);
-				Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hContainer, hListBoxRow);
+				Internal.GTK.Methods.GtkListBox.gtk_list_box_insert(hLayout, hListBoxRow);
 			}
 			else if (layout is StackLayout)
 			{
 				StackLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as StackLayout.Constraints);
-				Internal.GTK.Methods.GtkStack.gtk_stack_add_titled(hContainer, ctlHandle, constraints.Name, constraints.Title);
+				Internal.GTK.Methods.GtkStack.gtk_stack_add_titled(hLayout, ctlHandle, constraints.Name, constraints.Title);
 			}
 			else if (layout is FlowLayout)
 			{
 				FlowLayout.Constraints constraints = (layout.GetControlConstraints(ctl) as FlowLayout.Constraints);
-				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_insert(hContainer, ctlHandle);
+				Internal.GTK.Methods.GtkFlowBox.gtk_flow_box_insert(hLayout, ctlHandle);
 			}
 			else
 			{
@@ -146,6 +151,66 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Layout layout = container.Layout;
 			if (container.Layout == null) layout = new Layouts.AbsoluteLayout();
 
+			hContainer = CreateLayout(layout, container);
+
+			if (hContainer != IntPtr.Zero)
+			{
+				mvarContainerHandle = hContainer;
+				handlesByLayout[layout] = hContainer;
+
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
+
+				foreach (Control ctl in container.Controls)
+				{
+					bool ret = ctl.IsCreated;
+					if (!ret) ret = Engine.CreateControl(ctl);
+					if (!ret) continue;
+
+					ApplyLayout(hContainer, ctl, layout);
+				}
+			}
+
+			if (layout.Scrollable)
+			{
+				IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
+				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
+
+				Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+				switch (container.HorizontalAdjustment.ScrollType)
+				{
+					case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
+					case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+					case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
+					case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
+				}
+				switch (container.VerticalAdjustment.ScrollType)
+				{
+					case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
+					case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+					case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
+					case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
+				}
+				Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hContainerWrapper, policyH, policyV);
+
+				return new GTKNativeControl(hContainerWrapper, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("Container", hContainer),
+					new KeyValuePair<string, IntPtr>("ScrolledWindow", hContainerWrapper)
+				});
+			}
+			else
+			{
+				return new GTKNativeControl(hContainer, new KeyValuePair<string, IntPtr>[]
+				{
+					new KeyValuePair<string, IntPtr>("Container", hContainer),
+					new KeyValuePair<string, IntPtr>("ScrolledWindow", IntPtr.Zero)
+				});
+			}
+		}
+
+		internal static IntPtr CreateLayout(Layout layout, Control control)
+		{
+			IntPtr hContainer = IntPtr.Zero;
 			if (layout is Layouts.BoxLayout)
 			{
 				Layouts.BoxLayout box = (layout as Layouts.BoxLayout);
@@ -236,60 +301,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			{
 				hContainer = Internal.GTK.Methods.GtkStack.gtk_stack_new();
 			}
-
-			if (hContainer != IntPtr.Zero)
-			{
-				mvarContainerHandle = hContainer;
-				handlesByLayout[layout] = hContainer;
-
-				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hContainer);
-
-				foreach (Control ctl in container.Controls)
-				{
-					bool ret = ctl.IsCreated;
-					if (!ret) ret = Engine.CreateControl(ctl);
-					if (!ret) continue;
-
-					ApplyLayout(hContainer, ctl, layout);
-				}
-			}
-
-			if (layout.Scrollable)
-			{
-				IntPtr hContainerWrapper = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(IntPtr.Zero, IntPtr.Zero);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add(hContainerWrapper, hContainer);
-
-				Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
-				switch (container.HorizontalAdjustment.ScrollType)
-				{
-					case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
-					case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
-					case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
-					case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
-				}
-				switch (container.VerticalAdjustment.ScrollType)
-				{
-					case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
-					case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
-					case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
-					case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
-				}
-				Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(hContainerWrapper, policyH, policyV);
-
-				return new GTKNativeControl(hContainerWrapper, new KeyValuePair<string, IntPtr>[]
-				{
-					new KeyValuePair<string, IntPtr>("Container", hContainer),
-					new KeyValuePair<string, IntPtr>("ScrolledWindow", hContainerWrapper)
-				});
-			}
-			else
-			{
-				return new GTKNativeControl(hContainer, new KeyValuePair<string, IntPtr>[]
-				{
-					new KeyValuePair<string, IntPtr>("Container", hContainer),
-					new KeyValuePair<string, IntPtr>("ScrolledWindow", IntPtr.Zero)
-				});
-			}
+			return hContainer;
 		}
 
 		public void InsertChildControl(Control.ControlCollection collection, Control child)

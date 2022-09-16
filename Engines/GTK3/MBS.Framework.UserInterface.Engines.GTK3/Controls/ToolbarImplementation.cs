@@ -47,11 +47,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 		}
 
-		private Internal.GObject.Delegates.GCallbackV1I gc_clicked_handler = null;
+		private Action<IntPtr> gc_clicked_handler = null;
 		public ToolbarImplementation(Engine engine, Control control)
 			: base(engine, control)
 		{
-			gc_clicked_handler = new Internal.GObject.Delegates.GCallbackV1I(gc_clicked);
+			gc_clicked_handler = new Action<IntPtr>(gc_clicked);
 		}
 
 		private Dictionary<IntPtr, ToolbarItem> _itemsByHandle = new Dictionary<IntPtr, ToolbarItem>();

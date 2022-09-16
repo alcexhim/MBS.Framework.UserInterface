@@ -31,10 +31,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		public FileBrowserControlImplementation(Engine engine, Control control)
 			: base (engine, control)
 		{
-			file_activated_handler = new Internal.GObject.Delegates.GCallback (file_activated);
+			file_activated_handler = new Action<IntPtr, IntPtr>(file_activated);
 		}
 
-		private Internal.GObject.Delegates.GCallback file_activated_handler = null;
+		private Action<IntPtr, IntPtr> file_activated_handler = null;
 		private void file_activated (IntPtr /*GtkFileChooser*/ chooser, IntPtr user_data)
 		{
 			FileBrowserControl ctl = ((Engine as GTK3Engine).GetControlByHandle (chooser) as FileBrowserControl);

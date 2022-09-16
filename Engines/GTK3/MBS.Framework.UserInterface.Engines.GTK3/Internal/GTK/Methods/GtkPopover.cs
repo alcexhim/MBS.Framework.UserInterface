@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Runtime.InteropServices;
+using MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 {
@@ -42,5 +43,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		public static extern void gtk_popover_set_modal(IntPtr /*GtkPopover*/ popover, bool modal);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern bool gtk_popover_get_modal(IntPtr /*GtkPopover*/ popover);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_popover_set_pointing_to(IntPtr /*GtkPopover*/ popover, GDK.Structures.GdkRectangle rect);
 	}
 }

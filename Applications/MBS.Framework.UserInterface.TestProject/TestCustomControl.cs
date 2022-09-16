@@ -27,7 +27,7 @@ namespace MBS.Framework.UserInterface.TestProject
 		{
 			base.OnPaint(e);
 
-			e.Graphics.DrawText("Sample", Font.FromFamily("Liberation Sans", 26), new Rectangle(64, 64, 200, 200), Brushes.White, HorizontalAlignment.Center, VerticalAlignment.Middle);
+			e.Graphics.DrawText("Sample", Font.FromFamily("Liberation Sans", new Measurement(26, MeasurementUnit.Point)), new Rectangle(64, 64, 200, 200), Brushes.White, HorizontalAlignment.Center, VerticalAlignment.Middle);
 
 			e.Graphics.FillRectangle(Brushes.Black, new Rectangle(0, 0, 200, 200));
 			e.Graphics.DrawRectangle(Pens.Red, new Rectangle(64, 64, 200 - 128, 200 - 128));

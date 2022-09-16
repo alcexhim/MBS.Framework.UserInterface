@@ -8,7 +8,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 	{
 		public NumericTextBoxImplementation(Engine engine, NumericTextBox control) : base(engine, control)
 		{
-			value_changed_d = new Internal.GObject.Delegates.GCallbackV1I(value_changed);
+			value_changed_d = new Action<IntPtr>(value_changed);
 		}
 
 		public double GetMaximum()
@@ -86,7 +86,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GTK.Methods.GtkSpinButton.gtk_spin_button_set_increments((Handle as GTKNativeControl).Handle, step, value);
 		}
 
-		private Internal.GObject.Delegates.GCallbackV1I value_changed_d;
+		private Action<IntPtr> value_changed_d;
 		private void value_changed(IntPtr handle)
 		{
 			InvokeMethod(Control, "OnChanged", EventArgs.Empty);

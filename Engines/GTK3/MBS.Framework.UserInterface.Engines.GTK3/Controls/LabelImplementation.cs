@@ -78,7 +78,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				}
 				if (control.Font.Size != null)
 				{
-					Internal.Pango.Methods.pango_font_description_set_size(hDesc, (int)(Control.Font.Size * Internal.Pango.Constants.PangoScale));
+					Internal.Pango.Methods.pango_font_description_set_size(hDesc, (int)(Control.Font.Size.Value * Internal.Pango.Constants.PangoScale));
 				}
 
 				IntPtr hStyleCtx = Internal.GTK.Methods.GtkWidget.gtk_widget_get_style_context(handle);

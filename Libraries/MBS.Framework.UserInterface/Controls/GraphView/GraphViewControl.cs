@@ -51,7 +51,7 @@ namespace MBS.Framework.UserInterface.Controls.GraphView
 		{
 			e.Graphics.Clear(Colors.Gray);
 
-			Font font = Font.FromFamily("Sans", 14);
+			Font font = Font.FromFamily("Sans", new Measurement(14, MeasurementUnit.Point));
 
 			Rectangle nodePos = new Rectangle(54, 68, 256, 32);
 			foreach (GraphNode node in Nodes)

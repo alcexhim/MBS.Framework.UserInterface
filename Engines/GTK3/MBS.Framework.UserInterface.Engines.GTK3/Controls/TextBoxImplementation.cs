@@ -13,8 +13,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 	{
 		public TextBoxImplementation(Engine engine, Control control) : base(engine, control)
 		{
-			TextBox_Changed_Handler = new Internal.GObject.Delegates.GCallback(TextBox_Changed);
-			TextBuffer_Changed_Handler = new Internal.GObject.Delegates.GCallbackV1I(TextBuffer_Changed);
+			TextBox_Changed_Handler = new Action<IntPtr, IntPtr>(TextBox_Changed);
+			TextBuffer_Changed_Handler = new Action<IntPtr>(TextBuffer_Changed);
 
 			populate_popup_d = new Action<IntPtr, IntPtr, IntPtr>(populate_popup);
 		}
@@ -112,6 +112,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		}
 
+		protected override void OnRealize(EventArgs e)
+		{
+			base.OnRealize(e);
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+
+			IntPtr hWnd = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window(handle);
+			Internal.GDK.Methods.gdk_window_set_events(hWnd, Internal.GDK.Constants.GdkEventMask.All);
+		}
+
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			Contract.Assert(control is TextBox);
@@ -143,7 +153,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_model(hCompletion, (Engine.TreeModelManager.CreateTreeModel(ctl.CompletionModel) as GTKNativeTreeModel).Handle);
 			Internal.GTK.Methods.GtkEntryCompletion.gtk_entry_completion_set_text_column(hCompletion, 0);
-
 
 			string ctlText = ctl.Text;
 			if (ctl.Multiline)
@@ -188,7 +197,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				return new GTKNativeControl(hScrolledWindow, new KeyValuePair<string, IntPtr>[]
 				{
 					new KeyValuePair<string, IntPtr>("ScrolledWindow", hScrolledWindow),
-					new KeyValuePair<string, IntPtr>("TextBox", handle)
+					new KeyValuePair<string, IntPtr>("TextBox", handle),
+					new KeyValuePair<string, IntPtr>("EventBox", handle)
 				});
 			}
 			else
@@ -257,8 +267,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 
 		private Dictionary<IntPtr, bool> textboxChanged = new Dictionary<IntPtr, bool>();
-		private Internal.GObject.Delegates.GCallback TextBox_Changed_Handler;
-		private Internal.GObject.Delegates.GCallbackV1I TextBuffer_Changed_Handler;
+		private Action<IntPtr, IntPtr> TextBox_Changed_Handler;
+		private Action<IntPtr> TextBuffer_Changed_Handler;
 		private void TextBox_Changed(IntPtr handle, IntPtr data)
 		{
 			TextBox ctl = Control as TextBox;
@@ -614,6 +624,48 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 
 			throw new NotImplementedException();
+		}
+
+		public int GetFirstCharIndexOfCurrentLine()
+		{
+			return -1;
+		}
+
+		public int GetCharIndexFromPosition(Vector2D pt)
+		{
+			if (!(Handle is GTKNativeControl))
+				return -1; // not yet created?
+
+			int buffer_x = 0, buffer_y = 0;
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_window_to_buffer_coords(handle,
+									   Internal.GTK.Constants.GtkTextWindowType.Text,
+									   (int)pt.X,
+									   (int)pt.Y,
+									   ref buffer_x,
+									   ref buffer_y);
+
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			int trailing = 0;
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_get_iter_at_position(handle,
+									ref iter,
+									ref trailing,
+									buffer_x,
+									buffer_y);
+
+			Internal.GDK.Structures.GdkRectangle strong = new Internal.GDK.Structures.GdkRectangle(),
+				weak = new Internal.GDK.Structures.GdkRectangle();
+
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_get_cursor_locations(handle,
+				ref iter,
+				ref strong,
+				ref weak);
+
+			int charIndex = strong.x;
+
+			return charIndex;
+
 		}
 	}
 }

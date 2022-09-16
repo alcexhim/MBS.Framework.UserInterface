@@ -11,10 +11,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 	[ControlImplementation(typeof(Button))]
 	public class ButtonImplementation : GTKNativeImplementation, IButtonControlImplementation
 	{
-		private Internal.GObject.Delegates.GCallback gc_Button_Clicked = null;
+		private Action<IntPtr, IntPtr> gc_Button_Clicked = null;
 		public ButtonImplementation(Engine engine, Control control) : base(engine, control)
 		{
-			gc_Button_Clicked = new Internal.GObject.Delegates.GCallback(Button_Clicked);
+			gc_Button_Clicked = new Action<IntPtr, IntPtr>(Button_Clicked);
 		}
 
 		private void Button_Clicked(IntPtr handle, IntPtr data)

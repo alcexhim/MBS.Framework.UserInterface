@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Layouts;
@@ -30,15 +31,21 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 		public SyntaxTextBoxControl()
 		{
 			Multiline = true;
+			Font = Drawing.Font.FromFamily("Source Code Pro", new Measurement(12, MeasurementUnit.Point));
 		}
 
 		private AutoSuggestionWindow asw = null;
 
 		private void BeforeASW()
 		{
+			// use gtk_text_view_get_iter_location
+			int firstCharIndex = this.GetFirstCharIndexOfCurrentLine();
+			// Framework.Drawing.Vector2D curpos = this.GetCursorBounds().Location;
+			asw.Location = new Framework.Drawing.Vector2D(128, 256);
+
 			string text = this.Text;
 
-			// asw.lv.Model.Rows.Clear();
+			asw.lv.Model.Rows.Clear();
 			if (text.EndsWith("public "))
 			{
 				asw.lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(asw.lv.Model.Columns[0], "class") }));
@@ -49,6 +56,25 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 				asw.lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(asw.lv.Model.Columns[0], "private") }));
 				asw.lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(asw.lv.Model.Columns[0], "internal") }));
 			}
+		}
+
+		/// <summary>
+		/// Retrieves the index of the character nearest to the specified location.
+		/// </summary>
+		/// <returns>The zero-based character index at the specified location.</returns>
+		/// <param name="pt">The location to search.</param>
+		private int GetCharIndexFromPosition(Vector2D pt)
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetCharIndexFromPosition(pt)).GetValueOrDefault(-1);
+		}
+
+		/// <summary>
+		/// Retrieves the index of the first character of the current line.
+		/// </summary>
+		/// <returns>The zero-based character index in the current line.</returns>
+		private int GetFirstCharIndexOfCurrentLine()
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetFirstCharIndexOfCurrentLine()).GetValueOrDefault(-1);
 		}
 
 		protected internal override void OnKeyDown(KeyEventArgs e)
@@ -69,7 +95,7 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 
 				// determine if we need to indent
 				// if (CodeFormatter.ShouldIndent(...))
-				SelectedText = "\t";
+				SelectedText = "\n\t";
 				e.Cancel = true;
 			}
 			else if (e.Key == KeyboardKey.ArrowUp)
@@ -111,8 +137,8 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 		private void CreateASW()
 		{
 			asw = new AutoSuggestionWindow();
-			asw.PopupDirection = CardinalDirection.Bottom;
-			asw.Owner = this;
+			// asw.PopupDirection = CardinalDirection.Bottom;
+			// asw.Owner = this;
 			asw.lv.RowActivated += Lv_RowActivated;
 		}
 

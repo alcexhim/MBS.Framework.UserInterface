@@ -11,7 +11,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		public DockingContainerImplementation(Engine engine, DockingContainerControl control)
 			: base(engine, control)
 		{
-			DockingItem_Selected_Handler = new Internal.GObject.Delegates.GCallback (DockingItem_Selected);
+			DockingItem_Selected_Handler = new Action<IntPtr, IntPtr>(DockingItem_Selected);
 			DockingItem_MoveFocusChild_Handler = new Internal.GDL.Delegates.GdlMoveFocusChildCallback (DockingItem_MoveFocusChild);
 		}
 
@@ -129,7 +129,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			return handle;
 		}
 
-		private Internal.GObject.Delegates.GCallback DockingItem_Selected_Handler = null;
+		private Action<IntPtr, IntPtr> DockingItem_Selected_Handler = null;
 		private Internal.GDL.Delegates.GdlMoveFocusChildCallback DockingItem_MoveFocusChild_Handler = null;
 		private void DockingItem_Selected(IntPtr hDockItem, IntPtr user_data)
 		{

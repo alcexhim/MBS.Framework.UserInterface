@@ -6,7 +6,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 	{
 		public delegate void SingleIntPtrFunc(IntPtr ptr);
 
-		public delegate void GCallback(IntPtr handle, IntPtr data);
 		public delegate T GCallback<T>(IntPtr handle, IntPtr data);
 
 		public delegate void GCallbackV1I(IntPtr handle);

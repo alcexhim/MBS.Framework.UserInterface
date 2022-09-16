@@ -18,11 +18,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 	{
 		private Dictionary<IntPtr, MenuItem> menuItemsByHandle = new Dictionary<IntPtr, MenuItem>();
 
-		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
+		private Action<IntPtr, IntPtr> gc_MenuItem_Activated = null;
 
-		private Internal.GObject.Delegates.GCallback gc_Window_Activate = null;
+		private Action<IntPtr, IntPtr> gc_Window_Activate = null;
 		private Func<IntPtr, IntPtr, bool> gc_Window_Closing = null;
-		private Internal.GObject.Delegates.GCallback gc_Window_Closed = null;
+		private Action<IntPtr, IntPtr> gc_Window_Closed = null;
 
 		public string GetIconName()
 		{
@@ -74,6 +74,15 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 		}
 
+		public void PresentWindow(DateTime timestamp)
+		{
+			PresentWindowInternal(timestamp);
+		}
+		protected virtual void PresentWindowInternal(DateTime timestamp)
+		{
+			Internal.GTK.Methods.GtkWindow.gtk_window_present((Handle as GTKNativeControl).Handle);
+			// Internal.GTK.Methods.GtkWindow.gtk_window_present_with_time(handle, (uint)((timestamp - UNIX_EPOCH).TotalMilliseconds));
+		}
 
 		private List<Window> _GetToplevelWindowsRetval = null;
 		public Window[] GetToplevelWindows()
@@ -117,11 +126,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		public WindowImplementation(Engine engine, Window window) : base(engine, window)
 		{
-			gc_MenuItem_Activated = new MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject.Delegates.GCallback(MenuItem_Activate);
+			gc_MenuItem_Activated = new Action<IntPtr, IntPtr>(MenuItem_Activate);
 
-			gc_Window_Activate = new MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject.Delegates.GCallback(Window_Activate);
+			gc_Window_Activate = new Action<IntPtr, IntPtr>(Window_Activate);
 			gc_Window_Closing = new Func<IntPtr, IntPtr, bool>(Window_Closing);
-			gc_Window_Closed = new MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject.Delegates.GCallback(Window_Closed);
+			gc_Window_Closed = new Action<IntPtr, IntPtr>(Window_Closed);
 		}
 
 		private void Window_Activate(IntPtr handle, IntPtr data)

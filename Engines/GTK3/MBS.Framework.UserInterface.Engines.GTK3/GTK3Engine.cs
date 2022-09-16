@@ -484,10 +484,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			string appname = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
 			Internal.Notify.Methods.notify_init(appname);
 
-			gc_Application_Startup = new Internal.GObject.Delegates.GCallback(Application_Startup);
-			gc_MenuItem_Activated = new Internal.GObject.Delegates.GCallback(MenuItem_Activate);
+			gc_Application_Startup = new Action<IntPtr, IntPtr>(Application_Startup);
+			gc_MenuItem_Activated = new Action<IntPtr, IntPtr>(MenuItem_Activate);
 			gc_Application_CommandLine = new Internal.GObject.Delegates.GApplicationCommandLineHandler(Application_CommandLine);
-			gc_Application_QueryEnd = new Internal.GObject.Delegates.GCallback(Application_QueryEnd);
+			gc_Application_QueryEnd = new Action<IntPtr, IntPtr>(Application_QueryEnd);
 
 			Console.WriteLine("uwt-gtk: creating GtkApplication with unique name '{0}'", Application.Instance.UniqueName);
 			ApplicationHandle = Internal.GTK.Methods.GtkApplication.gtk_application_new(Application.Instance.UniqueName, Internal.GIO.Constants.GApplicationFlags.HandlesCommandLine | Internal.GIO.Constants.GApplicationFlags.HandlesOpen);
@@ -594,12 +594,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			}
 		}
 
-		private Internal.GObject.Delegates.GCallback gc_MenuItem_Activated = null;
-		private Internal.GObject.Delegates.GCallback gc_Application_Activate = null;
-		private Internal.GObject.Delegates.GCallback gc_Application_Startup = null;
+		private Action<IntPtr, IntPtr> gc_MenuItem_Activated = null;
+		private Action<IntPtr, IntPtr> gc_Application_Activate = null;
+		private Action<IntPtr, IntPtr> gc_Application_Startup = null;
 		private Internal.GObject.Delegates.GApplicationCommandLineHandler gc_Application_CommandLine = null;
 		private Action<IntPtr, IntPtr, int, string, IntPtr> gc_Application_Open = null;
-		private Internal.GObject.Delegates.GCallback gc_Application_QueryEnd = null;
+		private Action<IntPtr, IntPtr> gc_Application_QueryEnd = null;
 
 		protected bool _OpenFiles { get; private set; } = false;
 		private void Application_Open(IntPtr application, IntPtr files, int n_files, string hint, IntPtr user_data)
@@ -715,7 +715,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			InitializeStockIDs();
 			InitializeEventHandlers();
 
-			GtkPrintJob_status_changed_handler = new Internal.GObject.Delegates.GCallbackV1I(GtkPrintJob_status_changed);
+			GtkPrintJob_status_changed_handler = new Action<IntPtr>(GtkPrintJob_status_changed);
 			_destroy_fn_d = new Action<byte[], IntPtr>(_destroy_fn);
 
 			_notifyActionCallback_d = new Action<IntPtr, string, IntPtr>(_notifyActionCallback);
@@ -1352,7 +1352,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private bool printing = false;
 
 
-		private Internal.GObject.Delegates.GCallbackV1I GtkPrintJob_status_changed_handler;
+		private Action<IntPtr> GtkPrintJob_status_changed_handler;
 		/// <summary>
 		/// Emitted after the user has finished changing print settings in the dialog, before the actual rendering starts.
 		/// A typical use for ::begin-print is to use the parameters from the GtkPrintContext and paginate the document
@@ -2059,13 +2059,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 
 		private DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-		protected override void PresentWindowInternal(Window window, DateTime timestamp)
-		{
-			IntPtr handle = (GetHandleForControl(window) as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkWindow.gtk_window_present(handle);
-			// Internal.GTK.Methods.GtkWindow.gtk_window_present_with_time(handle, (uint)((timestamp - UNIX_EPOCH).TotalMilliseconds));
-		}
 
 		protected override Process LaunchApplicationInternal(string path)
 		{

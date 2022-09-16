@@ -43,5 +43,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_view_get_iter_location(IntPtr handle, ref Structures.GtkTextIter iter, ref GDK.Structures.GdkRectangle rect);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_view_window_to_buffer_coords(IntPtr handle, Constants.GtkTextWindowType text, int x, int y, ref int buffer_x, ref int buffer_y);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_view_get_iter_at_position(IntPtr handle, ref Structures.GtkTextIter iter, ref int trailing, int buffer_x, int buffer_y);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_view_get_cursor_locations(IntPtr handle, ref Structures.GtkTextIter iter, ref GDK.Structures.GdkRectangle strong, ref GDK.Structures.GdkRectangle weak);
 	}
 }

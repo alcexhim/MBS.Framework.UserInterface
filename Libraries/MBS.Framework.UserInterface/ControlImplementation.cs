@@ -219,6 +219,7 @@ namespace MBS.Framework.UserInterface
 			if (handle == null) throw new InvalidOperationException ();
 
 			InitializeControlProperties(handle);
+			UpdateControlFont(handle);
 
 			mvarHandle = handle;
 			OnCreated (EventArgs.Empty);
@@ -256,10 +257,14 @@ namespace MBS.Framework.UserInterface
 
 		protected abstract void SetControlVisibilityInternal (bool visible);
 
-		protected abstract void UpdateControlFontInternal(Font font);
+		protected abstract void UpdateControlFontInternal(NativeControl handle, Font font);
+		internal void UpdateControlFont(NativeControl handle)
+		{
+			UpdateControlFontInternal(handle, Control.Font);
+		}
 		public void UpdateControlFont(Font font)
 		{
-			UpdateControlFontInternal(font);
+			UpdateControlFontInternal(Handle, font);
 		}
 
 		protected abstract void RegisterDragSourceInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);

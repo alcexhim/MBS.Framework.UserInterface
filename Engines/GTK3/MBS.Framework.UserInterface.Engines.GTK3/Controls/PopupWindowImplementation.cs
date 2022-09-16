@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using MBS.Framework.Drawing;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 {
@@ -29,10 +30,53 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 		}
 
-		private Internal.GObject.Delegates.GCallbackV1I popover_closed_handler = null;
-		private void popover_closed(IntPtr handle)
+		protected override void PresentWindowInternal(DateTime timestamp)
 		{
-			PopupWindow ctl = ((Engine as GTK3Engine).GetControlByHandle (handle) as PopupWindow);
+			// base.PresentWindowInternal(timestamp);
+			// do nothing, because a GtkPopover is not actually a GtkWindow
+		}
+		protected override string GetControlTextInternal(Control control)
+		{
+			// return base.GetControlTextInternal(control);
+			// do nothing, because a GtkPopover is not actually a GtkWindow
+			return String.Empty;
+		}
+		protected override void SetControlTextInternal(Control control, string text)
+		{
+			// base.SetControlTextInternal(control, text);
+			// do nothing, because a GtkPopover is not actually a GtkWindow
+			// calling gtk_window_set_title on a non-GtkWindow crashes beautifully ;(
+		}
+		protected override Rectangle GetControlBoundsInternal()
+		{
+			// return base.GetControlBoundsInternal();
+			return Rectangle.Empty;
+		}
+		protected override Dimension2D GetControlSizeInternal()
+		{
+			// return base.GetControlSizeInternal();
+			return Dimension2D.Empty;
+		}
+		protected override void SetControlBoundsInternal(Rectangle bounds)
+		{
+			// base.SetControlBoundsInternal(bounds);
+			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle();
+			rect.x = (int)bounds.X;
+			rect.y = (int)bounds.Y;
+
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkPopover.gtk_popover_set_pointing_to(handle, rect);
+		}
+
+		static PopupWindowImplementation()
+		{
+			popover_closed_handler = new Action<IntPtr>(popover_closed);
+		}
+
+		private static Action<IntPtr> popover_closed_handler = null;
+		private static void popover_closed(IntPtr handle)
+		{
+			PopupWindow ctl = ((((UIApplication)Application.Instance).Engine as GTK3Engine).GetControlByHandle (handle) as PopupWindow);
 			if (ctl == null)
 				return;
 
@@ -52,21 +96,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			IntPtr handle = Internal.GTK.Methods.GtkPopover.gtk_popover_new (hCtrlParent);
 
-			popover_closed_handler = new Internal.GObject.Delegates.GCallbackV1I (popover_closed);
 			Internal.GObject.Methods.g_signal_connect (handle, "closed", popover_closed_handler);
+
+			IntPtr hLayout = CreateLayout(ctl.Layout, ctl);
 
 			foreach (Control ctl1 in ctl.Controls) {
 				if (!ctl1.IsCreated) Engine.CreateControl (ctl1);
 				if (!ctl1.IsCreated) continue;
 
+				ApplyLayout(hLayout, ctl1, ctl.Layout);
+				/*
+
 				IntPtr hCtrl1 = (Engine.GetHandleForControl(ctl1) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hCtrl1);
 				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
+				*/
 			}
+			Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hLayout);
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_position(handle, GTK3Engine.CardinalDirectionToGtkPositionType(ctl.PopupDirection));
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_modal (handle, ctl.Modal);
+
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hLayout);
 			return new GTKNativeControl (handle);
 		}
 

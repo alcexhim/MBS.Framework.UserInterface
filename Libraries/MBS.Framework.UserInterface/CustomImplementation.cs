@@ -56,9 +56,9 @@ namespace MBS.Framework.UserInterface
 			(Handle as CustomNativeControl).Handle.Size = value;
 		}
 
-		protected override void UpdateControlFontInternal(Font font)
+		protected override void UpdateControlFontInternal(NativeControl handle, Font font)
 		{
-			(Handle as CustomNativeControl).Handle.Font = font;
+			(handle as CustomNativeControl).Handle.Font = font;
 		}
 		protected override double GetAdjustmentValueInternal(Orientation orientation)
 		{

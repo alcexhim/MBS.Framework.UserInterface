@@ -27,6 +27,7 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 	public class AutoSuggestionWindow : PopupWindow
 	{
 		public ListViewControl lv = null;
+		public TabContainer tabs = null;
 
 		public AutoSuggestionWindow()
 		{
@@ -41,6 +42,11 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 			lv.HeaderStyle = ColumnHeaderStyle.None;
 
 			this.Controls.Add(lv, new BoxLayout.Constraints(true, true));
+
+			tabs = new TabContainer();
+			tabs.TabPages.Add(new TabPage() { Text = "Common" });
+			tabs.TabPages.Add(new TabPage() { Text = "All" });
+			this.Controls.Add(tabs, new BoxLayout.Constraints(false, false));
 		}
 
 		protected internal override void OnCreated(EventArgs e)

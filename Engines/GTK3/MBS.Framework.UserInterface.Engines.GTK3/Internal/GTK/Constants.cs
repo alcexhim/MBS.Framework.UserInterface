@@ -703,5 +703,40 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK
 			Suspend = (1 << 2),
 			Idle = (1 << 3)
 		}
+
+		/// <summary>
+		/// Used to reference the parts of GtkTextView.
+		/// </summary>
+		public enum GtkTextWindowType
+		{
+			/// <summary>
+			/// Invalid value, used as a marker.
+			/// </summary>
+			Private,
+			/// <summary>
+			/// Window that floats over scrolling areas.
+			/// </summary>
+			Widget,
+			/// <summary>
+			/// Scrollable text window.
+			/// </summary>
+			Text,
+			/// <summary>
+			/// Left side border window.
+			/// </summary>
+			Left,
+			/// <summary>
+			/// Right side border window.
+			/// </summary>
+			Right,
+			/// <summary>
+			/// Top border window.
+			/// </summary>
+			Top,
+			/// <summary>
+			/// Bottom border window.
+			/// </summary>
+			Bottom
+		}
 	}
 }

@@ -110,8 +110,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			SelectBrush(brush);
 			SelectFont(ref font);
 
+			Measurement sz = font.Size;
+			if (sz == Measurement.Empty)
+			{
+				sz = new Measurement(11, MeasurementUnit.Point);
+			}
+
 			double x = location.X;
-			double y_orig = location.Y + font.Size.GetValueOrDefault(11);
+			double y_orig = location.Y + sz.GetValue(MeasurementUnit.Point);
 			double y = y_orig;
 
 			TextMeasurement textMeasurement = MeasureText(value, font);
@@ -148,11 +154,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 		private void SelectFont(ref Font font)
 		{
 			if (font == null)
-				font = Font.FromFamily("Sans", 10);
+				font = Font.FromFamily("Sans", new Measurement(10, MeasurementUnit.Point));
 
 			if (font == SystemFonts.Monospace)
 			{
-				font = Font.FromFamily("Monospace", 10.0);
+				font = Font.FromFamily("Monospace", new Measurement(10, MeasurementUnit.Point));
 			}
 
 			Internal.Cairo.Methods.cairo_select_font_face(mvarCairoContext, font.FamilyName, (font.Italic ? Internal.Cairo.Constants.CairoFontSlant.Italic : Internal.Cairo.Constants.CairoFontSlant.Normal), (font.Weight == 800 ? Internal.Cairo.Constants.CairoFontWeight.Bold : Internal.Cairo.Constants.CairoFontWeight.Normal));

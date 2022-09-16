@@ -35,6 +35,8 @@ namespace MBS.Framework.UserInterface
 			void InsertCommandBar(int index, CommandBar toolbar);
 			void ClearCommandBars();
 			void RemoveCommandBar(CommandBar toolbar);
+
+			void PresentWindow(DateTime timestamp);
 		}
 	}
 	public class Window : Container
@@ -203,7 +205,7 @@ namespace MBS.Framework.UserInterface
 		/// </summary>
 		public void Present(DateTime timestamp)
 		{
-			((UIApplication)Application.Instance).Engine.PresentWindow(this, timestamp);
+			(ControlImplementation as Native.IWindowNativeImplementation)?.PresentWindow(timestamp);
 		}
 
 		private bool _FullScreen = false;

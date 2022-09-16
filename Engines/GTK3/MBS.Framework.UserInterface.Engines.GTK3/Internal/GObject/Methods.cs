@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using static MBS.Framework.UserInterface.Engines.GTK3.Internal.GLib.Constants;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 {
@@ -7,7 +8,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 	{
 		public const string LIBRARY_FILENAME = "gobject-2.0";
 
-		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler)
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.None);
 		}
@@ -49,16 +50,18 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_object_get(IntPtr obj, string first_property_name, ref int first_property_value, IntPtr zero);
 
-		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr data)
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler, IntPtr data)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
 		}
-		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler)
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.ConnectAfter);
 		}
 
-		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr data)
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler, IntPtr data)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
 		}
@@ -105,19 +108,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 		}
 		#endregion
 
-		#region Action<IntPtr, IntPtr>
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
-
-		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler)
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.None);
-		}
-		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler)
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.ConnectAfter);
-		}
-		#endregion
 		#region Action<IntPtr, IntPtr, IntPtr>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
@@ -175,18 +165,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 
 		#endregion
 
-		#region GCallbackV1I
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Delegates.GCallbackV1I c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
-		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Delegates.GCallbackV1I c_handler, IntPtr data = default(IntPtr))
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
-		}
-		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Delegates.GCallbackV1I c_handler, IntPtr data = default(IntPtr))
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
-		}
-		#endregion
 		#region Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr>
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
@@ -195,18 +173,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
 		}
 		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Func<IntPtr, IntPtr, int, int, IntPtr, IntPtr> c_handler, IntPtr data = default(IntPtr))
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
-		}
-		#endregion
-		#region GCallbackV3I
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Delegates.GCallbackV3I c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
-		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Delegates.GCallbackV3I c_handler, IntPtr data = default(IntPtr))
-		{
-			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
-		}
-		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Delegates.GCallbackV3I c_handler, IntPtr data = default(IntPtr))
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
 		}
@@ -378,9 +344,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 		#endregion
 
 		[DllImport(LIBRARY_FILENAME)]
-		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern uint g_signal_connect_object(IntPtr instance, string detailed_signal, Delegates.GCallback c_handler, IntPtr gobject, Constants.GConnectFlags connect_flags);
+		public static extern uint g_signal_connect_object(IntPtr instance, string detailed_signal, Action<IntPtr, IntPtr> c_handler, IntPtr gobject, Constants.GConnectFlags connect_flags);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern bool g_type_check_instance_is_a(IntPtr instance, IntPtr instance_type);

@@ -35,6 +35,21 @@ namespace MBS.Framework.UserInterface.Controls
 
 			int GetCharIndexFromPosition(Vector2D pt);
 			int GetFirstCharIndexOfCurrentLine();
+			int GetFirstCharIndexFromLine(int lineIndex);
+			Rectangle GetPositionFromCharIndex(int charIndex);
+		}
+	}
+	public class TextBoxSearchResult
+	{
+		public int Start { get; }
+		public int Length { get; }
+		public string Value { get; }
+
+		public TextBoxSearchResult(string value, int start, int length)
+		{
+			Value = value;
+			Start = start;
+			Length = length;
 		}
 	}
 	public class TextBoxStyleDefinition
@@ -130,6 +145,126 @@ namespace MBS.Framework.UserInterface.Controls
 		public TextBoxStyleArea.TextBoxStyleAreaCollection StyleAreas { get; }
 
 		public TextBoxUsageHint UsageHint { get; set; } = TextBoxUsageHint.None;
+
+		public TextBoxSearchResult[] FindAll(string value)
+		{
+			System.Collections.Generic.List<TextBoxSearchResult> results = new System.Collections.Generic.List<TextBoxSearchResult>();
+			for (int i = 0; (i + value.Length) < Text.Length; i++)
+			{
+				if (Text.Substring(i, value.Length) == value)
+				{
+					results.Add(new TextBoxSearchResult(value, i, value.Length));
+				}
+			}
+			return results.ToArray();
+		}
+
+		public string LastCompleteWord
+		{
+			get
+			{
+				if (Words.Length == 1)
+				{
+					return Words[0];
+				}
+				else if (Words.Length > 1)
+				{
+					return Words[Words.Length - 1];
+				}
+				return Text;
+			}
+		}
+
+		public string[] Words
+		{
+			get
+			{
+				return Text.Split(new char[] { ' ', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+			}
+		}
+		public string CurrentWord
+		{
+			get
+			{
+				int indexOfSpace = Text.LastIndexOf(' ');
+				if (indexOfSpace == -1)
+					return Text;
+				return Text.Substring(indexOfSpace + 1);
+			}
+		}
+
+		/// <summary>
+		/// Retrieves the index of the character nearest to the specified location.
+		/// </summary>
+		/// <returns>The zero-based character index at the specified location.</returns>
+		/// <param name="pt">The location to search.</param>
+		public int GetCharIndexFromPosition(Vector2D pt)
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetCharIndexFromPosition(pt)).GetValueOrDefault(-1);
+		}
+
+
+		public Rectangle GetPositionFromCharIndex(int charIndex)
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetPositionFromCharIndex(charIndex)).GetValueOrDefault(Rectangle.Empty);
+		}
+
+		/// <summary>
+		/// Retrieves the index of the first character of the current line.
+		/// </summary>
+		/// <returns>The zero-based character index in the current line.</returns>
+		public int GetFirstCharIndexOfCurrentLine()
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetFirstCharIndexOfCurrentLine()).GetValueOrDefault(-1);
+		}
+
+		/// <summary>
+		/// Retrieves the index of the first character of the specified line.
+		/// </summary>
+		/// <returns>The zero-based character index in the specified line.</returns>
+		public int GetFirstCharIndexFromLine(int index)
+		{
+			return ((this.ControlImplementation as Native.ITextBoxImplementation)?.GetFirstCharIndexFromLine(index)).GetValueOrDefault(-1);
+		}
+
+		public string GetNewLineString()
+		{
+			return System.Environment.NewLine;
+		}
+
+		public string[] Lines
+		{
+			get
+			{
+				string[] lines = Text.Split(new string[] { GetNewLineString() }, StringSplitOptions.None);
+				return lines;
+			}
+		}
+		public string CurrentLine
+		{
+			get { return Lines[CurrentLineIndex]; }
+		}
+
+		public int CurrentLineIndex
+		{
+			get
+			{
+				if (Multiline)
+				{
+					string[] lines = Text.Split(new string[] { GetNewLineString() }, StringSplitOptions.None);
+					int selstart = 0;
+					for (int i = 0; i < lines.Length; i++)
+					{
+						selstart += lines[i].Length;
+						if (selstart >= SelectionStart)
+						{
+							return i;
+						}
+					}
+				}
+				return 0;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the <see cref="Control.ContextMenu" /> for this <see cref="TextBox" /> should be merged with the system native context menu.

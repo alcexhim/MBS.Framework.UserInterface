@@ -206,7 +206,6 @@
     <Compile Include="IVirtualControlContainer.cs" />
     <Compile Include="Drawing\Drawing2D\WrapMode.cs" />
     <Compile Include="UserInterfacePlugin.cs" />
-    <Compile Include="ApplicationActivatedEvent.cs" />
     <Compile Include="Controls\FileBrowser\IFileBrowserControl.cs" />
     <Compile Include="TreeModelRowColumnEvent.cs" />
     <Compile Include="CustomDialog.cs" />
@@ -313,11 +312,19 @@
     <Compile Include="CommandBarLoader.cs" />
     <Compile Include="Dialogs\ProgressDialog.cs" />
     <Compile Include="TreeModelManager.cs" />
-    <Compile Include="ApplicationActivationType.cs" />
     <Compile Include="Drawing\TextMeasurement.cs" />
     <Compile Include="Controls\GraphView\GraphViewControl.cs" />
     <Compile Include="Controls\GraphView\GraphNode.cs" />
     <Compile Include="Controls\GraphView\IGraphNodeContainer.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxLanguage.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxColorRule.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxLanguages.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxColorRuleType.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxColorRuleTypes.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxKeyword.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxKeywordType.cs" />
+    <Compile Include="Controls\SyntaxTextBox\SyntaxKeywordTypes.cs" />
+    <Compile Include="Controls\SyntaxTextBox\AcceptKeyMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\MBS.Framework\MBS.Framework\MBS.Framework.csproj">

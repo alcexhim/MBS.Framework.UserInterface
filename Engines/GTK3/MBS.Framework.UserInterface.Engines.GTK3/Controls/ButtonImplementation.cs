@@ -19,6 +19,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 		private void Button_Clicked(IntPtr handle, IntPtr data)
 		{
+			if (inhibitBtnClick) return;
+
 			EventArgs e = new EventArgs();
 			base.OnClick(e);
 		}
@@ -39,7 +41,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			IntPtr hTitle = Marshal.StringToHGlobalAuto (text);
+
 			Internal.GTK.Methods.GtkButton.gtk_button_set_label(handle, hTitle);
+
+			// HACK HACK UGLY HACK ; something changed, we now have to set use_markup manually
+			// must be set AFTER gtk_button_set_label is called
+
+			IntPtr hchildalign = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(handle); // gtkalignment
+			IntPtr hchildbox = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(hchildalign); // gtkbox
+
+			IntPtr hchildlist = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hchildbox);
+			uint count = Internal.GLib.Methods.g_list_length(hchildlist);
+
+			IntPtr hchild = Internal.GLib.Methods.g_list_nth_data(hchildlist, 1);
+
+			Internal.GTK.Methods.GtkLabel.gtk_label_set_use_markup(hchild, Control.UseMarkup);
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)
@@ -51,6 +67,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			if (ctl.CheckOnClick)
 			{
 				handle = Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_new();
+				if (ctl.Checked)
+				{
+					Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active(handle, ctl.Checked);
+				}
 			}
 			else
 			{
@@ -197,6 +217,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GTK.Methods.GtkButton.gtk_button_set_image_position (handle, value2);
 		}
 
+		private bool inhibitBtnClick = false;
 		public bool GetChecked()
 		{
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
@@ -204,8 +225,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		}
 		public void SetChecked(bool value)
 		{
+			inhibitBtnClick = true;
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			Internal.GTK.Methods.GtkToggleButton.gtk_toggle_button_set_active(handle, value);
+			inhibitBtnClick = false;
 		}
 	}
 }

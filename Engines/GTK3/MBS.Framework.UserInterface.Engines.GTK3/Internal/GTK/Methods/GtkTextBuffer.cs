@@ -65,5 +65,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_text_buffer_apply_tag(IntPtr /*GtkTextBuffer*/ buffer, IntPtr /*GtkTextTag*/ tag, ref Structures.GtkTextIter start, ref Structures.GtkTextIter end);
+
+		/// <summary>
+		/// Initializes <paramref name="iter" /> to the start of the given line.
+		/// If <paramref name="line_number"/> is greater than the number of lines
+		/// in the buffer , the end iterator is returned.
+		/// </summary>
+		/// <param name="buffer">a <see cref="GtkTextBuffer" />.</param>
+		/// <param name="iter">iterator to initialize.</param>
+		/// <param name="line_number">line number counting from 0.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_text_buffer_get_iter_at_line(IntPtr /*GtkTextBuffer*/ buffer, ref Structures.GtkTextIter iter, int line_number);
 	}
 }

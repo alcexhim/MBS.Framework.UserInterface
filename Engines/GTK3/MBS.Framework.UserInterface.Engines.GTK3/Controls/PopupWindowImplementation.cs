@@ -34,6 +34,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			// base.PresentWindowInternal(timestamp);
 			// do nothing, because a GtkPopover is not actually a GtkWindow
+			Internal.GTK.Methods.GtkPopover.gtk_popover_popup((Handle as GTKNativeControl).Handle);
 		}
 		protected override string GetControlTextInternal(Control control)
 		{
@@ -65,7 +66,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			rect.y = (int)bounds.Y;
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
-			Internal.GTK.Methods.GtkPopover.gtk_popover_set_pointing_to(handle, rect);
+			Internal.GTK.Methods.GtkPopover.gtk_popover_set_pointing_to(handle, ref rect);
 		}
 
 		static PopupWindowImplementation()
@@ -105,21 +106,41 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				if (!ctl1.IsCreated) continue;
 
 				ApplyLayout(hLayout, ctl1, ctl.Layout);
-				/*
 
 				IntPtr hCtrl1 = (Engine.GetHandleForControl(ctl1) as GTKNativeControl).Handle;
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all (hCtrl1);
-				Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
-				*/
+				// Internal.GTK.Methods.GtkContainer.gtk_container_add (handle, hCtrl1);
 			}
 			Internal.GTK.Methods.GtkContainer.gtk_container_add(handle, hLayout);
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_position(handle, GTK3Engine.CardinalDirectionToGtkPositionType(ctl.PopupDirection));
+			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle()
+			{
+				x = (int)ctl.Location.X,
+				y = (int)ctl.Location.Y,
+				width = 1,
+				height = 1
+			};
+			Internal.GTK.Methods.GtkPopover.gtk_popover_set_pointing_to(handle, ref rect);
 
 			Internal.GTK.Methods.GtkPopover.gtk_popover_set_modal (handle, ctl.Modal);
 
-			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(hLayout);
+			Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
 			return new GTKNativeControl (handle);
+		}
+
+		protected override void SetLocationInternal(Vector2D location)
+		{
+			// base.SetLocationInternal(location);
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle()
+			{
+				x = (int)location.X,
+				y = (int)location.Y,
+				width = 1,
+				height = 1
+			};
+			Internal.GTK.Methods.GtkPopover.gtk_popover_set_pointing_to(handle, ref rect);
 		}
 
 		protected override void SetControlVisibilityInternal (bool visible)
@@ -134,7 +155,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				Internal.GTK.Methods.GtkPopover.gtk_popover_set_relative_to (handle, hCtrlParent);
 			}
 
-			if (visible) {
+			if (visible)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show_all(handle);
 				Internal.GTK.Methods.GtkPopover.gtk_popover_popup (handle);
 			} else {
 				Internal.GTK.Methods.GtkPopover.gtk_popover_popdown (handle);

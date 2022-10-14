@@ -199,7 +199,7 @@ namespace MBS.Framework.UserInterface
 		/// <param name="point">Point.</param>
 		public Vector2D ClientToScreenCoordinates(Vector2D point)
 		{
-			return ((UIApplication)Application.Instance).Engine.ClientToScreenCoordinates(this, point);
+			return (ControlImplementation?.ClientToScreenCoordinates(point)).GetValueOrDefault(point);
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);

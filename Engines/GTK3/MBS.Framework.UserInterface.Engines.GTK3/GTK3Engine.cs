@@ -217,20 +217,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return Internal.GTK.Methods.GtkWindow.gtk_window_has_toplevel_focus(hWindow);
 		}
 
-		protected override Vector2D ClientToScreenCoordinatesInternal(Control control, Vector2D point)
-		{
-			// ohoho
-			IntPtr hCtl = (GetHandleForControl(control) as GTKNativeControl).Handle;
-			IntPtr hCtlToplevel = Internal.GTK.Methods.GtkWidget.gtk_widget_get_toplevel(hCtl);
-
-			int rootX = 0, rootY = 0;
-			Internal.GTK.Methods.GtkWindow.gtk_window_get_position(hCtlToplevel, ref rootX, ref rootY);
-
-			int x = 0, y = 0;
-			Internal.GTK.Methods.GtkWidget.gtk_widget_translate_coordinates(hCtl, hCtlToplevel, (int)point.X, (int)point.Y, ref x, ref y);
-			return new Vector2D(rootX + x, rootY + y);
-		}
-
 		protected override bool IsControlEnabledInternal(Control control)
 		{
 			GTKNativeControl hnc = (GetHandleForControl(control) as GTKNativeControl);
@@ -1225,6 +1211,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 						{
 							GTKDialogImplementation di = (types[i].Assembly.CreateInstance(types[i].FullName, false, System.Reflection.BindingFlags.Default, null, new object[] { this, dialog }, System.Globalization.CultureInfo.CurrentCulture, null) as GTKDialogImplementation);
 							GTKNativeControl nc = (di.CreateControl(dialog) as GTKNativeControl);
+							RegisterControlHandle(dialog, nc);
 
 							// hack:
 							// InvokeMethod(dialog, "OnCreated", new object[] { EventArgs.Empty });

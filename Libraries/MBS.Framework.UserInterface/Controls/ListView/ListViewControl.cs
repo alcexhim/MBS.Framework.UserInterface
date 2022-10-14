@@ -323,7 +323,7 @@ namespace MBS.Framework.UserInterface.Controls.ListView
 		/// <param name="listViewColumn">List view column.</param>
 		/// <param name="cellRenderer">Cell renderer.</param>
 		/// <param name="v">If set to <c>true</c> v.</param>
-		public void Focus(TreeModelRow row, ListViewColumn column, CellRenderer renderer, bool edit = false)
+		public void Focus(TreeModelRow row, ListViewColumn column = null, CellRenderer renderer = null, bool edit = false)
 		{
 			(ControlImplementation as Native.IListViewNativeImplementation).Focus(row, column, renderer, edit);
 		}

@@ -147,7 +147,13 @@ namespace MBS.Framework.UserInterface.Dialogs
 			{
 				// FIXME: these two lines do completely different things for completely different purposes
 				setting.SetValue((ctl as TextBox).Text); // for custom SettingsDialog used as a prompt dialog
-				// ((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
+														 // ((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
+			}
+			else if (ctl is FileChooserButton)
+			{
+				// FIXME: these two lines do completely different things for completely different purposes
+				setting.SetValue((ctl as FileChooserButton).SelectedFileName); // for custom SettingsDialog used as a prompt dialog
+														 // ((UIApplication)Application.Instance).SetSetting<string>(setting.ID, (ctl as TextBox).Text); // for application SettingsDialog
 			}
 			else if (ctl is ComboBox)
 			{

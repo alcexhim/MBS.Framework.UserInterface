@@ -101,6 +101,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				}
 			}
 
+			// Internal.GTK.Methods.GtkDialog.gtk_dialog_add_action_widget(handle, buttonHandle, nativeResponseValue);
 			Internal.GTK.Methods.GtkDialog.gtk_dialog_add_action_widget(handle, buttonHandle, nativeResponseValue);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_default(buttonHandle, true);
 
@@ -199,9 +200,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			IntPtr handle = (nc as GTKNativeControl).Handle;
 
 			// Add any additional buttons to the end of the buttons list
-			foreach (Button button in dialog.Buttons)
+			if (!UseCustomButtonImplementation)
 			{
-				buttons.Add(button);
+				foreach (Button button in dialog.Buttons)
+				{
+					buttons.Add(button);
+				}
 			}
 
 			IntPtr[] hButtons = Dialog_AddButtons(dialog, handle, buttons, dialog.AutoAlignButtons);

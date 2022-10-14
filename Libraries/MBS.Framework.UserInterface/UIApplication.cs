@@ -729,8 +729,7 @@ namespace MBS.Framework.UserInterface
 		}
 
 
-		public event ApplicationActivatedEventHandler Activated;
-		protected virtual void OnActivated(ApplicationActivatedEventArgs e)
+		protected override void OnActivated(ApplicationActivatedEventArgs e)
 		{
 			if (e.FirstRun)
 			{
@@ -751,7 +750,7 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			Activated?.Invoke(typeof(UIApplication), e);
+			base.OnActivated(e);
 		}
 
 		private void t_threadStart(object obj)

@@ -26,7 +26,7 @@ using MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 {
-	[ControlImplementation(typeof(SyntaxTextBoxControl))]
+	// [ControlImplementation(typeof(SyntaxTextBoxControl))]
 	public class SyntaxTextBoxImplementation : TextBoxImplementation
 	{
 		public SyntaxTextBoxImplementation(Engine engine, Control control) : base(engine, control)
@@ -120,7 +120,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			Console.WriteLine("provider {0}, hStyleContext {1}", provider, hStyleContext);
 
-			return new GTKNativeControl(handle, new System.Collections.Generic.KeyValuePair<string, IntPtr>[] { new System.Collections.Generic.KeyValuePair<string, IntPtr>("TextBuffer", hBuffer) });
+			return new GTKNativeControl(handle, new System.Collections.Generic.KeyValuePair<string, IntPtr>[]
+			{
+				new System.Collections.Generic.KeyValuePair<string, IntPtr>("TextBuffer", hBuffer)
+			});
 		}
 
 		private NativeControl CreatePlainTextBox(Control control)
@@ -128,7 +131,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			TextBoxImplementation impl = new TextBoxImplementation(Engine, control);
 			(control as TextBox).Multiline = true;
 
-			NativeControl nc = impl.CreateControl(control);
+			NativeControl nc = impl.CreateControl(control, true);
 			return nc;
 		}
 

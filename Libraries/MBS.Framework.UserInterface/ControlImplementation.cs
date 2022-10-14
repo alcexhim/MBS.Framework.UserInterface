@@ -97,7 +97,7 @@ namespace MBS.Framework.UserInterface
 		private Engine mvarEngine = null;
 		public Engine Engine { get { return mvarEngine; } }
 
-		public ControlImplementation (Engine engine, Control control)
+		public ControlImplementation(Engine engine, Control control)
 		{
 			mvarEngine = engine;
 			mvarControl = control;
@@ -145,7 +145,7 @@ namespace MBS.Framework.UserInterface
 			// TODO: implement
 		}
 
-		private Dictionary<Control, string> _controlText = new Dictionary<Control, string> ();
+		private Dictionary<Control, string> _controlText = new Dictionary<Control, string>();
 
 		protected abstract Vector2D GetLocationInternal();
 		public Vector2D GetLocation()
@@ -168,30 +168,37 @@ namespace MBS.Framework.UserInterface
 			SetControlBoundsInternal(bounds);
 		}
 
-		protected virtual string GetControlTextInternal (Control control)
+		protected virtual string GetControlTextInternal(Control control)
 		{
-			if (_controlText.ContainsKey (control))
-				return _controlText [control];
+			if (_controlText.ContainsKey(control))
+				return _controlText[control];
 			return null;
 		}
-		public string GetControlText (Control control)
+		public string GetControlText(Control control)
 		{
-			if (!((UIApplication)Application.Instance).Engine.IsControlCreated (control))
+			if (!((UIApplication)Application.Instance).Engine.IsControlCreated(control))
 				return null;
-			return GetControlTextInternal (control);
+			return GetControlTextInternal(control);
 		}
-		protected virtual void SetControlTextInternal (Control control, string text)
+
+		protected abstract Vector2D ClientToScreenCoordinatesInternal(Vector2D point);
+		public Vector2D ClientToScreenCoordinates(Vector2D point)
 		{
-			_controlText [control] = text;
+			return ClientToScreenCoordinatesInternal(point);
 		}
-		public void SetControlText (Control control, string text)
+
+		protected virtual void SetControlTextInternal(Control control, string text)
+		{
+			_controlText[control] = text;
+		}
+		public void SetControlText(Control control, string text)
 		{
 			if (!control.IsCreated)
 				return;
-			SetControlTextInternal (control, text);
+			SetControlTextInternal(control, text);
 		}
 
-		protected abstract NativeControl CreateControlInternal (Control control);
+		protected abstract NativeControl CreateControlInternal(Control control);
 
 		protected abstract Dimension2D GetControlSizeInternal();
 		public Dimension2D GetControlSize()
@@ -208,33 +215,39 @@ namespace MBS.Framework.UserInterface
 		private NativeControl mvarHandle = null;
 		public NativeControl Handle { get { return mvarHandle; } }
 
-		public NativeControl CreateControl (Control control)
+		public NativeControl CreateControl(Control control, bool createOnly = false)
 		{
-			// if (control.ControlImplementation == null)
-			control.ControlImplementation = this;
+			if (!createOnly)
+			{
+				// if (control.ControlImplementation == null)
+				control.ControlImplementation = this;
 
-			OnCreating (EventArgs.Empty);
+				OnCreating(EventArgs.Empty);
+			}
 
-			NativeControl handle = CreateControlInternal (control);
-			if (handle == null) throw new InvalidOperationException ();
+			NativeControl handle = CreateControlInternal(control);
+			if (handle == null) throw new InvalidOperationException();
 
-			InitializeControlProperties(handle);
-			UpdateControlFont(handle);
+			if (!createOnly)
+			{
+				InitializeControlProperties(handle);
+				UpdateControlFont(handle);
 
-			mvarHandle = handle;
-			OnCreated (EventArgs.Empty);
+				mvarHandle = handle;
+				OnCreated(EventArgs.Empty);
+			}
 			return handle;
 		}
 
-		protected virtual void AfterCreateControl ()
+		protected virtual void AfterCreateControl()
 		{
 
 		}
 
-		protected internal virtual void OnCreating (EventArgs e)
+		protected internal virtual void OnCreating(EventArgs e)
 		{
 		}
-		protected internal virtual void OnCreated (EventArgs e)
+		protected internal virtual void OnCreated(EventArgs e)
 		{
 		}
 
@@ -244,9 +257,9 @@ namespace MBS.Framework.UserInterface
 			return IsControlVisibleInternal();
 		}
 
-		public void SetControlVisibility (bool visible)
+		public void SetControlVisibility(bool visible)
 		{
-			SetControlVisibilityInternal (visible);
+			SetControlVisibilityInternal(visible);
 		}
 
 		protected abstract void SetMarginInternal(Padding value);
@@ -255,7 +268,7 @@ namespace MBS.Framework.UserInterface
 			SetMarginInternal(value);
 		}
 
-		protected abstract void SetControlVisibilityInternal (bool visible);
+		protected abstract void SetControlVisibilityInternal(bool visible);
 
 		protected abstract void UpdateControlFontInternal(NativeControl handle, Font font);
 		internal void UpdateControlFont(NativeControl handle)
@@ -267,16 +280,16 @@ namespace MBS.Framework.UserInterface
 			UpdateControlFontInternal(Handle, font);
 		}
 
-		protected abstract void RegisterDragSourceInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
-		public void RegisterDragSource (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		protected abstract void RegisterDragSourceInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
+		public void RegisterDragSource(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			RegisterDragSourceInternal (control, targets, actions, buttons, modifierKeys);
+			RegisterDragSourceInternal(control, targets, actions, buttons, modifierKeys);
 		}
 
-		protected abstract void RegisterDropTargetInternal (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
-		public void RegisterDropTarget (Control control, DragDrop.DragDropTarget [] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		protected abstract void RegisterDropTargetInternal(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys);
+		public void RegisterDropTarget(Control control, DragDrop.DragDropTarget[] targets, DragDropEffect actions, MouseButtons buttons, KeyboardModifierKey modifierKeys)
 		{
-			RegisterDropTargetInternal (control, targets, actions, buttons, modifierKeys);
+			RegisterDropTargetInternal(control, targets, actions, buttons, modifierKeys);
 		}
 
 		protected abstract IVirtualControlContainer GetParentControlInternal();
@@ -307,65 +320,65 @@ namespace MBS.Framework.UserInterface
 			SetVerticalAlignmentInternal(value);
 		}
 
-		protected internal virtual void OnDragDropDataRequest (DragDropDataRequestEventArgs e)
+		protected internal virtual void OnDragDropDataRequest(DragDropDataRequestEventArgs e)
 		{
-			Control.OnDragDropDataRequest (e);
+			Control.OnDragDropDataRequest(e);
 		}
-		protected internal virtual void OnDragBegin (DragEventArgs e)
+		protected internal virtual void OnDragBegin(DragEventArgs e)
 		{
-			Control.OnDragBegin (e);
+			Control.OnDragBegin(e);
 		}
-		protected internal virtual void OnDragDataDelete (EventArgs e)
+		protected internal virtual void OnDragDataDelete(EventArgs e)
 		{
-			Control.OnDragDataDelete (e);
-		}
-
-		protected internal virtual void OnKeyDown (KeyEventArgs e)
-		{
-			Control.OnKeyDown (e);
-		}
-		protected internal virtual void OnKeyUp (KeyEventArgs e)
-		{
-			Control.OnKeyUp (e);
+			Control.OnDragDataDelete(e);
 		}
 
-		protected internal virtual void OnClick (EventArgs e)
+		protected internal virtual void OnKeyDown(KeyEventArgs e)
 		{
-			Control.OnClick (e);
+			Control.OnKeyDown(e);
+		}
+		protected internal virtual void OnKeyUp(KeyEventArgs e)
+		{
+			Control.OnKeyUp(e);
+		}
+
+		protected internal virtual void OnClick(EventArgs e)
+		{
+			Control.OnClick(e);
 		}
 
 		protected internal virtual void OnMouseEnter(MouseEventArgs e)
 		{
 			Control.OnMouseEnter(e);
 		}
-		protected internal virtual void OnMouseDown (MouseEventArgs e)
+		protected internal virtual void OnMouseDown(MouseEventArgs e)
 		{
-			Control.OnMouseDown (e);
+			Control.OnMouseDown(e);
 		}
-		protected internal virtual void OnMouseMove (MouseEventArgs e)
+		protected internal virtual void OnMouseMove(MouseEventArgs e)
 		{
-			Control.OnMouseMove (e);
+			Control.OnMouseMove(e);
 		}
-		protected internal virtual void OnMouseUp (MouseEventArgs e)
+		protected internal virtual void OnMouseUp(MouseEventArgs e)
 		{
-			Control.OnMouseUp (e);
+			Control.OnMouseUp(e);
 		}
-		protected internal virtual void OnMouseDoubleClick (MouseEventArgs e)
+		protected internal virtual void OnMouseDoubleClick(MouseEventArgs e)
 		{
-			Control.OnMouseDoubleClick (e);
+			Control.OnMouseDoubleClick(e);
 		}
 		protected internal virtual void OnMouseLeave(MouseEventArgs e)
 		{
 			Control.OnMouseLeave(e);
 		}
 
-		protected internal virtual void OnRealize (EventArgs e)
+		protected internal virtual void OnRealize(EventArgs e)
 		{
-			Control.OnRealize (e);
+			Control.OnRealize(e);
 		}
-		protected internal virtual void OnUnrealize (EventArgs e)
+		protected internal virtual void OnUnrealize(EventArgs e)
 		{
-			Control.OnUnrealize (e);
+			Control.OnUnrealize(e);
 		}
 
 		protected internal virtual void OnResizing(ResizingEventArgs e)
@@ -393,39 +406,39 @@ namespace MBS.Framework.UserInterface
 			Control.OnAfterContextMenu(e);
 		}
 
-		protected internal virtual void OnMapping (EventArgs e)
+		protected internal virtual void OnMapping(EventArgs e)
 		{
-			Control.OnMapping (e);
+			Control.OnMapping(e);
 		}
-		protected internal virtual void OnMapped (EventArgs e)
+		protected internal virtual void OnMapped(EventArgs e)
 		{
-			Control.OnMapped (e);
+			Control.OnMapped(e);
 		}
-		protected internal virtual void OnShown (EventArgs e)
+		protected internal virtual void OnShown(EventArgs e)
 		{
-			Control.OnShown (e);
-		}
-
-		protected internal virtual void OnGotFocus (EventArgs e)
-		{
-			Control.OnGotFocus (e);
-		}
-		protected internal virtual void OnLostFocus (EventArgs e)
-		{
-			Control.OnLostFocus (e);
+			Control.OnShown(e);
 		}
 
-		protected abstract void SetFocusInternal ();
-		public void SetFocus ()
+		protected internal virtual void OnGotFocus(EventArgs e)
 		{
-			SetFocusInternal ();
+			Control.OnGotFocus(e);
+		}
+		protected internal virtual void OnLostFocus(EventArgs e)
+		{
+			Control.OnLostFocus(e);
 		}
 
-		public void UpdateControlLayout ()
+		protected abstract void SetFocusInternal();
+		public void SetFocus()
 		{
-			UpdateControlLayoutInternal ();
+			SetFocusInternal();
 		}
-		protected virtual void UpdateControlLayoutInternal ()
+
+		public void UpdateControlLayout()
+		{
+			UpdateControlLayoutInternal();
+		}
+		protected virtual void UpdateControlLayoutInternal()
 		{
 		}
 
@@ -475,10 +488,10 @@ namespace MBS.Framework.UserInterface
 		/// <value><c>true</c> if exact match required; otherwise, <c>false</c>.</value>
 		public bool Exact { get; set; } = false;
 
-		public ControlImplementationAttribute (Type controlType, bool exact = false)
+		public ControlImplementationAttribute(Type controlType, bool exact = false)
 		{
-			if (!controlType.IsSubclassOf (typeof (Control)))
-				throw new InvalidOperationException ();
+			if (!controlType.IsSubclassOf(typeof(Control)))
+				throw new InvalidOperationException();
 
 			ControlType = controlType;
 			Exact = exact;

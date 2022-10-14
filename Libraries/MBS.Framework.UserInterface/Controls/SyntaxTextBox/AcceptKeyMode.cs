@@ -1,10 +1,10 @@
 //
-//  GtkTextIter.cs
+//  AcceptKeyMode.cs
 //
 //  Author:
-//       Mike Becker <alcexhim@gmail.com>
+//       Michael Becker <alcexhim@gmail.com>
 //
-//  Copyright (c) 2019 Mike Becker
+//  Copyright (c) 2022 Mike Becker's Software
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,16 +19,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.InteropServices;
-
-namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
+namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 {
-	internal static class GtkTextIter
+	public enum AcceptKeyMode
 	{
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern int gtk_text_iter_get_offset(ref Structures.GtkTextIter iter);
-
-		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern int gtk_text_iter_get_line(ref Structures.GtkTextIter iter);
+		Cancel = -2,
+		Undefined = -1,
+		Reject = 0,
+		Accept = 1,
+		Complete = 2
 	}
 }

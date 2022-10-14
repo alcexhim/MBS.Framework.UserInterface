@@ -31,7 +31,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, RotationCenterpoint.X, RotationCenterpoint.Y);
 			CheckStatus();
 
-			Internal.Cairo.Methods.cairo_rotate(mvarCairoContext, angle);
+			double angleRadians = (Math.PI / 180) * angle;
+			Internal.Cairo.Methods.cairo_rotate(mvarCairoContext, angleRadians);
 			CheckStatus();
 
 			Internal.Cairo.Methods.cairo_translate(mvarCairoContext, -RotationCenterpoint.X, -RotationCenterpoint.Y);

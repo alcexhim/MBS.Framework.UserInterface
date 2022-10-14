@@ -26,11 +26,96 @@ namespace MBS.Framework.UserInterface.Controls.SyntaxTextBox
 {
 	public class AutoSuggestionWindow : PopupWindow
 	{
+		public class SuggestionCollection
+			: System.Collections.Generic.List<string>
+		{
+			private AutoSuggestionWindow _parent = null;
+			public SuggestionCollection(AutoSuggestionWindow parent)
+			{
+				_parent = parent;
+			}
+
+			public bool AutoSort { get; set; } = true;
+
+			public new void Clear()
+			{
+				base.Clear();
+				_parent.lv.Model.Rows.Clear();
+			}
+			public new void Add(string value)
+			{
+				base.Add(value);
+				_parent.lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(_parent.lv.Model.Columns[0], value) }));
+
+				if (AutoSort)
+					Sort();
+			}
+		}
+
 		public ListViewControl lv = null;
 		public TabContainer tabs = null;
 
+		public SuggestionCollection Suggestions { get; private set; } = null;
+
+		private string _FilterText = null;
+		public string FilterText
+		{
+			get
+			{
+				return _FilterText;
+			}
+			set
+			{
+				_FilterText = value;
+				UpdateList();
+			}
+		}
+
+		public void UpdateList()
+		{
+			lv.Model.Rows.Clear();
+
+			for (int i = 0; i < Suggestions.Count; i++)
+			{
+				if (ShouldFilter(Suggestions[i]))
+				{
+					lv.Model.Rows.Add(new TreeModelRow(new TreeModelRowColumn[] { new TreeModelRowColumn(lv.Model.Columns[0], Suggestions[i]) }));
+				}
+			}
+
+			if (lv.Model.Rows.Count > 0)
+			{
+				lv.SelectedRows.Clear();
+				lv.SelectedRows.Add(lv.Model.Rows[0]);
+			}
+		}
+
+		private bool ShouldFilter(string v)
+		{
+			SyntaxTextBoxControl owner = (SyntaxTextBoxControl)Owner;
+			if (!owner.Language.IsCaseSensitive)
+			{
+				return String.IsNullOrEmpty(FilterText) || v.ToLower().StartsWith(FilterText.ToLower());
+			}
+			return String.IsNullOrEmpty(FilterText) || v.StartsWith(FilterText);
+		}
+
+		public int VisibleSuggestionCount
+		{
+			get
+			{
+				if (!IsCreated)
+				{
+					return Suggestions.Count;
+				}
+				UpdateList();
+				return lv.Model.Rows.Count;
+			}
+		}
+
 		public AutoSuggestionWindow()
 		{
+			Suggestions = new SuggestionCollection(this);
 			this.Layout = new BoxLayout(Orientation.Vertical);
 
 			lv = new ListViewControl();

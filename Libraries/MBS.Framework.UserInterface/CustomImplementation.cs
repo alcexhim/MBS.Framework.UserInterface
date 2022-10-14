@@ -26,6 +26,11 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class CustomImplementation : ControlImplementation
 	{
+		protected override Vector2D ClientToScreenCoordinatesInternal(Vector2D point)
+		{
+			throw new NotImplementedException();
+		}
+
 		public CustomImplementation(Engine engine, Control control) : base(engine, control)
 		{
 		}

@@ -45,6 +45,6 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		public static extern bool gtk_popover_get_modal(IntPtr /*GtkPopover*/ popover);
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
-		public static extern void gtk_popover_set_pointing_to(IntPtr /*GtkPopover*/ popover, GDK.Structures.GdkRectangle rect);
+		public static extern void gtk_popover_set_pointing_to(IntPtr /*GtkPopover*/ popover, ref GDK.Structures.GdkRectangle rect);
 	}
 }

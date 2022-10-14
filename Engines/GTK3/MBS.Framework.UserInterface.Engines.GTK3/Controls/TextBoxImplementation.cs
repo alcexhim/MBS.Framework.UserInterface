@@ -198,6 +198,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				{
 					new KeyValuePair<string, IntPtr>("ScrolledWindow", hScrolledWindow),
 					new KeyValuePair<string, IntPtr>("TextBox", handle),
+					new KeyValuePair<string, IntPtr>("TextBuffer", hBuffer),
 					new KeyValuePair<string, IntPtr>("EventBox", handle)
 				});
 			}
@@ -306,14 +307,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
 				Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
 				bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(hBuffer, ref iterStart, ref iterEnd);
-				if (success)
-				{
-					return Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iterStart);
-				}
-				return 0;
+
+				return Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iterStart);
 			}
 			return -1;
 		}
+
+		protected override Vector2D ClientToScreenCoordinatesInternal(Vector2D point)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			int window_x = 0, window_y = 0;
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_buffer_to_window_coords(handle, Internal.GTK.Constants.GtkTextWindowType.Text, (int)point.X, (int)point.Y, ref window_x, ref window_y);
+			return new Vector2D(window_x, window_y);
+		}
+
 		public void SetSelectionStart(int pos)
 		{
 			throw new NotImplementedException();
@@ -626,9 +633,44 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			throw new NotImplementedException();
 		}
 
+		public int GetFirstCharIndexFromLine(int lineIndex)
+		{
+			IntPtr buffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			return __GetFirstCharIndexFromLine(buffer, lineIndex);
+		}
+
+		private static int __GetFirstCharIndexFromLine(IntPtr buffer, int lineIndex)
+		{
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_line(buffer, ref iter, lineIndex);
+
+			int value = Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_offset(ref iter);
+			return value;
+		}
+
 		public int GetFirstCharIndexOfCurrentLine()
 		{
-			return -1;
+			// GTK3: works!
+			IntPtr buffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+
+			Internal.GTK.Structures.GtkTextIter iterStart = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Structures.GtkTextIter iterEnd = new Internal.GTK.Structures.GtkTextIter();
+			bool success = Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_selection_bounds(buffer, ref iterStart, ref iterEnd);
+
+			int line = Internal.GTK.Methods.GtkTextIter.gtk_text_iter_get_line(ref iterStart);
+			return __GetFirstCharIndexFromLine(buffer, line);
+		}
+
+		public Rectangle GetPositionFromCharIndex(int charIndex)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).GetNamedHandle("TextBox");
+			IntPtr buffer = (Handle as GTKNativeControl).GetNamedHandle("TextBuffer");
+			Internal.GTK.Structures.GtkTextIter iter = new Internal.GTK.Structures.GtkTextIter();
+			Internal.GTK.Methods.GtkTextBuffer.gtk_text_buffer_get_iter_at_offset(buffer, ref iter, charIndex);
+
+			Internal.GDK.Structures.GdkRectangle rect = new Internal.GDK.Structures.GdkRectangle();
+			Internal.GTK.Methods.GtkTextView.gtk_text_view_get_iter_location(handle, ref iter, ref rect);
+			return new Rectangle(rect.x, rect.y, rect.width, rect.height);
 		}
 
 		public int GetCharIndexFromPosition(Vector2D pt)

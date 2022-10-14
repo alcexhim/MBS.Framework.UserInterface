@@ -137,9 +137,6 @@ namespace MBS.Framework.UserInterface.Controls
 		/// <value>The response value.</value>
 		public int ResponseValue { get { return mvarResponseValue; } set { mvarResponseValue = value; } }
 
-		private HorizontalAlignment mvarHorizontalAlignment = HorizontalAlignment.Default;
-		public HorizontalAlignment HorizontalAlignment { get { return mvarHorizontalAlignment; } set { mvarHorizontalAlignment = value; } }
-
 		public CommandStylePreset StylePreset { get; set; } = CommandStylePreset.None;
 
 		private bool _Checked = false;
@@ -148,7 +145,7 @@ namespace MBS.Framework.UserInterface.Controls
 			get
 			{
 				Native.IButtonControlImplementation impl = (ControlImplementation as Native.IButtonControlImplementation);
-				if (impl != null)
+				if (impl != null && IsCreated)
 				{
 					_Checked = impl.GetChecked();
 				}

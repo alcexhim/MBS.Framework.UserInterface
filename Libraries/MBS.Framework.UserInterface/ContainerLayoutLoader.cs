@@ -705,6 +705,10 @@ namespace MBS.Framework.UserInterface
 				case "GtkTreeView":
 				{
 					ctl = new ListViewControl();
+					if (item.ClassName == "GtkIconView")
+					{
+						((ListViewControl)ctl).Mode = ListViewMode.LargeIcon;
+					}
 					if (item.Properties["model"] != null)
 					{
 						DefaultTreeModel tm = GetPropertyOrLocalRef(item.Properties["model"].Value) as DefaultTreeModel;

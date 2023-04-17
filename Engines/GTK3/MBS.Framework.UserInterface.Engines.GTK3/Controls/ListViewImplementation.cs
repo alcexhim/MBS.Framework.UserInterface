@@ -584,7 +584,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_model(handle, hTreeStore);
 
 						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_item_width(handle, 96);
+
+						// FIXME: this should be taken from the glade definition (cell renderers)!
 						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_text_column(handle, 0);
+						Internal.GTK.Methods.GtkIconView.gtk_icon_view_set_pixbuf_column(handle, 1);
 						break;
 					}
 				}

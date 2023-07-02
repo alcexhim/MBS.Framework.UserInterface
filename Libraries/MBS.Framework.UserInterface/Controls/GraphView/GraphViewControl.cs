@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Drawing;
 
@@ -36,16 +37,45 @@ namespace MBS.Framework.UserInterface.Controls.GraphView
 		{
 			dm.Register(this);
 			dm.BeforeControlPaint += dm_BeforeControlPaint;
-
+			dm.HitTest += dm_HitTest;
 			Nodes = new GraphNode.GraphNodeCollection(null);
 		}
 
-		/*
+		private GraphNode HighlightNode = null;
+		private List<GraphNode> SelectedNodes = new List<GraphNode>();
+
 		private void dm_HitTest(object sender, DragManagerHitTestEventArgs e)
 		{
+			HighlightNode = null;
+			if (e.Buttons == Input.Mouse.MouseButtons.Primary)
+			{
+				SelectedNodes.Clear();
+			}
+			e.Handled = true;
 
+			foreach (GraphNode node in Nodes)
+			{
+				if (!_nodeRects.ContainsKey(node))
+					continue;
+
+				// this should exist by now
+				Rectangle nodePos = _nodeRects[node];
+				if (nodePos.Contains(e.Location))
+				{
+					HighlightNode = node;
+					if (e.Buttons == Input.Mouse.MouseButtons.Primary)
+					{
+						SelectedNodes.Add(node);
+					}
+
+					e.Hit = node;
+					e.Handled = true;
+					return;
+				}
+			}
 		}
-		*/
+
+		private System.Collections.Generic.Dictionary<GraphNode, Rectangle> _nodeRects = new System.Collections.Generic.Dictionary<GraphNode, Rectangle>();
 
 		private void dm_BeforeControlPaint(object sender, PaintEventArgs e)
 		{
@@ -59,10 +89,23 @@ namespace MBS.Framework.UserInterface.Controls.GraphView
 				TextMeasurement textSize = e.Graphics.MeasureText(node.Title, font);
 				nodePos.Width = textSize.Size.Width + 8;
 
-				e.Graphics.FillRectangle(new SolidBrush(Colors.White), nodePos);
+				if (SelectedNodes.Contains(node))
+				{
+					e.Graphics.FillRectangle(new SolidBrush(SystemColors.HighlightBackground), nodePos);
+				}
+				else if (node == HighlightNode)
+				{
+					e.Graphics.FillRectangle(new SolidBrush(Color.Parse("#9c9cce")), nodePos);
+				}
+				else
+				{
+					e.Graphics.FillRectangle(new SolidBrush(Colors.White), nodePos);
+				}
 				e.Graphics.DrawRectangle(new Pen(Colors.Black), nodePos);
 
 				e.Graphics.DrawText(node.Title, font, nodePos, new SolidBrush(Colors.Black), HorizontalAlignment.Center, VerticalAlignment.Middle);
+				_nodeRects[node] = nodePos.Clone();
+
 				nodePos = nodePos.Translate(nodePos.Right + 32, 0);
 			}
 		}

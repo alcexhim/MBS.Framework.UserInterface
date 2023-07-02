@@ -49,13 +49,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			IntPtr hchildalign = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(handle); // gtkalignment
 			IntPtr hchildbox = Internal.GTK.Methods.GtkBin.gtk_bin_get_child(hchildalign); // gtkbox
+			if (hchildbox != IntPtr.Zero)
+			{
+				IntPtr hchildlist = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hchildbox);
+				uint count = Internal.GLib.Methods.g_list_length(hchildlist);
 
-			IntPtr hchildlist = Internal.GTK.Methods.GtkContainer.gtk_container_get_children(hchildbox);
-			uint count = Internal.GLib.Methods.g_list_length(hchildlist);
+				IntPtr hchild = Internal.GLib.Methods.g_list_nth_data(hchildlist, 1);
 
-			IntPtr hchild = Internal.GLib.Methods.g_list_nth_data(hchildlist, 1);
-
-			Internal.GTK.Methods.GtkLabel.gtk_label_set_use_markup(hchild, Control.UseMarkup);
+				Internal.GTK.Methods.GtkLabel.gtk_label_set_use_markup(hchild, Control.UseMarkup);
+			}
+			else
+			{
+				Console.Error.WriteLine("uwt: gtk: ButtonImplementation hchildbox is NULL");
+			}
 		}
 
 		protected override NativeControl CreateControlInternal(Control control)

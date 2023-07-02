@@ -37,6 +37,7 @@ namespace MBS.Framework.UserInterface
 			void RemoveCommandBar(CommandBar toolbar);
 
 			void PresentWindow(DateTime timestamp);
+			void BeginMoveDrag(Vector2D origin);
 		}
 	}
 	public class Window : Container
@@ -47,6 +48,15 @@ namespace MBS.Framework.UserInterface
 		public CommandBar.CommandBarCollection CommandBars { get; private set; } = null;
 
 		public bool Modal { get; set; } = false;
+
+		public void BeginMove(Vector2D origin)
+		{
+			Native.IWindowNativeImplementation impl = (ControlImplementation as Native.IWindowNativeImplementation);
+			if (impl != null)
+			{
+				impl.BeginMoveDrag(origin);
+			}
+		}
 
 		internal protected override void OnCreating(EventArgs e)
 		{

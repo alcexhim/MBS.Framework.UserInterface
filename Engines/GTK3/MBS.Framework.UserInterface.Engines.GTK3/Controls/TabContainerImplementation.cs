@@ -274,6 +274,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 		}
 
+		public TabPage GetSelectedTab()
+		{
+			TabContainer tc = (Control as TabContainer);
+			IntPtr hTabContainer = (Handle as GTKNativeControl).Handle;
+			int nPage = Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_current_page(hTabContainer);
+			if (nPage >= 0 && nPage < tc.TabPages.Count)
+			{
+				return tc.TabPages[nPage];
+			}
+			return null;
+		}
 		public void SetSelectedTab(TabPage page)
 		{
 			TabContainer tc = (Control as TabContainer);
@@ -360,7 +371,27 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				Internal.GObject.Methods.g_signal_connect(handle, "change_current_page", change_current_tab_d, IntPtr.Zero);
 				Internal.GObject.Methods.g_signal_connect(handle, "switch_page", switch_page_d, IntPtr.Zero);
 
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_scrollable(handle, ctl.Scrollable);
 				return new GTKNativeControl(handle);
+			}
+		}
+
+		private bool _Scrollable = false;
+		public bool GetScrollable()
+		{
+			if (Handle is GTKNativeControl)
+			{
+				return Internal.GTK.Methods.GtkNotebook.gtk_notebook_get_scrollable((Handle as GTKNativeControl).Handle);
+			}
+			return _Scrollable;
+		}
+
+		public void SetScrollable(bool value)
+		{
+			_Scrollable = value;
+			if (Handle is GTKNativeControl)
+			{
+				Internal.GTK.Methods.GtkNotebook.gtk_notebook_set_scrollable((Handle as GTKNativeControl).Handle, value);
 			}
 		}
 	}

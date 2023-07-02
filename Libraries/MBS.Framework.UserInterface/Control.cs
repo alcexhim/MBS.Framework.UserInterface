@@ -115,6 +115,11 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		public void BeginMoveDrag(MouseButtons button, double x, double y, DateTime timestamp)
+		{
+			ControlImplementation?.BeginMoveDrag(button, x, y, timestamp);
+		}
+
 		public Rectangle ClientRectangle
 		{
 			get
@@ -200,6 +205,32 @@ namespace MBS.Framework.UserInterface
 		public Vector2D ClientToScreenCoordinates(Vector2D point)
 		{
 			return (ControlImplementation?.ClientToScreenCoordinates(point)).GetValueOrDefault(point);
+		}
+		public Vector2D ClientToWindowCoordinates(Vector2D point)
+		{
+			// FIXME: this doesn't work
+			IVirtualControlContainer parent = Parent;
+			double newX = point.X;
+			double newY = point.Y;
+			if (parent != null)
+			{
+				while (true)
+				{
+					if (parent == null) break;
+
+					newX += parent.Bounds.X;
+					newY += parent.Bounds.Y;
+
+					if (parent is Window)
+					{
+						break;
+					}
+
+					parent = parent.Parent;
+				}
+			}
+			Console.WriteLine("window coords ({0}, {1})", newX, newY);
+			return new Vector2D(newX, newY);
 		}
 
 		private Dimension2D mvarSize = new Dimension2D(0, 0);
@@ -578,6 +609,25 @@ namespace MBS.Framework.UserInterface
 		{
 			MouseLeave?.Invoke(this, e);
 		}
+		public event MouseEventHandler MouseWheel;
+		protected internal virtual void OnMouseWheel(MouseEventArgs e)
+		{
+			// look at this editor's configuration to see if we have any registered keybindings
+			foreach (CommandBinding binding in (Application.Instance as UIApplication).CommandBindings)
+			{
+				if (binding.Match(e))
+				{
+					if (binding.ContextID == null || Application.Instance.Contexts.Contains(binding.ContextID.Value))
+					{
+						Application.Instance.ExecuteCommand(binding.CommandID);
+						e.Cancel = true;
+						break;
+					}
+				}
+			}
+
+			MouseWheel?.Invoke(this, e);
+		}
 
 		public event MouseEventHandler MouseDoubleClick;
 		protected internal virtual void OnMouseDoubleClick(MouseEventArgs e)
@@ -622,7 +672,13 @@ namespace MBS.Framework.UserInterface
 			Paint?.Invoke(this, e);
 		}
 
-		public event EventHandler Creating;
+        public event PaintEventHandler PaintBackground;
+        protected internal virtual void OnPaintBackground(PaintEventArgs e)
+        {
+            PaintBackground?.Invoke(this, e);
+        }
+
+        public event EventHandler Creating;
 		protected internal virtual void OnCreating(EventArgs e)
 		{
 			Creating?.Invoke(this, e);
@@ -875,5 +931,12 @@ namespace MBS.Framework.UserInterface
 		{
 			SetExtraData<object>(key, value);
 		}
+
+		private Seat _Seat = null;
+		/// <summary>
+		/// Gets the seat.
+		/// </summary>
+		/// <value>The seat.</value>
+		public Seat Seat { get { if (_Seat == null) _Seat = new Seat(this);  return _Seat; } }
 	}
 }

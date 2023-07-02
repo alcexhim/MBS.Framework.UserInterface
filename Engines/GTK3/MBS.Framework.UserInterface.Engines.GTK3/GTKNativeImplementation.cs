@@ -54,7 +54,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 		protected override void SetControlVisibilityInternal (bool visible)
 		{
-			IntPtr handle = (Engine.GetHandleForControl(Control) as GTKNativeControl).Handle;
+			GTKNativeControl nc = (Engine.GetHandleForControl(Control) as GTKNativeControl);
+			if (nc == null)
+			{
+				Console.Error.WriteLine("uwt: gtk: SetControlVisibilityInternal({0}): GTKNativeControl is null", Control.GetType());
+				return;
+			}
+
+			IntPtr handle = nc.Handle;
 			if (visible) {
 				Internal.GTK.Methods.GtkWidget.gtk_widget_show (handle); // should 'all' be here? guess it doesn't matter
 			} else {
@@ -284,6 +291,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private static Action<IntPtr, IntPtr, IntPtr> gc_map_event_handler = null;
 		private static Internal.GTK.Delegates.GtkWidgetEvent gc_button_press_event_handler = null;
 		private static Internal.GTK.Delegates.GtkWidgetEvent gc_button_release_event_handler = null;
+		private static Internal.GTK.Delegates.GtkWidgetEvent gc_scroll_event_handler = null;
 		private static Internal.GTK.Delegates.GtkWidgetEvent gc_motion_notify_event_handler = null;
 		private static Internal.GTK.Delegates.GtkWidgetEvent gc_focus_in_event_handler = null;
 		private static Internal.GTK.Delegates.GtkWidgetEvent gc_focus_out_event_handler = null;
@@ -298,7 +306,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private static void gc_destroy(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
 			// destroy all handles associated with widget
-			ControlImplementation impl = GetControlImplementationForWidget(widget);
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl != null)
 			{
 				// impl.Engine.UnregisterControlHandle(impl.Control);
@@ -308,7 +316,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private static bool gc_delete_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEventKey*/ evt)
 		{
 			// destroy all handles associated with widget
-			ControlImplementation impl = GetControlImplementationForWidget(widget);
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			// Engine.UnregisterControlHandle(ctl);
 			// moved to WindowImplementation
 			return false;
@@ -321,6 +329,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			gc_key_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_key_release_event);
 			gc_button_press_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_press_event);
 			gc_button_release_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_button_release_event);
+			gc_scroll_event_handler = new Internal.GTK.Delegates.GtkWidgetEvent(gc_scroll_event);
 
 
 			gc_realize_handler = new Action<IntPtr, IntPtr>(gc_realize);
@@ -333,15 +342,34 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			gc_drag_begin_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_begin);
 			gc_drag_data_delete_handler = new Internal.GTK.Delegates.GtkDragEvent(gc_drag_data_delete);
 			gc_drag_data_get_handler = new Internal.GTK.Delegates.GtkDragDataGetEvent(gc_drag_data_get);
+
+			gc_get_preferred_height_handler = new Internal.GTK.Delegates.GtkGetPreferredSizeEvent(gc_get_preferred_height);
+
 			gc_destroy_handler = new Action<IntPtr, IntPtr>(gc_destroy);
 			gc_delete_event_handler = new Func<IntPtr, IntPtr, bool>(gc_delete_event);
 			gc_configure_event_handler = new Func<IntPtr, IntPtr, IntPtr, bool>(gc_configure_event);
 		}
 
+		private static bool gc_scroll_event(IntPtr widget, IntPtr hEventArgs, IntPtr user_data)
+		{
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
+			Control ctl = impl.Control;
+			if (ctl != null)
+			{
+				Internal.GDK.Structures.GdkEventScroll e = (Internal.GDK.Structures.GdkEventScroll)System.Runtime.InteropServices.Marshal.PtrToStructure(hEventArgs, typeof(Internal.GDK.Structures.GdkEventScroll));
+				MouseEventArgs ee = GTK3Engine.GdkEventScrollToMouseEventArgs(e, hEventArgs);
+				Reflection.InvokeMethod(impl.Control, "OnMouseWheel", new object[] { ee });
+
+				if (ee.Cancel)
+					return true;
+			}
+			return false;
+		}
+
 		private static Func<IntPtr, IntPtr, IntPtr, bool> gc_configure_event_handler = null;
 		private static bool gc_configure_event(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkEvent*/ evt, IntPtr user_data)
 		{
-			ControlImplementation impl = GetControlImplementationForWidget(widget);
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 
 			// we cannot pass this param explicitly
 			// MUST USE INTPTR THEN PTRTOSTRUCTURE!
@@ -377,11 +405,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		/// Connects the native GTK signals for the base GtkWidget class to the control with the given handle.
 		/// </summary>
 		/// <param name="nativeHandle">The handle of the control for which to connect signals</param>
-		private void SetupCommonEvents(IntPtr nativeHandle)
+		protected void SetupCommonEvents(IntPtr nativeHandle)
 		{
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "motion_notify_event", gc_motion_notify_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_press_event", gc_button_press_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "button_release_event", gc_button_release_event_handler);
+			Internal.GObject.Methods.g_signal_connect(nativeHandle, "scroll_event", gc_scroll_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "focus_in_event", gc_focus_in_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "focus_out_event", gc_focus_out_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "key_press_event", gc_key_press_event_handler);
@@ -395,9 +424,28 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "delete_event", gc_delete_event_handler);
 			Internal.GObject.Methods.g_signal_connect(nativeHandle, "configure_event", gc_configure_event_handler);
 
+			// size requests
+			// FIXME: this is *NOT* a signal, it only can be overridden from native C code
+			// Internal.GObject.Methods.g_signal_connect(nativeHandle, "get_preferred_height", gc_get_preferred_height_handler);
+
+			// drag-n-drop
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_begin", gc_drag_begin_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_delete", gc_drag_data_delete_handler);
 			Internal.GObject.Methods.g_signal_connect_after(nativeHandle, "drag_data_get", gc_drag_data_get_handler);
+		}
+
+		private static Internal.GTK.Delegates.GtkGetPreferredSizeEvent gc_get_preferred_height_handler;
+		private static void gc_get_preferred_height(IntPtr /*GtkWidget*/ widget, ref int minimum_height, ref int natural_height)
+		{
+			SizeRequestEventArgs e = new SizeRequestEventArgs(SizeRequestType.PreferredHeight, minimum_height, natural_height);
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
+			Reflection.InvokeMethod(impl.Control, "OnSizeRequest", new object[] { e });
+
+			if (e.Handled)
+			{
+				minimum_height = e.MinimumHeight;
+				natural_height = e.NaturalHeight;
+			}
 		}
 
 		private IntPtr GetScrolledWindowChild(IntPtr hScrolledWindow)
@@ -427,7 +475,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static void gc_show(IntPtr /*GtkWidget*/ widget)
 		{
-			ControlImplementation impl = GetControlImplementationForWidget(widget);
+			ControlImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl is GTKNativeImplementation)
 			{
 				((GTKNativeImplementation) impl).OnShown(EventArgs.Empty);
@@ -440,21 +488,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static void gc_drag_begin(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 
 			DragEventArgs e = new DragEventArgs();
 			impl.OnDragBegin(e);
 		}
 		private static void gc_drag_data_delete(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 
 			EventArgs e = new EventArgs();
 			impl.OnDragDataDelete(e);
 		}
 		private static void gc_drag_data_get(IntPtr /*GtkWidget*/ widget, IntPtr /*GdkDragContext*/ context, IntPtr /*GtkSelectionData*/ data, uint info, uint time, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 
 			DragDropDataRequestEventArgs e = new DragDropDataRequestEventArgs(null);
 			impl.OnDragDropDataRequest(e);
@@ -488,7 +536,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			// Internal.GTK.Methods.GtkWindow.gtk_window_set_type_hint(widget, WindowTypeHintToGdkWindowTypeHint(Control.TypeHint));
 
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl != null)
 			{
 				impl.OnRealize(EventArgs.Empty);
@@ -519,7 +567,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static void gc_unrealize(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return;
 
@@ -527,7 +575,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 		private static void gc_map(IntPtr /*GtkWidget*/ widget, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return;
 
@@ -568,7 +616,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static void gc_map_event(IntPtr /*GtkWidget*/ widget, IntPtr evt, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return;
 
@@ -593,7 +641,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static bool gc_focus_in_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -612,7 +660,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static bool gc_focus_out_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -645,7 +693,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static bool gc_key_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -682,7 +730,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				return false;
 			}
 			*/
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -773,7 +821,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		private bool _mouse_double_click = false;
 		private static bool gc_button_press_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -855,7 +903,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		private static bool gc_motion_notify_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation) GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -881,7 +929,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 		private static bool gc_button_release_event(IntPtr /*GtkWidget*/ widget, IntPtr hEventArgs, IntPtr user_data)
 		{
-			GTKNativeImplementation impl = (GTKNativeImplementation)GetControlImplementationForWidget(widget);
+			GTKNativeImplementation impl = (GetControlImplementationForWidget(widget))?.GetNativeImplementation() as GTKNativeImplementation;
 			if (impl == null)
 				return false;
 
@@ -940,13 +988,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		}
 		protected override void SetCursorInternal(Cursor value)
 		{
-			IntPtr hGdkWindow = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window((Handle as GTKNativeControl).Handle);
+			IntPtr hGdkWindow = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window((Handle as GTKNativeControl).GetEventHandle());
+			if (hGdkWindow == IntPtr.Zero)
+			{
+
+			}
 			IntPtr hGdkDisplay = Internal.GDK.Methods.gdk_window_get_display(hGdkWindow);
 
 			GTK3Engine.InitializeCursors(hGdkDisplay);
 
 			IntPtr hCursor = GTK3Engine.GetHandleForCursor(value);
 			Internal.GDK.Methods.gdk_window_set_cursor(hGdkWindow, hCursor);
+		}
+		protected override void BeginMoveDragInternal(MouseButtons button, double x, double y, DateTime timestamp)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Console.WriteLine("BeginMoveDragInternal on {0} (a {1} '{2}')", handle.ToInt64().ToString("X"), Control.GetType().Name, Control.Name);
+
+			IntPtr window = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window(handle);
+			Internal.GDK.Methods.gdk_window_begin_move_drag(window, 1, (int)x, (int)y, 0);
 		}
 
 		protected override bool HasFocusInternal()
@@ -1179,7 +1239,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 
 		protected override Vector2D GetLocationInternal()
 		{
-			return new Vector2D(0, 0);
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Structures.GdkRectangle alloc = new Structures.GdkRectangle();
+			Internal.GTK.Methods.GtkWidget.gtk_widget_get_allocation(handle, ref alloc);
+			return new Vector2D(alloc.x, alloc.y);
 		}
 		protected override void SetLocationInternal(Vector2D location)
 		{

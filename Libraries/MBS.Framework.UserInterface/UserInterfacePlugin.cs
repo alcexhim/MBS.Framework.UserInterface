@@ -24,11 +24,13 @@ using UniversalEditor.ObjectModels.PropertyList;
 
 namespace MBS.Framework.UserInterface
 {
+	[Serializable]
 	public class UserInterfacePlugin : Plugin
 	{
 		public PropertyListObjectModel Configuration { get; set; } = new PropertyListObjectModel();
 		public Context Context { get; protected set; }
 
+		/*
 		private static UserInterfacePlugin[] _plugins = null;
 		public static UserInterfacePlugin[] Get(bool resetCache = false)
 		{
@@ -91,6 +93,9 @@ namespace MBS.Framework.UserInterface
 			UserInterfacePlugin[] plugins = Get(resetCache);
 			for (int i = 0; i < plugins.Length; i++)
 			{
+				if (!plugins[i].AutoRegister)
+					continue;
+
 				if (!plugins[i].IsSupported())
 					continue;
 
@@ -113,6 +118,7 @@ namespace MBS.Framework.UserInterface
 			}
 			return null;
 		}
+		*/
 
 		protected virtual void UpdateMenuItemsInternal()
 		{

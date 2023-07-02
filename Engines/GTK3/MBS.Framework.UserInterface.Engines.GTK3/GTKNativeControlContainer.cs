@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3
 {
@@ -46,6 +47,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		public override IVirtualControlContainer Parent => null; // FIXME: implement this
 
 		public override Padding Padding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+		public override void BeginMoveDrag(MouseButtons buttons, double x, double y, DateTime now)
+		{
+			throw new NotImplementedException();
+		}
 
 		public override Control[] GetAllControls()
 		{

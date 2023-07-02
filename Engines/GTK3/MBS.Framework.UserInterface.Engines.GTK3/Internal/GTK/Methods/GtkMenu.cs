@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Runtime.InteropServices;
+using MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 {
@@ -42,5 +43,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_menu_popup_at_pointer(IntPtr /*GtkMenu*/ menu, IntPtr /*GdkEvent*/ trigger_event);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_menu_popup_at_widget(IntPtr /*GtkMenu*/ menu, IntPtr /*GtkWidget*/ widget, GDK.Constants.GdkGravity widget_anchor, GDK.Constants.GdkGravity menu_anchor, IntPtr /*GdkEvent*/ trigger_event);
 	}
 }

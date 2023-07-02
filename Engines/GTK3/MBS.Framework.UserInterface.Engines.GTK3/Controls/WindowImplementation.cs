@@ -10,6 +10,7 @@ using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Controls;
 using MBS.Framework.Collections.Generic;
 using MBS.Framework.UserInterface.Layouts;
+using MBS.Framework.UserInterface.Controls.CommandBars;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 {
@@ -207,7 +208,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			return true;
 		}
 
-		private Container toolbarContainer = null;
+		private CommandBarRaftingContainer toolbarContainer = null;
 		private Container statusbarContainer = null;
 
 		private HandleDictionary<CommandBar, Container> dictToolbar = new HandleDictionary<CommandBar, Container>();
@@ -215,13 +216,10 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		{
 			Toolbar tb = CommandBarLoader.LoadCommandBar(cb);
 
-			Container cbGripper = new Container(new BoxLayout(Orientation.Horizontal));
-			// cbGripper.Controls.Add(new ToolbarImplementation.InternalGripper(), new BoxLayout.Constraints(false, false));
-			cbGripper.Controls.Add(tb, new BoxLayout.Constraints(true, true));
+			CommandBarControl cbc = new CommandBarControl(tb);
+			toolbarContainer.Controls.Add(cbc, new AbsoluteLayout.Constraints(0, 0, 160, 32));
 
-			toolbarContainer.Controls.Add(cbGripper, new FlowLayout.Constraints());
-
-			dictToolbar.Add(cbGripper, cb);
+			dictToolbar.Add(cbc, cb);
 			/*
 			GTKNativeControl ncToolbar = (Engine.GetHandleForControl(tb) as GTKNativeControl);
 			if (ncToolbar == null)
@@ -332,7 +330,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			#endregion
 
-			toolbarContainer = new Container(new FlowLayout());
+			toolbarContainer = new CommandBarRaftingContainer();
 
 			statusbarContainer = new Container(new BoxLayout(Orientation.Horizontal));
 			((BoxLayout)statusbarContainer.Layout).Spacing = 8;
@@ -511,7 +509,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			{
 				new KeyValuePair<string, IntPtr>("MenuBar", hMenuBar),
 				// new KeyValuePair<string, IntPtr>("StatusBar", hStatusBar),
-				new KeyValuePair<string, IntPtr>("HeaderBar", hHeaderBar)
+				new KeyValuePair<string, IntPtr>("HeaderBar", hHeaderBar),
+				new KeyValuePair<string, IntPtr>("Container", hContainer)
 			});
 		}
 
@@ -636,6 +635,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		protected override void SetLocationInternal(Vector2D location)
 		{
 			base.SetLocationInternal(location);
+		}
+
+		public void BeginMoveDrag(Vector2D point)
+		{
+			IntPtr handle = (Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkWindow.gtk_window_begin_move_drag(handle, 1, (int)point.X, (int)point.Y, 0);
 		}
 	}
 }

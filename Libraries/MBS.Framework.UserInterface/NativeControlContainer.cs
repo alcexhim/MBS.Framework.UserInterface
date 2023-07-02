@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface
 {
@@ -33,6 +34,7 @@ namespace MBS.Framework.UserInterface
 		public abstract ControlImplementation ControlImplementation { get; }
 		public abstract IVirtualControlContainer Parent { get; }
 		public abstract Padding Padding { get; set; }
+		public abstract void BeginMoveDrag(MouseButtons buttons, double x, double y, DateTime now);
 
 		public abstract Control[] GetAllControls();
 	}

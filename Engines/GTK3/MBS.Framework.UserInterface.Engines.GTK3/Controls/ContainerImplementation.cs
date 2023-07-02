@@ -16,6 +16,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 		static ContainerImplementation()
 		{
 			_hListBox_row_activated_d = new Action<IntPtr, IntPtr>(_hListBox_row_activated);
+			_draw_d = new Func<IntPtr, IntPtr, IntPtr, bool>(_draw);
+		}
+
+		private static Func<IntPtr, IntPtr, IntPtr, bool> _draw_d = null;
+		private static bool _draw(IntPtr /*GtkWidget*/ widget, IntPtr /*CairoContext*/ cr, IntPtr user_data)
+		{
+			Control ctl = (((UIApplication)Application.Instance).Engine as GTK3Engine).GetControlByHandle(widget);
+
+			PaintEventArgs e = new PaintEventArgs(new Drawing.GTKGraphics(cr));
+            Reflection.InvokeMethod(ctl, "OnPaintBackground", new object[] { e });
+			e.Handled = false; // OnPaintBackground should not change this
+
+            Reflection.InvokeMethod(ctl, "OnPaint", new object[] { e });
+			return e.Handled;
 		}
 
 		private static Action<IntPtr, IntPtr> _hListBox_row_activated_d;
@@ -301,6 +315,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			{
 				hContainer = Internal.GTK.Methods.GtkStack.gtk_stack_new();
 			}
+			Internal.GObject.Methods.g_signal_connect(hContainer, "draw", _draw_d);
+
 			return hContainer;
 		}
 
@@ -347,13 +363,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			}
 			else
 			{
-				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle);
+				IntPtr hChild = ((GTKNativeControl)Engine.GetHandleForControl(child)).Handle;
+				Internal.GObject.Methods.g_object_ref(hChild);
+
+				Internal.GTK.Methods.GtkContainer.gtk_container_remove(hContainer, hChild);
 			}
 		}
 		public void SetControlConstraints(Control.ControlCollection collection, Control control, Constraints cstr)
 		{
 			if (collection == (Control.ParentWindow)?.StatusBar?.Controls)
 			{
+				// FIXME: THIS IS AN UGLY HACK. FIGURE OUT HOW TO GET RID OF IT.
 				((WindowImplementation)Control.ParentWindow.ControlImplementation).SetStatusBarControlConstraints(control, cstr);
 			}
 			else

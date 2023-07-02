@@ -34,5 +34,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			Width = Internal.Cairo.Methods.cairo_image_surface_get_width(handle);
 			Height = Internal.Cairo.Methods.cairo_image_surface_get_height(handle);
 		}
+
+		internal GDKPixbufImage ToGdkPixbufImage()
+		{
+			IntPtr /*cairo_surface_t*/ surf = Handle;
+			IntPtr /*GdkPixbuf*/ pixbuf = Internal.GDK.Methods.gdk_pixbuf_get_from_surface(surf, 0, 0, Width, Height);
+			return new GDKPixbufImage(pixbuf);
+		}
 	}
 }

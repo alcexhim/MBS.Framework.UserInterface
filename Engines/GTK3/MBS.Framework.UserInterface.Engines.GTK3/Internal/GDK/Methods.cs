@@ -35,16 +35,28 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK
 		public static extern IntPtr /*GdkDisplay*/ gdk_window_get_display(IntPtr /*GdkWindow*/ window);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_pixbuf_get_from_surface(IntPtr /*cairo_surface_t*/ surf, int x, int y, int width, int height);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*GdkCursor*/ gdk_window_get_cursor(IntPtr /*GdkWindow*/ window);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern int gdk_monitor_get_scale_factor(IntPtr /*GdkMonitor*/ monitor);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_seat_get_pointer(IntPtr seat);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_monitor_get_geometry(IntPtr handle, ref Structures.GdkRectangle geom);
 
 		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_display_get_default_group(IntPtr display);
+
+		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_window_set_cursor(IntPtr /*GdkWindow*/ window, IntPtr /*GdkCursor*/ cursor);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*GdkWindow*/ gdk_window_get_device_position_double(IntPtr /*GdkWindow*/ window, IntPtr /*GdkDevice*/ device, ref double x, ref double y, ref Constants.GdkModifierType mask);
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_monitor_get_workarea(IntPtr /*GdkMonitor*/ handle, ref Structures.GdkRectangle workarea);
@@ -96,5 +108,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void gdk_window_set_events(IntPtr /*GdkWindow*/ window, Constants.GdkEventMask mask);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern Constants.GdkGrabStatus gdk_seat_grab(IntPtr /*GdkSeat*/ seat, IntPtr /*GdkWindow*/ window, Constants.GdkSeatCapabilities capabilities, bool owner_events, IntPtr /*GdkCursor*/ cursor, IntPtr /*const GdkEvent*/ evt, IntPtr /*GdkSeatGrabPrepareFunc*/ prepare_func, IntPtr prepare_func_data);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr gdk_display_get_default_seat(IntPtr /*GdkDisplay*/ display);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_seat_ungrab(IntPtr /*GdkSeat*/ seat);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void gdk_window_begin_move_drag(IntPtr /*GdkWindow*/ window, int button, int root_x, int root_y, uint timestamp);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern bool gdk_event_get_scroll_deltas(IntPtr hEventArgs, ref double delta_x, ref double delta_y);
 	}
 }

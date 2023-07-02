@@ -31,6 +31,11 @@ namespace MBS.Framework.UserInterface
 {
 	public abstract class ControlImplementation
 	{
+		public virtual ControlImplementation GetNativeImplementation()
+		{
+			return this;
+		}
+
 		protected static void InvokeMethod(object obj, string meth, params object[] parms)
 		{
 			if (obj == null)
@@ -108,6 +113,13 @@ namespace MBS.Framework.UserInterface
 		{
 			return GetScrollBoundsInternal();
 		}
+
+		protected abstract void BeginMoveDragInternal(MouseButtons button, double x, double y, DateTime timestamp);
+		public void BeginMoveDrag(MouseButtons button, double x, double y, DateTime timestamp)
+		{
+			BeginMoveDragInternal(button, x, y, timestamp);
+		}
+
 		protected abstract void SetScrollBoundsInternal(Dimension2D value);
 		public void SetScrollBounds(Dimension2D value)
 		{

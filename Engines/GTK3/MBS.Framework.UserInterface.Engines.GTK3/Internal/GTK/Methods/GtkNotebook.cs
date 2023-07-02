@@ -46,12 +46,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_pos(IntPtr handle, Constants.GtkPositionType value);
 
+		/// <summary>
+		/// Sets whether the tab label area will have arrows for scrolling if there are too many tabs to fit in the area.
+		/// </summary>
+		/// <param name="handle">Handle.</param>
+		/// <param name="scrollable">If set to <c>true</c>, scroll arrows will be added.</param>
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_notebook_set_scrollable(IntPtr handle, bool scrollable);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern bool gtk_notebook_get_scrollable(IntPtr handle);
+
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_reorderable(IntPtr hNotebook, IntPtr hChild, bool reorderable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_tab_detachable(IntPtr hNotebook, IntPtr hChild, bool detachable);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern string gtk_notebook_get_tab_label_text(IntPtr hNotebook, IntPtr hChild);
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern int gtk_notebook_get_current_page(IntPtr /*GtkNotebook*/ notebook);
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_notebook_set_current_page(IntPtr /*GtkNotebook*/ notebook, int page_num);
 

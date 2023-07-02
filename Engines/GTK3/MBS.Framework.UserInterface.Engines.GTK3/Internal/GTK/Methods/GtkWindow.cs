@@ -109,5 +109,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK.Methods
 		// GTK4 crap
 		[DllImport(Gtk.LIBRARY_FILENAME)]
 		public static extern void gtk_window_set_child(IntPtr handle, IntPtr hWindowContainer);
+
+		[DllImport(Gtk.LIBRARY_FILENAME)]
+		public static extern void gtk_window_begin_move_drag(IntPtr /*GtkWindow*/ window, int button, int root_x, int root_y, uint timestamp);
 	}
 }

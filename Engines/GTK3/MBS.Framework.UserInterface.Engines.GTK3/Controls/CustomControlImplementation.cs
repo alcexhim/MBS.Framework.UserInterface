@@ -19,7 +19,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			IntPtr handle = IntPtr.Zero;
 			try
 			{
-				handle =Internal.GTK.Methods.GtkLayout.gtk_layout_new(IntPtr.Zero, IntPtr.Zero);
+				handle = Internal.GTK.Methods.GtkLayout.gtk_layout_new(IntPtr.Zero, IntPtr.Zero);
 			}
 			catch (EntryPointNotFoundException ex)
 			{
@@ -30,6 +30,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GObject.Methods.g_signal_connect(handle, "draw", DrawHandler_Handler);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_set_can_focus(handle, true);
 			Internal.GTK.Methods.GtkWidget.gtk_widget_add_events(handle, Internal.GDK.Constants.GdkEventMask.ButtonPress | Internal.GDK.Constants.GdkEventMask.ButtonRelease | Internal.GDK.Constants.GdkEventMask.KeyPress | Internal.GDK.Constants.GdkEventMask.KeyRelease | Internal.GDK.Constants.GdkEventMask.PointerMotion | Internal.GDK.Constants.GdkEventMask.PointerMotionHint);
+
+			if (control.MinimumSize != Dimension2D.Empty)
+			{
+				Internal.GTK.Methods.GtkWidget.gtk_widget_set_size_request(handle, (int)control.MinimumSize.Width, (int)control.MinimumSize.Height);
+			}
+
 			CustomControl ctl = (control as CustomControl);
 			for (int i = 0; i < ctl.Controls.Count; i++)
 			{
@@ -48,6 +54,23 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.GObject.Methods.g_signal_connect(vadj, "value_changed", vadj_changed_d);
 
 			IntPtr scrolledWindow = Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_new(hadj, vadj);
+		
+			Internal.GTK.Constants.GtkPolicyType policyH = Internal.GTK.Constants.GtkPolicyType.Never, policyV = Internal.GTK.Constants.GtkPolicyType.Never;
+			switch (control.HorizontalAdjustment.ScrollType)
+			{
+				case AdjustmentScrollType.Always: policyH = Internal.GTK.Constants.GtkPolicyType.Always; break;
+				case AdjustmentScrollType.Automatic: policyH = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+				case AdjustmentScrollType.External: policyH = Internal.GTK.Constants.GtkPolicyType.External; break;
+				case AdjustmentScrollType.Never: policyH = Internal.GTK.Constants.GtkPolicyType.Never; break;
+			}
+			switch (control.VerticalAdjustment.ScrollType)
+			{
+				case AdjustmentScrollType.Always: policyV = Internal.GTK.Constants.GtkPolicyType.Always; break;
+				case AdjustmentScrollType.Automatic: policyV = Internal.GTK.Constants.GtkPolicyType.Automatic; break;
+				case AdjustmentScrollType.External: policyV = Internal.GTK.Constants.GtkPolicyType.External; break;
+				case AdjustmentScrollType.Never: policyV = Internal.GTK.Constants.GtkPolicyType.Never; break;
+			}
+			Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(scrolledWindow, policyH, policyV);
 
 			// Internal.GTK.Methods.GtkScrolledWindow.gtk_scrolled_window_set_policy(scrolledWindow, Internal.GTK.Constants.GtkPolicyType.Always, Internal.GTK.Constants.GtkPolicyType.Always);
 			if (Internal.GTK.Methods.Gtk.LIBRARY_FILENAME == Internal.GTK.Methods.Gtk.LIBRARY_FILENAME_V4)
@@ -59,9 +82,12 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 				Internal.GTK.Methods.GtkContainer.gtk_container_add(scrolledWindow, handle);
 			}
 
+			SetupCommonEvents(handle);
+
 			return new GTKNativeControl(scrolledWindow, new KeyValuePair<string, IntPtr>[]
 			{
-				new KeyValuePair<string, IntPtr>("Layout", handle)
+				new KeyValuePair<string, IntPtr>("Layout", handle),
+				new KeyValuePair<string, IntPtr>("EventHandle", scrolledWindow)
 			});
 		}
 
@@ -97,7 +123,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			Contract.Assert(ctl != null);
 
-			GTKGraphics graphics = new GTKGraphics(cr, new Rectangle(new Vector2D(0, 0), Control.Size));
+			IntPtr pr = Internal.GTK.Methods.GtkWidget.gtk_widget_get_pango_context(widget);
+			GTKGraphics graphics = new GTKGraphics(cr, pr, new Rectangle(new Vector2D(0, 0), Control.Size));
 
 			IntPtr handle = (Handle as GTKNativeControl).Handle;
 			IntPtr hLayout = (Handle as GTKNativeControl).GetNamedHandle("Layout");
@@ -110,6 +137,9 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 			Internal.Cairo.Methods.cairo_translate(cr, -offH, -offV);
 
 			PaintEventArgs e = new PaintEventArgs(graphics);
+            InvokeMethod(ctl, "OnPaintBackground", e);
+			e.Handled = false; // OnPaintBackground should not change this
+
 			InvokeMethod(ctl, "OnPaint", e);
 			if (e.Handled) return true;
 

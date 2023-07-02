@@ -52,6 +52,9 @@ namespace MBS.Framework.UserInterface.Engines.WindowsForms.Controls
 			WindowsFormsNativeGraphics graphics = new WindowsFormsNativeGraphics(e.Graphics);
 
 			PaintEventArgs ee = new PaintEventArgs(graphics);
+            InvokeMethod(ctl, "OnPaintBackground", ee);
+			ee.Handled = false; // OnPaintBackground should not change this
+
 			InvokeMethod(ctl, "OnPaint", ee);
 		}
 	}

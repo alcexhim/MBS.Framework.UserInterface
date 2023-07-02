@@ -35,7 +35,7 @@ namespace MBS.Framework.UserInterface.SettingsProviders
 			{
 				Feature feature = ((UIApplication)Application.Instance).Features[i];
 
-				UserInterfacePlugin[] availablePluginsForFeature = UserInterfacePlugin.Get(new Feature[] { feature });
+				UserInterfacePlugin[] availablePluginsForFeature = Plugin.Get<UserInterfacePlugin>(new Feature[] { feature });
 				List<ChoiceSetting.ChoiceSettingValue> listValues = new List<ChoiceSetting.ChoiceSettingValue>();
 				for (int j = 0; j < availablePluginsForFeature.Length; j++)
 				{

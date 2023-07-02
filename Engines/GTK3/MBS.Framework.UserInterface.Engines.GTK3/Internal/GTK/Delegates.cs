@@ -36,5 +36,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK
 		public delegate void GtkPrintJobCompleteFunc(IntPtr /*GtkPrintJob*/ print_job, IntPtr user_data, ref GLib.Structures.GError error);
 
 		public delegate int GtkTreeIterCompareFunc(IntPtr /*GtkTreeModel*/ model, ref Structures.GtkTreeIter a, ref Structures.GtkTreeIter b, IntPtr user_data);
+
+		public delegate void GtkGetPreferredSizeEvent(IntPtr /*GtkWidget*/ widget, ref int minimum_size, ref int natural_size);
+		public delegate void GtkGetPreferredSizeForSizeEvent(IntPtr /*GtkWidget*/ widget, int size2, ref int minimum_size, ref int natural_size);
 	}
 }

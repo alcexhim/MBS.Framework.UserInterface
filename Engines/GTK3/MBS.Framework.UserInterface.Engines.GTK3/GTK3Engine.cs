@@ -10,7 +10,6 @@ using MBS.Framework.UserInterface.Controls.FileBrowser;
 using MBS.Framework.UserInterface.DragDrop;
 using MBS.Framework.UserInterface.Drawing;
 using MBS.Framework.UserInterface.Engines.GTK3.Drawing;
-using MBS.Framework.UserInterface.Engines.GTK3.Internal.GTK;
 using MBS.Framework.UserInterface.Engines.GTK3.Printing;
 using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
@@ -25,6 +24,38 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		protected override CommandLineParser CreateCommandLineParser()
 		{
 			return new GTKCommandLineParser();
+		}
+
+		protected override Vector2D GetMouseCursorPositionInternal(MouseDevice mouse)
+		{
+			if (mouse == MouseDevice.Default)
+			{
+				IntPtr /*GdkWindow*/ window;
+				IntPtr /*GdkDevice*/ mouse_device;
+
+				IntPtr /*GdkDisplay*/ display = Internal.GDK.Methods.gdk_display_get_default();
+
+				if (true) // (GTK_CHECK_VERSION(3, 20, 0))
+				{
+					IntPtr /*GdkSeat*/ seat = Internal.GDK.Methods.gdk_display_get_default_seat(display);
+					mouse_device = Internal.GDK.Methods.gdk_seat_get_pointer(seat);
+				}
+				else
+				{
+					/*
+					GdkDeviceManager* devman = gdk_display_get_device_manager(gdk_display_get_default());
+					mouse_device = gdk_device_manager_get_client_pointer(devman);
+					*/				
+				}
+
+				window = Internal.GDK.Methods.gdk_display_get_default_group(display);
+
+				double x = 0.0, y = 0.0;
+				Internal.GDK.Constants.GdkModifierType modifierState = Internal.GDK.Constants.GdkModifierType.None;
+				Internal.GDK.Methods.gdk_window_get_device_position_double(window, mouse_device, ref x, ref y, ref modifierState);
+				return new Vector2D(x, y);
+			}
+			throw new NotSupportedException();
 		}
 
 		public override TreeModelManager TreeModelManager { get; } = new GTK3TreeModelManager();
@@ -46,22 +77,22 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				return;
 			}
 
-			Constants.GtkApplicationInhibitFlags flags = Constants.GtkApplicationInhibitFlags.None;
+			Internal.GTK.Constants.GtkApplicationInhibitFlags flags = Internal.GTK.Constants.GtkApplicationInhibitFlags.None;
 			if ((item.Type & InhibitorType.SystemIdle) == InhibitorType.SystemIdle)
 			{
-				flags |= Constants.GtkApplicationInhibitFlags.Idle;
+				flags |= Internal.GTK.Constants.GtkApplicationInhibitFlags.Idle;
 			}
 			if ((item.Type & InhibitorType.SystemLogout) == InhibitorType.SystemLogout)
 			{
-				flags |= Constants.GtkApplicationInhibitFlags.Logout;
+				flags |= Internal.GTK.Constants.GtkApplicationInhibitFlags.Logout;
 			}
 			if ((item.Type & InhibitorType.SystemSuspend) == InhibitorType.SystemSuspend)
 			{
-				flags |= Constants.GtkApplicationInhibitFlags.Suspend;
+				flags |= Internal.GTK.Constants.GtkApplicationInhibitFlags.Suspend;
 			}
 			if ((item.Type & InhibitorType.SystemUserSwitch) == InhibitorType.SystemUserSwitch)
 			{
-				flags |= Constants.GtkApplicationInhibitFlags.Switch;
+				flags |= Internal.GTK.Constants.GtkApplicationInhibitFlags.Switch;
 			}
 
 			IntPtr hWnd = IntPtr.Zero;
@@ -97,12 +128,17 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		// TODO: this should be migrated to the appropriate refactoring once we figure out what that is
 		protected override Image CreateImage(int width, int height)
 		{
-			IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new(Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height);
-			return new GDKPixbufImage(hImage);
-			/*
-			IntPtr hImage = Internal.Cairo.Methods.cairo_image_surface_create(Internal.Cairo.Constants.CairoFormat.ARGB32, width, height);
-			return new CairoImage(hImage);
-			*/
+			bool useCairo = true;
+			if (!useCairo)
+			{
+				IntPtr hImage = Internal.GDK.Methods.gdk_pixbuf_new(Internal.GDK.Constants.GdkColorspace.RGB, true, 8, width, height);
+				return new GDKPixbufImage(hImage);
+			}
+			else
+			{
+				IntPtr hImage = Internal.Cairo.Methods.cairo_image_surface_create(Internal.Cairo.Constants.CairoFormat.ARGB32, width, height);
+				return new CairoImage(hImage);
+			}
 		}
 		protected override Image LoadImage(StockType stockType, int size)
 		{
@@ -116,14 +152,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return LoadImage(hLoader, filedata, ref hError);
 		}
 
-		internal static Constants.GtkPositionType CardinalDirectionToGtkPositionType(CardinalDirection direction)
+		internal static Internal.GTK.Constants.GtkPositionType CardinalDirectionToGtkPositionType(CardinalDirection direction)
 		{
 			switch (direction)
 			{
-				case CardinalDirection.Bottom: return Constants.GtkPositionType.Bottom;
-				case CardinalDirection.Left: return Constants.GtkPositionType.Left;
-				case CardinalDirection.Right: return Constants.GtkPositionType.Right;
-				case CardinalDirection.Top: return Constants.GtkPositionType.Top;
+				case CardinalDirection.Bottom: return Internal.GTK.Constants.GtkPositionType.Bottom;
+				case CardinalDirection.Left: return Internal.GTK.Constants.GtkPositionType.Left;
+				case CardinalDirection.Right: return Internal.GTK.Constants.GtkPositionType.Right;
+				case CardinalDirection.Top: return Internal.GTK.Constants.GtkPositionType.Top;
 			}
 			throw new ArgumentException("direction");
 		}
@@ -162,7 +198,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			{
 				return null;
 			}
-			IntPtr hPixbuf = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_load_icon(hTheme, name, size, Constants.GtkIconLookupFlags.None, ref hError);
+			IntPtr hPixbuf = Internal.GTK.Methods.GtkIconTheme.gtk_icon_theme_load_icon(hTheme, name, size, Internal.GTK.Constants.GtkIconLookupFlags.None, ref hError);
 			return new GDKPixbufImage(hPixbuf);
 		}
 
@@ -366,6 +402,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return modifierType;
 		}
 
+		internal static MouseEventArgs GdkEventScrollToMouseEventArgs(Internal.GDK.Structures.GdkEventScroll e, IntPtr hEventArgs)
+		{
+			MouseButtons buttons = GdkModifierTypeToMouseButtons(e.state);
+			KeyboardModifierKey modifierKeys = GdkModifierTypeToKeyboardModifierKey(e.state);
+
+			double delta_x = e.delta_x, delta_y = e.delta_y;
+			if (e.direction == Internal.GDK.Constants.GdkScrollDirection.Smooth)
+			{
+				bool ret = Internal.GDK.Methods.gdk_event_get_scroll_deltas(hEventArgs, ref delta_x, ref delta_y);
+			}
+			MouseEventArgs ee = new MouseEventArgs(e.x, e.y, buttons, modifierKeys, delta_x, delta_y);
+			return ee;
+		}
+
 		internal static MouseButtons GdkModifierTypeToMouseButtons(Internal.GDK.Constants.GdkModifierType modifierType)
 		{
 			MouseButtons button = MouseButtons.None;
@@ -391,14 +441,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			switch (value)
 			{
-				case DialogResult.OK: return Constants.GtkResponseType.OK;
-				case DialogResult.Cancel: return Constants.GtkResponseType.Cancel;
-				case DialogResult.Help: return Constants.GtkResponseType.Help;
-				case DialogResult.No: return Constants.GtkResponseType.No;
-				case DialogResult.None: return Constants.GtkResponseType.None;
-				case DialogResult.Yes: return Constants.GtkResponseType.Yes;
+				case DialogResult.OK: return Internal.GTK.Constants.GtkResponseType.OK;
+				case DialogResult.Cancel: return Internal.GTK.Constants.GtkResponseType.Cancel;
+				case DialogResult.Help: return Internal.GTK.Constants.GtkResponseType.Help;
+				case DialogResult.No: return Internal.GTK.Constants.GtkResponseType.No;
+				case DialogResult.None: return Internal.GTK.Constants.GtkResponseType.None;
+				case DialogResult.Yes: return Internal.GTK.Constants.GtkResponseType.Yes;
 			}
-			return Constants.GtkResponseType.None;
+			return Internal.GTK.Constants.GtkResponseType.None;
 		}
 		internal static DialogResult GtkResponseTypeToDialogResult(Internal.GTK.Constants.GtkResponseType value)
 		{
@@ -631,7 +681,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			InvokeMethod(Application.Instance, "OnSessionEnding", new object[] { ee });
 			if (ee.PreventReason != null)
 			{
-				Internal.GTK.Methods.GtkApplication.gtk_application_inhibit(application, IntPtr.Zero, Constants.GtkApplicationInhibitFlags.Logout, ee.PreventReason);
+				Internal.GTK.Methods.GtkApplication.gtk_application_inhibit(application, IntPtr.Zero, Internal.GTK.Constants.GtkApplicationInhibitFlags.Logout, ee.PreventReason);
 			}
 		}
 
@@ -830,25 +880,25 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return ee;
 		}
 
-		internal static Constants.GtkSelectionMode SelectionModeToGtkSelectionMode(SelectionMode mode)
+		internal static Internal.GTK.Constants.GtkSelectionMode SelectionModeToGtkSelectionMode(SelectionMode mode)
 		{
 			switch (mode)
 			{
-				case SelectionMode.None: return Constants.GtkSelectionMode.None;
-				case SelectionMode.Single: return Constants.GtkSelectionMode.Single;
-				case SelectionMode.Browse: return Constants.GtkSelectionMode.Browse;
-				case SelectionMode.Multiple: return Constants.GtkSelectionMode.Multiple;
+				case SelectionMode.None: return Internal.GTK.Constants.GtkSelectionMode.None;
+				case SelectionMode.Single: return Internal.GTK.Constants.GtkSelectionMode.Single;
+				case SelectionMode.Browse: return Internal.GTK.Constants.GtkSelectionMode.Browse;
+				case SelectionMode.Multiple: return Internal.GTK.Constants.GtkSelectionMode.Multiple;
 			}
 			throw new InvalidOperationException();
 		}
-		internal static SelectionMode GtkSelectionModeToSelectionMode(Constants.GtkSelectionMode mode)
+		internal static SelectionMode GtkSelectionModeToSelectionMode(Internal.GTK.Constants.GtkSelectionMode mode)
 		{
 			switch (mode)
 			{
-				case Constants.GtkSelectionMode.None: return SelectionMode.None;
-				case Constants.GtkSelectionMode.Single: return SelectionMode.Single;
-				case Constants.GtkSelectionMode.Browse: return SelectionMode.Browse;
-				case Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
+				case Internal.GTK.Constants.GtkSelectionMode.None: return SelectionMode.None;
+				case Internal.GTK.Constants.GtkSelectionMode.Single: return SelectionMode.Single;
+				case Internal.GTK.Constants.GtkSelectionMode.Browse: return SelectionMode.Browse;
+				case Internal.GTK.Constants.GtkSelectionMode.Multiple: return SelectionMode.Multiple;
 			}
 			throw new InvalidOperationException();
 		}
@@ -1055,7 +1105,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 							}
 							else
 							{
-								hLayout = Internal.GTK.Methods.GtkBox.gtk_box_new(Constants.GtkOrientation.Horizontal, true, 0);
+								hLayout = Internal.GTK.Methods.GtkBox.gtk_box_new(Internal.GTK.Constants.GtkOrientation.Horizontal, true, 0);
 							}
 
 							int padding = (cs.Padding == 0 ? control.Padding.All : cs.Padding);
@@ -1481,12 +1531,13 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(hMenuFile, cmi.Text);
 				Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_use_underline(hMenuFile, true);
 				Internal.GTK.Methods.GtkWidget.gtk_widget_set_sensitive(hMenuFile, cmi.Enabled);
+				Internal.GTK.Methods.GtkWidget.gtk_widget_show(hMenuFile);
 
 				/*
 				if (menuItem.HorizontalAlignment == MenuItemHorizontalAlignment.Right)
 				{
 					Internal.GTK.Methods.GtkWidget.gtk_widget_set_hexpand(hMenuFile, true);
-					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(hMenuFile, Constants.GtkAlign.End);
+					Internal.GTK.Methods.GtkWidget.gtk_widget_set_halign(hMenuFile, Internal.GTK.Constants.GtkAlign.End);
 				}
 				*/
 
@@ -1518,41 +1569,47 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return IntPtr.Zero;
 		}
 
+		private MBS.Framework.Collections.Generic.HandleDictionary<Menu> _menuHandles = new Collections.Generic.HandleDictionary<Menu>();
+
 		public IntPtr BuildMenu(Menu menu, string accelPath = null)
 		{
-			IntPtr hMenuFileMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
-			if (menu.EnableTearoff)
+			if (!_menuHandles.ContainsObject(menu))
 			{
-				try
+				IntPtr hMenu = Internal.GTK.Methods.GtkMenu.gtk_menu_new();
+				if (menu.EnableTearoff)
 				{
-					IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new();
-					Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuTearoff);
+					try
+					{
+						IntPtr hMenuTearoff = Internal.GTK.Methods.GtkTearoffMenuItem.gtk_tearoff_menu_item_new();
+						Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenu, hMenuTearoff);
+					}
+					catch (EntryPointNotFoundException ex)
+					{
+						Console.WriteLine("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
+
+						// this functionality is deprecated, so just in case it finally gets removed...
+						// however, some people like it, so UWT will support it indefinitely ;)
+						// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
+					}
 				}
-				catch (EntryPointNotFoundException ex)
+
+				if (accelPath != null)
 				{
-					Console.WriteLine("uwt: gtk: GtkTearoffMenuItem has finally been deprecated. You need to implement it yourself now!");
-
-					// this functionality is deprecated, so just in case it finally gets removed...
-					// however, some people like it, so UWT will support it indefinitely ;)
-					// if it does eventually get removed, we should be able to replicate this feature natively in UWT anyway
+					if (hDefaultAccelGroup == IntPtr.Zero)
+					{
+						hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+					}
+					Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenu, hDefaultAccelGroup);
 				}
-			}
 
-			if (accelPath != null)
-			{
-				if (hDefaultAccelGroup == IntPtr.Zero)
+				foreach (MenuItem menuItem1 in menu.Items)
 				{
-					hDefaultAccelGroup = Internal.GTK.Methods.GtkAccelGroup.gtk_accel_group_new();
+					IntPtr hMenuItem = InitMenuItem(menuItem1, accelPath);
+					Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenu, hMenuItem);
 				}
-				Internal.GTK.Methods.GtkMenu.gtk_menu_set_accel_group(hMenuFileMenu, hDefaultAccelGroup);
+				_menuHandles.Add(hMenu, menu);
 			}
-
-			foreach (MenuItem menuItem1 in menu.Items)
-			{
-				IntPtr hMenuItem = InitMenuItem(menuItem1, accelPath);
-				Internal.GTK.Methods.GtkMenuShell.gtk_menu_shell_append(hMenuFileMenu, hMenuItem);
-			}
-			return hMenuFileMenu;
+			return _menuHandles.GetHandle(menu);
 		}
 		public IntPtr BuildMenu(CommandMenuItem cmi, IntPtr hMenuFile, string accelPath = null)
 		{
@@ -1797,6 +1854,37 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			return RelativePosition.Default;
 		}
 
+		internal static Internal.GDK.Constants.GdkGravity GravityToGdkGravity(Gravity value)
+		{
+			switch(value)
+			{
+				case Gravity.BottomCenter: return Internal.GDK.Constants.GdkGravity.South;
+				case Gravity.BottomLeft: return Internal.GDK.Constants.GdkGravity.SouthWest;
+				case Gravity.BottomRight: return Internal.GDK.Constants.GdkGravity.SouthEast;
+				case Gravity.Center: return Internal.GDK.Constants.GdkGravity.Center;
+				case Gravity.CenterLeft: return Internal.GDK.Constants.GdkGravity.West;
+				case Gravity.CenterRight: return Internal.GDK.Constants.GdkGravity.East;
+				case Gravity.Static: return Internal.GDK.Constants.GdkGravity.Static;
+				case Gravity.TopCenter: return Internal.GDK.Constants.GdkGravity.North;
+				case Gravity.TopLeft: return Internal.GDK.Constants.GdkGravity.NorthWest;
+				case Gravity.TopRight: return Internal.GDK.Constants.GdkGravity.NorthEast;
+			}
+			throw new ArgumentOutOfRangeException();
+		}
+
+		protected override void ShowMenuPopupInternal(Menu menu)
+		{
+			IntPtr hMenu = BuildMenu(menu);
+			Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_pointer(hMenu, IntPtr.Zero);
+		}
+		protected override void ShowMenuPopupInternal(Menu menu, Control widget, Gravity widgetAnchor, Gravity menuAnchor)
+		{
+			IntPtr hMenu = BuildMenu(menu);
+			IntPtr hWidget = (widget.ControlImplementation.GetNativeImplementation().Handle as GTKNativeControl).Handle;
+			Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_widget(hMenu, hWidget, GravityToGdkGravity(widgetAnchor), GravityToGdkGravity(menuAnchor), IntPtr.Zero);
+			//Internal.GTK.Methods.GtkMenu.gtk_menu_popup_at_pointer(hMenu, IntPtr.Zero);
+		}
+
 		protected override void UpdateTreeModelInternal(TreeModel tm, TreeModelChangedEventArgs e)
 		{
 			IntPtr hTreeModel = ((GTKNativeTreeModel)TreeModelManager.GetHandleForTreeModel(tm)).Handle;
@@ -1985,15 +2073,32 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			IntPtr hCtxDefault = Internal.GTK.Methods.GtkStyleContext.gtk_style_context_new();
 
 			Internal.GDK.Structures.GdkRGBA rgba = new Internal.GDK.Structures.GdkRGBA();
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_background_color(hCtxTextBox, Internal.GTK.Constants.GtkStateFlags.Normal, ref rgba);
 			UpdateSystemColor(SystemColor.WindowBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
-			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Constants.GtkStateFlags.Normal, ref rgba);
+			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_get_color(hCtxTextBox, Internal.GTK.Constants.GtkStateFlags.Normal, ref rgba);
 			UpdateSystemColor(SystemColor.WindowForeground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_bg_color", ref rgba);
 			UpdateSystemColor(SystemColor.HighlightBackground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
 			Internal.GTK.Methods.GtkStyleContext.gtk_style_context_lookup_color(hCtxDefault, "theme_selected_fg_color", ref rgba);
 			UpdateSystemColor(SystemColor.HighlightForeground, Color.FromRGBADouble(rgba.red, rgba.green, rgba.blue, rgba.alpha));
+		}
+
+		private IntPtr _gsOrgGnomeDesktopInterface = IntPtr.Zero;
+		protected override void UpdateSystemFontsInternal()
+		{
+			if (_gsOrgGnomeDesktopInterface == IntPtr.Zero)
+			{
+				IntPtr /*GSettings*/ gs = Internal.GIO.Methods.g_settings_new("org.gnome.desktop.interface");
+				_gsOrgGnomeDesktopInterface = gs;
+			}
+			if (_gsOrgGnomeDesktopInterface != IntPtr.Zero)
+			{
+				string fontName = Internal.GIO.Methods.g_settings_get_string(_gsOrgGnomeDesktopInterface, "font-name");
+				UpdateSystemFont(SystemFont.DefaultFont, Font.Parse(fontName));
+				UpdateSystemFont(SystemFont.MenuFont, Font.Parse(fontName));
+			}
+			UpdateSystemFont(SystemFont.Monospace, Font.FromFamily("Monospace", new Measurement(10, MeasurementUnit.Point)));
 		}
 
 		protected override bool ShowHelpInternal(HelpTopic topic)
@@ -2071,6 +2176,49 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 			// there is only one system sound on Linux
 			IntPtr hDpy = Internal.GDK.Methods.gdk_display_get_default();
 			Internal.GDK.Methods.gdk_display_beep(hDpy);
+		}
+
+		internal static Internal.GDK.Constants.GdkSeatCapabilities SeatCapabilitiesToGdkSeatCapabilities(SeatCapabilities caps)
+		{
+			Internal.GDK.Constants.GdkSeatCapabilities gdkCaps = Internal.GDK.Constants.GdkSeatCapabilities.None;
+			if ((caps & SeatCapabilities.Keyboard) == SeatCapabilities.Keyboard) gdkCaps |= Internal.GDK.Constants.GdkSeatCapabilities.Keyboard;
+			if ((caps & SeatCapabilities.Pointer) == SeatCapabilities.Pointer) gdkCaps |= Internal.GDK.Constants.GdkSeatCapabilities.Pointer;
+			if ((caps & SeatCapabilities.TabletStylus) == SeatCapabilities.TabletStylus) gdkCaps |= Internal.GDK.Constants.GdkSeatCapabilities.TabletStylus;
+			if ((caps & SeatCapabilities.Touch) == SeatCapabilities.Touch) gdkCaps |= Internal.GDK.Constants.GdkSeatCapabilities.Touch;
+			return gdkCaps;
+		}
+
+		protected override void GrabSeatInternal(Seat seat, SeatCapabilities capabilities)
+		{
+			IntPtr hDpy = Internal.GDK.Methods.gdk_display_get_default();
+			IntPtr hSeat = Internal.GDK.Methods.gdk_display_get_default_seat(hDpy);
+
+			IntPtr hWidget = ((GTKNativeControl)seat.Owner.ControlImplementation.GetNativeImplementation().Handle).Handle;
+			IntPtr hWindow = Internal.GTK.Methods.GtkWidget.gtk_widget_get_window(hWidget);
+
+			Console.WriteLine("gtk3: grabbing seat: display {0}, seat {1}, widget {2}, window {3}", hDpy, hSeat, hWidget, hWindow);
+
+			Internal.GDK.Constants.GdkGrabStatus status =
+				Internal.GDK.Methods.gdk_seat_grab(hSeat,
+				hWindow,
+				SeatCapabilitiesToGdkSeatCapabilities(capabilities),
+				false,
+				IntPtr.Zero,
+				IntPtr.Zero,
+				IntPtr.Zero,
+				IntPtr.Zero);
+
+			Console.WriteLine("status is {0}", status);
+
+		}
+		protected override void ReleaseSeatInternal(Seat seat)
+		{
+			IntPtr hDpy = Internal.GDK.Methods.gdk_display_get_default();
+			IntPtr hSeat = Internal.GDK.Methods.gdk_display_get_default_seat(hDpy);
+			Internal.GDK.Methods.gdk_seat_ungrab(hSeat);
+
+			Console.WriteLine("gtk3: releasing seat, display {0}, seat {1}", hDpy, hSeat);
+
 		}
 	}
 }

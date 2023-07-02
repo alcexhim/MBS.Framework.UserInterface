@@ -7,6 +7,7 @@ using MBS.Framework.UserInterface.Layouts;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Controls.ListView;
 using MBS.Framework.UserInterface.Controls.SyntaxTextBox;
+using MBS.Framework.UserInterface.Controls.GraphView;
 
 namespace MBS.Framework.UserInterface.TestProject
 {
@@ -156,6 +157,7 @@ namespace MBS.Framework.UserInterface.TestProject
 			tbsTabs.TabPages.Add(tabCustom);
 
 			tbsTabs.TabPages.Add(CreateTabPageForStockIcons());
+			tbsTabs.TabPages.Add(CreateTabPageForGraphView());
 			this.Controls.Add(tbsTabs, new BoxLayout.Constraints(true, true));
 
 			for (int i = 0; i < tbsTabs.TabPages.Count; i++)
@@ -390,6 +392,21 @@ namespace MBS.Framework.UserInterface.TestProject
 			tab.Layout = new BoxLayout(Orientation.Vertical);
 			tab.Controls.Add(content, new BoxLayout.Constraints(true, true));
 			return tab;
+		}
+
+		private TabPage CreateTabPageForGraphView()
+		{
+			Container ct = new Container();
+			ct.Layout = new BoxLayout(Orientation.Vertical);
+
+			GraphViewControl view = new GraphViewControl();
+			GraphNode node1 = new GraphNode("Test Node");
+			GraphNode node2 = new GraphNode("Another Test");
+			view.Nodes.Add(node1);
+			view.Nodes.Add(node2);
+
+			ct.Controls.Add(view, new BoxLayout.Constraints(true, true));
+			return CreateTabPage("Graph View", ct);
 		}
 
 		private TabPage CreateTabPageForStockIcons()

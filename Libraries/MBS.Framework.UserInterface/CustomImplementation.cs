@@ -21,6 +21,7 @@
 using System;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface
 {
@@ -33,6 +34,21 @@ namespace MBS.Framework.UserInterface
 
 		public CustomImplementation(Engine engine, Control control) : base(engine, control)
 		{
+		}
+
+		protected override void InvalidateInternal(int x, int y, int width, int height)
+		{
+			(Handle as CustomNativeControl).Handle.Invalidate(x, y, width, height);
+		}
+
+		protected override void DestroyInternal()
+		{
+			(Handle as CustomNativeControl).Handle.Destroy();
+		}
+
+		protected override void BeginMoveDragInternal(MouseButtons button, double x, double y, DateTime timestamp)
+		{
+			(Handle as CustomNativeControl).Handle.BeginMoveDrag(button, x, y, timestamp);
 		}
 
 		protected override Vector2D GetLocationInternal()

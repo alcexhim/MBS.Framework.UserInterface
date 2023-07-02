@@ -299,5 +299,90 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK
 			/// </summary>
 			Dnd
 		}
-	}
+
+		[Flags()]
+		public enum GdkSeatCapabilities
+		{
+			/// <summary>
+			/// No input capabilities
+			/// </summary>
+			None = 0,
+			/// <summary>
+			/// The seat has a pointer (e.g.mouse)
+			/// </summary>
+			Pointer = 1 << 0,
+			/// <summary>
+			/// The seat has touchscreen(s) attached
+			/// </summary>
+			Touch = 1 << 1,
+			/// <summary>
+			/// The seat has drawing tablet(s) attached
+			/// </summary>
+			TabletStylus = 1 << 2,
+			/// <summary>
+			/// The seat has keyboard(s) attached
+			/// </summary>
+			Keyboard = 1 << 3,
+			/// <summary>
+			/// The union of all pointing capabilities
+			/// </summary>
+			AllPointing = Pointer | Touch | TabletStylus,
+			/// <summary>
+			/// The union of all capabilities
+			/// </summary>
+			All = AllPointing | Keyboard
+		}
+
+		public enum GdkGrabStatus
+		{
+			/// <summary>
+			/// the resource was successfully grabbed.
+			/// </summary>
+			Success,
+			/// <summary>
+			/// the resource is actively grabbed by another client.
+			/// </summary>
+			AlreadyGrabbed,
+			/// <summary>
+			/// the resource was grabbed more recently than the specified time.
+			/// </summary>
+			InvalidTime,
+			/// <summary>
+			/// the grab window or the confine_to window are not viewable.
+			/// </summary>
+			NotViewable,
+			/// <summary>
+			/// the resource is frozen by an active grab of another client.
+			/// </summary>
+			Frozen,
+			/// <summary>
+			/// the grab failed for some other reason. Since 3.16
+			/// </summary>
+			Failed
+		}
+
+		public enum GdkScrollDirection
+		{
+			/// <summary>
+			/// the window is scrolled up.
+			/// </summary>
+			Up,
+			/// <summary>
+			/// the window is scrolled down.
+			/// </summary>
+			Down,
+			/// <summary>
+			/// the window is scrolled to the left.
+			/// </summary>
+			Left,
+			/// <summary>
+			/// the window is scrolled to the right.
+			/// </summary>
+			Right,
+			/// <summary>
+			/// the scrolling is determined by the delta values in GdkEventScroll. See gdk_event_get_scroll_deltas(). Since: 3.4
+			/// </summary>
+			Smooth
+		}
+}
 }

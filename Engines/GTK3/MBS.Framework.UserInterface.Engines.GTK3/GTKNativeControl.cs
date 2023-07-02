@@ -62,5 +62,14 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 		{
 			return Handle.ToString();
 		}
+
+		public IntPtr GetEventHandle()
+		{
+			if (_NamedHandles.ContainsKey("EventHandle"))
+			{
+				return _NamedHandles["EventHandle"];
+			}
+			return Handle;
+		}
 	}
 }

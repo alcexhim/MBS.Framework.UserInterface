@@ -256,6 +256,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.None);
 		}
+
 		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Func<IntPtr, int, IntPtr, bool> c_handler, IntPtr data = default(IntPtr))
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, data, null, Constants.GConnectFlags.ConnectAfter);
@@ -307,6 +308,20 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.None);
 		}
 		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, GTK.Delegates.GtkDragDataGetEvent c_handler)
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.ConnectAfter);
+		}
+		#endregion
+
+		#region GtkGetPreferredSizeEvent
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern uint g_signal_connect_data(IntPtr instance, string detailed_signal, Internal.GTK.Delegates.GtkGetPreferredSizeEvent c_handler, IntPtr data, Delegates.GClosureNotify destroy_data, Constants.GConnectFlags connect_flags);
+
+		public static uint g_signal_connect(IntPtr instance, string detailed_signal, Internal.GTK.Delegates.GtkGetPreferredSizeEvent c_handler)
+		{
+			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.None);
+		}
+		public static uint g_signal_connect_after(IntPtr instance, string detailed_signal, Internal.GTK.Delegates.GtkGetPreferredSizeEvent c_handler)
 		{
 			return g_signal_connect_data(instance, detailed_signal, c_handler, IntPtr.Zero, null, Constants.GConnectFlags.ConnectAfter);
 		}
@@ -510,5 +525,19 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GObject
 
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern void g_signal_emit_by_name(IntPtr handle, string detailed_signal);
+
+		/// <summary>
+		/// Increases the reference count of <paramref name="obj" />.
+		/// </summary>
+		/// <returns>the same object as <paramref name="obj" /></returns>
+		/// <param name="obj">a GObject.</param>
+		/// <remarks>
+		/// Since GLib 2.56, if GLIB_VERSION_MAX_ALLOWED is 2.56 or greater,
+		/// the type of object will be propagated to the return type(using
+		/// the GCC typeof() extension), so any casting the caller needs to
+		/// do on the return type must be explicit.
+		/// </remarks>
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr g_object_ref(IntPtr obj);
 	}
 }

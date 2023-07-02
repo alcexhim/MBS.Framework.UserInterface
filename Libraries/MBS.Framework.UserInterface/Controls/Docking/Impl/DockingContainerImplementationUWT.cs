@@ -8,196 +8,22 @@ using MBS.Framework.UserInterface.Input.Keyboard;
 using MBS.Framework.UserInterface.Input.Mouse;
 using MBS.Framework.UserInterface.Layouts;
 
-namespace MBS.Framework.UserInterface.Controls.Docking
+namespace MBS.Framework.UserInterface.Controls.Docking.Impl
 {
-	// [ControlImplementation(typeof(DockingContainerControl))]
+	[ControlImplementation(typeof(DockingContainerControl))]
 	public class DockingContainerImplementationUWT : CustomImplementation, IDockingContainerNativeImplementation
 	{
 		public DockingContainerImplementationUWT(Engine engine, Control control) : base(engine, control)
 		{
 		}
 
-		protected override void InvalidateInternal(int x, int y, int width, int height)
-		{
-			(Handle as CustomNativeControl).Handle.Invalidate(x, y, width, height);
-		}
-
-		protected override void DestroyInternal()
-		{
-			(Handle as CustomNativeControl).Handle.Destroy();
-		}
-
-		private class DockingDockContainer : Container
-		{
-			private void tbs_SelectedTabChanged(object sender, TabContainerSelectedTabChangedEventArgs e)
-			{
-				(_dcc?.ControlImplementation as DockingContainerImplementationUWT)._CurrentTabPage = e.NewTab;
-				InvokeMethod(_dcc, "OnSelectionChanged", new object[] { e });
-			}
-
-			protected override IVirtualControlContainer GetControlParent()
-			{
-				return _dcc;
-			}
-
-			private Menu _DockingContainerContextMenu = null;
-
-			private void _DockingContainerContextMenu_Close(object sender, EventArgs e)
-			{
-				DockingWindow dw = _DockingContainerContextMenu.GetExtraData<DockingWindow>("dw");
-				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_Close", new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("Item", dw) });
-			}
-			private void _DockingContainerContextMenu_CloseAllButThis(object sender, EventArgs e)
-			{
-				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_CloseAllButThis");
-			}
-			private void _DockingContainerContextMenu_CloseAll(object sender, EventArgs e)
-			{
-				((UIApplication)Application.Instance).ExecuteCommand("DockingContainerContextMenu_CloseAll");
-			}
-
-			private void tbs_BeforeTabContextMenu(object sender, BeforeTabContextMenuEventArgs e)
-			{
-				e.ContextMenuCommandID = "DockingWindowTabPageContextMenu";
-			}
-
-			private DockingContainerControl _dcc = null;
-
-			public DockingDockContainer(DockingContainerControl dcc)
-			{
-				_dcc = dcc;
-				Layout = new BoxLayout(Orientation.Vertical);
-
-				DockingTabContainer tbsCenterPanel = new DockingTabContainer();
-				tbsCenterPanel.SelectedTabChanged += tbs_SelectedTabChanged;
-				tbsCenterPanel.BeforeTabContextMenu += tbs_BeforeTabContextMenu;
-
-				Controls.Add(tbsCenterPanel, new BoxLayout.Constraints(true, true));
-			}
-		}
-		private class DockingTabContainer : TabContainer
-		{
-			public DockingTabContainer()
-			{
-				// this.TabPosition = TabPosition.Bottom;
-				GroupName = "UwtDockingTabContainer";
-			}
-
-			public IControlContainer OldParent { get; internal set; }
-		}
-		private class DockingSplitContainer : SplitContainer
-		{
-			public DockingSplitContainer()
-			{
-				this.Panel1.Layout = new BoxLayout(Orientation.Vertical);
-
-				this.Panel2.Layout = new BoxLayout(Orientation.Vertical);
-
-				this.SplitterPosition = 100;
-			}
-		}
-		private class DockingTabPopupWindow : Window
-		{
-			public DockingTabPopupWindow()
-			{
-				Layout = new BoxLayout(Orientation.Vertical);
-			}
-		}
-		private class DockingPanelTitleBar : Container
-		{
-			private Label lblTitleBar = null;
-			private Button cmdOptions = null;
-			private Button cmdClose = null;
-
-			private DockingTabContainer _tabContainer = null;
-
-			private DockingTabPopupWindow _popupWindow = null;
-
-			public DockingPanelTitleBar(DockingTabContainer tabContainer)
-			{
-				Contract.Requires(tabContainer != null);
-
-				this.Layout = new BoxLayout(Orientation.Horizontal);
-
-				lblTitleBar = new Label();
-				lblTitleBar.HorizontalAlignment = HorizontalAlignment.Left;
-				lblTitleBar.VerticalAlignment = VerticalAlignment.Middle;
-				lblTitleBar.Text = "Title bar for docking widget";
-				this.Controls.Add(lblTitleBar, new BoxLayout.Constraints(true, true));
-
-				cmdOptions = new Button();
-				cmdOptions.BorderStyle = ButtonBorderStyle.None;
-				cmdOptions.Text = "O";
-				this.Controls.Add(cmdOptions, new BoxLayout.Constraints(false, false));
-
-				cmdClose = new Button();
-				cmdClose.BorderStyle = ButtonBorderStyle.None;
-				cmdClose.Text = "X";
-				this.Controls.Add(cmdClose, new BoxLayout.Constraints(false, false));
-
-				_tabContainer = tabContainer;
-				_tabContainer.SelectedTabChanged += (sender, e) => lblTitleBar.Text = _tabContainer.SelectedTab?.Text;
-				if (_tabContainer.TabPages.Count > 0)
-				{
-					lblTitleBar.Text = _tabContainer.TabPages[0].Text;
-				}
-
-				MouseDown += _MouseDown;
-				lblTitleBar.MouseDown += _MouseDown;
-
-				MouseMove += _MouseMove;
-				lblTitleBar.MouseMove += _MouseMove;
-			}
-
-			protected internal override void OnCreated(EventArgs e)
-			{
-				Contract.Requires(_tabContainer != null);
-				base.OnCreated(e);
-
-				if (_tabContainer.TabPages.Count > 0)
-				{
-					lblTitleBar.Text = _tabContainer.TabPages[0].Text;
-				}
-			}
-
-			private void _MouseDown(object sender, MouseEventArgs e)
-			{
-				if (e.Buttons == MouseButtons.Primary)
-				{
-					// begin dragging the associated tabcontainer
-					if (_popupWindow == null)
-					{
-						_popupWindow = new DockingTabPopupWindow();
-						_popupWindow.Text = _tabContainer.SelectedTab?.Text;
-					}
-					// _tabContainer.OldParent = _tabContainer.Parent;
-					// _tabContainer.Parent.Controls.Remove(_tabContainer);
-
-					// _popupWindow.Controls.Add(_tabContainer, new BoxLayout.Constraints(true, true));
-
-					_popupWindow.Bounds = new Rectangle(ClientToScreenCoordinates(new Vector2D(e.X, e.Y)), new Dimension2D(-1, -1));
-
-					_popupWindow.Show();
-					_popupWindow.Present(DateTime.Now);
-				}
-			}
-			private void _MouseMove(object sender, MouseEventArgs e)
-			{
-				if (e.Buttons == MouseButtons.Primary)
-				{
-					Console.WriteLine("mouse moved whilst dragging");
-					if (_popupWindow != null)
-					{
-						_popupWindow.Bounds = new Rectangle(ClientToScreenCoordinates(new Vector2D(e.X, e.Y)), new Dimension2D(-1, -1));
-					}
-				}
-			}
-			private void _MouseUp(object sender, MouseEventArgs e)
-			{
-			}
-		}
 
 		private DockingDockContainer _ddc = null;
+
+		public override ControlImplementation GetNativeImplementation()
+		{
+			return _ddc.ControlImplementation;
+		}
 		protected override NativeControl CreateControlInternal(Control control)
 		{
 			DockingContainerControl dcc = (control as DockingContainerControl);
@@ -218,7 +44,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 		protected override string GetTooltipTextInternal()
 		{
-			throw new NotImplementedException();
+			return String.Empty;
 		}
 
 		protected override bool HasFocusInternal()
@@ -269,6 +95,18 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 		public void InsertDockingItem(DockingItem item, int index)
 		{
 			InsertDockingItemRecursive(item, index, null);
+		}
+
+		protected internal override void OnCreated(EventArgs e)
+		{
+			base.OnCreated(e);
+			Application.Instance.EventFilters.Add(new EventFilter(_MouseEvent, EventFilterType.MouseDown | EventFilterType.MouseMove | EventFilterType.MouseUp));
+		}
+
+		private bool _MouseEvent(EventFilterType type, ref EventArgs e)
+		{
+			Console.WriteLine("filter mouse event : hi !");
+			return false;
 		}
 
 		private void InsertDockingItemRecursive(DockingItem item, int index, DockingDockContainer parent = null)
@@ -346,6 +184,34 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 					}
 					break;
 				}
+				case DockingItemPlacement.Right:
+				{
+					if (parent.Controls[0] is DockingTabContainer)
+					{
+						DockingTabContainer tbs = (parent.Controls[0] as DockingTabContainer);
+						parent.Controls.Remove(tbs);
+
+						DockingSplitContainer dsc = new DockingSplitContainer();
+						dsc.Orientation = Orientation.Vertical;
+
+						DockingTabContainer tbs1 = new DockingTabContainer();
+						tbs1.TabPosition = TabPosition.Bottom;
+						dsc.Panel1.Controls.Add(new DockingPanelTitleBar(tbs1), new BoxLayout.Constraints(false, true));
+
+						dsc.Panel1.Controls.Add(tbs1, new BoxLayout.Constraints(true, true));
+
+						dsc.Panel2.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
+						parent.Controls.Add(dsc, new BoxLayout.Constraints(true, true));
+						tbs1.TabPages.Add(tab);
+					}
+					else if (parent.Controls[0] is DockingSplitContainer)
+					{
+						DockingSplitContainer dsc = (parent.Controls[0] as DockingSplitContainer);
+						DockingTabContainer tbs1 = (dsc.Panel1.Controls[1] as DockingTabContainer);
+						tbs1.TabPages.Add(tab);
+					}
+					break;
+				}
 				case DockingItemPlacement.Bottom:
 				{
 					if (parent.Controls[0] is DockingTabContainer)
@@ -389,6 +255,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 									dsc1.Panel1.Controls.Add(tbs, new BoxLayout.Constraints(true, true));
 
 									tbs1 = new DockingTabContainer();
+									tbs1.SplitContainerPanel = dsc1.Panel2;
 									tbs1.TabPosition = TabPosition.Bottom;
 									dsc1.Panel2.Controls.Add(new DockingPanelTitleBar(tbs1), new BoxLayout.Constraints(false, true));
 									dsc1.Panel2.Controls.Add(tbs1, new BoxLayout.Constraints(true, true));
@@ -474,7 +341,7 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 			throw new NotImplementedException();
 		}
 
-		private TabPage _CurrentTabPage = null;
+		internal TabPage _CurrentTabPage = null;
 
 		private Dictionary<TabPage, DockingItem> _DockingItemsForTabPage = new Dictionary<TabPage, DockingItem>();
 		private Dictionary<DockingItem, TabPage> _TabPagesForDockingItem = new Dictionary<DockingItem, TabPage>();
@@ -494,6 +361,8 @@ namespace MBS.Framework.UserInterface.Controls.Docking
 
 		public void SetCurrentItem(DockingItem item)
 		{
+			// FIXME: this crashes after DockingContainerControl::HideWindowListPopup
+			// ------ if we close a newly-created tab (e.g. create a file, then Ctrl+W)
 			TabPage tab = GetTabPageForDockingItem(item);
 			tab.Parent.SelectedTab = tab;
 		}

@@ -14,14 +14,42 @@ namespace MBS.Framework.UserInterface.Controls
 			void SetTabPageReorderable(TabPage page, bool value);
 			void SetTabPageDetachable(TabPage page, bool value);
 
+			TabPage GetSelectedTab();
 			void SetSelectedTab(TabPage page);
+
 			void SetTabText(TabPage page, string text);
 
 			void SetTabPosition(TabPosition position);
+
+			bool GetScrollable();
+			void SetScrollable(bool value);
 		}
 	}
 	public class TabContainer : SystemControl, IVirtualControlContainer, ITabPageContainer
 	{
+		private bool _Scrollable = false;
+		/// <summary>
+		/// Sets whether the tab label area will have arrows for scrolling if there are too many tabs to fit in the area.
+		/// </summary>
+		/// <value><c>true</c> if scrollable; otherwise, <c>false</c>.</value>
+		public bool Scrollable
+		{
+			get
+			{
+				Native.ITabContainerControlImplementation impl = (ControlImplementation as Native.ITabContainerControlImplementation);
+				if (IsCreated && impl != null)
+				{
+					return impl.GetScrollable();
+				}
+				return _Scrollable;
+			}
+			set
+			{
+				_Scrollable = value;
+				(ControlImplementation as Native.ITabContainerControlImplementation)?.SetScrollable(value);
+			}
+		}
+
 		private TabPosition _TabPosition = TabPosition.Top;
 		public TabPosition TabPosition
 		{
@@ -58,10 +86,22 @@ namespace MBS.Framework.UserInterface.Controls
 		private TabPage _SelectedTab = null;
 		public TabPage SelectedTab
 		{
-			get { return _SelectedTab; }
+			get
+			{
+				if (IsCreated)
+				{
+					Native.ITabContainerControlImplementation impl = (ControlImplementation as Native.ITabContainerControlImplementation);
+					if (impl != null)
+					{
+						return impl.GetSelectedTab();
+					}
+				}
+				return _SelectedTab;
+			}
 			set
 			{
 				(ControlImplementation as Native.ITabContainerControlImplementation)?.SetSelectedTab(value);
+				_SelectedTab = value;
 			}
 		}
 

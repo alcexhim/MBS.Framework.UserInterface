@@ -90,6 +90,40 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDK
 			public double x_root, y_root;
 		}
 
+		public struct GdkEventScroll
+		{
+			#region GdkEventTimed members
+			#region GdkEvent members
+			/// <summary>
+			/// the type of the event (%GDK_KEY_PRESS or %GDK_KEY_RELEASE).
+			/// </summary>
+			public Constants.GdkEventType type;
+			/// <summary>
+			/// the window which received the event.
+			/// </summary>
+			public IntPtr /*GdkWindow*/ window;
+			/// <summary>
+			/// <c>true</c> if the event was sent explicitly.
+			/// </summary>
+			public byte send_event;
+			#endregion
+			/// <summary>
+			/// the time of the event in milliseconds.
+			/// </summary>
+			public uint time;
+			#endregion
+
+			public double x;
+			public double y;
+			public Constants.GdkModifierType state;
+			public Constants.GdkScrollDirection direction;
+			public IntPtr device;
+			public double x_root, y_root;
+			public double delta_x;
+			public double delta_y;
+			public uint is_stop;
+		}
+
 		/// <summary>
 		/// Describes a key press or key release event.
 		/// </summary>

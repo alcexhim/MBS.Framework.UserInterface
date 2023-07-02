@@ -102,5 +102,21 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo
 			Alpha = 0x2000,
 			Both = 0x3000
 		}
-	}
+
+		public enum CairoLineCap
+		{
+			/// <summary>
+			/// start(stop) the line exactly at the start(end) point(Since 1.0)
+			/// </summary>
+			Butt = 0,
+			/// <summary>
+			/// use a round ending, the center of the circle is the end point(Since 1.0)
+			/// </summary>
+			Round = 1,
+			/// <summary>
+			/// use squared ending, the center of the square is the end point(Since 1.0)
+			/// </summary>
+			Square = 2
+		}
+}
 }

@@ -755,7 +755,7 @@ namespace MBS.Framework.UserInterface
 
 		private void t_threadStart(object obj)
 		{
-			InitializeXMLConfiguration();
+			InitializeInternal(true);  // InitializeXMLConfiguration();
 
 			System.Threading.Thread.Sleep(100);
 			HideSplashScreen();
@@ -989,47 +989,9 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
-		// [DebuggerNonUserCode()]
-		protected override void InitializeInternal()
+		private void InitializeInternal(bool fromThread)
 		{
-			Type tKnownContexts = typeof(KnownContexts);
-			System.Reflection.PropertyInfo[] pis = tKnownContexts.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-			for (int i = 0; i < pis.Length; i++)
-			{
-				Context ctx = (Context)pis[i].GetValue(null, null);
-				Contexts.Add(ctx);
-			}
-
-			Engine[] engines = Engine.Get();
-			if (engines.Length > 0) mvarEngine = engines[0];
-
-			if (mvarEngine == null)
-			{
-				Console.WriteLine("Working directory: {0}", System.Environment.CurrentDirectory);
-				throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
-			}
-
-			string sv = System.Reflection.Assembly.GetEntryAssembly().Location;
-			if (sv.StartsWith("/")) sv = sv.Substring(1);
-
-			sv = sv.Replace(".", "_");
-			sv = sv.Replace("\\", ".");
-			sv = sv.Replace("/", ".");
-
-			// ID = Guid.NewGuid();
-			// sv = sv + ID.ToString().Replace("-", String.Empty);
-			UniqueName = sv;
-
-			// configure UWT-provided features
-			pis = typeof(KnownFeatures).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-			for (int i = 0; i < pis.Length; i++)
-			{
-				Feature feature = (Feature)pis[i].GetValue(null, null);
-				Features.Add(feature);
-			}
-
-			Console.WriteLine("Using engine {0}", mvarEngine.GetType().FullName);
-			mvarEngine.Initialize();
+			if (!fromThread) return;
 
 			InitializeSettingsProfiles();
 
@@ -1103,7 +1065,57 @@ namespace MBS.Framework.UserInterface
 				}
 			}
 
-			UserInterfacePlugin[] plugins = UserInterfacePlugin.Get(true);
+			InitializeXMLConfiguration();
+			InitializeUIPlugins();
+		}
+
+		// [DebuggerNonUserCode()]
+		protected override void InitializeInternal()
+		{
+			Type tKnownContexts = typeof(KnownContexts);
+			System.Reflection.PropertyInfo[] pis = tKnownContexts.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			for (int i = 0; i < pis.Length; i++)
+			{
+				Context ctx = (Context)pis[i].GetValue(null, null);
+				Contexts.Add(ctx);
+			}
+
+			Engine[] engines = Engine.Get();
+			if (engines.Length > 0) mvarEngine = engines[0];
+
+			if (mvarEngine == null)
+			{
+				Console.WriteLine("Working directory: {0}", System.Environment.CurrentDirectory);
+				throw new ArgumentNullException("Application.Engine", "No engines were found or could be loaded");
+			}
+
+			string sv = System.Reflection.Assembly.GetEntryAssembly().Location;
+			if (sv.StartsWith("/")) sv = sv.Substring(1);
+
+			sv = sv.Replace(".", "_");
+			sv = sv.Replace("\\", ".");
+			sv = sv.Replace("/", ".");
+
+			// ID = Guid.NewGuid();
+			// sv = sv + ID.ToString().Replace("-", String.Empty);
+			UniqueName = sv;
+
+			// configure UWT-provided features
+			pis = typeof(KnownFeatures).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+			for (int i = 0; i < pis.Length; i++)
+			{
+				Feature feature = (Feature)pis[i].GetValue(null, null);
+				Features.Add(feature);
+			}
+
+			Console.WriteLine("Using engine {0}", mvarEngine.GetType().FullName);
+			mvarEngine.Initialize();
+		}
+
+
+		private void InitializeUIPlugins()
+		{
+			UserInterfacePlugin[] plugins = Plugin.Get<UserInterfacePlugin>(true);
 			for (int i = 0; i < plugins.Length; i++)
 			{
 				Console.WriteLine("initializing plugin '{0}'", plugins[i].GetType().FullName);
@@ -1209,6 +1221,16 @@ namespace MBS.Framework.UserInterface
 		public void PlaySystemSound(SystemSound sound)
 		{
 			Engine.PlaySystemSound(sound);
+		}
+
+		protected override Plugin[] GetAdditionalPluginsInternal()
+		{
+			List<Plugin> plugins = new List<Plugin>();
+			for (int i = 0; i < CustomPlugins.Count; i++)
+			{
+				plugins.Add(CustomPlugins[i]);
+			}
+			return plugins.ToArray();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface
 {
@@ -64,6 +65,7 @@ namespace MBS.Framework.UserInterface
 			}
 			return null;
 		}
+
 		public Control HitTest(Vector2D point)
 		{
 			return HitTest(point.X, point.Y);

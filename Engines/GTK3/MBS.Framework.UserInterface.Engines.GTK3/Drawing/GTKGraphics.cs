@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Drawing;
+using MBS.Framework.UserInterface.Drawing.Drawing2D;
+using MBS.Framework.UserInterface.Engines.GTK3.Internal.Cairo;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 {
 	public class GTKGraphics : Graphics
 	{
 		private IntPtr mvarCairoContext = IntPtr.Zero;
+		private IntPtr mvarPangoContext = IntPtr.Zero;
 
 		public GTKGraphics(IntPtr cairoContext)
 		{
@@ -17,6 +20,11 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 		public GTKGraphics(IntPtr cairoContext, Rectangle clipRectangle) : base(clipRectangle)
 		{
 			mvarCairoContext = cairoContext;
+		}
+		public GTKGraphics(IntPtr cairoContext, IntPtr pangoContext, Rectangle clipRectangle) : base(clipRectangle)
+		{
+			mvarCairoContext = cairoContext;
+			mvarPangoContext = pangoContext;
 		}
 
 		protected override TextMeasurement MeasureTextInternal(string text, Font font)
@@ -136,20 +144,60 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 			Internal.Cairo.Methods.cairo_move_to(mvarCairoContext, x, y);
 			CheckStatus();
 
-			// this is for RENDERING text - textually
-			Internal.Cairo.Methods.cairo_show_text(mvarCairoContext, value);
-			CheckStatus();
+			if (mvarPangoContext != IntPtr.Zero)
+			{
+				IntPtr layout = Internal.Pango.Methods.pango_layout_new(mvarPangoContext);
 
-			/*
-			 // this is for DRAWING text - graphically
-			Internal.Cairo.Methods.cairo_text_path(mvarCairoContext, value);
-			CheckStatus();
+				if (size != default(Dimension2D))
+				{
+					//Internal.Pango.Methods.pango_layout_set_width(layout, (int)size.Width);
+					//Internal.Pango.Methods.pango_layout_set_height(layout, (int)size.Height);
+				}
 
-			Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
-			CheckStatus();
-			*/
+				if (horizontalAlignment == HorizontalAlignment.Left)
+				{
+					Internal.Pango.Methods.pango_layout_set_alignment(layout, Internal.Pango.Constants.PangoAlignment.Left);
+				}
+				else if (horizontalAlignment == HorizontalAlignment.Center)
+				{
+					Internal.Pango.Methods.pango_layout_set_alignment(layout, Internal.Pango.Constants.PangoAlignment.Center);
+				}
+				else if (horizontalAlignment == HorizontalAlignment.Right)
+				{
+					Internal.Pango.Methods.pango_layout_set_alignment(layout, Internal.Pango.Constants.PangoAlignment.Right);
+				}
+				else if (horizontalAlignment == HorizontalAlignment.Justify)
+				{
+					Internal.Pango.Methods.pango_layout_set_justify(layout, true);
+				}
+				if (verticalAlignment == VerticalAlignment.Middle)
+				{
+					//y = y_orig + ((size.Height - textMeasurement.Size.Height) / 2);
+				}
 
-			// there IS a difference - textually-rendered text is selectable when rendering PDFs; graphically-drawn text is not
+				Internal.Pango.Methods.pango_layout_set_text(layout, value, value.Length);
+
+				Internal.PangoCairo.Methods.pango_cairo_show_layout(mvarCairoContext, layout);
+			}
+			else
+			{
+				// OLD rendering code, crufty and idk
+
+				// this is for RENDERING text - textually
+				Internal.Cairo.Methods.cairo_show_text(mvarCairoContext, value);
+				CheckStatus();
+
+				/*
+				 // this is for DRAWING text - graphically
+				Internal.Cairo.Methods.cairo_text_path(mvarCairoContext, value);
+				CheckStatus();
+
+				Internal.Cairo.Methods.cairo_fill(mvarCairoContext);
+				CheckStatus();
+				*/
+
+				// there IS a difference - textually-rendered text is selectable when rendering PDFs; graphically-drawn text is not
+			}
 		}
 
 		private void SelectFont(ref Font font)
@@ -256,10 +304,29 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Drawing
 		private void SelectPen(Pen pen)
 		{
 			IntPtr hPattern = Internal.Cairo.Methods.cairo_pattern_create_rgba(pen.Color.R, pen.Color.G, pen.Color.B, pen.Color.A);
+
+			DashStyle dashStyle = pen.DashStyle;
+			if (dashStyle == null)
+				dashStyle = DashStyles.Solid;
+
+			Internal.Cairo.Methods.cairo_set_dash(mvarCairoContext, dashStyle.Dashes, dashStyle.Dashes.Length, 0);
+
+			Internal.Cairo.Methods.cairo_set_line_cap(mvarCairoContext, LineCapStylesToCairoLineCap(pen.LineCapStyle));
 			Internal.Cairo.Methods.cairo_set_source(mvarCairoContext, hPattern);
 			Internal.Cairo.Methods.cairo_set_line_width(mvarCairoContext, pen.Width.GetValue(MeasurementUnit.Pixel));
 
 			CheckStatus();
+		}
+
+		private static Constants.CairoLineCap LineCapStylesToCairoLineCap(LineCapStyles lineCapStyle)
+		{
+			switch (lineCapStyle)
+			{
+				case LineCapStyles.Flat: return Constants.CairoLineCap.Butt;
+				case LineCapStyles.Round: return Constants.CairoLineCap.Round;
+				case LineCapStyles.Square: return Constants.CairoLineCap.Square;
+			}
+			return Constants.CairoLineCap.Butt;
 		}
 
 		protected override void DrawRectangleInternal(Pen pen, double x, double y, double width, double height)

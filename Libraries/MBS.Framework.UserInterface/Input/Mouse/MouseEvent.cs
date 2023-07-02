@@ -37,7 +37,10 @@ namespace MBS.Framework.UserInterface.Input.Mouse
 
 		public bool Handled { get; set; } = false;
 
-		public MouseEventArgs(double x, double y, MouseButtons buttons, KeyboardModifierKey modifierKeys)
+		public double DeltaX { get; set; } = 0;
+		public double DeltaY { get; set; } = 0;
+
+		public MouseEventArgs(double x, double y, MouseButtons buttons, KeyboardModifierKey modifierKeys, double deltaX = 0, double deltaY = 0)
 		{
 			if (((UIApplication)Application.Instance).ShouldDpiScale)
 			{
@@ -49,6 +52,8 @@ namespace MBS.Framework.UserInterface.Input.Mouse
 			Y = y;
 			Buttons = buttons;
 			ModifierKeys = modifierKeys;
+			DeltaX = deltaX;
+			DeltaY = deltaY;
 		}
 	}
 }

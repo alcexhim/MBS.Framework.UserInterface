@@ -28,8 +28,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GDL
 		/// <param name="name">Unique name for identifying the dock object.</param>
 		/// <param name="long_name">Human readable name for the dock object.</param>
 		/// <param name="behavior">General behavior for the dock item (i.e. whether it can float, if it's locked, etc.), as specified by <see cref="Constants.GdlDockItemBehavior"/> flags.</param>
-		[DllImport(LIBRARY_FILENAME)]
-		public static extern IntPtr gdl_dock_item_new(string name, string long_name, Constants.GdlDockItemBehavior behavior);
+		[DllImport(LIBRARY_FILENAME, EntryPoint = "gdl_dock_item_new")]
+		private static extern IntPtr _gdl_dock_item_new(IntPtr name, IntPtr long_name, Constants.GdlDockItemBehavior behavior);
+
+		public static IntPtr gdl_dock_item_new(string name, string long_name, Constants.GdlDockItemBehavior behavior)
+		{
+			IntPtr hName = Marshal.StringToHGlobalAuto(name);
+			IntPtr hLongName = Marshal.StringToHGlobalAuto(long_name);
+			IntPtr h = _gdl_dock_item_new(hName, hLongName, behavior);
+			return h;
+		}
 
 		/// <summary>
 		/// Binds this dock item to a new dock master.

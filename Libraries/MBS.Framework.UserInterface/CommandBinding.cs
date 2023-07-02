@@ -215,11 +215,11 @@ namespace MBS.Framework.UserInterface
 
 		public bool Match(KeyEventArgs e)
 		{
-			return e.Key == Key && e.ModifierKeys == ModifierKeys;
+			return (Key != KeyboardKey.None && MouseButtons == MouseButtons.None) && e.Key == Key && e.ModifierKeys == ModifierKeys;
 		}
 		public bool Match(MouseEventArgs e)
 		{
-			return e.Buttons == MouseButtons && e.ModifierKeys == ModifierKeys;
+			return (Key == KeyboardKey.None && MouseButtons != MouseButtons.None) && e.Buttons == MouseButtons && e.ModifierKeys == ModifierKeys;
 		}
 
 		public static CommandBinding FromXML(MarkupTagElement tag)

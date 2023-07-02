@@ -319,9 +319,16 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.GLib
 				{
 					val = new Value(value as GDKPixbufImage);
 				}
-				else if (value is Internal.GDK.Structures.GdkRGBA)
+				else if (value is CairoImage)
 				{
-					val = new Value((Internal.GDK.Structures.GdkRGBA)value);
+					// convert the CairoImage to a GDKPixbufImage
+					CairoImage image = (value as CairoImage);
+					GDKPixbufImage imageGDK = image.ToGdkPixbufImage();
+					val = new Value(imageGDK);
+				}
+				else if (value is GDK.Structures.GdkRGBA)
+				{
+					val = new Value((GDK.Structures.GdkRGBA)value);
 				}
 				else
 				{

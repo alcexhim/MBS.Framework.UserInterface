@@ -145,6 +145,7 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 
 			return new GTKNativeControl(hEventBox, new KeyValuePair<string, IntPtr>[]
 			{
+				new KeyValuePair<string, IntPtr>("EventHandle", hEventBox),
 				new KeyValuePair<string, IntPtr>("EventBox", hEventBox),
 				new KeyValuePair<string, IntPtr>("Control", handle)
 			});

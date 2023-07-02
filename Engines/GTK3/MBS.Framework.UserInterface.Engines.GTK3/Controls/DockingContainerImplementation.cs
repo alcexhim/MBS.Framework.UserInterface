@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using MBS.Framework.UserInterface.Controls.Docking;
 using System.Collections.Generic;
 using MBS.Framework.UserInterface.Controls.Docking.Native;
 
 namespace MBS.Framework.UserInterface.Engines.GTK3.Controls
 {
-	[ControlImplementation(typeof(DockingContainerControl))]
+	//[ControlImplementation(typeof(DockingContainerControl))]
 	public class DockingContainerImplementation : GTKNativeImplementation, IDockingContainerNativeImplementation
 	{
 		public DockingContainerImplementation(Engine engine, DockingContainerControl control)

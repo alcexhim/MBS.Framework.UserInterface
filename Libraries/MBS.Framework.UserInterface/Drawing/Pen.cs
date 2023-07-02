@@ -3,35 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MBS.Framework.Drawing;
+using MBS.Framework.UserInterface.Drawing.Drawing2D;
 
 namespace MBS.Framework.UserInterface.Drawing
 {
-	public enum PenStyle
+	public class Pen
 	{
-		Custom = -1,
-		Solid = 1,
-		Dash,
-		DashDot,
-		DashDotDot,
-		Dot
-	}
-	public struct Pen
-	{
-		private PenStyle mvarStyle;
-		public PenStyle Style { get { return mvarStyle; } set { mvarStyle = value; } }
+		public DashStyle DashStyle { get; set; }
+		public Measurement Width { get; set; }
+		public Color Color { get; set; }
+		public LineCapStyles LineCapStyle { get; set; } = LineCapStyles.Flat;
 
-		private Measurement mvarWidth;
-		public Measurement Width { get { return mvarWidth; } set { mvarWidth = value; } }
-
-		private Color mvarColor;
-		public Color Color { get { return mvarColor; } set { mvarColor = value; } }
-
-		public Pen(Color color, Measurement width = default(Measurement), PenStyle style = PenStyle.Solid)
+		public Pen(Color color, Measurement width = default(Measurement), DashStyle dashStyle = null, LineCapStyles lineCapStyle = LineCapStyles.Flat)
 		{
-			mvarStyle = style;
-			if (width.Equals(default(Measurement))) width = new Measurement(1.0, MeasurementUnit.Pixel);
-			mvarWidth = width;
-			mvarColor = color;
+			DashStyle = dashStyle;
+			if (width.Equals(default(Measurement)))
+			{
+				width = new Measurement(1.0, MeasurementUnit.Pixel);
+			}
+			Width = width;
+			Color = color;
+			LineCapStyle = lineCapStyle;
 		}
 	}
 }

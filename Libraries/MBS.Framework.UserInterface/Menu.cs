@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MBS.Framework.UserInterface.Controls;
 
 namespace MBS.Framework.UserInterface
 {
@@ -86,6 +87,27 @@ namespace MBS.Framework.UserInterface
 					menu.Items.Add(mi[i]);
 			}
 			return menu;
+		}
+
+		/// <summary>
+		/// Shows the menu relative to the mouse cursor location.
+		/// </summary>
+		/// <param name="widget">Widget.</param>
+		public void Show(Control widget)
+		{
+			((UIApplication)Application.Instance).Engine.ShowMenuPopup(this);
+		}
+		/// <summary>
+		/// Shows the menu relative to the specified <paramref name="widget" />,
+		/// aligning the widget's <paramref name="widgetAnchor" /> edge with the
+		/// menu's <paramref name="menuAnchor" /> edge.
+		/// </summary>
+		/// <param name="widget">Widget.</param>
+		/// <param name="widgetAnchor">Widget anchor.</param>
+		/// <param name="menuAnchor">Menu anchor.</param>
+		public void Show(Control widget, Gravity widgetAnchor, Gravity menuAnchor)
+		{
+			((UIApplication)Application.Instance).Engine.ShowMenuPopup(this, widget, widgetAnchor, menuAnchor);
 		}
 	}
 }

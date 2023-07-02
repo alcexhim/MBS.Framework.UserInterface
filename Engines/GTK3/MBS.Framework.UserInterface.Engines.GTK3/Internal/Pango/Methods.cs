@@ -38,5 +38,24 @@ namespace MBS.Framework.UserInterface.Engines.GTK3.Internal.Pango
 		public static extern IntPtr /*PangoAttrFontDesc*/ pango_attr_font_desc_new(IntPtr font);
 		[DllImport(LIBRARY_FILENAME)]
 		public static extern IntPtr /*PangoAttrFontDesc*/ pango_attr_size_new(int size);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_single_paragraph_mode(IntPtr /*PangoLayout*/ layout, bool value);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern IntPtr /*PangoLayout*/ pango_layout_new(IntPtr /*PangoContext*/ context);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_text(IntPtr layout, string value, int length);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_width(IntPtr /*PangoLayout*/ layout, int width);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_height(IntPtr /*PangoLayout*/ layout, int height);
+
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_alignment(IntPtr layout, Constants.PangoAlignment alignment);
+		[DllImport(LIBRARY_FILENAME)]
+		public static extern void pango_layout_set_justify(IntPtr layout, bool justify);
 	}
 }

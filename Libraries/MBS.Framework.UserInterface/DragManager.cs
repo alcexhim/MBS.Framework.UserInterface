@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Dragging;
 using MBS.Framework.UserInterface.Drawing;
@@ -77,6 +78,9 @@ namespace MBS.Framework.UserInterface
 		/// <value><c>true</c> if this <see cref="DragManager" /> should handle drag events; otherwise, <c>false</c>.</value>
 		public bool Enabled { get { return _Enabled; } set { _Enabled = value; _control.Refresh(); } }
 
+		public bool MultiSelect { get; set; } = false;
+		public List<Object> SelectedObjects { get; } = new List<object>();
+
 		/// <summary>
 		/// The event that is raised before the <see cref="DragManager" /> paints over the associated <see cref="Control" />. <see cref="Control" />s making use of
 		/// <see cref="DragManager" /> should connect to this event and perform all of their drawing logic inside the <see cref="BeforeControlPaint" /> event handler so
@@ -106,12 +110,20 @@ namespace MBS.Framework.UserInterface
 
 		private void control_MouseDown(object sender, Input.Mouse.MouseEventArgs e)
 		{
+			Control ctl = sender as Control;
 			if (e.Buttons == Input.Mouse.MouseButtons.Primary)
 			{
 				InitialX = e.X;
 				InitialY = e.Y;
 				CurrentX = InitialX;
 				CurrentY = InitialY;
+
+				DragManagerHitTestEventArgs hte = new DragManagerHitTestEventArgs(e.Location, e.Buttons);
+				OnHitTest(hte);
+				if (hte.Handled)
+				{
+					ctl.Refresh();
+				}
 
 				if (Enabled)
 				{
@@ -136,10 +148,34 @@ namespace MBS.Framework.UserInterface
 		private Rectangle _ObjectRectangle = Rectangle.Empty;
 		private DragOperation dragOperation = DragOperation.None;
 
+		public EventHandler<DragManagerHitTestEventArgs> HitTest;
+		protected virtual void OnHitTest(DragManagerHitTestEventArgs e)
+		{
+			HitTest?.Invoke(this, e);
+		}
+
 		private void control_MouseMove(object sender, Input.Mouse.MouseEventArgs e)
 		{
+			Control ctl = sender as Control;
+
 			CurrentX = e.X;
 			CurrentY = e.Y;
+
+			DragManagerHitTestEventArgs hte = new DragManagerHitTestEventArgs(e.Location, e.Buttons);
+			OnHitTest(hte);
+			if (hte.Handled)
+			{
+				if (hte.Hit != null)
+				{
+					ctl.Cursor = Cursors.Move;
+					ctl.Refresh();
+				}
+				else
+				{
+					ctl.Cursor = Cursors.Default;
+					ctl.Refresh();
+				}
+			}
 
 			if (e.Buttons == Input.Mouse.MouseButtons.Primary)
 			{

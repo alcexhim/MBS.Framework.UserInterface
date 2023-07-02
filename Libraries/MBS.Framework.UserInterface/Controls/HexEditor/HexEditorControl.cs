@@ -201,7 +201,7 @@ namespace MBS.Framework.UserInterface.Controls.HexEditor
 		public HexEditorControl()
 		{
 			HighlightAreas = new HexEditorHighlightArea.HexEditorHighlightAreaCollection(this);
-			MinimumSize = new Framework.Drawing.Dimension2D(320, 240);
+			//MinimumSize = new Framework.Drawing.Dimension2D(320, 240);
 		}
 
 		public HexEditorHighlightArea.HexEditorHighlightAreaCollection HighlightAreas { get; private set; } = null;

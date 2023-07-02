@@ -52,7 +52,7 @@ namespace MBS.Framework.UserInterface.Drawing.Drawing2D.SVG
 			// SVGStrokeLineJoin strokeLineJoin = Style.Properties["stroke-linejoin"].Value.Parse<SVGStrokeLineJoin>();
 			double strokeOpacity = Style.Properties["stroke-opacity"].Value.Parse<double>();
 
-			return new Pen(strokeColor.Alpha(strokeOpacity), strokeWidth, PenStyle.Solid);
+			return new Pen(strokeColor.Alpha(strokeOpacity), strokeWidth);
 		}
 
 		protected abstract void RenderInternal(Graphics graphics);

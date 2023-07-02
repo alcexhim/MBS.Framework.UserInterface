@@ -9,6 +9,7 @@ using MBS.Framework.UserInterface.Printing;
 using System.Diagnostics.Contracts;
 using MBS.Framework.Drawing;
 using MBS.Framework.UserInterface.Dialogs;
+using MBS.Framework.UserInterface.Input.Mouse;
 
 namespace MBS.Framework.UserInterface
 {
@@ -31,6 +32,24 @@ namespace MBS.Framework.UserInterface
 		}
 
 		protected static Dictionary<NativeControl, Control> controlsByHandle = new Dictionary<NativeControl, Control>();
+
+		protected abstract void GrabSeatInternal(Seat seat, SeatCapabilities capabilities);
+
+		protected abstract Vector2D GetMouseCursorPositionInternal(MouseDevice mouse);
+		internal Vector2D GetMouseCursorPosition(MouseDevice mouse)
+		{
+			return GetMouseCursorPositionInternal(mouse);
+		}
+
+		internal void GrabSeat(Seat seat, SeatCapabilities capabilities)
+		{
+			GrabSeatInternal(seat, capabilities);
+		}
+		protected abstract void ReleaseSeatInternal(Seat seat);
+		internal void ReleaseSeat(Seat seat)
+		{
+			ReleaseSeatInternal(seat);
+		}
 
 		protected abstract Graphics CreateGraphicsInternal(Image image);
 		internal Graphics CreateGraphics(Image image)
@@ -63,6 +82,18 @@ namespace MBS.Framework.UserInterface
 		public void UpdateSystemColors()
 		{
 			UpdateSystemColorsInternal();
+		}
+
+		private Dictionary<SystemFont, Font> _SystemFonts = new Dictionary<SystemFont, Font>();
+		protected void UpdateSystemFont(SystemFont font, Font value)
+		{
+			_SystemFonts[font] = value;
+		}
+
+		protected abstract void UpdateSystemFontsInternal();
+		public void UpdateSystemFonts()
+		{
+			UpdateSystemFontsInternal();
 		}
 
 		protected virtual void AfterHandleRegistered(Control control)
@@ -104,12 +135,31 @@ namespace MBS.Framework.UserInterface
 			}
 		}
 
+		protected abstract void ShowMenuPopupInternal(Menu menu);
+		internal void ShowMenuPopup(Menu menu)
+		{
+			ShowMenuPopupInternal(menu);
+		}
+		protected abstract void ShowMenuPopupInternal(Menu menu, Control widget, Gravity widgetAnchor, Gravity menuAnchor);
+		internal void ShowMenuPopup(Menu menu, Control widget, Gravity widgetAnchor, Gravity menuAnchor)
+		{
+			ShowMenuPopupInternal(menu, widget, widgetAnchor, menuAnchor);
+		}
+
 		public Color GetSystemColor(SystemColor color)
 		{
 			UpdateSystemColors();
 			if (_SystemColors.ContainsKey(color))
 				return _SystemColors[color];
 			return Color.Empty;
+		}
+
+		public Font GetSystemFont(SystemFont font)
+		{
+			UpdateSystemFonts();
+			if (_SystemFonts.ContainsKey(font))
+				return _SystemFonts[font];
+			return null;
 		}
 
 		[DebuggerNonUserCode()]
@@ -336,7 +386,7 @@ namespace MBS.Framework.UserInterface
 		{
 			List<Engine> list = new List<Engine>();
 
-			UserInterfacePlugin[] enginePlugins = UserInterfacePlugin.Get(new Feature[] { KnownFeatures.UWTPlatform }, true);
+			UserInterfacePlugin[] enginePlugins = Plugin.Get<UserInterfacePlugin>(new Feature[] { KnownFeatures.UWTPlatform }, true);
 			for (int i = 0; i < enginePlugins.Length; i++)
 			{
 				if (enginePlugins[i] is EnginePlugin)

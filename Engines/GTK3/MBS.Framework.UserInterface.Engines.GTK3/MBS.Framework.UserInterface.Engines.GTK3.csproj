@@ -238,6 +238,8 @@
     <Compile Include="Internal\GTK\Methods\GtkTextTag.cs" />
     <Compile Include="Internal\GTK\Methods\GtkSearchEntry.cs" />
     <Compile Include="GTK3TreeModelManager.cs" />
+    <Compile Include="Internal\WebKit\Delegates.cs" />
+    <Compile Include="Internal\PangoCairo\Methods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -252,6 +254,7 @@
     <Folder Include="InternalAPI\GTK\" />
     <Folder Include="InternalAPI\AppIndicator\" />
     <Folder Include="Internal\X11\" />
+    <Folder Include="Internal\PangoCairo\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\UniversalEditor\Libraries\UniversalEditor.Essential\UniversalEditor.Essential.csproj">

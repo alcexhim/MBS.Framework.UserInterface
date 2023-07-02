@@ -58,6 +58,10 @@
       <Project>{29E1C1BB-3EA5-4062-B62F-85EEC703FE07}</Project>
       <Name>MBS.Framework.UserInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Engines\GTK3\MBS.Framework.UserInterface.Engines.GTK3\MBS.Framework.UserInterface.Engines.GTK3.csproj">
+      <Project>{62DC7CF9-C608-49E5-8C39-305B2E3E93F6}</Project>
+      <Name>MBS.Framework.UserInterface.Engines.GTK3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

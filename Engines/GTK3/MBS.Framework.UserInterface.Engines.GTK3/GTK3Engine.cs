@@ -1701,7 +1701,8 @@ namespace MBS.Framework.UserInterface.Engines.GTK3
 					Internal.GTK.Methods.GtkMenuItem.gtk_menu_item_set_label(nii.hMenuItemTitle, nid.Text);
 				}
 
-				nii.hIndicator.IconName = nid.IconNameAttention;
+				nii.hIndicator.IconName = nid.IconNameDefault;
+				nii.hIndicator.AttentionIconName = nid.IconNameAttention;
 				switch (nid.Status)
 				{
 					case NotificationIconStatus.Hidden:

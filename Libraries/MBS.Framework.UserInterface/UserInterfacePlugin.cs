@@ -27,8 +27,7 @@ namespace MBS.Framework.UserInterface
 	[Serializable]
 	public class UserInterfacePlugin : Plugin
 	{
-		public PropertyListObjectModel Configuration { get; set; } = new PropertyListObjectModel();
-		public Context Context { get; protected set; }
+		public new PropertyListObjectModel Configuration { get; set; } = new PropertyListObjectModel();
 
 		/*
 		private static UserInterfacePlugin[] _plugins = null;
